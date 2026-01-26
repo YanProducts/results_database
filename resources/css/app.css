@@ -1,0 +1,55 @@
+/* ファイルの全検索もここで行う */
+@import 'tailwindcss';
+
+/* 自動で拾えない場合の追加捕捉 */
+@source '../**/*.{js,jsx,ts,tsx,blade.php}';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* 自作コンポーネントを自作コンポーネントで再利用したい場合はutility */
+@utility base_frame {
+    @apply w-4/5 min-w-[300px] max-w-[1000px] mx-auto;
+  }
+
+
+/* 自作コンポーネント */
+@layer components {
+    /* bodyの高さ */
+    .custom_body{
+      @apply min-h-full h-screen;
+    }
+
+    .base_h{
+      @apply text-center font-bold bg-white opacity-80 base_frame;
+    }
+    .base_backColor{
+      @apply bg-white/80;
+    }
+    .base_h1{
+      @apply text-3xl mb-10 max-w-[700px];
+    }
+    .base_table{
+      @apply base_frame bg-gray-200 w-4/5 mt-5 mb-5 border-black border-2;
+    }
+    .base_tableInner{
+     @apply border-collapse border-black border-2 text-center font-bold text-lg;
+    }
+    .base_input_div{
+      @apply base_frame text-center;
+    }  
+    .base_btn{
+      @apply block bg-gray-200 p-1 rounded-sm mx-auto text-center hover:cursor-pointer active:translate-y-1;
+    }
+    .base_error{
+      @apply  bg-pink-50 text-red-600 font-bold text-center border-y py-1 border-black my-0 overflow-hidden;
+    }
+    .base_link{
+        @apply  font-semibold bg-white/80  active:translate-y-1  mb-3 mt-5 py-1 w-3/5 max-w-[700px] min-w-[300px];
+      }
+    .base_link_p{
+       @apply text-center cursor-pointer  font-bold border-b-2 text-blue-600 shadow-white mx-auto;
+     }
+  }
