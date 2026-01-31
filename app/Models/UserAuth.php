@@ -7,10 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\FieldStaffList;
-use App\Models\ClericalList;
-use App\Models\BranchManagerList;
-use App\Models\ProjectOperatorList;
+use App\Enums\UserRole;
 
 // ログイン認証用
 class UserAuth extends Authenticatable
@@ -26,14 +23,17 @@ class UserAuth extends Authenticatable
 
     // roleというカラムを仮作成し、それをrole()というメソッドで呼び出せるようにする
     public function getRoleAttribute(){
-        return
-            match($this->authable_type){
-                FieldStaffList::class=>"field_staff",
-                ClericalList::class=>"clerical",
-                BranchManagerList::class=>"branch_manager",
-                ProjectOperatorList::class=>"project_operator",
-                default=>"unknown"
-            };
+            
+            // Enumの配列を取得
+            $role_enums=UserRole::cases();
+
+            // 見つかったら早期リターン、見つからなければ後ほどリターン(studlyはcamelの先頭大文字版)
+            foreach($role_enums as $role){
+                if($role->get_model_name()==$this->authable_type){
+                    return $role->value;
+                }
+            }
+            return "unknown";
     }
 
     /**

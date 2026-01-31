@@ -2,8 +2,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FieldStaffs\AuthController;
 use App\Http\Controllers\FieldStaffs\WriteReportController;
-use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
-use App\Http\Middleware\RedirectIfUnMatchedRole;
 
 
 // 現場スタッフに関するルーティング
