@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,9 +12,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
+            // authの登録先を定める
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            // 認証されていない場合はログインへ
             "redirectUnAuth"=>\App\Http\Middleware\RedirectIfUnAuthenticated::class,
+            // 認証されていても認証先が違う場合はそのログインページへ(authは1つしか無理なので、ログアウトは別に行う)
             "redirectUnMatchedRole"=>\App\Http\Middleware\RedirectIfUnMatchedRole::class,
+            // 開発環境以外は通さない(SQL挿入など)
+            "onlyLocal"=>\App\Http\Middleware\AbortIfProductionMiddleware::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

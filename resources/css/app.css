@@ -13,7 +13,9 @@
 @utility base_frame {
     @apply w-4/5 min-w-[300px] max-w-[1000px] mx-auto;
   }
-
+@utility base_backColor{
+      @apply bg-white/80;
+}
 
 /* 自作コンポーネント */
 @layer components {
@@ -24,9 +26,6 @@
 
     .base_h{
       @apply text-center font-bold bg-white opacity-80 base_frame;
-    }
-    .base_backColor{
-      @apply bg-white/80;
     }
     .base_h1{
       @apply text-3xl mb-10 max-w-[700px];
@@ -39,17 +38,20 @@
     }
     .base_input_div{
       @apply base_frame text-center;
-    }  
+    }
     .base_btn{
       @apply block bg-gray-200 p-1 rounded-sm mx-auto text-center hover:cursor-pointer active:translate-y-1;
     }
+    .base_information{
+        @apply  base_backColor font-bold text-center border-y py-1 border-black mt-0 mb-8 overflow-hidden;
+    }
     .base_error{
-      @apply  bg-pink-50 text-red-600 font-bold text-center border-y py-1 border-black my-0 overflow-hidden;
+      @apply  bg-pink-50 text-red-600 font-bold text-center border-y py-1 border-black mt-0 mb-8  overflow-hidden;
     }
     .base_link{
-        @apply  font-semibold bg-white/80  active:translate-y-1  mb-3 mt-5 py-1 w-3/5 max-w-[700px] min-w-[300px];
+        @apply  font-semibold bg-white/80  active:translate-y-1  mb-3 mt-5 py-1 w-3/5 max-w-[700px] min-w-[300px] mx-auto;
       }
     .base_link_p{
-       @apply text-center cursor-pointer  font-bold border-b-2 text-blue-600 shadow-white mx-auto;
+       @apply text-center cursor-pointer  font-bold border-b-2 text-blue-600 shadow-white max-w-[100px] mx-auto;
      }
   }

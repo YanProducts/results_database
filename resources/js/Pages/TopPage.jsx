@@ -5,11 +5,11 @@ import ThemeLists from "../Components/Part/topPage/ThemeLists";
 export default function TopPage({}){
 
   return(
-    <Layout>
+    <Layout title="トップ">
       <div className="custom_body bg-green-600">
       <p>　</p>
       <h1 className="base_h base_h1">データ共有-トップ-</h1>
-      
+
       <div className="base_frame"><h2 className="base_h text-2xl mb-10">何を行いますか</h2></div>
 
       <ThemeLists href="" label="案件の登録"/>

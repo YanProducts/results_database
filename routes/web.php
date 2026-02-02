@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NoticePageController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -10,6 +11,9 @@ require __DIR__."/each_parts/field_staff.php";
 require __DIR__."/each_parts/project_operator.php";
 require __DIR__."/each_parts/whole_data.php";
 
+// 市町村データなど根幹のデータ登録。アップ時には載せない
+require __DIR__."/config_parts/handle_city_data.php";
+
 //webミドルウェアが適用される(CSRFTokenも適用)function郡(基本全て)
 Route::middleware(['web'])->group(function(){
     // トップページ(機能選択)
@@ -19,16 +23,8 @@ Route::middleware(['web'])->group(function(){
     ->name("top_page");
 
     // 完了などの情報伝達ページ
-    Route::get("information",function(){
-        return Inertia::render("information",[
-            "message"=>session("information_message") ?? "お知らせはありません"
-        ]);
-    })->name("view_information");
+    Route::get("information",[NoticePageController::class,"view_information"])->name("view_information");
 
-    // エラーページ
-    Route::get("error",function(){
-        return Inertia::render("error",[
-            "message"=>session("error_message") ?? "予期せぬエラーです"
-        ]);
-    })->name("view_error");
+    // エラーページへ
+    Route::get("error",[NoticePageController::class,"view_error"])->name("view_error");
 });
