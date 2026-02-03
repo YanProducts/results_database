@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class NoticePageController extends Controller
 {
     //お知らせページへ
     public function view_information(){
+
+        Log::info("ルーティング内部".session("information_message"));
+
         return Inertia::render("Information",[
         "message"=>session("information_message") ?? "お知らせはありません"]);
     }

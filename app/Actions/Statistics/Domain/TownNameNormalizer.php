@@ -1,44 +1,15 @@
 <?php
-    // その地名を正規化する
-    namespace App\Actions\Statistics;
-    use App\Constants\Statistics;
 
-    class NormalizedStatisticsData{
-        // 全体の流れ
-        public static function normalized_flow($csv_data){
+// 地名変換のメソッドまとめ(*Domainとはその場所でしか通じないという意味)
+// 呼び出しは別の場所から
 
-        // データ訂正系
-        $modified_data=array_map(function($each_data){
-            // 世帯数系統の-とX(秘匿)をゼロに直す
-            $each_data=self::zero_numberling($each_data);
-            // 丁目の「漢数字＋丁目」を数字に直す
-            $each_data["town"]=self::modify_town_character($each_data["hyosyo"],$each_data["town"]);
-            // ~丁で終わっている地名を直す(＊現時点では堺のみ)
-            // 上記から内部呼び出し？
-            $each_data["town"]=self::modify_cho_end_pattern($each_data["city"],$each_data["town"]);
-            return $each_data;
-         },$csv_data);
+namespace App\Actions\Statistics\Domain;
+use App\Constants\Statistics;
 
-         //hyosoが1(市全体データ)と3(全丁目のデータ)は省く
-         $modified_data=self::filtered_irregular_hyosyo_data($modified_data);
-         // 表層の項目は省く
-         $modified_data=self::remove_hyosyo_data($modified_data);
-        // 飛地のデータをまとめる
-         $modified_data=self::gropu_tobichi_data($modified_data);
-
-          return $modified_data;
-        }
-
-        // 世帯数系統の-とX(秘匿)をゼロに直す
-        private static function zero_numberling($data){
-            $data["household"]=str_replace(["-","X"],0,$data["household"]);
-            $data["apartment"]=str_replace(["-","X"],0,$data["apartment"]);
-            $data["detached"]=str_replace(["-","X"],0,$data["detached"]);
-            return $data;
-        }
+class TownNameNormalizer{
 
         // 丁目の「漢数字＋丁目」を数字に直す
-        private static function modify_town_character($hyoso,$town){
+        public static function modify_town_character($hyoso,$town){
                 // 表層が「4」つまり「丁目」単位の時のみのを切り出す
                 if($hyoso!=4){
                     return $town;
@@ -71,7 +42,7 @@
 
 
         // ~丁で終わっている地名を直す(＊現時点では堺のみ)
-        private static function modify_cho_end_pattern($city,$town){
+        public static function modify_cho_end_pattern($city,$town){
 
             if(count(array_filter(Statistics::ChoEndCities,fn($cho_end_city)=>str_starts_with($city,$cho_end_city)))==0){
                 return $town;
@@ -102,40 +73,16 @@
                 };
         }
 
-        //hyosoが1(市全体データ)と3(全丁目のデータ)は省く
-        private static function filtered_irregular_hyosyo_data($base_data){
-            return array_filter($base_data,fn($data)=>!in_array(intval($data["hyosyo"]),[1,3]));
-        }
-
-        // 表層の項目は省く
-        private static function remove_hyosyo_data($base_data){
-                // hyosoの項目は除く
-                return array_map(function($data){
-                    unset($data["hyosyo"]);
-                    return $data;
-                },$base_data);
+         // 手書きでデータを直すべき項目が存在する場合
+        public static function check_over20_town_name($pref,$pref_data_array){
+            // 「二十丁目」もしくは「二十丁」で終わっているデータがある場合
+            // collectは外側にしか効かないので内部は配列のまま
+            if(collect($pref_data_array)->contains(function($data){
+                return str_ends_with($data["town"],"二十丁目") || str_ends_with($data["town"],"二十丁");
+            })){
+                throw new \Exception($pref."ファイルに「二十丁目」もしくは「二十丁」以上のデータが存在しています\n手書き修正か、プログラム修正が必要です");
+            }
         }
 
 
-        // 飛地のデータをまとめる
-        private function gropu_tobichi_data($base_data){
-                // クエリビルダではなくコレクションに対するgroupByは、まとめたものに該当するものを配列で格納した配列で返る
-                // groupByのキーはstringである必要があるので、各要素からキーとなる文字列を作成して返す
-                return
-                collect($base_data)->groupby(fn($r)=>$r["pref"]."|".$r["city"]."|".$r["town"])->map(fn($row)=>[
-                    // pref,city,townは集約しているのでどの項目も同じ
-                    "pref"=>$row[0]["pref"],
-                    "city"=>$row[0]["city"],
-                    "town"=>$row[0]["town"],
-                    // コレクションへのgropubyの内部はコレクションなので->sumも可能
-                    "household"=>$row->sum("household"),
-                    "apartment"=>$row->sum("apartment"),
-                    "detached"=>$row->sum("detached"),
-                    "establishment"=>$row->sum("establishment")
-                ])->values() //keyを0から順に振り直す(insertは連番数値である必要性)
-                ->toArray();
-        }
-
-
-        }
-
+}
