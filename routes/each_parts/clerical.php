@@ -2,12 +2,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Clerical\AuthController;
 use App\Http\Controllers\Clerical\WriteReportController;
+use App\Http\Controllers\Clerical\ExportReportController;
 
 //webミドルウェアが適用される(CSRFTokenも適用)function郡(基本全て)
 Route::prefix("clericals")
       ->name("clericals.")
       ->controller(AuthController::class)
-      ->middleware(['web'])->group(function(){      
+      ->middleware(['web'])->group(function(){
       // この部分は他のファイルと同じだが、設計図自体は外注しないのがLaravel的
 
       // 事務担当新規登録ページの表示
@@ -42,4 +43,19 @@ Route::prefix("clerical")
             // 報告書提出(入力担当用)
             Route::post("write_report","post_write_report")
             ->name("write_report_post");
+});
+
+//報告書エクスポートを行うページ
+Route::prefix("clerical")
+      ->name("clerical.")
+      ->controller(ExportReportController::class)
+      ->middleware(['web',"redirectUnAuth","redirectUnMatchedRole"])
+      ->group(function(){
+            // 報告書エクスポート確認（どれをエクスポートするか）
+            Route::get("export_report","export_report")
+            ->name("write_report");
+            // 報告書提出(入力担当用)
+            Route::post("export_report","decide_export_report")
+            ->name("write_report_post");
+            // 発注書のエクスポート
 });

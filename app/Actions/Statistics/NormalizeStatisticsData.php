@@ -4,6 +4,7 @@
     use App\Actions\Statistics\Domain\TownNameNormalizer;
     use App\Actions\Statistics\Domain\DataNumberNormalizer;
     use App\Actions\Statistics\Domain\HasHyosyoNormalizer;
+    use Illuminate\Support\Facades\Log;
 
     class NormalizeStatisticsData{
         // 全体の流れ
@@ -13,12 +14,17 @@
         $modified_data=array_map(function($each_data){
             // 世帯数系統の-とX(秘匿)をゼロに直す
             $each_data=DataNumberNormalizer::normalize_number($each_data);
-            // 丁目の「漢数字＋丁目」を数字に直す
-            $each_data["town"]=TownNameNormalizer::modify_town_character($each_data["hyosyo"],$each_data["town"]);
+
+
+            // 丁目の「漢数字＋丁目」を数字に直す(表層が4でなくても小野市本町一丁目のようなパターンもあるので、全てに行う)
+            $each_data["town"]=TownNameNormalizer::modify_town_character($each_data["town"]);
+
+
             // ~丁で終わっている地名を直す(＊現時点では堺のみ)
             $each_data["town"]=TownNameNormalizer::modify_cho_end_pattern($each_data["city"],$each_data["town"]);
             return $each_data;
          },$csv_data);
+
 
          //hyosoが1(市全体データ)と3(全丁目のデータ)は省く
          $modified_data=HasHyosyoNormalizer::filtered_irregular_hyosyo_data($modified_data);

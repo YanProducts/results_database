@@ -46,7 +46,6 @@ class GetFileData{
       // その県のデータを全データに追加
       $all_statistics_data=[...$all_statistics_data,...$pref_data_array];
     }
-
     // 全データの配列を返す
     return $all_statistics_data;
   }
@@ -76,10 +75,10 @@ class GetFileData{
       "hyosyo"=>$csv_parsed_cols[1],
       // 県
       "pref"=>$pref,
-      // 市
-      "city"=>$csv_parsed_cols[2],
+      // 市 //normalizer...は「ガ」などの表記揺れを同じとみなす、mb_convert_kanaの"s"は全角スペースを半角に＆それをtrimする
+      "city"=>trim(mb_convert_kana(normalizer_normalize($csv_parsed_cols[2],\Normalizer::FORM_C),"s")),
       // 町目
-      "town"=>$csv_parsed_cols[3],
+      "town"=>trim(mb_convert_kana(normalizer_normalize($csv_parsed_cols[3],\Normalizer::FORM_C),"s")),
       // 世帯
       "household"=>$csv_parsed_cols[7],
       // 集合

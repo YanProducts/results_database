@@ -30,21 +30,14 @@ class StatisticsController extends Controller
             // sqlへの挿入(トランザクションは内部で投げてエラーを返す)
             InsertSql::insert_sql($normalized_data_array);
 
-            // フラッシュセッションに入れてお知らせページへ
-            Session::create_flush_sessions(["information_message","登録完了しました\nSQLを確認してください！"]);
-
-            Log::info("コントローラー内部".session("information_message"));
-
-            return redirect()->route("view_information");
+            return redirect()->route("view_information")->with(["information_message"=>"登録完了しました！"]);
 
 
         }catch(\Throwable $e){
 
         Log::info($e->getmessage());
 
-            Session::create_flush_sessions(["error_message",$e->getMessage()]);
-            Session::create_sessions(["error_message",$e->getMessage()]);
-            return redirect()->route("view_error");
+            return redirect()->route("view_error")->with(["error_message"=>$e->getMessage()]);
         }
 
     }

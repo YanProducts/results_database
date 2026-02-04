@@ -10,9 +10,9 @@ use App\Http\Controllers\FieldStaffs\WriteReportController;
 
 // 認証関連
 Route::prefix("field_staff")
-      ->name("field_staff.")      
+      ->name("field_staff.")
       ->controller(AuthController::class)
-      ->middleware(['web'])->group(function(){      
+      ->middleware(['web'])->group(function(){
       // この部分は他のファイルと同じだが、設計図自体は外注しないのがLaravel的
       // 現場担当者新規登録ページの表示
       Route::get("register","show_register")

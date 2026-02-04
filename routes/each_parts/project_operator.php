@@ -10,7 +10,7 @@ use App\Http\Controllers\BranchManager\StaffAssignmentController;
 Route::prefix("project_operator")
       ->name("project_operator.")
       ->controller(AuthController::class)
-      ->middleware(['web'])->group(function(){      
+      ->middleware(['web'])->group(function(){
       // この部分は他のファイルと同じだが、設計図自体は外注しないのがLaravel的
 
       // 案件入力担当新規登録ページの表示
@@ -39,6 +39,6 @@ Route::prefix("project_operator")
       ->controller(StaffAssignmentController::class)
       ->middleware(['web',"redirectUnAuth","redirectUnMatchedRole"])
       ->group(function(){
-
+        
 
 });

@@ -9,14 +9,13 @@ use App\Constants\Statistics;
 class TownNameNormalizer{
 
         // 丁目の「漢数字＋丁目」を数字に直す
-        public static function modify_town_character($hyoso,$town){
-                // 表層が「4」つまり「丁目」単位の時のみのを切り出す
-                if($hyoso!=4){
-                    return $town;
-                }
+        public static function modify_town_character($town){
+
+                // 表層が「4」でなくても小野市本町一丁目のようなパターンがあるので、表層に限らず統一する
 
                 return
-                    match($town){
+                // trueと条件が等しいかで検索
+                    match(true){
                         // 二十丁目以上は前段階でチェックし、あれば前もって「手動でファイルを直せ」と指示を出す(大阪と兵庫の最高は岸和田土生町の１３丁目)
                         str_ends_with($town,"十丁目")=>str_replace("十丁目","１０",$town),
                         str_ends_with($town,"十一丁目")=>str_replace("十一丁目","１１",$town),
@@ -37,6 +36,7 @@ class TownNameNormalizer{
                         str_ends_with($town,"七丁目")=>str_replace("七丁目","７",$town),
                         str_ends_with($town,"八丁目")=>str_replace("八丁目","８",$town),
                         str_ends_with($town,"九丁目")=>str_replace("九丁目","９",$town),
+                        default=>$town
                     };
         }
 
@@ -49,9 +49,11 @@ class TownNameNormalizer{
             }
 
             return
-                match($town){
+                // trueと条件が等しいかで検索
+                match(true){
                     // 二十丁以上は前段階でチェックし、あれば前もって「手動でファイルを直せ」と指示を出す(大阪と兵庫の最高は岸和田土生町の１３丁)
-                    str_ends_with($town,"十丁")=>str_replace("十丁","１０",$town),
+                    str_ends_with($town,"一〇丁")=>str_replace("一〇丁","１０",$town),
+                    str_ends_with($town,"十丁")=>str_replace("十丁","１１",$town),
                     str_ends_with($town,"十一丁")=>str_replace("十一丁","１１",$town),
                     str_ends_with($town,"十二丁")=>str_replace("十二丁","１２",$town),
                     str_ends_with($town,"十三丁")=>str_replace("十三丁","１３",$town),
@@ -70,6 +72,7 @@ class TownNameNormalizer{
                     str_ends_with($town,"七丁")=>str_replace("七丁","７",$town),
                     str_ends_with($town,"八丁")=>str_replace("八丁","８",$town),
                     str_ends_with($town,"九丁")=>str_replace("九丁","９",$town),
+                    default=>$town
                 };
         }
 
