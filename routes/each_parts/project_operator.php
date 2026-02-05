@@ -4,7 +4,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BranchManager\AuthController;
-use App\Http\Controllers\BranchManager\StaffAssignmentController;
+use App\Http\Controllers\ProjectOperator\ActionSelectController;
 
 //webミドルウェアが適用される(CSRFTokenも適用)function郡(基本全て)
 Route::prefix("project_operator")
@@ -33,12 +33,13 @@ Route::prefix("project_operator")
       ->name("pass_change_post");
 });
 
-// 担当の決定を行うページへ(認証や違う認証の場合は現場用のログインページへ)
+// 案件のCrud操作を行うページへ(認証や違う認証の場合は案件担当用のログインページへ)
 Route::prefix("project_operator")
       ->name("project_operator.")
-      ->controller(StaffAssignmentController::class)
+      ->controller(ActionSelectController::class)
       ->middleware(['web',"redirectUnAuth","redirectUnMatchedRole"])
       ->group(function(){
-        
+      //   案件の一覧と操作のページ
+
 
 });
