@@ -1,5 +1,5 @@
 import { Head } from "@inertiajs/react"
-import BaseFooter from "../Components/Whole/BaseFooter";
+import BaseFooter from "../Components/Common/BaseFooter";
 
 // 全体のレイアウト
 // childrenにタグで囲われた内容が入る

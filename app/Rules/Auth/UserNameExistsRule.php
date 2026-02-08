@@ -3,11 +3,10 @@
 namespace App\Rules\Auth;
 
 use Closure;
+use App\Models\UserAuth;
 use Illuminate\Contracts\Validation\ValidationRule;
-use App\Models\WholeData;
-use Illuminate\Support\Facades\Log;
 
-class WholeDataAdministerExistsRule implements ValidationRule
+class UserNameExistsRule implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -16,9 +15,12 @@ class WholeDataAdministerExistsRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        // 登録されていなければアウト
-        if(!WholeData::exists()){
+        // routeにwhole_dataと入っているときはwhole_dataに登録されているかで、別途既に弾いている
+        //上記以外の場合は、Authに登録されているかどうか
+        if(!UserAuth::where("user_name",$value)->exists()){
             $fail("まだ登録されていません");
         }
+
+
     }
 }

@@ -1,5 +1,5 @@
 // 認証系統のタイトル
-export default function AuthTitle({what,type,inputWhat}){
+export default function InputPageHeader({what,type,inputWhat}){
     return(
      <>
         <p>　</p>

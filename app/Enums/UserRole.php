@@ -58,8 +58,16 @@ public static function get_auth_page_type($request){
     // 上記以外の場合、ページが見つからない例外を投げる
     // 定義のところでも拾ってくれる
     abort(404);
+ }
 
-}
+ // 全Enumを英語=>日本語の配列で返す
+ public static function get_all_values(){
+   return array_reduce(self::cases(),function($carry,$role){
+        $eng=$role->value;
+        $carry[$eng]=self::get_jpn_description($eng);
+        return $carry;
+    },[]);
+ }
 
 
 }

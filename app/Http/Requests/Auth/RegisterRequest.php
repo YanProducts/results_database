@@ -6,7 +6,7 @@ use App\Rules\Auth\PassWordRule;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Support\Auth\AuthTypeChack;
 use App\Rules\Auth\isPreAuthorizedRule;
-use App\Rules\Auth\WholeDataAdministerExistsRule;
+use App\Rules\Auth\WholeDataAdministerNotExistsRule;
 use Illuminate\Support\Facades\Log;
 
 class RegisterRequest extends FormRequest
@@ -42,7 +42,7 @@ class RegisterRequest extends FormRequest
         // whole_dataの時はemailが必要。他は必要ない
         // whole_dataのexistsRuleは本来はauthorityで除去すべきだが、Inertiaにmessageが返されないため、ここで設定
         if(str_contains($this->route()->getName(),"whole_data")){
-            $rules["userName"]=["required","min:2", new WholeDataAdministerExistsRule];
+            $rules["userName"]=["required","min:2", new WholeDataAdministerNotExistsRule];
             $rules["email"]=["required","email"];
         }else{
             // ユーザー名がauthで重ならないようにするのは統括者が登録の際に行うこと

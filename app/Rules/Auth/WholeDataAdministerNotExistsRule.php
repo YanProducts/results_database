@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use App\Models\WholeData;
 use Illuminate\Support\Facades\Log;
 
-class WholeDataAdministerExistsRule implements ValidationRule
+class WholeDataAdministerNotExistsRule implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -16,9 +16,9 @@ class WholeDataAdministerExistsRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        // 登録されていなければアウト
-        if(!WholeData::exists()){
-            $fail("まだ登録されていません");
+        // レコードが1件でも入っていたらアウト
+        if(WholeData::exists()){
+            $fail("統括者は既に登録されています");
         }
     }
 }

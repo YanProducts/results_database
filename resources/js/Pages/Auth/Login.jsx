@@ -1,10 +1,11 @@
 // 全体ログインページ
 import useAuthDefinitions from "../../Definition/Common/Auth/useAuthDefinitions";
-import useAuthActions from "../../Action/Common/useAuthActions";
-import FormSets from "../../Components/Part/Auth/FormSets";
+import useAuthActions from "../../Action/Auth/useAuthActions";
 import Layout from "../../Layout/Layout";
-import ViewValidationErrors from "../../Components/Whole/ViewValidationErrors";
-import BaseButton from "../../Components/Whole/BaseButton";
+import InputPageHeader from "../../Components/Common/InputPageHeader";
+import FormSets from "../../Components/Part/Auth/FormSets";
+import ViewValidationErrors from "../../Components/Common/ViewValidationErrors";
+import BaseButton from "../../Components/Common/BaseButton";
 
 export default function Login({pageNameSets}){
 
@@ -19,7 +20,7 @@ export default function Login({pageNameSets}){
      <div className="h-full min-h-screen bg-sky-300">
 
       {/* タイトル */}
-        <AuthTitle what={what} type="ログイン" inputWhat="ユーザー名とパスワード"/>
+        <InputPageHeader what={what} type="ログイン" inputWhat="下記"/>
 
         {/* 投稿フォーム */}
         <FormSets FormType={"Login"} role={prefix} data={data} onUserChange={onUserChange} onPassChange={onPassChange}

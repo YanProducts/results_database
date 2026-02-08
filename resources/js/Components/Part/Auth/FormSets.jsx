@@ -1,5 +1,5 @@
 // 投稿のもとになるフォームのセット
-import InputParts from "./InputParts"
+import InputParts from "../../Common/InputParts"
 export default function FormSets({formType,role,data,onUserChange,onPassChange,onPassConfirmChange,onEmailChange,onNewPassChange,onNewPassConfirmChange}){
 
     return(
@@ -25,7 +25,7 @@ export default function FormSets({formType,role,data,onUserChange,onPassChange,o
                 {/* パスワード変更の際に必要 */}
                 {formType==="PassChange" &&
                  <>
-                    <InputParts type="pwssword" name="newPassWord" value={data.newPassWord} onChange={onNewPassChange} prefix={"新しいパスワード："}/>
+                    <InputParts type="password" name="newPassWord" value={data.newPassWord} onChange={onNewPassChange} prefix={"新しいパスワード："}/>
                     <InputParts type="password" name="newPassWord_confirmation" value={data.newPass_confirmation} onChange={onNewPassConfirmChange} prefix={"新しいパスワード確認："}/>
                  </>}
               </div>

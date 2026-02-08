@@ -2,12 +2,12 @@
 // ユーザー名は会社側でしか変更しない
 
 import useAuthDefinitions from "../../Definition/Common/Auth/useAuthDefinitions";
-import useAuthActions from "../../Action/Common/useAuthActions";
+import useAuthActions from "../../Action/Auth/useAuthActions";
 import Layout from "../../Layout/Layout";
-import AuthTitle  from "../../Components/Part/Auth/AuthTitle";
 import FormSets from "../../Components/Part/Auth/FormSets";
-import ViewValidationErrors from "../../Components/Whole/ViewValidationErrors";
-import BaseButton from "../../Components/Whole/BaseButton";
+import ViewValidationErrors from "../../Components/Common/ViewValidationErrors";
+import BaseButton from "../../Components/Common/BaseButton";
+import InputPageHeader from "../../Components/Common/InputPageHeader";
 
 export function PassChange({pageNameSets}){
  // 定義(フォームなど)
@@ -21,7 +21,7 @@ export function PassChange({pageNameSets}){
      <div className="h-full min-h-screen bg-sky-300">
 
         {/* タイトル */}
-        <AuthTitle what={what} type="パスワード変更" inputWhat="下記"/>
+        <InputPageHeader what={what} type="パスワード変更" inputWhat="下記"/>
 
         {/* 投稿フォーム */}
         <FormSets FormType={"PassChange"} role={prefix} data={data} onUserChange={onUserChange} onPassChange={onPassChange}
