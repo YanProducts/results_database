@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Support\RedirectLoginPage;
+use App\Support\Auth\RedirectLoginPage;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +19,7 @@ class RedirectIfUnAuthenticated
     public function handle(Request $request, Closure $next): Response
     {
         // 認証されていない場合
-        if(!Auth::check() ){    
+        if(!Auth::check() ){
             // 向かう先のパスにどのワードが含まれているかで、どのログインページに返すかが決まる
             return RedirectLoginPage::RedirectLoginPageFunc($request);
       }

@@ -42,7 +42,7 @@ return [
 
     'guards' => [
         // デフォルトの設定。ひとまずは残す
-        'web' => [            
+        'web' => [
             'driver' => 'session',
             'provider' => 'users',
         ],
@@ -65,12 +65,12 @@ return [
     |
     */
 
-    
+
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\UserAuth::class),
-        ],        
+        ],
     ],
 
     /*
@@ -103,7 +103,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Password Confirmation Timeout
+    | PasswordConfirmation Timeout
     |--------------------------------------------------------------------------
     |
     | Here you may define the number of seconds before a password confirmation

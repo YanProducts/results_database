@@ -1,34 +1,37 @@
 // 全体ログインページ
 import useAuthDefinitions from "../../Definition/Common/Auth/useAuthDefinitions";
 import useAuthActions from "../../Action/Common/useAuthActions";
-import AuthInput from "../../Components/Whole/AuthInput";
+import FormSets from "../../Components/Part/Auth/FormSets";
 import Layout from "../../Layout/Layout";
 import ViewValidationErrors from "../../Components/Whole/ViewValidationErrors";
 import BaseButton from "../../Components/Whole/BaseButton";
 
-export function Login({prefix,what}){
+export default function Login({pageNameSets}){
 
-  // フォーム
-  const { data, setData, post, processing, errors, reset}=useAuthDefinitions();
+  // 定義(フォームなど)
+  const { data, setData, post, processing, errors, reset, prefix,what}=useAuthDefinitions(pageNameSets);
 
- // 動き(確認は仕様しない)
- const {onUserChange,onPassChange,onPassConfirmChange,onSubmitBtnClick}=useAuthActions(setData,post, prefix + "/login");
+ // 動き
+ const {onUserChange,onPassChange,onPassConfirmChange,onEmailChange,onNewPassChange,onNewPassConfirmChange,onSubmitBtnClick}=useAuthActions(setData,post, prefix + ".login_post");
 
   return(
-    <Layout title={`${what}登録`}>
-      <h1 className="base_h">ユーザー名とパスワードを入力してください</h1>
-      <div className="base_frame">
-        {/* dataには以前の値も入力される */}
-        <AuthInput type="text" name="userName" value={data.userName} onChange={onUserChange} />
-        <AuthInput type="password" name="passWord" value={data.passWord} onChange={onPassChange} />
-      </div>
+    <Layout title={`${what}ログイン`}>
+     <div className="h-full min-h-screen bg-sky-300">
+
+      {/* タイトル */}
+        <AuthTitle what={what} type="ログイン" inputWhat="ユーザー名とパスワード"/>
+
+        {/* 投稿フォーム */}
+        <FormSets FormType={"Login"} role={prefix} data={data} onUserChange={onUserChange} onPassChange={onPassChange}
+        // emailと新しいパスワード系列とパスワード確認はログインでは必要ない
+        />
 
       {/* バリデーションエラー */}
       <ViewValidationErrors errors={errors} />
 
       {/* 提出ボタン */}
       <BaseButton onSubmitBtnClick={onSubmitBtnClick} processing={processing}/>
-
+    </div>
     </Layout>
   )
 }

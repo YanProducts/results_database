@@ -11,6 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // 既存のwebミドルウェアにappend
+        $middleware->web(
+           append: [
+            // inertiaを通じさせる
+            \App\Http\Middleware\HandleInertiaRequests::class,
+        ]);
         $middleware->alias([
             // authの登録先を定める
             'role' => \App\Http\Middleware\RoleMiddleware::class,

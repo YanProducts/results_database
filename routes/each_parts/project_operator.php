@@ -3,7 +3,7 @@
 // このディレクトリは他のディレクトリと統合の可能性あり
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BranchManager\AuthController;
+use App\Http\Controllers\AuthController;
 // 案件担当者のできること一覧のコントローラー
 use App\Http\Controllers\ProjectOperator\ActionSelectController;
 
@@ -37,7 +37,7 @@ Route::prefix("project_operator")
     ->group(function(){
         // 案件のCrud操作を行うページへ(認証や違う認証の場合は案件担当用のログインページへ)
         Route::controller(ActionSelectController::class)
-            ->middleware(['web',"redirectUnAuth","redirectUnMatchedRole"])
+            ->middleware(['web',"redirectUnAuth","redirectUnMatchedRole:project_operator"])
             ->group(function(){
             //   案件をどう操作するかのリスト
                 Route::get("action_select","action_select")

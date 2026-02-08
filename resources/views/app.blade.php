@@ -12,6 +12,9 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        {{-- ziggy(これを利用することで、Inertiaからもroute()でweb.phpのrouteを取得することができる) --}}
+        @routes
+
         <!-- Scripts -->
         {{-- @routes --}}
         @viteReactRefresh

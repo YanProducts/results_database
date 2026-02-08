@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Clerical\AuthController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Clerical\WriteReportController;
 use App\Http\Controllers\Clerical\ExportController;
 
@@ -33,7 +33,7 @@ Route::prefix("clericals")
       })
     ->group(function(){
         // 入力を行うページへ(認証や違う認証の場合は現場用のログインページへ)
-        Route::middleware(['web',"redirectUnAuth","redirectUnMatchedRole"])
+        Route::middleware(['web',"redirectUnAuth","redirectUnMatchedRole:clerical"])
             ->group(function(){
                 Route::controller(WriteReportController::class)
                  ->group(function(){

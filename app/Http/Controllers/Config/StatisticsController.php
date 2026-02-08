@@ -30,6 +30,9 @@ class StatisticsController extends Controller
             // sqlへの挿入(トランザクションは内部で投げてエラーを返す)
             InsertSql::insert_sql($normalized_data_array);
 
+
+            // お知らせページへ
+            // トップに行くか別のページに行くかを変更できるようにすること！！！！
             return redirect()->route("view_information")->with(["information_message"=>"登録完了しました！"]);
 
 

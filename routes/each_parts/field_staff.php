@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FieldStaffs\AuthController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FieldStaffs\WriteReportController;
 
 
@@ -33,11 +33,15 @@ Route::prefix("field_staff")
           // 現場担当者パスワード変更ページ
           Route::post("pass_change","post_pass_change")
           ->name("pass_change_post");
+
+          //   シフトサイトからの連動
+
+
        });
       })
       ->group(function(){
         Route::controller(WriteReportController::class)
-            ->middleware(['web',"redirectUnAuth","redirectUnMatchedRole"])
+            ->middleware(['web',"redirectUnAuth","redirectUnMatchedRole:field_staff"])
             ->group(function(){
                     // 報告書作成
                     Route::get("write_report","write_report")

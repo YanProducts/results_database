@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
-use App\Support\RedirectLoginPage;
+use App\Support\Auth\RedirectLoginPage;
 
 class RedirectIfUnMatchedRole
 {
@@ -23,11 +23,11 @@ class RedirectIfUnMatchedRole
         // Auth::user()で現在認証中のモデルインスタンスが返る。UserAuthがAuthを継承し、そこのgetRoleAttributeでroleプロパティにアクセスできるよう設定済み
         if(Auth::user()->role!==$role){
             // 違う入り口の認証は遮断する必要ない。なぜならば、Auth::loginでログインできるユーザーは１人のため、ログインで更新できるから。
-    
+
             // 向かう先のパスにどのワードが含まれているかで、どのログインページに返すかが決まる
             return RedirectLoginPage::RedirectLoginPageFunc($request);
         }
-        
+
         return $next($request);
     }
 }

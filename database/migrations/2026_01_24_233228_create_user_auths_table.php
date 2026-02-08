@@ -14,7 +14,9 @@ return new class extends Migration
         // ログイン用の共通テーブル
         Schema::create('user_auths', function (Blueprint $table) {
             $table->id();
+            // その情報が格納されているモデル名
             $table->string("authable_type");
+            // 上記モデルにおけるId
             $table->integer("authable_id");
             $table->string("password");
             $table->rememberToken();

@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BranchManager\AuthController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BranchManager\StaffAssignmentController;
 
 //webミドルウェアが適用される(CSRFTokenも適用)function郡(基本全て)
@@ -33,7 +33,7 @@ Route::prefix("branch_manager")
     // 担当の決定を行うページへ(認証や違う認証の場合は現場用のログインページへ)
     ->group(function(){
         Route::controller(StaffAssignmentController::class)
-        ->middleware(['web',"redirectUnAuth","redirectUnMatchedRole"])
+        ->middleware(['web',"redirectUnAuth","redirectUnMatchedRole:branch_manager"])
         ->group(function(){
               // 担当/案件/町目/日付の割り当てのトップへ
               Route::get("assignment","assignment")
