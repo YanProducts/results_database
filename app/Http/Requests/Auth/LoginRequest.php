@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Rules\Auth\CheckUserRoleRule;
 use App\Rules\Auth\UserNameExistsRule;
 use App\Rules\Auth\WholeDataAdministerExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -25,13 +26,15 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         $rule=[];
-        if(str_contains($this->route()->getName(),"whole_data")){
+        $route=$this->route()->getName();
+        if(str_contains($route,"whole_data")){
+            // 統括ユーザーが存在するか
             $rule["user_name"]=["required",new WholeDataAdministerExistsRule];
         }else{
-            $rule["user_name"]=["required",new UserNameExistsRule];
+            // ユーザー名が存在するか、ユーザー名はroleのユーザーか
+            $rule["user_name"]=["required",new UserNameExistsRule,new CheckUserRoleRule($route)];
         }
 
-        // それぞれ入力されているか、ユーザー名が存在するか、ユーザー名はroleのユーザーか
         return [
             ...$rule,
             "passWord"=>["required"]

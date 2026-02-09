@@ -8,7 +8,9 @@ use Inertia\Inertia;
 use App\Enums\UserRole;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Actions\Auth\Register;
-use App\Models\WholeData;
+use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -54,8 +56,22 @@ class AuthController extends Controller
     }
 
     // ログインの投稿
-    public function post_login(){
+    public function post_login(LoginRequest $request){
+        $credentials=([
+            "user_name"=>$request->user_name,
+            "password"=>$request->passWord
+        ]);
 
+        if(Auth::attempt($credentials)){
+            // sessionの再生
+            $request->session()->regenerate();
+            // 元に行こうとしていた場所があれば元のページ、なければログイントップページへ
+            // return redirect()->intended(RouteServiceProvider::HOME);
+            return redirect()->route("");
+        }else{
+            // 元のページに戻す
+            return redirect()->route("");
+        }
     }
 
     // パスワード変更のページへ
