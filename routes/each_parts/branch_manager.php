@@ -35,6 +35,9 @@ Route::prefix("branch_manager")
         Route::controller(StaffAssignmentController::class)
         ->middleware(['web',"redirectUnAuth","redirectUnMatchedRole:branch_manager"])
         ->group(function(){
+               // トップページへ(担当の決定やデータチェックも含む)
+               Route::get("top_page","top_page")
+               ->name("top_page");
               // 担当/案件/町目/日付の割り当てのトップへ
               Route::get("assignment","assignment")
               ->name("assignment");

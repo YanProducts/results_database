@@ -18,14 +18,15 @@ enum UserRole : string{
 // 日本語の文字列を返す(値から)
 public static function get_jpn_description($value){
     return match($value){
-        "field_staff"=>"現場担当",
-        "clerical"=>"入力担当",
-        "project_operator"=>"案件担当",
-        "branch_manager"=>"営業所長",
+        self::FieldStaff=>"現場担当",
+        self::Clerical=>"入力担当",
+        self::ProjectOperator=>"案件担当",
+        self::BranchManager=>"営業所長",
         // whole_dataは特別なので以下で設定済み
         default=>"不明"
     };
 }
+
 
 // どのauthページかを返す
 public static function get_auth_page_type($request){
@@ -69,5 +70,18 @@ public static function get_auth_page_type($request){
     },[]);
  }
 
+    //  トップページのルート名を返す
+    public static function top_page_route_name($curerent_route_name){
+        // トップページの文字列を返す(将来的にパターンが増えたことを考慮して、現時点ではtop_pageが多いがベタ打ちにする)
+        return match(true){
+            str_contains($curerent_route_name,self::FieldStaff->value)=>"write_report",
+            str_contains($curerent_route_name,self::Clerical->value)=>"top_page",
+            str_contains($curerent_route_name,self::ProjectOperator->value)=>"action_select",
+            str_contains($curerent_route_name,self::BranchManager->value)=>"top_page",
+            // whole_dataは別項目で設定済み
+            //PHP8では式としてthrowが投げられる
+            default=>throw new \Error("ルートがおかしいです")
+        };
+    }
 
 }

@@ -37,6 +37,11 @@ Route::prefix("clericals")
             ->group(function(){
                 Route::controller(WriteReportController::class)
                  ->group(function(){
+                        // トップページへ(報告書入力以外に発注書作成なども考える)
+                        Route::get("top_page","top_page")
+                        ->name("top_page");
+
+
                         // 報告書作成(入力担当用)
                         Route::get("write_report","write_report")
                         ->name("write_report");

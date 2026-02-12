@@ -21,7 +21,7 @@ class RedirectIfUnAuthenticated
         // 認証されていない場合
         if(!Auth::check() ){
             // 向かう先のパスにどのワードが含まれているかで、どのログインページに返すかが決まる
-            return RedirectLoginPage::RedirectLoginPageFunc($request);
+            return RedirectLoginPage::redirect_login_page_func($request);
       }
     return $next($request);
     }

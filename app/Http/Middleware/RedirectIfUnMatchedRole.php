@@ -25,7 +25,7 @@ class RedirectIfUnMatchedRole
             // 違う入り口の認証は遮断する必要ない。なぜならば、Auth::loginでログインできるユーザーは１人のため、ログインで更新できるから。
 
             // 向かう先のパスにどのワードが含まれているかで、どのログインページに返すかが決まる
-            return RedirectLoginPage::RedirectLoginPageFunc($request);
+            return RedirectLoginPage::redirect_login_page_func($request);
         }
 
         return $next($request);

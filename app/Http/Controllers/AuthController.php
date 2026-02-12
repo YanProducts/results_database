@@ -9,9 +9,8 @@ use App\Enums\UserRole;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Actions\Auth\Register;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Support\Auth\RedirectTopPage;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
-use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class AuthController extends Controller
@@ -57,21 +56,25 @@ class AuthController extends Controller
 
     // ログインの投稿
     public function post_login(LoginRequest $request){
-        $credentials=([
-            "user_name"=>$request->user_name,
-            "password"=>$request->passWord
-        ]);
+        // ログインを試みて、無理ならログインページへ
+        if (!Auth::attempt([
+            "user_name" => $request->user_name,
+            "password"  => $request->passWord
+        ])) {
+            return back()->withErrors([
+                "userName" => "認証できませんでした"
+            ]);
+        }
 
-        if(Auth::attempt($credentials)){
             // sessionの再生
             $request->session()->regenerate();
             // 元に行こうとしていた場所があれば元のページ、なければログイントップページへ
-            // return redirect()->intended(RouteServiceProvider::HOME);
-            return redirect()->route("");
-        }else{
-            // 元のページに戻す
-            return redirect()->route("");
-        }
+            try{
+                return redirect()->intended(RedirectTopPage::redirect_top_page($request->route()->getName()));
+            }catch(\Throwable $e){
+                // エラーページへ
+                return redirect()->route("view_error")->with(["error_message"=>$e->getMessage()]);
+            }
     }
 
     // パスワード変更のページへ

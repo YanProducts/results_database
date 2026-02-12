@@ -2,16 +2,18 @@
 // Auth認証がないor違う認証でログインしている場合、目的のログインページへと向かわせるメソッド
 namespace App\Support\Auth;
 use App\Enums\UserRole;
+use Illuminate\Support\Facades\Redirect;
 
 class RedirectLoginPage{
-  public static function RedirectLoginPageFunc($request){
+  //  前に行こうとしていたページを保存してリダイレクト(whole_data以外)
+  public static function redirect_login_page_func($request){
     // パスの取得
     $path=$request->route()?->getName();
 
     // roleのEnum(PHP8)を取得,ルート名がそのroleから始まっているかで評価
     foreach(UserRole::cases() as $case){
-      if(str_starts_with($path,$case->value)){
-        return redirect()->route($case->value.".login");
+      if(str_contains($path,$case->value)){
+        return Redirect::guest($case->value.".login");
       }
     }
     return redirect()->route("view_error");
