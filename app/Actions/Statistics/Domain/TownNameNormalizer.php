@@ -5,6 +5,7 @@
 
 namespace App\Actions\Statistics\Domain;
 use App\Constants\Statistics;
+use App\Exceptions\BusinessException;
 
 class TownNameNormalizer{
 
@@ -83,7 +84,7 @@ class TownNameNormalizer{
             if(collect($pref_data_array)->contains(function($data){
                 return str_ends_with($data["town"],"二十丁目") || str_ends_with($data["town"],"二十丁");
             })){
-                throw new \Exception($pref."ファイルに「二十丁目」もしくは「二十丁」以上のデータが存在しています\n手書き修正か、プログラム修正が必要です");
+                throw new BusinessException($pref."ファイルに「二十丁目」もしくは「二十丁」以上のデータが存在しています\n手書き修正か、プログラム修正が必要です");
             }
         }
 

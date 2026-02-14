@@ -16,7 +16,6 @@ class StatisticsController extends Controller
 
     // 統計データをSQLへ
     public function insert_household_data(){
-        try{
 
             // 大量にSQL登録が必要なため
             ini_set('max_execution_time', 120);
@@ -35,13 +34,5 @@ class StatisticsController extends Controller
             // トップに行くか別のページに行くかを変更できるようにすること！！！！
             return redirect()->route("view_information")->with(["information_message"=>"登録完了しました！"]);
 
-
-        }catch(\Throwable $e){
-
-        Log::info($e->getmessage());
-
-            return redirect()->route("view_error")->with(["error_message"=>$e->getMessage()]);
         }
-
-    }
 }

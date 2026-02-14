@@ -1,8 +1,12 @@
 <?php
 
+use App\Exceptions\BusinessException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -29,6 +33,13 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //エラールート
-        
+
+        $exceptions->respond(function(Response $response,Throwable $e, Request $request){
+            // 404や403は拾わず、SQL,文法,自分で投げたthrowのエラーなどを披露
+            if($response->getStatusCode()>=500){
+                return redirect()->route("view_error")->with(["error_message"=>(app()->isLocal() || $e instanceof BusinessException) ? $e->getMessage() : "システムエラーです"]);
+            }
+            return $response;
+        });
+
     })->create();

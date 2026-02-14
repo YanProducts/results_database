@@ -4,6 +4,7 @@ namespace App\Actions\Statistics;
 
 use App\Actions\Statistics\Domain\TownNameNormalizer;
 use App\Constants\Statistics;
+use App\Exceptions\BusinessException;
 use Illuminate\Support\Facades\Log;
 
 // ファイルのデータを配列にして変換する
@@ -25,7 +26,7 @@ class GetFileData{
 
       // ファイルがあるかどうか
       if(!file_exists($path)){
-        throw new \Error("ファイルがありません");
+        throw new BusinessException("ファイルがありません");
       }
 
       //ファイルの中のデータを取得

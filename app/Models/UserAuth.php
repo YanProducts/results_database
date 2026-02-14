@@ -23,7 +23,7 @@ class UserAuth extends Authenticatable
 
     // roleというカラムを仮作成し、それをrole()というメソッドで呼び出せるようにする
     public function getRoleAttribute(){
-            
+
             // Enumの配列を取得
             $role_enums=UserRole::cases();
 
@@ -42,7 +42,7 @@ class UserAuth extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'authable_typa','authable_id','email','password',
+        'authable_type','authable_id','email','password',
     ];
 
     /**

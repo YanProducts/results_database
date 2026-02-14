@@ -29,10 +29,10 @@ class LoginRequest extends FormRequest
         $route=$this->route()->getName();
         if(str_contains($route,"whole_data")){
             // 統括ユーザーが存在するか
-            $rule["user_name"]=["required",new WholeDataAdministerExistsRule];
+            $rule["userName"]=["required",new WholeDataAdministerExistsRule];
         }else{
             // ユーザー名が存在するか、ユーザー名はroleのユーザーか
-            $rule["user_name"]=["required",new UserNameExistsRule,new CheckUserRoleRule($route)];
+            $rule["userName"]=["required",new UserNameExistsRule,new CheckUserRoleRule($route)];
         }
 
         return [

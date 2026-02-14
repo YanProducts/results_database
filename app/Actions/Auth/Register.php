@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use App\Models\UserAuth;
 use App\Models\WholeData;
 use App\Models\OnetimeWholeData;
+use App\Exceptions\BusinessException;
 use App\Support\Auth\CheckUserInLists;
 use App\Support\Auth\WholeDataOnetimeCheck;
 use Illuminate\Support\Facades\Hash;
@@ -28,7 +29,7 @@ class Register{
                 $auth_id=CheckUserInLists::get_user_auth_id($model,$user_name)->id;
             }catch(\Throwable $e){
                 // 外側のtry~catchにエラーを投げる
-                throw new \Error("まだ作成権限のないユーザーです");
+                throw new BusinessException("まだ作成権限のないユーザーです");
             }
 
             // try~catch内部には既にいる
@@ -40,7 +41,7 @@ class Register{
 
                 // 手続きの間に作成されていたらエラー
                 if(WholeData::exists()){
-                    throw new \Error("既に登録されています");
+                    throw new BusinessException("既に登録されています");
                 }
 
                 // ワンタイムトークンの設定
@@ -97,7 +98,7 @@ class Register{
     public static function register_whole_data($request){
         // 本登録データが作成されていたらアウト
         if(WholeData::exists()){
-            throw new \Error("既に登録されています");
+            throw new BusinessException("既に登録されています");
         }
 
         //tokenの成否と期限のチェック。違っていたエラーページへ(Getパラメータから捕捉しerrorページに投げるため、バリデーションでは行わない)

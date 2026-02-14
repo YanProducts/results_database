@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Auth\Login;
 use Illuminate\Http\Request;
 use App\Http\Requests\Auth\AuthTypeRequest;
 use Inertia\Inertia;
-use App\Enums\UserRole;
+use App\Support\Auth\UserRoleResolver;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Actions\Auth\Register;
 use App\Http\Requests\Auth\LoginRequest;
@@ -21,15 +22,14 @@ class AuthController extends Controller
 
         return Inertia::render("Auth/Register",[
             // 内部でページの日本語と英語の配列が格納される
-            "pageNameSets"=>UserRole::get_auth_page_type($request)
+            "pageNameSets"=>UserRoleResolver::get_auth_page_type($request)
         ]);
     }
 
     // 登録の投稿
     public function post_register(RegisterRequest $request){
-        try{
             // ロール名の取得
-            $role=UserRole::get_auth_page_type($request)["prefix"];
+            $role=UserRoleResolver::get_auth_page_type($request)["prefix"];
             // whole_dataの際は仮登録
             if($role=="whole_data"){
                 Register::register_onetime_whole_data_flow($request);
@@ -39,49 +39,35 @@ class AuthController extends Controller
                 Register::register_user_data($role,$request);
                 return redirect()->route("view_information")->with(["information_message"=>"登録完了しました"]);
             }
-        }catch(\Throwable $e){
-            // エラーページへ
-            return redirect()->route("view_error")->with(["error_message"=>$e->getMessage()]);
-        }
-
     }
 
     // ログインページへ
     public function show_login(AuthTypeRequest $request){
         return Inertia::render("Auth/Login",[
             // 内部でページの日本語と英語の配列が格納される
-            "pageNameSets"=>UserRole::get_auth_page_type($request)
+            "pageNameSets"=>UserRoleResolver::get_auth_page_type($request)
         ]);
     }
 
     // ログインの投稿
     public function post_login(LoginRequest $request){
         // ログインを試みて、無理ならログインページへ
-        if (!Auth::attempt([
-            "user_name" => $request->user_name,
-            "password"  => $request->passWord
-        ])) {
-            return back()->withErrors([
-                "userName" => "認証できませんでした"
-            ]);
-        }
-
+        if (Login::attempt_login($request)){
             // sessionの再生
             $request->session()->regenerate();
-            // 元に行こうとしていた場所があれば元のページ、なければログイントップページへ
-            try{
-                return redirect()->intended(RedirectTopPage::redirect_top_page($request->route()->getName()));
-            }catch(\Throwable $e){
-                // エラーページへ
-                return redirect()->route("view_error")->with(["error_message"=>$e->getMessage()]);
-            }
+            // それぞれのトップページへ
+            return redirect()->intended(RedirectTopPage::redirect_top_page($request->route()->getName()));
+        }
+        return back()->withErrors([
+                "userName" => "認証できませんでした"
+            ]);
     }
 
     // パスワード変更のページへ
     public function show_pass_change(AuthTypeRequest $request){
         return Inertia::render("Auth/PassChange",[
             // 内部でページの日本語と英語の配列が格納される
-            "pageNameSets"=>UserRole::get_auth_page_type($request)
+            "pageNameSets"=>UserRoleResolver::get_auth_page_type($request)
         ]);
     }
 
@@ -92,15 +78,10 @@ class AuthController extends Controller
 
     // メールから本登録(全般統括者のみ)
     public function create_whole_data_administer(Request $request){
-        try{
             // 本登録
             Register::register_whole_data($request);
             // お知らせへ
             return redirect()->route("view_information")->with(["information_message"=>"登録完了しました"]);
-        }catch(\Throwable $e){
-            // エラーページへ
-            return redirect()->route("view_error")->with(["error_message"=>$e->getMessage()]);
-        }
     }
 
 
