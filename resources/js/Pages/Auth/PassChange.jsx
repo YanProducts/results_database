@@ -23,6 +23,7 @@ export function PassChange({pageNameSets}){
         {/* タイトル */}
         <InputPageHeader what={what} type="パスワード変更" inputWhat="下記"/>
 
+        <form onSubmit={onSubmitBtnClick}>
         {/* 投稿フォーム */}
         <FormSets FormType={"PassChange"} role={prefix} data={data} onUserChange={onUserChange} onPassChange={onPassChange}
         onNewPassChange={onNewPassChange} onNewPassConfirmChange={onNewPassConfirmChange}
@@ -33,7 +34,9 @@ export function PassChange({pageNameSets}){
       <ViewValidationErrors errors={errors} />
 
       {/* 提出ボタン */}
-      <BaseButton onSubmitBtnClick={onSubmitBtnClick} processing={processing}/>
+      <BaseButton processing={processing}/>
+      </form>
+
      </div>
     </Layout>
   )

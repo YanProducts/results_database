@@ -22,6 +22,7 @@ export default function Register({pageNameSets}){
     {/* タイトル */}
     <InputPageHeader what={what} type="新規登録" inputWhat="下記"/>
 
+    <form onSubmit={onSubmitBtnClick}>
     {/* 投稿フォーム */}
     <FormSets formType={"Register"} role={prefix} data={data} onUserChange={onUserChange}onPassChange={onPassChange} onPassConfirmChange={onPassConfirmChange} onEmailChange={onEmailChange}
     // 新しいパスワード系列はregisterページでは呼び出されない
@@ -31,7 +32,8 @@ export default function Register({pageNameSets}){
       <ViewValidationErrors errors={errors} />
 
       {/* 提出ボタン */}
-      <BaseButton onSubmitBtnClick={onSubmitBtnClick} processing={processing}/>
+      <BaseButton processing={processing}/>
+    </form>
 
     </div>
     </Layout>

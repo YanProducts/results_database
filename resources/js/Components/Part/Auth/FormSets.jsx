@@ -29,7 +29,6 @@ export default function FormSets({formType,role,data,onUserChange,onPassChange,o
                     <InputParts type="password" name="newPassWord_confirmation" value={data.newPass_confirmation} onChange={onNewPassConfirmChange} prefix={"新しいパスワード確認："}/>
                  </>}
               </div>
-
     )
 
 }

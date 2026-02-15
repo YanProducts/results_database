@@ -1,6 +1,6 @@
 import { useForm } from "@inertiajs/react";
 
-export default function useRegisterDefinitions(){
+export default function useProvisionDefinitions(){
 
 
   // フォーム

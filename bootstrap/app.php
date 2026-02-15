@@ -6,7 +6,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -28,8 +28,10 @@ return Application::configure(basePath: dirname(__DIR__))
             "redirectUnAuth"=>\App\Http\Middleware\RedirectIfUnAuthenticated::class,
             // 認証されていても認証先が違う場合はそのログインページへ(authは1つしか無理なので、ログアウトは別に行う)
             "redirectUnMatchedRole"=>\App\Http\Middleware\RedirectIfUnMatchedRole::class,
+            // 全般管理データのログイン認証
+            "redirectWholeDataUnAuth"=>\App\Http\Middleware\RedirectIfWholeDataUnAuthenticated::class,
             // 開発環境以外は通さない(SQL挿入など)
-            "onlyLocal"=>\App\Http\Middleware\AbortIfProductionMiddleware::class
+            "onlyLocal"=>\App\Http\Middleware\AbortIfProduction::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

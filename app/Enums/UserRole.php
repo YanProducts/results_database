@@ -18,10 +18,10 @@ enum UserRole : string{
     // 日本語の文字列を返す(値から)
     public static function get_jpn_description($value){
         return match($value){
-            self::FieldStaff=>"現場担当",
-            self::Clerical=>"入力担当",
-            self::ProjectOperator=>"案件担当",
-            self::BranchManager=>"営業所長",
+            self::FieldStaff->value=>"現場担当",
+            self::Clerical->value=>"入力担当",
+            self::ProjectOperator->value=>"案件担当",
+            self::BranchManager->value=>"営業所長",
             // whole_dataは特別なので以下で設定済み
             default=>"不明"
         };

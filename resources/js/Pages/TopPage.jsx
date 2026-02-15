@@ -18,7 +18,7 @@ export default function TopPage({}){
       <ThemeLists href="branch_manager/assingment" label="町丁目データの確認"/>
       <ThemeLists href="clerical/export_report" label="報告書のエクスポート"/>
       <ThemeLists href="clerical/export_purchase_order" label="発注書のエクスポート"/>
-      <ThemeLists href="" label="スタッフ/事務担当/営業所/営業担当/案件担当の登録"/>
+      <ThemeLists href="whole_data/select" label="スタッフ/事務担当/営業所/営業担当/案件担当の登録"/>
       <ThemeLists href="" label="設定"/>
 
       </div>

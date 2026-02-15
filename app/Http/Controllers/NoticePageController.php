@@ -16,9 +16,9 @@ class NoticePageController extends Controller
     }
 
     // エラーページへ
-    public function view_error(){
+    public function view_error(Request $request){
         // エラーセッションがない場合(直接入力を想定)はトップページへ移動
-        if(!session()->has("error_message")){
+        if(!$request->session()->has("error_message")){
             return redirect()->route("top_page");
         }
 

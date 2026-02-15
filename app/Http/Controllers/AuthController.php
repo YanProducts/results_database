@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Auth\Login;
+use App\Actions\Auth\Logout;
 use Illuminate\Http\Request;
 use App\Http\Requests\Auth\AuthTypeRequest;
 use Inertia\Inertia;
@@ -11,8 +12,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Actions\Auth\Register;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Support\Auth\RedirectTopPage;
-use Illuminate\Support\Facades\Auth;
-use Throwable;
+use App\Exceptions\BusinessException;
 
 class AuthController extends Controller
 {
@@ -51,15 +51,21 @@ class AuthController extends Controller
 
     // ログインの投稿
     public function post_login(LoginRequest $request){
+        // sessionの再生(その後に作成した方が良い)
+        $request->session()->regenerate();
         // ログインを試みて、無理ならログインページへ
         if (Login::attempt_login($request)){
-            // sessionの再生
-            $request->session()->regenerate();
             // それぞれのトップページへ
-            return redirect()->intended(RedirectTopPage::redirect_top_page($request->route()->getName()));
+            if(str_contains($request->route()->getName(),"whole_data")){
+                // 全般管理の場合(authがない状態で試みたページとは関係なくトップへ)
+                return redirect()->route("whole_data.select");
+            }else{
+                // roleがある場合はauthがない状態で保存されたページへ
+                return redirect()->intended(RedirectTopPage::redirect_top_page($request->route()->getName()));
+            }
         }
         return back()->withErrors([
-                "userName" => "認証できませんでした"
+                "userName" => "パスワードが違います"
             ]);
     }
 
@@ -84,6 +90,20 @@ class AuthController extends Controller
             return redirect()->route("view_information")->with(["information_message"=>"登録完了しました"]);
     }
 
+    // ログアウト
+    public function logout(Request $request){
+        //それぞれのrouteのprefixの取得
+        $prefix=UserRoleResolver::get_auth_page_type($request)["prefix"];
+
+        // ログアウト(whole_dataが入っているかいないかで操作を変更)
+        Logout::logout($prefix);
+
+        // session再生成
+        $request->session()->regenerate();
+
+        // ログインページへのリダイレクト
+        return redirect()->route($prefix.".login");
+    }
 
     // （退会は全体運営者から行う）
 }

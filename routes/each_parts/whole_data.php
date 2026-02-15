@@ -7,9 +7,9 @@ use App\Http\Controllers\WholeData\SettingsController;
 //webミドルウェアが適用される(CSRFTokenも適用)function郡(基本全て)
 Route::prefix("whole_data")
       ->name("whole_data.")
+      ->middleware(['web'])
       ->group(function(){
             Route::controller(AuthController::class)
-                ->middleware(['web'])
                 ->group(function(){
                     // この部分は他のファイルと同じだが、設計図自体は外注しないのがLaravel的
                     // 全体操作新規登録ページの表示
@@ -39,17 +39,25 @@ Route::prefix("whole_data")
                     ->name("create_user");
                 });
     })->group(function(){
-        Route::middleware(["web","redirectUnAuth","redirectUnMatchedRole:whole_data"])
+        Route::middleware(["redirectWholeDataUnAuth"])
             ->group(function(){
                 // スタッフ/事務担当/営業所/営業担当の登録系統
                 Route::controller(RegisterController::class)
                 ->group(function(){
+                    // 営業所の登録ページ表示
+                    Route::get("provision","register_places")
+                    ->name("register_places");
+                    
+                    // 営業所の登録投稿
+                    Route::post("provision","register_places_post")
+                    ->name("register_places_post");
+
                     // スタッフ/事務担当/営業所/営業担当/案件担当の登録(一覧)
-                    Route::get("select","select")
-                    ->name("select");
+                    Route::get("provision","provision")
+                    ->name("provision");
                     // スタッフ/事務担当/営業所/営業担当/案件担当の登録(決定)
-                    Route::post("select","select")
-                    ->name("select_post");
+                    Route::post("provision","provision_post")
+                    ->name("provision_post");
                 });
                 //  全般管理操作
                 Route::controller(SettingsController::class)
@@ -57,5 +65,8 @@ Route::prefix("whole_data")
 
 
                 });
+                // ログアウト(そもそも認証されていないと無理)
+                Route::get("logout",[AuthController::class,"logout"])
+                ->name("logout");
             });
 });

@@ -6,6 +6,7 @@ namespace App\Actions\Auth;
 use App\Exceptions\BusinessException;
 use App\Models\WholeData;
 use App\Support\Auth\UserRoleResolver;
+use App\Support\Auth\whole_data\WholeDataAuthSessionHandler;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Hash;
 
@@ -20,10 +21,19 @@ class Login{
         // パスワードの取得
         $password=$request->passWord;
 
-        // 全般管理者の場合とそれ以外の場合に分けて検証
-        if((str_contains($route,"whole_data") &&self::whole_data_login($user_name,$password)) || self::role_login($route,$user_name,$password)){
+        // 全般管理者の場合での検証
+        if(str_contains($route,"whole_data")){
+            if(self::whole_data_login($user_name,$password)){
+                return true;
+            }
+            return false;
+        }
+
+        // roleの場合の検証「（全般管理者でもない場合は既に上記で除外した上で）roleではない場合を除外」)
+        if(self::role_login($route,$user_name,$password)){
             return true;
         }
+
 
         return false;
 
@@ -33,9 +43,16 @@ class Login{
     private static function whole_data_login($user_name,$password){
         // モデルの取得
         $whole_data=new WholeData();
-        $password_in_sql=$whole_data->where("user_name",$user_name)->value("password") ?? throw new BusinessException("該当ユーザーが見つかりおません");
-        // 検証
-        return Hash::check($password,$password_in_sql);
+        $user_instance=$whole_data->where("user_name",$user_name)->first();
+
+        // ログイン検証
+        if($user_instance && Hash::check($password,$user_instance->password)){
+            // ログインsession作成(再生はコントローラーで行う)
+            WholeDataAuthSessionHandler::create_login_session($user_instance->id);
+            return true;
+        }
+
+        return false;
 
     }
 

@@ -14,11 +14,13 @@ class WholeDataAdministerExistsRule implements ValidationRule
      *
      * @param  \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString  $fail
      */
+
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         // 登録されていなければアウト
-        if(!WholeData::exists()){
-            $fail("まだ登録されていません");
+        // ユーザー名が違えばアウト
+        if(!WholeData::where("user_name",$value)->exists()){
+            $fail("該当ユーザーは存在しません");
         }
     }
 }

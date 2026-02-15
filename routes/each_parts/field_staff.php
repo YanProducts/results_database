@@ -11,9 +11,10 @@ use App\Http\Controllers\FieldStaffs\WriteReportController;
 // 認証関連
 Route::prefix("field_staff")
       ->name("field_staff.")
+      ->middleware(['web'])
       ->group(function(){
           Route::controller(AuthController::class)
-          ->middleware(['web'])->group(function(){
+          ->group(function(){
           // この部分は他のファイルと同じだが、設計図自体は外注しないのがLaravel的
           // 現場担当者新規登録ページの表示
           Route::get("register","show_register")
@@ -37,17 +38,22 @@ Route::prefix("field_staff")
           //   シフトサイトからの連動
 
 
-       });
-      })
-      ->group(function(){
-        Route::controller(WriteReportController::class)
-            ->middleware(['web',"redirectUnAuth","redirectUnMatchedRole:field_staff"])
+           });
+        // 認証後の操作
+        Route::middleware(["redirectUnAuth","redirectUnMatchedRole:field_staff"])
             ->group(function(){
+                Route::controller(WriteReportController::class)
+                  ->group(function(){
                     // 報告書作成
                     Route::get("write_report","write_report")
                     ->name("write_report");
                     // 報告書提出
                     Route::post("write_report","post_write_report")
                     ->name("write_report_post");
-      });
+                });
+
+            // ログアウト(そもそも認証されていないと無理)
+            Route::get("logout",[AuthController::class,"logout"])
+            ->name("logout");
+    });
 });

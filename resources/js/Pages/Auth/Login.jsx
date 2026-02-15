@@ -22,6 +22,7 @@ export default function Login({pageNameSets}){
       {/* タイトル */}
         <InputPageHeader what={what} type="ログイン" inputWhat="下記"/>
 
+    <form onSubmit={onSubmitBtnClick}>
         {/* 投稿フォーム */}
         <FormSets FormType={"Login"} role={prefix} data={data} onUserChange={onUserChange} onPassChange={onPassChange}
         // emailと新しいパスワード系列とパスワード確認はログインでは必要ない
@@ -31,7 +32,8 @@ export default function Login({pageNameSets}){
       <ViewValidationErrors errors={errors} />
 
       {/* 提出ボタン */}
-      <BaseButton onSubmitBtnClick={onSubmitBtnClick} processing={processing}/>
+      <BaseButton processing={processing}/>
+    </form>
     </div>
     </Layout>
   )

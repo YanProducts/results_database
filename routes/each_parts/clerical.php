@@ -7,9 +7,10 @@ use App\Http\Controllers\Clerical\ExportController;
 //webミドルウェアが適用される(CSRFTokenも適用)function郡(基本全て)
 Route::prefix("clericals")
       ->name("clericals.")
+      ->middleware(['web'])
       ->group(function(){
         Route::controller(AuthController::class)
-         ->middleware(['web'])->group(function(){
+         ->group(function(){
             // この部分は他のファイルと同じだが、設計図自体は外注しないのがLaravel的
             // 事務担当新規登録ページの表示
             Route::get("register","show_register")
@@ -30,18 +31,14 @@ Route::prefix("clericals")
             Route::post("pass_change","post_pass_change")
             ->name("pass_change_post");
         });
-      })
-    ->group(function(){
         // 入力を行うページへ(認証や違う認証の場合は現場用のログインページへ)
-        Route::middleware(['web',"redirectUnAuth","redirectUnMatchedRole:clerical"])
+        Route::middleware(["redirectUnAuth","redirectUnMatchedRole:clerical"])
             ->group(function(){
                 Route::controller(WriteReportController::class)
                  ->group(function(){
                         // トップページへ(報告書入力以外に発注書作成なども考える)
                         Route::get("top_page","top_page")
                         ->name("top_page");
-
-
                         // 報告書作成(入力担当用)
                         Route::get("write_report","write_report")
                         ->name("write_report");
@@ -61,5 +58,8 @@ Route::prefix("clericals")
                         Route::get("export_purchase_order","export_purchase_order")
                         ->name("export_purchase_order");
                     });
+                // ログアウト(そもそも認証されていないと無理)
+                Route::get("logout",[AuthController::class,"logout"])
+                ->name("logout");
              });
     });

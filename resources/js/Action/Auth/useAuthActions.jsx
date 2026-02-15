@@ -36,8 +36,8 @@ export default function useAuthActions(setData,post,routeName){
 
 
   // 決定ボタンを押した時
-  const onSubmitBtnClick=()=>{
-    console.log("発火");
+  const onSubmitBtnClick=(e)=>{
+    e.preventDefault();
     // バリデーションはlaravelに任せる(遷移しないため)
        post(route(routeName));
   }

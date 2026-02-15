@@ -1,16 +1,17 @@
 //全体統括者が個々のユーザーを登録していく動き
 
 import {route} from 'ziggy-js';
-export default function useRegisterActions(setData,post,routeName){
+export default function useProvisionActions(setData,post,routeName){
+
+// ロール変化
+const onRoleChange=(e)=>{
+    setData("role",e.currentTarget.value)
+}
 
   // ユーザー名変化
   const onUserChange=(e)=>{
     // setDataはprevStateしなくとも内部でマージする
     setData("userName",e.currentTarget.value);
-  }
-  // ロール変化
-  const onRoleChange=(e)=>{
-    setData("role",e.currentTarget.value)
   }
 
   // 場所変化(不要なら使わないだけ)
