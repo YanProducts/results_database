@@ -46,8 +46,8 @@ class UserRoleResolver{
             return $carry;
         },[]);
     }
-    
-    // ルート名からモデルの名前空間を返す
+
+    // ルート名からモデルの名前空間を返す(str_containsなので、routeではなく直接の値での比較も可能)
     public static function get_model_from_route($route){
         // 全てのEnumのインスタンスを取得し、その中からroute名を含むものを抽出
         foreach(UserRole::cases() as $enum_instance){
@@ -58,5 +58,13 @@ class UserRoleResolver{
             }
         }
         throw new BusinessException("ルート名が違います");
+    }
+
+    // 引数がrole名のどれかと合致するかどうか(whole_dataの事前登録など)
+    public static function role_name_check($role_name_for_check){
+        // roleの全てのインスタンスをコレクションで返す
+        $user_role_instance_collections=collect(UserRole::cases());
+        // どれか1つでも候補と同じならtrue、そうでなければfalseを返す
+        return $user_role_instance_collections->contains(fn($instance)=>$instance->value==$role_name_for_check);
     }
 }

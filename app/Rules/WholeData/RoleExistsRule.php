@@ -2,12 +2,12 @@
 
 namespace App\Rules\WholeData;
 
+use App\Support\Auth\UserRoleResolver;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use App\Utils\Regex;
 
-// 営業所名
-class PlaceNameRule implements ValidationRule
+// 登録時にroleが存在するかのrole
+class RoleExistsRule implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -16,9 +16,7 @@ class PlaceNameRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        // 全角の文字列と数字のみ
-        if(!Regex::check_jpn_words_only($value)){
-            $fail("場所名は漢字仮名全角数字のみでお願いします");
-        }
+        // 存在していないroleならfalse
+        $fail(!UserRoleResolver::role_name_check($value));
     }
 }

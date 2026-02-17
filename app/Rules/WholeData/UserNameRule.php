@@ -4,6 +4,7 @@ namespace App\Rules\WholeData;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use App\Utils\Regex;
 
 class UserNameRule implements ValidationRule
 {
@@ -18,7 +19,7 @@ class UserNameRule implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         // 現時点では半角英数字のみとする
-        if(!preg_match("/^[A-Za-z0-9]+$/",$value)){
+        if(!Regex::check_half_wides_only($value)){
             $fail("ユーザー名は半角英数字のみでお願いします");
         }
     }

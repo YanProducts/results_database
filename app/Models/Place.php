@@ -8,6 +8,6 @@ class Place extends Model
 {
         //場所のモデル
         protected $fillable=[
-            "user_name","placeId","place_name"
+            "place_name"
         ];
 }

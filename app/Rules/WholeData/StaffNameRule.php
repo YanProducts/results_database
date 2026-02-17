@@ -4,6 +4,7 @@ namespace App\Rules\WholeData;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use App\Utils\Regex;
 
 // 日本語の文字列のみを許容
 class StaffNameRule implements ValidationRule
@@ -23,7 +24,7 @@ class StaffNameRule implements ValidationRule
 
 
         // 文字がある場合は全角の文字列と数字のみ
-        if(!preg_match("/^[\p{Hiragana}\p{Katakana}\p{Han}]+$/u",$value)){
+          if(!Regex::check_jpn_words_only($value)){
             $fail("スタッフ名は漢字仮名全角数字のみでお願いします");
         }
     }

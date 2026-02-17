@@ -4,11 +4,12 @@ namespace App\Rules\WholeData;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use App\Utils\Regex;
+use App\Models\Place;
 
-// 営業所名
-class PlaceNameRule implements ValidationRule
+class PlaceNotExistsRule implements ValidationRule
 {
+    //営業所作成の時に、その営業所が登録されている名前と同じだったらアウト
+
     /**
      * Run the validation rule.
      *
@@ -16,9 +17,11 @@ class PlaceNameRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        // 全角の文字列と数字のみ
-        if(!Regex::check_jpn_words_only($value)){
-            $fail("場所名は漢字仮名全角数字のみでお願いします");
+
+        // 登録されていたら場合はアウト
+        if(Place::where("place_name",$value)->exists()){
+            $fail("概に登録されています");
         }
+
     }
 }

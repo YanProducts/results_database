@@ -45,8 +45,8 @@ class RegisterRequest extends FormRequest
             $rules["userName"]=["required","min:2", new WholeDataAdministerNotExistsRule];
             $rules["email"]=["required","email"];
         }else{
-            // ユーザー名がauthで重ならないようにするのは統括者が登録の際に行うこと
-            $rules["userName"]=["required",new isPreAuthorizedRule];
+            // 前もって統括者がroleに登録したユーザー名かをチェック
+            $rules["userName"]=["required",new isPreAuthorizedRule($this->route()->getName())];
         }
 
         return [

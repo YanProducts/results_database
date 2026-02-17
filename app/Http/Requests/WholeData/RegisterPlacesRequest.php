@@ -3,6 +3,7 @@
 namespace App\Http\Requests\WholeData;
 
 use App\Rules\WholeData\PlaceNameRule;
+use App\Rules\WholeData\PlaceNotExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterPlacesRequest extends FormRequest
@@ -25,7 +26,8 @@ class RegisterPlacesRequest extends FormRequest
     {
         // 場所名は文字列で必須、RGBはnullableだがあれば数字で
         return [
-            "places"=>["required",new PlaceNameRule],
+            // 場所名は日本語で、すでに登録されていないかをチェック
+            "places"=>["required",new PlaceNameRule, new PlaceNotExistsRule],
             "colors.*"=>["required","numeric","min:0","max:255"],
 
         ];
@@ -33,7 +35,11 @@ class RegisterPlacesRequest extends FormRequest
     public function messages(): array
     {
         return [
-
+            "places.required"=>"場所名は必須です",
+            "colors.*.required"=>"入力できていない色があります",
+            "colors.*.numeric"=>"色の値が異常です",
+            "colors.*.max"=>"色の値が異常です",
+            "colors.*.min"=>"色の値が異常です",
         ];
     }
 }
