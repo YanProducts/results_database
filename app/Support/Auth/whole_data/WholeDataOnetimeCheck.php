@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support\Auth;
+namespace App\Support\Auth\whole_data;
 
 use App\Models\OnetimeWholeData;
 use App\Exceptions\BusinessException;
@@ -9,7 +9,8 @@ use App\Exceptions\BusinessException;
 class WholeDataOnetimeCheck{
     public static function token_check($token){
         try{
-            $onetime_whole_data=new OnetimeWholeData()->query()->firstOrFail();
+            $onetime_whole_data_model=new OnetimeWholeData;
+            $onetime_whole_data=$onetime_whole_data_model->query()->firstOrFail();
             if($onetime_whole_data->onetime_token!==$token){
                 throw new BusinessException("トークンの値が違います");
             }
