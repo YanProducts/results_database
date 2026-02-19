@@ -25,7 +25,8 @@ const onRoleChange=(e)=>{
   }
 
   // 決定ボタンを押した時
-  const onSubmitBtnClick=()=>{
+  const onSubmitBtnClick=(e)=>{
+    e.preventDefault();
     // バリデーションはlaravelに任せる(遷移しないため)
        post(route(routeName));
   }

@@ -58,7 +58,7 @@ class AuthController extends Controller
             // それぞれのトップページへ
             if(str_contains($request->route()->getName(),"whole_data")){
                 // 全般管理の場合(authがない状態で試みたページとは関係なくトップへ)
-                return redirect()->route("whole_data.select");
+                return redirect()->route("whole_data.provision");
             }else{
                 // roleがある場合はauthがない状態で保存されたページへ
                 return redirect()->intended(RedirectTopPage::redirect_top_page($request->route()->getName()));

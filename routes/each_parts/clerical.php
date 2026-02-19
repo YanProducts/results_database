@@ -5,8 +5,8 @@ use App\Http\Controllers\Clerical\WriteReportController;
 use App\Http\Controllers\Clerical\ExportController;
 
 //webミドルウェアが適用される(CSRFTokenも適用)function郡(基本全て)
-Route::prefix("clericals")
-      ->name("clericals.")
+Route::prefix("clerical")
+      ->name("clerical.")
       ->middleware(['web'])
       ->group(function(){
         Route::controller(AuthController::class)
@@ -50,10 +50,10 @@ Route::prefix("clericals")
                  ->group(function(){
                         // 報告書エクスポート確認（どれをエクスポートするか）
                         Route::get("export_report","export_report")
-                        ->name("write_report");
-                        // 報告書提出(入力担当用)
+                        ->name("export_report");
+                        // 報告書エクスポート(入力担当用)
                         Route::post("export_report","decide_export_report")
-                        ->name("write_report_post");
+                        ->name("decide_report_post");
                         // 発注書のエクスポート確認
                         Route::get("export_purchase_order","export_purchase_order")
                         ->name("export_purchase_order");

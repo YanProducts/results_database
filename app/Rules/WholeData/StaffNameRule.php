@@ -22,7 +22,6 @@ class StaffNameRule implements ValidationRule
             return;
         }
 
-
         // 文字がある場合は全角の文字列と数字のみ
           if(!Regex::check_jpn_words_only($value)){
             $fail("スタッフ名は漢字仮名全角数字のみでお願いします");

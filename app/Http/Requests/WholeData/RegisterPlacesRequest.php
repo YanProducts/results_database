@@ -25,9 +25,10 @@ class RegisterPlacesRequest extends FormRequest
     public function rules(): array
     {
         // 場所名は文字列で必須、RGBはnullableだがあれば数字で
+        // Laravel11では全角スペースもtrimしてくれる
         return [
             // 場所名は日本語で、すでに登録されていないかをチェック
-            "places"=>["required",new PlaceNameRule, new PlaceNotExistsRule],
+            "place"=>["required",new PlaceNameRule, new PlaceNotExistsRule],
             "colors.*"=>["required","numeric","min:0","max:255"],
 
         ];
@@ -35,7 +36,7 @@ class RegisterPlacesRequest extends FormRequest
     public function messages(): array
     {
         return [
-            "places.required"=>"場所名は必須です",
+            "place.required"=>"場所名は必須です",
             "colors.*.required"=>"入力できていない色があります",
             "colors.*.numeric"=>"色の値が異常です",
             "colors.*.max"=>"色の値が異常です",

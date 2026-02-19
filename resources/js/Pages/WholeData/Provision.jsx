@@ -6,11 +6,10 @@ import InputParts from "../../Components/Common/InputParts";
 import SelectParts from "../../Components/Common/SelectParts";
 import ViewValidationErrors from "../../Components/Common/ViewValidationErrors";
 import BaseButton from "../../Components/Common/BaseButton";
-import { Link } from "@inertiajs/react";
 import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 
 // 全体統括者が、個々のユーザーを登録していくページ
-export default function Provision({roleSets,what}){
+export default function Provision({roleSets,what,type}){
 
   // 定義(フォームなど)
   const { data, setData, post, processing, errors, reset}=useProvisionDefinitions();
@@ -19,11 +18,11 @@ export default function Provision({roleSets,what}){
   const {onUserChange,onRoleChange,onPlaceChange,onStaffNameChange,onSubmitBtnClick}=useProvisionActions(setData,post,"whole_data.select_post");
 
   return(
-    <Layout title="全般統括-メンバー登録-">
+    <Layout title={`${what}-${type}`}>
      <div className="h-full min-h-screen bg-lime-200">
 
     {/* タイトル */}
-    <InputPageHeader what={what} type="" inputWhat="下記"/>
+    <InputPageHeader what={what} type={type} inputWhat="下記"/>
 
     {/* 投稿フォーム */}
     <form onSubmit={onSubmitBtnClick}>
@@ -48,7 +47,11 @@ export default function Provision({roleSets,what}){
       {/* 提出ボタン */}
       <BaseButton processing={processing}/>
     </form>
-        <BaseLinkLine href="whole_data/logout"  what="ログアウト"/>
+    {/* リンク */}
+      <div className="mt-4">
+        <BaseLinkLine routeName="whole_data.register_places"  what="営業所の登録"/>
+        <BaseLinkLine routeName="whole_data.logout"  what="ログアウト"/>
+      </div>
     </div>
     </Layout>
   )

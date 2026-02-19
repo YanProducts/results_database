@@ -30,5 +30,12 @@ class Regex{
         return preg_match("/^[\p{Hiragana}\p{Katakana}\p{Han}０-９]+$/u",$value);
     }
 
+    // 全角スペースを含んでいるか
+    public static function check_zenkaku_spaces($value){
+        return preg_match("/[\x{3000}]/u",$value);
+    }
+
+
+
 
 }

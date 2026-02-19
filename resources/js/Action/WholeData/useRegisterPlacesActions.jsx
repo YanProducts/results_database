@@ -3,7 +3,6 @@
 import {route} from 'ziggy-js';
 export default function useRegisterPlacesActions(setData,post,routeName){
 
-
   // 場所変化(不要なら使わないだけ)
   const onPlaceChange=(e)=>{
     setData("place",e.currentTarget.value)
@@ -11,14 +10,19 @@ export default function useRegisterPlacesActions(setData,post,routeName){
 
  // 色の変化の変化（不要な時は使わなければ良いだけ）
   const onColorValueChange=(e)=>{
-    setData("",e.currentTarget.value)
+    setData("colors",{
+        "red":e.currentTarget.value,
+        "green":e.currentTarget.value,
+        "blue":e.currentTarget.value,
+    })
   }
 
   // 決定ボタンを押した時
-  const onSubmitBtnClick=()=>{
+  const onSubmitBtnClick=(e)=>{
+    e.preventDefault();
     // バリデーションはlaravelに任せる(遷移しないため)
-       post(route(routeName));
+    post(route(routeName));
   }
 
-  return{onUserChange,onRoleChange,onPlaceChange,onStaffNameChange,onSubmitBtnClick}
+  return{onPlaceChange,onColorValueChange,onSubmitBtnClick}
 }

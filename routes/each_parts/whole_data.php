@@ -45,11 +45,11 @@ Route::prefix("whole_data")
                 Route::controller(RegisterController::class)
                 ->group(function(){
                     // 営業所の登録ページ表示
-                    Route::get("provision","register_places")
+                    Route::get("register_places","register_places")
                     ->name("register_places");
-                    
+
                     // 営業所の登録投稿
-                    Route::post("provision","register_places_post")
+                    Route::post("register_places","register_places_post")
                     ->name("register_places_post");
 
                     // スタッフ/事務担当/営業所/営業担当/案件担当の登録(一覧)

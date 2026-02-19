@@ -61,6 +61,7 @@ class ProvisionRequest extends FormRequest
             // ユーザー名
             // 現時点では半角英数字のみ定義:今後routeによって分割させる可能性あり
             // そのroleで登録されている名前ならアウト(roleが存在しない場合は事前に弾かれている)
+            // Laravel11では全角スペースもtrimしてくれる
             "userName"=>["required","min:2","max:50",new UserNameRule,new UserNameNotExistsRule($this->input("role"))],
 
         ];
