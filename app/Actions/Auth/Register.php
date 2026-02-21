@@ -56,6 +56,7 @@ class Register{
 
                 // URLの作成(tokenを付与)
                 $url=config("app.url")."/whole_data/create_user?token=".$onetime_token;
+                Log::info($url);
 
                 // メールの送信
                 mb_send_mail($request->email,"仮登録完了","仮登録頂きありがとうございます。\nまだ本登録は完了しておりません。\n本登録を行うには、下記のURLをクリックしてください\n".$url);

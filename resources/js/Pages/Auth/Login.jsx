@@ -6,6 +6,7 @@ import InputPageHeader from "../../Components/Common/InputPageHeader";
 import FormSets from "../../Components/Part/Auth/FormSets";
 import ViewValidationErrors from "../../Components/Common/ViewValidationErrors";
 import BaseButton from "../../Components/Common/BaseButton";
+import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 
 export default function Login({pageNameSets}){
 
@@ -34,6 +35,12 @@ export default function Login({pageNameSets}){
       {/* 提出ボタン */}
       <BaseButton processing={processing}/>
     </form>
+    
+      {/* リンク */}
+      <div className="mt-4">
+        <BaseLinkLine routeName={`${prefix}.register`}  what="新規登録"/>
+      </div>
+
     </div>
     </Layout>
   )

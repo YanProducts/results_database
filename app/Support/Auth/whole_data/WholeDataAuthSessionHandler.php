@@ -9,7 +9,6 @@ class WholeDataAuthSessionHandler{
     public static function create_login_session($id){
         // sessionがあるかないかで判断。内容は何でも良いが、後々に確認などで使用することも考えidで保存
         Session::create_sessions(["whole_data_auth"=>$id]);
-
     }
     // ログインセッションの破棄
     public static function delete_login_session(){

@@ -37,7 +37,7 @@ class AuthController extends Controller
             // whole_data以外は登録されていたら本登録
             }else{
                 Register::register_user_data($role,$request);
-                return redirect()->route("view_information")->with(["information_message"=>"登録完了しました"]);
+                return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>$role.".provision","linkPageInJpn"=>"ログインページ"]);
             }
     }
 

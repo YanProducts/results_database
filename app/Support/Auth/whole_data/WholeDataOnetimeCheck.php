@@ -14,6 +14,9 @@ class WholeDataOnetimeCheck{
             if($onetime_whole_data->onetime_token!==$token){
                 throw new BusinessException("トークンの値が違います");
             }
+            // ワンタイムトークンの有効時間チェック
+
+
         }catch(\Throwable $e){
             // 外部に投げる
             throw new BusinessException("データが存在しない、もしくはアクセス権がありません");

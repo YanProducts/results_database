@@ -12,7 +12,10 @@ class NoticePageController extends Controller
     //お知らせページへ
     public function view_information(){
         return Inertia::render("Information",[
-        "message"=>session("information_message") ?? "お知らせはありません"]);
+        "message"=>session("information_message") ?? "お知らせはありません",
+        "linkRouteName"=>session("linkRouteName") ?? "top_page",
+        "linkPageInJpn"=>session("linkPageInJpn") ?? "トップページ"
+        ]);
     }
 
     // エラーページへ

@@ -5,6 +5,7 @@ import useAuthActions from "../../Action/Auth/useAuthActions";
 import FormSets from "../../Components/Part/Auth/FormSets";
 import ViewValidationErrors from "../../Components/Common/ViewValidationErrors";
 import BaseButton from "../../Components/Common/BaseButton";
+import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 import InputPageHeader from "../../Components/Common/InputPageHeader";
 
 export default function Register({pageNameSets}){
@@ -34,6 +35,10 @@ export default function Register({pageNameSets}){
       {/* 提出ボタン */}
       <BaseButton processing={processing}/>
     </form>
+    {/* リンク */}
+    <div className="mt-4">
+      <BaseLinkLine routeName={`${prefix}.register`}  what="ログイン"/>
+    </div>
 
     </div>
     </Layout>
