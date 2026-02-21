@@ -1,8 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\WholeData\RegisterController;
-use App\Http\Controllers\WholeData\SettingsController;
+use App\Http\Controllers\WholeData\SettingController;
 
 //webミドルウェアが適用される(CSRFTokenも適用)function郡(基本全て)
 Route::prefix("whole_data")
@@ -42,7 +41,7 @@ Route::prefix("whole_data")
         Route::middleware(["redirectWholeDataUnAuth"])
             ->group(function(){
                 // スタッフ/事務担当/営業所/営業担当の登録系統
-                Route::controller(RegisterController::class)
+                Route::controller(SettingController::class)
                 ->group(function(){
                     // 営業所の登録ページ表示
                     Route::get("register_places","register_places")
@@ -58,11 +57,9 @@ Route::prefix("whole_data")
                     // スタッフ/事務担当/営業所/営業担当/案件担当の登録(決定)
                     Route::post("provision","provision_post")
                     ->name("provision_post");
-                });
-                //  全般管理操作
-                Route::controller(SettingsController::class)
-                ->group(function(){
+                    // 編集
 
+                    // 削除
 
                 });
                 // ログアウト(そもそも認証されていないと無理)

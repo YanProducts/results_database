@@ -8,7 +8,7 @@ use App\Models\WholeData;
 use App\Models\OnetimeWholeData;
 use App\Exceptions\BusinessException;
 use App\Support\Auth\CheckUserInLists;
-use App\Support\Auth\WholeDataOnetimeCheck;
+use App\Support\Auth\whole_data\WholeDataOnetimeCheck;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;

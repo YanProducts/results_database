@@ -1,7 +1,7 @@
 //全体統括者が個々のユーザーを登録していく動き
 
 import {route} from 'ziggy-js';
-export default function useProvisionActions(setData,post,routeName){
+export default function useProvisionActions(setData,post){
 
 // ロール変化
 const onRoleChange=(e)=>{
@@ -28,7 +28,7 @@ const onRoleChange=(e)=>{
   const onSubmitBtnClick=(e)=>{
     e.preventDefault();
     // バリデーションはlaravelに任せる(遷移しないため)
-       post(route(routeName));
+       post(route("whole_data.provision_post",));
   }
 
   return{onUserChange,onRoleChange,onPlaceChange,onStaffNameChange,onSubmitBtnClick}

@@ -1,7 +1,7 @@
 //全体統括者が個々のユーザーを登録していく動き
 
 import {route} from 'ziggy-js';
-export default function useRegisterPlacesActions(setData,post,routeName){
+export default function useRegisterPlacesActions(setData,post){
 
   // 場所変化(不要なら使わないだけ)
   const onPlaceChange=(e)=>{
@@ -21,7 +21,7 @@ export default function useRegisterPlacesActions(setData,post,routeName){
   const onSubmitBtnClick=(e)=>{
     e.preventDefault();
     // バリデーションはlaravelに任せる(遷移しないため)
-    post(route(routeName));
+    post(route("whole_data.register_places_post"));
   }
 
   return{onPlaceChange,onColorValueChange,onSubmitBtnClick}

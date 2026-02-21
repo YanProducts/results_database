@@ -2,8 +2,7 @@ import useRegisterPlacesDefinitions from "../../Definition/WholeData/useRegister
 import useRegisterPlacesActions from "../../Action/WholeData/useRegisterPlacesActions";
 import Layout from "../../Layout/Layout";
 import InputPageHeader from "../../Components/Common/InputPageHeader";
-import InputParts from "../../Components/Common/InputParts";
-import SelectParts from "../../Components/Common/SelectParts";
+import InputParts from "../../Components/Common/InputParts";;
 import ViewValidationErrors from "../../Components/Common/ViewValidationErrors";
 import BaseButton from "../../Components/Common/BaseButton";
 import BaseLinkLine from "../../Components/Common/BaseLinkLine";
@@ -17,7 +16,7 @@ export default function RegisterPlaces({what,type}){
   console.log(errors)
 
   // 動き
-  const {onPlaceChange,onColorValueChange,onSubmitBtnClick}=useRegisterPlacesActions(setData,post,"whole_data.register_places_post");
+  const {onPlaceChange,onColorValueChange,onSubmitBtnClick}=useRegisterPlacesActions(setData,post);
 
   return(
     <Layout title={`${what}-${type}-`}>
