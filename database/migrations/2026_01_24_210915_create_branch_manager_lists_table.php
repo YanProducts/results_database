@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // 営業所長の情報
+        // 営業所担当の情報
         Schema::create('branch_manager_lists', function (Blueprint $table) {
             $table->id();
             $table->string("user_name")->unique();

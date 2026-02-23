@@ -9,7 +9,7 @@ return new class extends Migration
         /**
      * Run the migrations.
      */
-    // 仕様変更に伴い所長ログインテーブルを削除
+    // 仕様変更に伴い営業所担当ログインテーブルを削除
     // 中央で一括データ管理
     public function up(): void
     {
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::create('branch_managers', function (Blueprint $table) {
-            $table->id();        
+            $table->id();
             $table->string("user_name")->unique();
             $table->string("password");
             // ブラウザに保持させて自動ログインに使用するtoken

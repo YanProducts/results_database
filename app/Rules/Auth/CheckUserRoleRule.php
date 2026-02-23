@@ -24,8 +24,15 @@ class CheckUserRoleRule implements ValidationRule
     // ユーザー名があるroleがルートのroleとあっているかを調べる(存在有無は別のruleで定義)
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+
+
+
         // ユーザーネームのあるmodelのインスタンスを取ってくる
-        $model_instance=UserAuth::where("user_name",$value)->first();
+        $model_instance=UserAuth::where("authable_id",$value)->first();
+
+
+
+
 
         // roleの取得(UserAuthで定義)
         $role=$model_instance->role();

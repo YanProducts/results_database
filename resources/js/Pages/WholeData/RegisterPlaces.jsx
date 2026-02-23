@@ -13,8 +13,6 @@ export default function RegisterPlaces({what,type}){
   // 定義(フォームなど)
   const { data, setData, post, processing, errors, reset}=useRegisterPlacesDefinitions();
 
-  console.log(errors)
-
   // 動き
   const {onPlaceChange,onColorValueChange,onSubmitBtnClick}=useRegisterPlacesActions(setData,post);
 

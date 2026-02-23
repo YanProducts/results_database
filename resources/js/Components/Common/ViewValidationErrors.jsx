@@ -5,7 +5,7 @@ export default function ViewValidationErrors({errors}){
   }
   return(
     <div className="mb-6">
-        {Object.values(errors).map((error,index)=><div className="base_error" key={index}><p>{error}</p></div>)}
+        {Object.values(errors).map((error,index)=>error && <div className="base_error whitespace-pre-line" key={index}><p>{error}</p></div>)}
     </div>
   )
 }

@@ -18,16 +18,17 @@ class RedirectIfUnMatchedRole
 
     // 直接トップページに行こうとした際に、すでにauthは認証済みだったが、違う入り口での認証許可の可能性もあるので、その場合はそのトップページに戻すミドルウェア
 
-    public function handle(Request $request, Closure $next,$role): Response
+    // 1つ以上のroleが格納され、...は可変長変数(*配列展開のスプレッド構文ではない)で、変数を1つの配列として格納
+    public function handle(Request $request, Closure $next,...$roles): Response
     {
         // Auth::user()で現在認証中のモデルインスタンスが返る。UserAuthがAuthを継承し、そこのgetRoleAttributeでroleプロパティにアクセスできるよう設定済み
-        if(Auth::user()->role!==$role){
-            // 違う入り口の認証は遮断する必要ない。なぜならば、Auth::loginでログインできるユーザーは１人のため、ログインで更新できるから。
-
-            // 向かう先のパスにどのワードが含まれているかで、どのログインページに返すかが決まる
-            return RedirectLoginPage::redirect_login_page_func($request);
+        foreach($roles as $role)
+        if(Auth::user()->role===$role){
+            // 認証されていたらOK
+            return $next($request);
         }
 
-        return $next($request);
+        // 向かう先のパスにどのワードが含まれているかで、どのログインページに返すかが決まる
+        return RedirectLoginPage::redirect_login_page_func($request);
     }
 }

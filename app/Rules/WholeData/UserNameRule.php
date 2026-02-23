@@ -5,6 +5,7 @@ namespace App\Rules\WholeData;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use App\Utils\Regex;
+use Illuminate\Support\Facades\Log;
 
 class UserNameRule implements ValidationRule
 {

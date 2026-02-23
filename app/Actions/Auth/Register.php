@@ -66,9 +66,8 @@ class Register{
     public static function store_user_data($auth_id,$model,$user_name,$password){
             DB::transaction(function()use($auth_id,$model,$user_name,$password){
                 $data=new UserAuth();
-                $data->auth_id=$auth_id;
-                $data->auth_type=$model;
-                $data->user_name=$user_name;
+                $data->authable_id=$auth_id;
+                $data->authable_type=$model;
                 $data->password=Hash::make($password);
                 $data->save();
             });

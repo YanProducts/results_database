@@ -56,6 +56,6 @@
         @apply  font-semibold bg-white/80  active:translate-y-1  mb-3 mt-5 py-1 w-3/5 max-w-[700px] min-w-[300px] mx-auto;
       }
     .base_link_p{
-       @apply text-center cursor-pointer  font-bold border-b-2 text-blue-600 shadow-white max-w-[100px] mx-auto;
+       @apply text-center cursor-pointer font-bold  text-blue-600 shadow-white w-auto max-w-[700px] mx-auto underline underline-offset-6 pb-1;
      }
   }

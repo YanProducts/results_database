@@ -17,6 +17,8 @@ class RoleExistsRule implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         // 存在していないroleならfalse
-        $fail(!UserRoleResolver::role_name_check($value));
+        if(!UserRoleResolver::role_name_check($value)){
+            $fail("存在しない職種名です");
+        }
     }
 }

@@ -18,7 +18,7 @@ class UserNameExistsRule implements ValidationRule
         // ログイン時に登録されているかどうか
         // routeにwhole_dataと入っているときはwhole_dataに登録されているかで、別途既に弾いている
         //上記以外の場合は、Authに登録されているかどうか
-        if(!UserAuth::where("user_name",$value)->exists()){
+        if(!UserAuth::where("authable_id",$value)->exists()){
             $fail("まだ登録されていません");
         }
 

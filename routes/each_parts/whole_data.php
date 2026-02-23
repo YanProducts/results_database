@@ -1,7 +1,9 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\WholeData\SettingController;
+use App\Http\Controllers\WholeData\ProvisionController;
+use App\Http\Controllers\WholeData\SettingPlacesController;
+use App\Http\Controllers\WholeData\AdminOverviewController;
 
 //webミドルウェアが適用される(CSRFTokenも適用)function郡(基本全て)
 Route::prefix("whole_data")
@@ -41,7 +43,24 @@ Route::prefix("whole_data")
         Route::middleware(["redirectWholeDataUnAuth"])
             ->group(function(){
                 // スタッフ/事務担当/営業所/営業担当の登録系統
-                Route::controller(SettingController::class)
+                Route::controller(ProvisionController::class)
+                ->group(function(){
+                    // スタッフ/事務担当/営業所/営業担当/案件担当の登録(一覧)
+                    Route::get("provision","provision")
+                    ->name("provision");
+                    // スタッフ/事務担当/営業所/営業担当/案件担当の登録(決定)
+                    Route::post("provision","provision_post")
+                    ->name("provision_post");
+                    // ユーザーの編集(一覧ページより進む)
+                    Route::post("update_user","update_user")
+                    ->name("update_user");
+                    // ユーザーの削除(一覧ページより進む)
+                    Route::post("delete_user","delete_user")
+                    ->name("delete_user");
+
+                });
+                // 営業所登録変更系統
+                Route::controller(SettingPlacesController::class)
                 ->group(function(){
                     // 営業所の登録ページ表示
                     Route::get("register_places","register_places")
@@ -51,16 +70,19 @@ Route::prefix("whole_data")
                     Route::post("register_places","register_places_post")
                     ->name("register_places_post");
 
-                    // スタッフ/事務担当/営業所/営業担当/案件担当の登録(一覧)
-                    Route::get("provision","provision")
-                    ->name("provision");
-                    // スタッフ/事務担当/営業所/営業担当/案件担当の登録(決定)
-                    Route::post("provision","provision_post")
-                    ->name("provision_post");
-                    // 編集
+                    // 営業所の編集(一覧ページより進む)
+                    Route::post("update_place","update_place")
+                    ->name("update_place");
 
-                    // 削除
-
+                    // 営業所の削除(一覧ページより進む)
+                    Route::post("delete_place","delete_place")
+                    ->name("delete_place");
+                });
+                Route::controller(AdminOverviewController::class)
+                ->group(function(){
+                    //現在の登録状況を一覧で見る
+                    Route::get("admin_overview/{type}","admin_overview")
+                    ->name("admin_overview");
                 });
                 // ログアウト(そもそも認証されていないと無理)
                 Route::get("logout",[AuthController::class,"logout"])

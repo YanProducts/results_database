@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('places', function (Blueprint $table) {
-            //
+        Schema::table('user_auths', function (Blueprint $table) {
+            //user_authsのemailをnullableにする
+            $table->string("email")->nullable()->change();
         });
     }
 
@@ -21,8 +22,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('places', function (Blueprint $table) {
+        Schema::table('user_auths', function (Blueprint $table) {
             //
+            $table->string("email");
+
         });
     }
 };

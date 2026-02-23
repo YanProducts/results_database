@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer("authable_id");
             $table->string("password");
             $table->rememberToken();
+            // スルーされたがnullable()の文法ミス。後のmigrationで訂正
             $table->string("email")->nullable;
             $table->timestamps();
         });

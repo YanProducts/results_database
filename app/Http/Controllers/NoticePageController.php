@@ -14,7 +14,8 @@ class NoticePageController extends Controller
         return Inertia::render("Information",[
         "message"=>session("information_message") ?? "お知らせはありません",
         "linkRouteName"=>session("linkRouteName") ?? "top_page",
-        "linkPageInJpn"=>session("linkPageInJpn") ?? "トップページ"
+        "linkPageInJpn"=>session("linkPageInJpn") ?? "トップページ",
+        "routeParams"=>session("routeParams") ?? [],
         ]);
     }
 

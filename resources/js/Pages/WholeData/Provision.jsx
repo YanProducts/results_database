@@ -9,10 +9,10 @@ import BaseButton from "../../Components/Common/BaseButton";
 import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 
 // 全体統括者が、個々のユーザーを登録していくページ
-export default function Provision({roleSets,placeSets,what,type}){
+export default function Provision({roleSets,placeSets,nonPlaceAlert,what,type}){
 
   // 定義(フォームなど)
-  const { data, setData, post, processing, errors, reset}=useProvisionDefinitions();
+  const { data, setData, post, processing, errors, reset}=useProvisionDefinitions(nonPlaceAlert);
 
   // 動き
   const {onUserChange,onRoleChange,onPlaceChange,onStaffNameChange,onSubmitBtnClick}=useProvisionActions(setData,post);
@@ -36,7 +36,7 @@ export default function Provision({roleSets,placeSets,what,type}){
 
                 {/* 営業所(roleがvisibleのものであれば) */}
                 {["branch_manager","field_staff"].includes(data.role) &&
-                <SelectParts name="places" value={data.place} onChange={onPlaceChange} prefix={"営業所："} keyValueSets={placeSets} allowEmptyOption={true}/>}
+                <SelectParts name="places" value={data.place} onChange={onPlaceChange} prefix={"営業所："} keyValueSets={placeSets} allowEmptyOption={false}/>}
 
                 {/* スタッフ名(roleがvisibleのものであれば) */}
                 {data.role=="field_staff" &&

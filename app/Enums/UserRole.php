@@ -21,7 +21,7 @@ enum UserRole : string{
             self::FieldStaff->value=>"現場担当",
             self::Clerical->value=>"入力担当",
             self::ProjectOperator->value=>"案件担当",
-            self::BranchManager->value=>"営業所長",
+            self::BranchManager->value=>"営業所担当",
             // whole_dataは特別なので以下で設定済み
             default=>"不明"
         };
@@ -32,10 +32,10 @@ enum UserRole : string{
     public static function top_page_route_name($curerent_route_name){
         // トップページの文字列を返す(将来的にパターンが増えたことを考慮して、現時点ではtop_pageが多いがベタ打ちにする)
         return match(true){
-            str_contains($curerent_route_name,self::FieldStaff->value)=>"write_report",
-            str_contains($curerent_route_name,self::Clerical->value)=>"top_page",
-            str_contains($curerent_route_name,self::ProjectOperator->value)=>"action_select",
-            str_contains($curerent_route_name,self::BranchManager->value)=>"top_page",
+            str_contains($curerent_route_name,self::FieldStaff->value)=>"field_staff.write_report",
+            str_contains($curerent_route_name,self::Clerical->value)=>"clerical.top_page",
+            str_contains($curerent_route_name,self::ProjectOperator->value)=>"project_operator.action_select",
+            str_contains($curerent_route_name,self::BranchManager->value)=>"branch_manager.top_page",
         };
     }
 

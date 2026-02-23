@@ -3,6 +3,7 @@
 namespace App\Support\Auth;
 use App\Enums\UserRole;
 use App\Exceptions\BusinessException;
+use App\Models\Place;
 
 //UserRoleのEnumから実際に使用する部分を取得する
 class UserRoleResolver{
@@ -40,14 +41,21 @@ class UserRoleResolver{
     }
      // 全Enumを英語=>日本語の配列で返す
     public static function get_all_values(){
-    return array_reduce(UserRole::cases(),function($carry,$role){
-            $eng=$role->value;
-            $carry[$eng]=UserRole::get_jpn_description($eng);
-            return $carry;
-        },[]);
+        return array_reduce(UserRole::cases(),function($carry,$role){
+                //営業所が1件でも登録されていなければ、営業所担当と現場担当は取得しない
+                if(!Place::exists()){
+                    if(in_array($role->value,["branch_manager","field_staff"])){
+                        return $carry;
+                    }
+                }
+                // 上記条件を除いた上で、配列に追加
+                $eng=$role->value;
+                $carry[$eng]=UserRole::get_jpn_description($eng);
+                return $carry;
+            },[]);
     }
 
-    // ルート名からモデルの名前空間を返す(str_containsなので、routeではなく直接の値での比較も可能)
+    // ルート名からモデルの名前空間を返す(str_containsなので、routeではなく直接のrole値での比較も可能)
     public static function get_model_from_route($route){
         // 全てのEnumのインスタンスを取得し、その中からroute名を含むものを抽出
         foreach(UserRole::cases() as $enum_instance){

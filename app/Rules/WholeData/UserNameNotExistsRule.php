@@ -5,6 +5,7 @@ namespace App\Rules\WholeData;
 use App\Support\Auth\UserRoleResolver;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Facades\Log;
 
 // 統括者による事前登録の際に、ユーザー名がすでに作成されているものなら除外
 // そのロールのもので行う
@@ -27,7 +28,9 @@ class UserNameNotExistsRule implements ValidationRule
         $model_instance=UserRoleResolver::get_model_from_route($this->role);
 
         // そのモデルにすでにユーザー名が含まれていたらアウト
-        $fail($model_instance::where("user_name",$value)->exists());
+        if($model_instance::where("user_name",$value)->exists()){
+            $fail("既に同名のユーザーが存在します");
+        }
 
     }
 }
