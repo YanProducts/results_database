@@ -2,7 +2,12 @@
 // use~的な定義がないからファイル名にuseは不要だが、inertia系列の操作も行うので、わかりやすさのためにつける
 
 import {route} from 'ziggy-js';
-export default function useAuthActions(setData,post,routeName){
+export default function useAuthActions(setData,post,routeName,color,setAuthBackColor){
+
+ // 背景色の設定
+ React.useEffect(()=>{
+   setAuthBackColor(color);
+ },[color])
 
   // ユーザー名変化
   const onUserChange=(e)=>{

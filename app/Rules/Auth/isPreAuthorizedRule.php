@@ -26,7 +26,7 @@ class isPreAuthorizedRule implements ValidationRule
         $model_name=UserRoleResolver::get_model_from_route($this->route_name);
         //登録されているかを調べる
         if(!$model_name::where("user_name",$value)->exists()){
-            $fail("登録されていないユーザー名です");
+            $fail("まだ事前登録されておりません\n統括者に連絡してください");
         }
     }
 }

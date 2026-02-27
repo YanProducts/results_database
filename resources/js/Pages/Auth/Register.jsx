@@ -11,7 +11,7 @@ import InputPageHeader from "../../Components/Common/InputPageHeader";
 export default function Register({pageNameSets}){
 
   // 定義(フォームなど)
-  const { data, setData, post, processing, errors, reset,prefix,what}=useAuthDefinitions(pageNameSets);
+  const { data, setData, post, processing, errors, reset,prefix,what,authBackColor,setAuthBackColor}=useAuthDefinitions(pageNameSets);
 
   // 動き
   const {onUserChange,onPassChange,onPassConfirmChange,onEmailChange,onNewPassChange,onNewPassConfirmChange,onSubmitBtnClick}=useAuthActions(setData,post,prefix + ".register_post");

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\ProjectOperator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class UpdateController extends Controller
+class ProjectManagementController extends Controller
 {
     //
 }

@@ -11,7 +11,7 @@ import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 export default function Login({pageNameSets}){
 
   // 定義(フォームなど)
-  const { data, setData, post, processing, errors, reset, prefix,what}=useAuthDefinitions(pageNameSets);
+  const { data, setData, post, processing, errors, reset, prefix,what,authBackColor,setAuthBackColor}=useAuthDefinitions(pageNameSets);
 
  // 動き
  const {onUserChange,onPassChange,onPassConfirmChange,onEmailChange,onNewPassChange,onNewPassConfirmChange,onSubmitBtnClick}=useAuthActions(setData,post, prefix + ".login_post");
@@ -35,7 +35,7 @@ export default function Login({pageNameSets}){
       {/* 提出ボタン */}
       <BaseButton processing={processing}/>
     </form>
-    
+
       {/* リンク */}
       <div className="mt-4">
         <BaseLinkLine routeName={`${prefix}.register`}  what="新規登録"/>

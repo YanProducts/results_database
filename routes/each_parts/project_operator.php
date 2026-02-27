@@ -5,7 +5,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 // 案件担当者のできること一覧のコントローラー
-use App\Http\Controllers\ProjectOperator\ActionSelectController;
+use App\Http\Controllers\ProjectOperator\ProjectDispatchController;
+use App\Http\Controllers\ProjectOperator\ProjectManagementController;
 
 //webミドルウェアが適用される(CSRFTokenも適用)function郡(基本全て)
 Route::prefix("project_operator")
@@ -36,14 +37,25 @@ Route::prefix("project_operator")
           });
           Route::middleware(["redirectUnAuth","redirectUnMatchedRole:project_operator"])
           ->group(function(){
-              Route::controller(ActionSelectController::class)
+            // 案件自体の登録や確認や削除などのコントローラー
+            Route::controller(ProjectManagementController::class)
+            ->group(function(){
+
+            });
+          })
+          ->group(function(){
+            //   営業所に案件を振ったり確認したいする時のコントローラー
+              Route::controller(ProjectDispatchController::class)
               ->group(function(){
-                  //   案件をどう操作するかのリスト
-                  Route::get("action_select","action_select")
-                  ->name("action_select");
-                  //   案件をどう操作するかの決定
-                  Route::post("action_select","action_select")
-                  ->name("action_select_post");
+                  //   案件を振る選択画面へ
+                  Route::get("dispatch_project","dispatch_project")
+                  ->name("dispatch_project");
+                  //   案件の決定
+                  Route::post("dispatch_project","dispatch_project_post")
+                  ->name("dispatch_project_post");
+                  //   現在降った案件の確認
+                  Route::get("project_overview","project_overview")
+                  ->name("project_overview");
 
               });
                 // ログアウト(そもそも認証されていないと無理)

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Support\Auth\RedirectLoginPage;
+use Illuminate\Support\Facades\Log;
 
 class RedirectIfUnMatchedRole
 {
@@ -21,6 +22,7 @@ class RedirectIfUnMatchedRole
     // 1つ以上のroleが格納され、...は可変長変数(*配列展開のスプレッド構文ではない)で、変数を1つの配列として格納
     public function handle(Request $request, Closure $next,...$roles): Response
     {
+
         // Auth::user()で現在認証中のモデルインスタンスが返る。UserAuthがAuthを継承し、そこのgetRoleAttributeでroleプロパティにアクセスできるよう設定済み
         foreach($roles as $role)
         if(Auth::user()->role===$role){

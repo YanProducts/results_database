@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Rules\Auth\CheckUserRoleRule;
+use App\Rules\Auth\isPreAuthorizedRule;
 use App\Rules\Auth\UserNameExistsRule;
 use App\Rules\Auth\WholeDataAdministerExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -31,8 +31,9 @@ class LoginRequest extends FormRequest
             // 統括ユーザーが存在するか
             $rule["userName"]=["required",new WholeDataAdministerExistsRule];
         }else{
-            // ユーザー名が存在するか、ユーザー名はroleのユーザーか
-            $rule["userName"]=["required",new UserNameExistsRule,new CheckUserRoleRule($route)];
+            // そのrouteのroleにユーザーは存在するか
+            // bailをつけるとエラーが生じたところで止まり、次のエラーは検証されない(usernameexists内でisPreAuthroizedを再検証せずに済む)
+            $rule["userName"]=["bail","required",new isPreAuthorizedRule($route),new UserNameExistsRule($route)];
         }
 
         return [

@@ -3,7 +3,10 @@ import { useForm } from "@inertiajs/react";
 export default function useAuthDefinitions(pageNameSets){
 
   // 連想配列のキーと連動して値の格納
-  const {prefix,what}=pageNameSets;
+  const {prefix,what,color}=pageNameSets;
+
+ // 背景色(prefixから,セットはActionsで行う)
+ const {authBackColor,setAuthBackColor}=React.useState("bg-white");
 
   // フォーム
   const { data, setData, post, processing, errors, reset}=useForm({
@@ -16,5 +19,5 @@ export default function useAuthDefinitions(pageNameSets){
     newPassWord_confirmation:"",
   });
 
-  return { data, setData, post, processing, errors, reset,prefix,what}
+  return { data, setData, post, processing, errors, reset,prefix,what,authBackColor,setAuthBackColor}
 }

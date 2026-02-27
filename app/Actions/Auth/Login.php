@@ -65,7 +65,7 @@ class Login{
         $user_id=self::get_id_from_auth_data($model_name,$user_name) ?? throw new BusinessException("該当ユーザーが見つかりません");
 
         return FacadesAuth::attempt([
-            "authorized_id" => $user_id,
+            "authable_id" => $user_id,
             "password"  => $password
         ]);
 
