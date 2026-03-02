@@ -1,6 +1,7 @@
 import useRegisterPlacesDefinitions from "../../Definition/WholeData/useRegisterPlacesDefinitions";
 import useRegisterPlacesActions from "../../Action/WholeData/useRegisterPlacesActions";
 import Layout from "../../Layout/Layout";
+import { RoleLayout } from "../../Layout/RoleLayout";
 import InputPageHeader from "../../Components/Common/InputPageHeader";
 import InputParts from "../../Components/Common/InputParts";;
 import ViewValidationErrors from "../../Components/Common/ViewValidationErrors";
@@ -18,7 +19,7 @@ export default function RegisterPlaces({what,type}){
 
   return(
     <Layout title={`${what}-${type}-`}>
-     <div className="h-full min-h-screen bg-lime-200">
+        <RoleLayout prefix={prefix}>
 
     {/* タイトル */}
     <InputPageHeader what={what} type={type} inputWhat="下記"/>
@@ -45,7 +46,7 @@ export default function RegisterPlaces({what,type}){
       <div className="mt-4">
         <BaseLinkLine routeName="whole_data.logout"  what="ログアウト"/>
       </div>
-    </div>
+    </RoleLayout>
     </Layout>
   )
 }

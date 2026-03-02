@@ -1,48 +1,54 @@
 import Layout from "../../../Layout/Layout";
+import { RoleLayout } from "../../../Layout/RoleLayout";
 import InputPageHeader from "../../../Components/Common/InputPageHeader";
+import SelectParts from "../../../Components/Common/SelectParts";
 import ViewValidationErrors from "../../../Components/Common/ViewValidationErrors";
 import BaseButton from "../../../Components/Common/BaseButton";
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
-import useSendProjectDefinitions from "../../../Action/ProjectOperator/useSendProjectActions";
+import useSendProjectDefinitions from "../../../Definition/ProjectOperator/useSendProjectDefinitions";
 import useSendProjectActions from "../../../Action/ProjectOperator/useSendProjectActions";
+import DoubleSelectParts from "../../../Components/Common/DoubleSelectParts";
+import InputFiles from "../../../Components/Common/InputFiles";
 
 // 案件を営業所担当に送信
-export default function SendProjectToBranch({placeSets,nonPlaceAlert,what,type}){
+export default function SendProjectToBranch({prefix,what,type,startDateLists,endDateLists,placeSets}){
+
 
   // 定義(フォームなど)
   const { data, setData, post, processing, errors, reset}=useSendProjectDefinitions();
 
   // 動き
-  const {onPlaceChange,onSubmitBtnClick}=useSendProjectActions();
+  const {onStartDateChange,onEndDateChange,onPlaceChange,onFileChange,onFileDeleteClick,onSubmitBtnClick}=useSendProjectActions(data,setData);
 
   return(
     <Layout title={`${what}-${type}`}>
-     <div className="h-full min-h-screen bg-lime-200">
+        <RoleLayout prefix={prefix}>
 
-    {/* タイトル */}
-    <InputPageHeader what={what} type={type} inputWhat="下記"/>
 
     {/* 投稿フォーム */}
     <form onSubmit={onSubmitBtnClick}>
-             <div className="base_frame min-w-80 max-w-100 base_backColor md:p-3 sm:p-2 p-0 border-2 border-black rounded-sm mb-5">
+            {/* 選択項目 */}
+            <InputPageHeader what={what} type={type} specialMessage="以下を選択してください"/>
 
-                {/* 案件名 */}
-                {/* 連続したInputの箱を作成する */}
-                {/* 順番を間違えないようにすること */}
-                {/* 英語２文字ー数字の形式を厳守 */}
-                {/* <InputParts type="text" name="projectName" value="" onChange="" prefix="案件名："/> */}
+             <div className="base_frame min-w-110 max-w-160 base_backColor p-0 border-2 border-black rounded-sm mb-5">
 
-                {/* 期限 */}
-                {/* 2つのselectboxを作成する */}
-                {/* <SelectParts name="places" value={data.place} onChange={onPlaceChange} prefix={"期限："} keyValueSets={placeSets} allowEmptyOption={false}/> */}
+            {/* 期限 */}
+            {/* 2つのselectboxを作成する(~50日後まで) */}
+            {/* 現段階ではファイルから変換 */}
+            {/* <DoubleSelectParts name1="startDate" name2="endDate" value1={data.startDate} value2={data.endDate} onChange1={onStartDateChange} onChange2={onEndDateChange} prefix={"期限："} keyValueSets1={startDateLists} keyValueSets2={endDateLists} /> */}
 
-                {/* 町名(textareaを設定して貼り付ける形にする) */}
-                {/* {data.role=="field_staff" &&
-                <InputParts type="text" name="staffName" value={data.staffName} onChange={onStaffNameChange} prefix={"スタッフ名："}/>} */}
+            {/* 営業所名 */}
+            <SelectParts name="place" value={data.place} onChange={onPlaceChange} prefix={"営業所名："} keyValueSets={placeSets} allowEmptyOption={false}/>
 
-                {/* 併配リスト(textareaを設定して○✖️を貼り付ける形にする) */}
+            {/* ファイル */}
+            <InputFiles name="fileSets"
+            onChange={onFileChange} prefix="案件CSV(複数可)："
+            attributes={{multiple:true}}
+            data={data}
+            onFileDeleteClick={onFileDeleteClick}
+            />
 
-              </div>
+            </div>
 
       {/* バリデーションエラー */}
       <ViewValidationErrors errors={errors} />
@@ -54,7 +60,7 @@ export default function SendProjectToBranch({placeSets,nonPlaceAlert,what,type})
       <div className="mt-4">
         <BaseLinkLine routeName="whole_data.logout"  what="ログアウト"/>
       </div>
-    </div>
+    </RoleLayout>
     </Layout>
   )
 }

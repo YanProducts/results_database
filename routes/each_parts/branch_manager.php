@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BranchManager\ProjectHandingController;
 use App\Http\Controllers\BranchManager\ProjectRecordController;
 use App\Http\Controllers\BranchManager\StaffAssignmentController;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 //webミドルウェアが適用される(CSRFTokenも適用)function郡(基本全て)
@@ -39,10 +40,10 @@ Route::prefix("branch_manager")
             Route::controller(StaffAssignmentController::class)
             ->group(function(){
                   // 担当/案件/町目/日付の割り当てのトップへ
-                  Route::get("assignment","assign_staff")
+                  Route::get("assign_staff","assign_staff")
                   ->name("assign_staff");
                   // 担当/案件/町目/日付の割り当ての決定
-                  Route::post("assignment","assignment_post")
+                  Route::post("assign_staff","assign_staff_post")
                   ->name("assign_staff_post");
             });
             // 案件を自分で登録する系統

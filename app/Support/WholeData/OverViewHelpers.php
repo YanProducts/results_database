@@ -47,9 +47,9 @@ class OverViewHelpers{
     // どのタイプかの日本語名(ページタイトルに使用)
     public static function get_page_type_name($type){
         return match($type){
-            "all"=>"すべて",
-            "user"=>"ユーザー",
-            "place"=>"営業所",
+            "all"=>"登録確認",
+            "user"=>"登録確認(ユーザー)",
+            "place"=>"登録確認(営業所)",
              default=>""
         };
     }

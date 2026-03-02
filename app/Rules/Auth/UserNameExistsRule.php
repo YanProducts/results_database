@@ -32,7 +32,7 @@ class UserNameExistsRule implements ValidationRule
         $model_namespace=UserRoleResolver::get_model_from_route($this->route_name);
 
         // roleに登録されているユーザーid(事前登録は検証済)
-        $id=Login::get_id_from_auth_data($model_namespace,$value);
+        $id=Login::get_id_in_role_table($model_namespace,$value);
 
         // ユーザー自身が新規登録を行なったか
         if(!UserAuth::where("authable_id",$id)->exists()){

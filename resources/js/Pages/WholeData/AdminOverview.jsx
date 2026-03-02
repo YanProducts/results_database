@@ -3,9 +3,10 @@ import useAdminOverviewActions from "../../Action/WholeData/useAdminOverviewActi
 import Layout from "../../Layout/Layout";
 import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 import BaseTable from "../../Components/Common/BaseTable";
+import { RoleLayout } from "../../Layout/RoleLayout";
 
 // 全体統括者が、個々のユーザーを登録していくページ
-export default function AdminOverview({what,type,userDataSets,userKeyInJpn,placeDataSets,placeKeyInJpn}){
+export default function AdminOverview({what,type,prefix,userDataSets,userKeyInJpn,placeDataSets,placeKeyInJpn}){
 
   // 定義(変更/削除のフォームなど)
   const { data, setData, post, processing, errors, reset}=useAdminOverviewDefinitions();
@@ -15,11 +16,9 @@ export default function AdminOverview({what,type,userDataSets,userKeyInJpn,place
 
   return(
     <Layout title={`${what}-${type}`}>
-     <div className="h-full min-h-screen bg-lime-200">
-
+        <RoleLayout prefix={prefix}>
         <p>　</p>
-
-        <h1 className="base_h base_h1 min-w-100">全般統括-確認({type})-</h1>
+        <h1 className="base_h base_h1 min-w-100">全般統括-{type}-</h1>
 
         {/* ユーザーのテーブル */}
         {type!=="営業所" &&
@@ -41,7 +40,7 @@ export default function AdminOverview({what,type,userDataSets,userKeyInJpn,place
         <BaseLinkLine routeName="whole_data.provision"  what="ユーザーの事前登録"/>
         <BaseLinkLine routeName="whole_data.logout"  what="ログアウト"/>
       </div>
-    </div>
+     </RoleLayout>
     </Layout>
   )
 }

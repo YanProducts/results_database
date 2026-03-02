@@ -1,6 +1,6 @@
 // スタッフの登録ページ
 import Layout from "../../Layout/Layout";
-import useAuthDefinitions from "../../Definition/Common/Auth/useAuthDefinitions";
+import useAuthDefinitions from "../../Definition/Auth/useAuthDefinitions";
 import useAuthActions from "../../Action/Auth/useAuthActions";
 import FormSets from "../../Components/Part/Auth/FormSets";
 import ViewValidationErrors from "../../Components/Common/ViewValidationErrors";
@@ -11,14 +11,14 @@ import InputPageHeader from "../../Components/Common/InputPageHeader";
 export default function Register({pageNameSets}){
 
   // 定義(フォームなど)
-  const { data, setData, post, processing, errors, reset,prefix,what,authBackColor,setAuthBackColor}=useAuthDefinitions(pageNameSets);
+  const { data, setData, post, processing, errors, reset, prefix, what, backColor}=useAuthDefinitions(pageNameSets);
 
   // 動き
-  const {onUserChange,onPassChange,onPassConfirmChange,onEmailChange,onNewPassChange,onNewPassConfirmChange,onSubmitBtnClick}=useAuthActions(setData,post,prefix + ".register_post");
+  const {onUserChange,onPassChange,onPassConfirmChange,onEmailChange,onNewPassChange,onNewPassConfirmChange,onSubmitBtnClick}=useAuthActions(prefix,setData,post,prefix + ".register_post");
 
   return(
     <Layout title={`${what}新規登録`}>
-     <div className="h-full min-h-screen bg-sky-300">
+     <div className={`h-full min-h-screen ${backColor}`}>
 
     {/* タイトル */}
     <InputPageHeader what={what} type="新規登録" inputWhat="下記"/>

@@ -13,6 +13,7 @@ use App\Actions\Auth\Register;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Support\Auth\RedirectTopPage;
 use App\Exceptions\BusinessException;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -60,7 +61,6 @@ class AuthController extends Controller
                 // 全般管理の場合(authがない状態で試みたページとは関係なくトップへ)
                 return redirect()->route("whole_data.provision");
             }else{
-
 
                 // roleがある場合はauthがない状態で保存されたページへ
 

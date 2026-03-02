@@ -1,7 +1,7 @@
 // パスワードの変更
 // ユーザー名は会社側でしか変更しない
 
-import useAuthDefinitions from "../../Definition/Common/Auth/useAuthDefinitions";
+import useAuthDefinitions from "../../Definition/Auth/useAuthDefinitions";
 import useAuthActions from "../../Action/Auth/useAuthActions";
 import Layout from "../../Layout/Layout";
 import FormSets from "../../Components/Part/Auth/FormSets";
@@ -11,14 +11,14 @@ import InputPageHeader from "../../Components/Common/InputPageHeader";
 
 export function PassChange({pageNameSets}){
  // 定義(フォームなど)
-  const { data, setData, post, processing, errors, reset,prefix,what,authBackColor,setAuthBackColor}=useAuthDefinitions(pageNameSets);
+  const { data, setData, post, processing, errors, reset, prefix, what, backColor}=useAuthDefinitions(pageNameSets);
 
  // 動き
- const {onUserChange,onPassChange,onPassConfirmChange,onEmailChange,onNewPassChange,onNewPassConfirmChange,onSubmitBtnClick}=useAuthActions(setData,post, prefix + ".pass_change_post");
+ const {onUserChange,onPassChange,onPassConfirmChange,onEmailChange,onNewPassChange,onNewPassConfirmChange,onSubmitBtnClick}=useAuthActions(prefix,setData,post, prefix + ".pass_change_post");
 
   return(
     <Layout title={`${what}パスワード変更`}>
-     <div className="h-full min-h-screen bg-sky-300">
+     <div className={`h-full min-h-screen ${backColor}`}>
 
         {/* タイトル */}
         <InputPageHeader what={what} type="パスワード変更" inputWhat="下記"/>

@@ -1,12 +1,13 @@
 import { useForm } from "@inertiajs/react";
+import { setBackColor } from "../../Support/Role/setBackColor";
 
 export default function useAuthDefinitions(pageNameSets){
 
   // 連想配列のキーと連動して値の格納
-  const {prefix,what,color}=pageNameSets;
+  const {prefix,what}=pageNameSets;
 
- // 背景色(prefixから,セットはActionsで行う)
- const {authBackColor,setAuthBackColor}=React.useState("bg-white");
+ //   背景色の設定
+ const backColor=setBackColor(prefix);
 
   // フォーム
   const { data, setData, post, processing, errors, reset}=useForm({
@@ -19,5 +20,5 @@ export default function useAuthDefinitions(pageNameSets){
     newPassWord_confirmation:"",
   });
 
-  return { data, setData, post, processing, errors, reset,prefix,what,authBackColor,setAuthBackColor}
+  return { data, setData, post, processing, errors, reset, prefix, what, backColor}
 }

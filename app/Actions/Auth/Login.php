@@ -4,11 +4,13 @@
 namespace App\Actions\Auth;
 
 use App\Exceptions\BusinessException;
+use App\Models\UserAuth;
 use App\Models\WholeData;
 use App\Support\Auth\UserRoleResolver;
 use App\Support\Auth\whole_data\WholeDataAuthSessionHandler;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class Login{
 
@@ -61,11 +63,13 @@ class Login{
         try{
         // roleモデルの取得(なければ内部でエラーに)
         $model_name=UserRoleResolver::get_model_from_route($route);
-        // そのモデルから該当ユーザー名のidを返却
-        $user_id=self::get_id_from_auth_data($model_name,$user_name) ?? throw new BusinessException("該当ユーザーが見つかりません");
+
+
+        // そのモデルから該当ユーザー名のuserauthsでのidを取得
+        $user_id=self::get_id_in_userauths_table($model_name,$user_name) ?? throw new BusinessException("該当ユーザーが見つかりません");
 
         return FacadesAuth::attempt([
-            "authable_id" => $user_id,
+            "id" => $user_id,
             "password"  => $password
         ]);
 
@@ -75,13 +79,27 @@ class Login{
         }
     }
 
-
-    // roleのid取得
-    public static function get_id_from_auth_data($model_name,$user_name){
-        // そのモデルのインスタンスの取得
+    // そのroleのtableの内部でのidの取得
+    public static function get_id_in_role_table($model_name,$user_name){
+       // そのモデルのインスタンスの取得
         $model_instance=new $model_name();
-        // ユーザー名からidを取得
-        return $model_instance->where("user_name",$user_name)->value("id");
+        // ユーザー名から、authable_idを取得
+         return $model_instance->where("user_name",$user_name)->value("id");
+    }
+
+
+
+    // userAuthのid取得
+    public static function get_id_in_userauths_table($model_name,$user_name){
+
+        $authable_id=self::get_id_in_role_table($model_name,$user_name);
+
+        // ユーザー名とモデル名がデータに入っているもののの、id名を返す
+        return UserAuth::where([
+            ["authable_id","=",$authable_id],
+            ["authable_type","=",$model_name]
+        ])->value("id");
+
     }
 
 

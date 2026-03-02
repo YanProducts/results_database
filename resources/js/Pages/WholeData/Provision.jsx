@@ -1,6 +1,7 @@
 import useProvisionDefinitions from "../../Definition/WholeData/useProvisionDefinitions";
 import useProvisionActions from "../../Action/WholeData/useProvisionActions";
 import Layout from "../../Layout/Layout";
+import { RoleLayout } from "../../Layout/RoleLayout";
 import InputPageHeader from "../../Components/Common/InputPageHeader";
 import InputParts from "../../Components/Common/InputParts";
 import SelectParts from "../../Components/Common/SelectParts";
@@ -9,7 +10,7 @@ import BaseButton from "../../Components/Common/BaseButton";
 import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 
 // 全体統括者が、個々のユーザーを登録していくページ
-export default function Provision({roleSets,placeSets,nonPlaceAlert,what,type}){
+export default function Provision({roleSets,placeSets,nonPlaceAlert,prefix,what,type}){
 
   // 定義(フォームなど)
   const { data, setData, post, processing, errors, reset}=useProvisionDefinitions(nonPlaceAlert);
@@ -19,7 +20,7 @@ export default function Provision({roleSets,placeSets,nonPlaceAlert,what,type}){
 
   return(
     <Layout title={`${what}-${type}`}>
-     <div className="h-full min-h-screen bg-lime-200">
+        <RoleLayout prefix={prefix}>
 
     {/* タイトル */}
     <InputPageHeader what={what} type={type} inputWhat="下記"/>
@@ -55,7 +56,7 @@ export default function Provision({roleSets,placeSets,nonPlaceAlert,what,type}){
         <BaseLinkLine routeName="whole_data.register_places"  what="営業所の登録"/>
         <BaseLinkLine routeName="whole_data.logout"  what="ログアウト"/>
       </div>
-    </div>
+    </RoleLayout>
     </Layout>
   )
 }

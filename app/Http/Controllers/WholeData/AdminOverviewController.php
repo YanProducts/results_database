@@ -18,8 +18,6 @@ class AdminOverviewController extends Controller
 
         // レンダリング
         return Inertia::render("WholeData/AdminOverview",[
-            // テーマ(なくても良いが仕様を合わせるため)
-            "what"=>"登録状況確認",
             // ユーザーか場所か両方か
             "type"=>OverViewHelpers::get_page_type_name($type),
             // ユーザーの一覧

@@ -3,6 +3,7 @@ namespace App\Actions\WholeData;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Place;
+use App\Support\Common\PlaceHelpers;
 
 //営業所の登録と取り出し
 class Places{
@@ -19,8 +20,4 @@ class Places{
         });
     }
 
-    // id=>営業所名の配列で取り出し
-    public static function get_registered_places(){
-      return Place::pluck('place_name', 'id');
-    }
 }

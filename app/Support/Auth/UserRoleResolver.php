@@ -4,15 +4,13 @@ namespace App\Support\Auth;
 use App\Enums\UserRole;
 use App\Exceptions\BusinessException;
 use App\Models\Place;
+use Illuminate\Support\Facades\Log;
 
 //UserRoleのEnumから実際に使用する部分を取得する
 class UserRoleResolver{
 
-    // どのauthページかを返す
-    public static function get_auth_page_type($request){
-
-        // ルートの名前
-        $route_name=$request->route()->getName();
+    // ページのprefixとタイトルを返す
+    public static function get_page_name_sets($route_name){
 
         //全般データなら、whole_dataを返す
         if(str_contains($route_name,"whole_data")){
@@ -35,9 +33,51 @@ class UserRoleResolver{
             ];
             }
         }
+
+        return null;
+
+    }
+
+
+
+    // どのauthページかを返す(abortつき)
+    public static function get_auth_page_type($request){
+
+        // ルートの名前
+        $route_name=$request->route()->getName();
+
+        $page_name_sets=self::get_page_name_sets($route_name);
+
+        if(empty($page_name_sets)){
+            abort(404);
+        }
+
+        return $page_name_sets;
+
+        // //全般データなら、whole_dataを返す
+        // if(str_contains($route_name,"whole_data")){
+        //     return
+        //     [
+        //         "prefix"=>"whole_data",
+        //         "what"=>"全体統括"
+        //     ];
+        // }
+
+        // // それ以外ならそのぺーじを返す
+        // foreach(UserRole::cases() as $role){
+        //     if(str_contains($route_name,$role->value)){
+        //     $value=$role->value;
+        //     $jpn_word=UserRole::get_jpn_description($value);
+        //     // 日本語=>英語の配列で返す
+        //     return [
+        //         "prefix"=>$value,
+        //         "what"=>$jpn_word
+        //     ];
+        //     }
+        // }
             // 上記以外の場合、ページが見つからない例外を投げる
             // 定義のところでも拾ってくれる
-            abort(404);
+                // abort(404);
     }
      // 全Enumを英語=>日本語の配列で返す
     public static function get_all_values(){

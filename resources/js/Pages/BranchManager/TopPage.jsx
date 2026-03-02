@@ -1,6 +1,7 @@
 import Layout from "../../../Layout/Layout";
 ;
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
+import { RoleLayout } from "../../Layout/RoleLayout";
 
 // 営業所担当のトップページ
 export default function TopPage({what,type}){
@@ -8,7 +9,7 @@ export default function TopPage({what,type}){
 
   return(
     <Layout title={`${what}-${type}`}>
-     <div className="h-full min-h-screen bg-orange-200">
+     <RoleLayout prefix={prefix}>
 
       <h1 className="base_h base_h1 min-w-100">{what}-{type}-</h1>
 
@@ -25,8 +26,8 @@ export default function TopPage({what,type}){
       <div className="mt-4">
         <BaseLinkLine routeName="whole_data.logout"  what="ログアウト"/>
       </div>
-    </div>
-    </Layout>
+    </RoleLayout>
+   </Layout>
   )
 }
 

@@ -11,10 +11,7 @@ class SettingPlacesController extends Controller
 {
     // 営業所の登録ページへ
     public function register_places(){
-        return Inertia::render("WholeData/RegisterPlaces",[
-            "what"=>"全体統括",
-            "type"=>"営業所登録"
-        ]);
+        return Inertia::render("WholeData/RegisterPlaces");
     }
 
     // 営業所の登録

@@ -9,7 +9,7 @@ use App\Http\Requests\WholeData\ProvisionRequest;
 
 use Inertia\Inertia;
 use App\Support\Auth\UserRoleResolver;
-use Illuminate\Support\Facades\Log;
+use App\Support\Common\PlaceHelpers;
 
 // wholeDataから各ユーザーの名前を登録していくコントローラー(パスワード等は別途Authで格納)
 class ProvisionController extends Controller
@@ -21,14 +21,13 @@ class ProvisionController extends Controller
         // すべてのroleを英語=>日本語の配列で取得(営業所が登録されていない場合の現場と営業所担当は除く)
         $role_sets=UserRoleResolver::get_all_values();
         return Inertia::render("WholeData/Provision",[
+            "type"=>"ユーザーの登録",
             // roleの取得(英語=>日本語の配列)
             "roleSets"=>$role_sets,
             // 「営業所が事前登録されていない」というアナウンス
             "nonPlaceAlert"=>!array_key_exists("field_staff",$role_sets),
             // 現在登録されている営業所を取得
-            "placeSets"=>Places::get_registered_places(),
-            "what"=>"全体統括",
-            "type"=>"ユーザーの登録"
+            "placeSets"=>PlaceHelpers::get_registered_places(),
         ]);
     }
     // ユーザー名とroleなどを事前登録するコントローラー(post)

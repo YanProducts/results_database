@@ -5,12 +5,15 @@ export default function useSendProjectDefinitions(){
 
   // フォーム
   const { data, setData, post, processing, errors, reset}=useForm({
-
+    // 案件期日
+    "startDate":{},
+    "endDate":{},
+    // 営業所名
+    "place":{},
+    // 案件セット
+    "fileSets":[]
   });
 
-  React.useEffect(()=>{
-
-  },[])
 
   return { data, setData, post, processing, errors, reset}
 }
