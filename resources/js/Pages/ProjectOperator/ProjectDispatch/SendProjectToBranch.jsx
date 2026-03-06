@@ -11,14 +11,14 @@ import DoubleSelectParts from "../../../Components/Common/DoubleSelectParts";
 import InputFiles from "../../../Components/Common/InputFiles";
 
 // 案件を営業所担当に送信
-export default function SendProjectToBranch({prefix,what,type,startDateLists,endDateLists,placeSets}){
+export default function SendProjectToBranch({prefix,what,type,placeSets}){
 
 
   // 定義(フォームなど)
   const { data, setData, post, processing, errors, reset}=useSendProjectDefinitions();
 
   // 動き
-  const {onStartDateChange,onEndDateChange,onPlaceChange,onFileChange,onFileDeleteClick,onSubmitBtnClick}=useSendProjectActions(data,setData);
+  const {onPlaceChange,onFileChange,onFileDeleteClick,onSubmitBtnClick}=useSendProjectActions(post,data,setData);
 
   return(
     <Layout title={`${what}-${type}`}>
@@ -30,12 +30,7 @@ export default function SendProjectToBranch({prefix,what,type,startDateLists,end
             {/* 選択項目 */}
             <InputPageHeader what={what} type={type} specialMessage="以下を選択してください"/>
 
-             <div className="base_frame min-w-110 max-w-160 base_backColor p-0 border-2 border-black rounded-sm mb-5">
-
-            {/* 期限 */}
-            {/* 2つのselectboxを作成する(~50日後まで) */}
-            {/* 現段階ではファイルから変換 */}
-            {/* <DoubleSelectParts name1="startDate" name2="endDate" value1={data.startDate} value2={data.endDate} onChange1={onStartDateChange} onChange2={onEndDateChange} prefix={"期限："} keyValueSets1={startDateLists} keyValueSets2={endDateLists} /> */}
+             <div className="base_frame min-w-110 max-w-160 base_backColor pt-3 pb-1 border-2 border-black rounded-sm mb-5">
 
             {/* 営業所名 */}
             <SelectParts name="place" value={data.place} onChange={onPlaceChange} prefix={"営業所名："} keyValueSets={placeSets} allowEmptyOption={false}/>

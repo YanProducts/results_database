@@ -34,7 +34,11 @@ class UserRoleResolver{
             }
         }
 
-        return null;
+        // それ以外の場合もnullをセットしておかないとエラーになる
+        return [
+                "prefix"=>null,
+                "what"=>null
+        ];
 
     }
 
@@ -53,31 +57,6 @@ class UserRoleResolver{
         }
 
         return $page_name_sets;
-
-        // //全般データなら、whole_dataを返す
-        // if(str_contains($route_name,"whole_data")){
-        //     return
-        //     [
-        //         "prefix"=>"whole_data",
-        //         "what"=>"全体統括"
-        //     ];
-        // }
-
-        // // それ以外ならそのぺーじを返す
-        // foreach(UserRole::cases() as $role){
-        //     if(str_contains($route_name,$role->value)){
-        //     $value=$role->value;
-        //     $jpn_word=UserRole::get_jpn_description($value);
-        //     // 日本語=>英語の配列で返す
-        //     return [
-        //         "prefix"=>$value,
-        //         "what"=>$jpn_word
-        //     ];
-        //     }
-        // }
-            // 上記以外の場合、ページが見つからない例外を投げる
-            // 定義のところでも拾ってくれる
-                // abort(404);
     }
      // 全Enumを英語=>日本語の配列で返す
     public static function get_all_values(){

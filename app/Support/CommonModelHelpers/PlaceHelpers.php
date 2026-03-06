@@ -9,4 +9,8 @@ class PlaceHelpers{
     public static function get_registered_places(){
       return PlaceModel::pluck('place_name', 'id');
     }
+    // 営業所名からIdを取得する
+    public static function get_id_from_place_name($place_name){
+        return PlaceModel::where("place_name",$place_name)->value("id") ??  throw new \Error("営業所のidが取得できません");
+    }
 }

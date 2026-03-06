@@ -1,14 +1,6 @@
 import {route} from 'ziggy-js';
 
-export default function useSendProjectActions(data,setData){
-
-//   期日変化
-const onStartDateChange=(e)=>{
-    setData("startDate",e.currentTarget.value)
-}
-const onEndDateChange=(e)=>{
-    setData("endDate",e.currentTarget.value)
-}
+export default function useSendProjectActions(post,data,setData){
 
   // 営業所変化
   const onPlaceChange=(e)=>{
@@ -35,5 +27,5 @@ const onEndDateChange=(e)=>{
        post(route("project_operator.dispatch_project_post"));
   }
 
-  return{onStartDateChange,onEndDateChange,onPlaceChange,onFileChange,onFileDeleteClick,onSubmitBtnClick}
+  return{onPlaceChange,onFileChange,onFileDeleteClick,onSubmitBtnClick}
 }

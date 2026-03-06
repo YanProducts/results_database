@@ -6,6 +6,8 @@ namespace App\Actions\ProjectOperator;
 class DispatchFormData{
 
     // 案件の開始と終了日の候補のselect
+    // 現状、ファイルからの取得に変わったため、コードに組み込んでいない
+    // いつか使用の可能性を考えて残す
     public static function get_select_dates(){
         $now=now()->copy();
         // 開始日は2日前〜10日後

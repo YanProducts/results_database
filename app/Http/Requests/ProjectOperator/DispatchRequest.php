@@ -24,25 +24,23 @@ class DispatchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 開始日と終了日はcsvファイルから取得
-            //開始日
-            // "startDate"=>["required","date_format:Y-m-d"],
-            // //終了日
-            // "endDate"=>["required","date_format:Y-m-d"],
             // 営業所
             "place"=>["required",new PlaceExistsRule],
             // ファイルの大元
             "fileSets" => ["required", "array"],
             // 各ファイル(別途、ruleで例外除去)
-            "fileSets.*" => ["file", "mimes:csv,xlsx", "max:2048"],
+            "fileSets.*" => ["file", "mimes:csv", "max:2048"],
         ];
     }
     public function messages(){
         return[
-            // "startDate.required"=>"開始日を選択してください",
-            // "startDate.datetime"=>"開始日の書式エラーです",
-            // "endDate.required"=>"終了日を選択してください",
-            // "endDate.required"=>"終了日を選択してください",
+            "place.required"=>"営業所は選択必須です",
+            "fileSets.required"=>"ファイルが選択されていません",
+            "fileSets.arrays"=>"ファイル選択でエラーが発生しました",
+            "fileSets.*.file"=>"ファイル選択でエラーが発生しました",
+            "fileSets.*.mines"=>"ファイルがcsvではありません",
+            "fileSets.*.max"=>"ファイルサイズが最大を超えています"
+
         ];
     }
 }
