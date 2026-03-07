@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('projects', function (Blueprint $table) {
             //projectsにplaceIdカラムを追加
-            $table->foreignId("placeId")->constrained("places");
+            $table->foreignId("place_id")->constrained("places");
         });
     }
 
@@ -24,7 +24,7 @@ return new class extends Migration
     {
         Schema::table('projects', function (Blueprint $table) {
             //
-            $table->dropColumn("placeId");
+            $table->dropColumn("place_id");
         });
     }
 };

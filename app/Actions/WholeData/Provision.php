@@ -27,7 +27,7 @@ class Provision{
             $model_instance->user_name=$user_name;
 
             if(in_array($role,["field_staff","branch_manager"])){
-                $model_instance->placeId=$request->place ?? null;
+                $model_instance->place_id=$request->place ?? null;
             }
             if($role=="field_staff"){
                 $model_instance->staff_name=$request->staffName ?? "";

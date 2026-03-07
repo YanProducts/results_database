@@ -38,15 +38,15 @@ class ProjectDispatchController extends Controller
 
         // 同じ案件か違う案件か
         // 同じ案件Idで同じ町目が既に重なっているが良いか？
-        if(!empty($another_project_flugs=CheckDispatch::check_same_project_data($project_name_and_towns)) || ""){
+        if(!empty($another_project_flags=CheckDispatch::check_same_project_data($project_name_and_towns)) || ""){
             // 確認テーブルに保存(プロジェクト＆町目)
 
 
 
             // 既存のものと確認ページへ
             return redirect()->route("",[
-                "another_project_flug",$another_project_flugs,
-                "same_town_and_project_flug",["project"=>"","town"=>""]
+                "another_project_flag",$another_project_flags,
+                "same_town_and_project_flag",["project"=>"","town"=>""]
             ]);
         }
 

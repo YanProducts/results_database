@@ -18,24 +18,24 @@ return new class extends Migration
 
             // 配布日(デフォルトはlaravel変数側で取得)
             $table->date("distribution_date");
-            // 配布数            
+            // 配布数
             $table->unsignedInteger("distribution_count");
 
             // 町丁目名(外部キー)
-            $table->foreignId('addressesId')->constrained('addresses');
+            $table->foreignId('address_id')->constrained('addresses');
             // 案件名(外部キー：事務所側からの備考はこの内部にあり)
-            $table->foreignId("projectsId")->constrained("projects");
+            $table->foreignId("project_id")->constrained("projects");
             // スタッフ名(外部キー)
-            $table->foreignId("staffsId")->constrained("field_staff_lists");
+            $table->foreignId("staffs_id")->constrained("field_staff_lists");
             // 備考(スタッフ側から)
             $table->string("remarks")->nullable();
 
             // 配布日&配布スタッフ&案件名&町丁目セットは1つのみ(カラム名が長いために名前もつける)
-            $table->unique(["distribution_date","addressesId","projectsId","staffsId"],"unique_distribution_sets");
+            $table->unique(["distribution_date","address_id","project_id","staffs_id"],"unique_distribution_sets");
 
             // 検索用
-            $table->index(["addressesId"]);
-            $table->index(["projectsId"]);
+            $table->index(["address_id"]);
+            $table->index(["project_id"]);
 
             $table->timestamps();
         });

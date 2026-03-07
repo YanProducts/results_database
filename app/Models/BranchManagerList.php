@@ -8,7 +8,7 @@ class BranchManagerList extends Model
 {
     //営業所担当のモデル
     protected $fillable=[
-        "user_name","placeId"
+        "user_name","place_id"
     ];
 
 }

@@ -10,7 +10,7 @@ class CheckDispatch{
     // 案件が以前と同じものかの確認
     public static function check_same_project_data($project_name_and_towns){
         // 別の案件かもよのフラグ
-        $another_project_flugs=[];
+        $another_project_flags=[];
         // ①プロジェクト名、②start_dateの最早い日付を取得
         foreach($project_name_and_towns as $project_name=>$town_date_sets){
             // 今回投稿のプロジェクトにおいて1番早い日付を取得(単純に文字の順序でそうなる)
@@ -26,10 +26,10 @@ class CheckDispatch{
                 ["end_date","<",$one_month_before_start_date->format("Y-m-d") ]
             ])->exists()){
                 // 違うプロジェクトかもよのフラグ
-                $another_project_flugs[]=$project_name;
+                $another_project_flags[]=$project_name;
             }
         }
-        return $another_project_flugs;
+        return $another_project_flags;
     }
 
     // 同じ案件内で町名が重なっているとき

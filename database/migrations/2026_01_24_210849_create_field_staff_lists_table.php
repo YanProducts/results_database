@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string("user_name")->unique();
             $table->string("staff_name");
             // 所属営業所
-            $table->foreignId("placeId")->constrained("places");
+            $table->foreignId("place_id")->constrained("places");
             $table->timestamps();
         });
     }

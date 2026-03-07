@@ -23,7 +23,7 @@ class OverViewHelpers{
         }
 
         if(in_array($role_name,["branch_manager","field_staff"])){
-            $select_lists[]="placeId";
+            $select_lists[]="place_id";
         }
 
         // selectには配列を渡しても良い
@@ -41,7 +41,7 @@ class OverViewHelpers{
 
     // その営業所の担当者名を一覧で返す
     public static function get_branch_manager_lists($place_id){
-        return implode("、",BranchManagerList::where("placeId",$place_id)->pluck("user_name")->toArray());
+        return implode("、",BranchManagerList::where("place_id",$place_id)->pluck("user_name")->toArray());
     }
 
     // どのタイプかの日本語名(ページタイトルに使用)

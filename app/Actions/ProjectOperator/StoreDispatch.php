@@ -41,8 +41,8 @@ class StoreDispatch{
 
     // projectsテーブルに挿入
     // projectsテーブル自体がなくなる可能性はあり
-    public static function insert_projects_table($date_town_sets,$project_name,$placeId){
-        DB::transaction(function()use($project_name,$date_town_sets,$placeId){
+    public static function insert_projects_table($date_town_sets,$project_name,$place_id){
+        DB::transaction(function()use($project_name,$date_town_sets,$place_id){
 
             // １：アップザートで行うこと
             // ２：開始日はより前なら前に。より後ろなら後ろに
@@ -51,28 +51,28 @@ class StoreDispatch{
             $project->start_date=$date_town_sets["start_date"];
             $project->end_date=$date_town_sets["end_date"];
             $project->projects_name=$project_name;
-            $project->placeId=$placeId;
+            $project->place_id=$place_id;
             $project->save();
         });
     }
 
     // 配布データに町目だけ入れる
-    public static function insert_distribution_plans_table($date_town_sets,$project_name,$placeId){
-        DB::transaction(function()use($project_name,$date_town_sets,$placeId){
+    public static function insert_distribution_plans_table($date_town_sets,$project_name,$place_id){
+        DB::transaction(function()use($project_name,$date_town_sets,$place_id){
             $distribution_plans=new DistributionPlan();
             //プロジェクトのId
-            $distribution_plans->projectId=ProjectHelpers::get_id_from_name($project_name);
+            $distribution_plans->project_id=ProjectHelpers::get_id_from_name($project_name);
 
             //同じプロジェクト-期限-町目の別プロジェクトの場合(町目を分割した場合など)
-            $distribution_plans->same_project_flug="";
+            $distribution_plans->same_project_flag="";
 
             // 営業所Id
-            $distribution_plans->placeId=$placeId;
+            $distribution_plans->place_id=$place_id;
             // 期限
             $distribution_plans->start_date=$date_town_sets["start_date"];
             $distribution_plans->end_date=$date_town_sets["end_date"];
             // 住所
-            $distribution_plans->addressId="";
+            $distribution_plans->address_id="";
             // 備考(案件担当から)
             $distribution_plans->remark_from_operator="";
 

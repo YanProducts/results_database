@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model
 {
     //案件データのモデル
-    // another_project_flugは同じ案件名で違う案件のフラグ
+    // another_project_flagは同じ案件名で違う案件のフラグ
     protected $fillable=[
-        "start_date","end_date","project_name","placeId","another_project_flug"
+        "start_date","end_date","project_name","place_id","another_project_flag"
     ];
 }

@@ -15,7 +15,7 @@ class DispatchCSVProcessor{
             // ファイルにアクセス
             $handle = fopen($file->getRealPath(), 'r');
             // ファイルのの内容を見る(fgetsCSVが自動的に1行ずつ見てくれる)
-            $one_flug=false;
+            $one_flag=false;
             // 返却する案件=>town,dateのリスト(内容違いの同じ案件が登録されるケースを考え、無条件での初期化はしない)
             if(!isset($return_sets[$main_project_name])){
                 $return_sets[$main_project_name]=[];
@@ -24,11 +24,11 @@ class DispatchCSVProcessor{
             $sub_projects_lists=[];
             // 各案件リスト
             while (($row = fgetcsv($handle)) !== false) {
-                if(!$one_flug){
+                if(!$one_flag){
                     // CSVの1行目は併配の名前を入れる
                     $sub_projects_lists=self::get_heihai_projects_name($row);
-                    //   初回のみone_flugがfalseに
-                     $one_flug=true;
+                    //   初回のみone_flagがfalseに
+                     $one_flag=true;
                      return;
                 }
 

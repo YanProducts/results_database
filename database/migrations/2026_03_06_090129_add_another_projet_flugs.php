@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // プロジェクトテーブルにanother_project_flugを追加
+        // プロジェクトテーブルにanother_project_flagを追加
         Schema::table('projects', function (Blueprint $table) {
-            $table->unsignedInteger("another_project_flug")->default(1);
+            $table->unsignedInteger("another_project_flag")->default(1);
         });
     }
 
@@ -24,7 +24,7 @@ return new class extends Migration
     {
         Schema::table('projects', function (Blueprint $table) {
             //
-            $table->dropColumn("another_project_flug");
+            $table->dropColumn("another_project_flag");
         });
     }
 };

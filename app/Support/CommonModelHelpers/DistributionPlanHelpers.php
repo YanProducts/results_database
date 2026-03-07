@@ -8,9 +8,9 @@ use App\Models\DistributionPlan;
 
 class DistributionPlanHelpers{
     //  すでにデータが存在しているかの確認(町目分割の可能性updateはしない)
-    public static function data_is_exists($projectId,$start_date,$end_date,$addressesId){
+    public static function data_is_exists($project_id,$start_date,$end_date,$address_id){
         DistributionPlan::where([
-            ["projectId",$projectId],
+            ["project_id",$project_id],
         ]);
     }
 }

@@ -39,7 +39,7 @@ class Overview{
             // 外側のコレクションのキーではなく、内側のモデルインスタンスを配列化したもののキーを変更していくのでmapで良い。
             $all_user_data_with_role=$all_user_data_in_role->map(fn($each_user)=>[...$each_user->toArray(),
             // placeIdからplace_nameを取得する
-            "place_name"=>OverViewHelpers::get_place_name_from_id($each_user["placeId"] ?? ""),
+            "place_name"=>OverViewHelpers::get_place_name_from_id($each_user["place_id"] ?? ""),
             // 現在のstatusを加える
             "status"=>OverViewHelpers::get_register_status($each_user->id,$model_name) ? "済" : "未",
             // roleを加える

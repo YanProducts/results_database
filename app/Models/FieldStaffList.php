@@ -8,6 +8,6 @@ class FieldStaffList extends Model
 {
        //スタッフのモデル
        protected $fillable=[
-        "user_name","staff_name","placeId"
+        "user_name","staff_name","place_id"
     ];
 }
