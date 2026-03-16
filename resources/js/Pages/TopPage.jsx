@@ -10,7 +10,7 @@ export default function TopPage({}){
       <p>　</p>
       <h1 className="base_h base_h1 min-w-100">データ共有-トップ-</h1>
 
-      <div className="base_frame min-w-100"><h2 className="base_h text-2xl mb-10 min-w-100">何を行いますか</h2></div>
+      <div className="base_frame min-w-100 "><h2 className="base_h text-2xl mb-10 min-w-100">何を行いますか</h2></div>
 
       <ThemeLists routeName="project_operator.dispatch_project" label="案件を営業所へ"/>
       <ThemeLists routeName="branch_manager.assign_staff" label="案件をスタッフへ"/>

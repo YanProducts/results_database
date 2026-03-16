@@ -15,17 +15,18 @@ return new class extends Migration
         Schema::create('distribution_plan_imports', function (Blueprint $table) {
             $table->id();
 
-           // 案件(外部キーはdistribution_plansと)
+
+            // 案件名(同じものも違うものも全て一時保存)＝後にmigrationで付け足す
+            // 過去の案件と名前が重なっているものは、そのうちの最新のデータの案件id(必ずしも登録とは限らない)=nullableを後につけたし
             $table->foreignId("project_id")->constrained("projects");
-            // 同町目フラグナンバー（「同じ案件＆町目で異なる営業所」が複数回続けば増えていく）＝ここが複数なら必ずアラートが出るようにする
-            // $table->unsignedInteger("same_project_flag")->default(0);
+
             // 営業所
             $table->foreignId("place_id")->constrained("places");
             // 開始日
             $table->date("start_date");
             // 終了日
             $table->date("end_date");
-            // 町目
+            // 住所
             $table->foreignId('address_id')->constrained('addresses');
             //備考
             $table->string("remark_from_operator")->nullable();

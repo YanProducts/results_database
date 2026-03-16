@@ -1,6 +1,5 @@
-import Layout from "../../../Layout/Layout";
-;
-import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
+import Layout from "../../Layout/Layout";
+import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 import { RoleLayout } from "../../Layout/RoleLayout";
 
 // 営業所担当のトップページ

@@ -8,7 +8,7 @@ use App\Models\DistributionPlan;
 use App\Support\CommonModelHelpers\AddressHelpers;
 
 //
-class DistributionPlanHelpers{
+class DistributionRecordHelpers{
     //  すでにデータが存在しているかの確認(町目分割の可能性updateはしない)
     public static function data_is_exists($project_id,$address_id){
         return
@@ -26,5 +26,4 @@ class DistributionPlanHelpers{
                 ["address_id",$address_id]
             ])->value("id");
     }
-
 }

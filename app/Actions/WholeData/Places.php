@@ -3,7 +3,6 @@ namespace App\Actions\WholeData;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Place;
-use App\Support\Common\PlaceHelpers;
 
 //営業所の登録と取り出し
 class Places{

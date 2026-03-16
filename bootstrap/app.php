@@ -48,7 +48,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 };
 
                 if($http_responce_code>=500 || in_array($http_responce_code,[403,404])){
-                    return redirect()->route("view_error")->with(["error_message"=>$error_message]);
+                    return redirect()->route("")->with(["error_message"=>$error_message]);
                 }
             }
             // 404や403は拾わず、SQL,文法,自分で投げたthrowのエラーなどを披露

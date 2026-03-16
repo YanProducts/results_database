@@ -1,4 +1,4 @@
-// 入力系統のinput
+// 入力系統のinput(タイトルをつける)
 export default function SelectParts({name,value,onChange,prefix,keyValueSets,allowEmptyOption}){
   return(
     <div className="flex items-center base_frame min-w-72.5 max-w-80 mx-auto my-3">

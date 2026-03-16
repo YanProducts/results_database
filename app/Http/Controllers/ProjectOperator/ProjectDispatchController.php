@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\ProjectOperator;
 
-use App\Actions\ProjectOperator\CheckDispatch;
+use App\Actions\ProjectOperator\CheckDispatch\Delete as CheckDelete;
+use App\Actions\ProjectOperator\CheckDispatch\Flow as CheckFlow;
 use App\Http\Controllers\Controller;
-use App\Support\Common\PlaceHelpers;
-use App\Actions\ProjectOperator\DispatchFormData;
+use App\Support\CommonModelHelpers\PlaceHelpers;
 use App\Actions\ProjectOperator\StoreDispatch;
 use App\Http\Requests\ProjectOperator\DispatchRequest;
 use App\Support\ProjectOperator\DispatchCSVProcessor;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class ProjectDispatchController extends Controller
@@ -18,12 +17,10 @@ class ProjectDispatchController extends Controller
     // 営業所(外注含む)へ振る案件を選択する画面を表示
     public function dispatch_project(){
 
-        // 開始日：修正の可能性も考えて(2日前〜10日後)   // 終了日(~50日後)
-        // $date_sets=DispatchFormData::get_select_dates();
+        // 現在そのユーザーが投稿した「確認中」のテーブルは消去する
+        CheckDelete::automatic_delete_from_same_user();
 
         return Inertia::render("ProjectOperator/ProjectDispatch/SendProjectToBranch",[
-            // "startDateLists"=>$date_sets["start"],
-            // "endDateLists"=>$date_sets["end"],
             // 営業所リスト
             "placeSets"=>PlaceHelpers::get_registered_places(),
             "type"=>"案件→営業所"
@@ -36,27 +33,53 @@ class ProjectDispatchController extends Controller
         // CSVから案件名=>[town,start,end]の入れ子配列の取得
         $project_name_and_towns=DispatchCSVProcessor::get_data_in_files($request->fileSets);
 
-        // 同じ案件か違う案件か
-        // 同じ案件Idで同じ町目が既に重なっているが良いか？
-        if(!empty($another_project_flags=CheckDispatch::check_same_project_data($project_name_and_towns)) || ""){
-            // 確認テーブルに保存(プロジェクト＆町目)
+        //placeはすでにplaceがid
+        $place_id=$request->place;
+
+        //重複チェックの一連の流れを行い、重複データを変換
+        [$same_projects_data,$same_towns_data]=CheckFlow::check_flow($project_name_and_towns,$place_id);
 
 
+        if(!empty($same_projects_data) || !empty($same_towns_data)){
 
-            // 既存のものと確認ページへ
-            return redirect()->route("",[
-                "another_project_flag",$another_project_flags,
-                "same_town_and_project_flag",["project"=>"","town"=>""]
+            // 既存のものと重複可能性がある場合は確認ページへ
+            return redirect()->route("project_operator.confirm_dispatch")->with([
+                "same_projects_data"=>$same_projects_data,
+                "same_towns_data"=>$same_towns_data
             ]);
         }
 
 
-
-
-        // 既存のものと案件名が重ならないか期間的に同じと思われる場合には登録
-        StoreDispatch::store_projects_data($project_name_and_towns,PlaceHelpers::get_id_from_place_name($request->place));
+        // 既存のものと案件名が重ならないか期間的に同じと思われる場合には登録(request->placeは既にid名)
+        StoreDispatch::store_projects_data($project_name_and_towns,$place_id);
 
         return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"project_operator.project_overview","linkPageInJpn"=>"確認ページ"]);
 
     }
+
+    // 重複可能性がある案件をどうするかを確認
+    public function confirm_dispatch(){
+
+    Log::info(session("same_projects_data"));
+    Log::info(session("same_towns_data"));
+
+        return Inertia::render("ProjectOperator/ProjectDispatch/ConfirmDispatch",[
+            "what"=>"案件担当",
+            "type"=>"割り当ての重複確認",
+            "prefix"=>"project_operator",
+            "sameProjectsData"=>session("same_projects_data"),
+            "sameTownsData"=>session("same_towns_data")
+        ]);
+    }
+
+    // 重複可能性がある案件をどうするかの確認からの決定
+    public function comfirm_dispatch_post(){
+
+    }
+
+    // 案件の確認
+    public function project_overview(){
+
+    }
+
 }

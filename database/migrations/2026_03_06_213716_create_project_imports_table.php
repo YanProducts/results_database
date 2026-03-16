@@ -25,7 +25,7 @@ return new class extends Migration
             $table->unsignedInteger("another_project_flag");
             // ①確実に変更の場合②変更可能性の場合のプロジェクトのId、変更しない場合はnull
             $table->foreignId("project_id")->nullable()->constrained("projects");
-            // 独立もしくは確実に変更の場合はtrue、変更可能性の場合はfalse
+            // 独立もしくは確実に変更の場合はtrue、変更可能性の場合はfalse=後に逆に変更！初期が変更しないfalse！
             $table->boolean("change_flag")->default(true);
             $table->timestamps();
         });

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string("city");
             $table->string("town");
             $table->unique(["pref","city","town"]);
+            // 検索用（cityとtownのみのものも今後のため後に追加した）　//また、この項目はユニークなので自動的にindexがつくので後に削除した
             $table->index(["pref","city","town"]);
             // 世帯数
             $table->unsignedInteger("household");

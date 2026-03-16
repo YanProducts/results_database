@@ -9,7 +9,7 @@ import BaseButton from "../../Components/Common/BaseButton";
 import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 
 // 全体統括者が、個々のユーザーを登録していくページ
-export default function RegisterPlaces({what,type}){
+export default function RegisterPlaces({prefix,what,type}){
 
   // 定義(フォームなど)
   const { data, setData, post, processing, errors, reset}=useRegisterPlacesDefinitions();

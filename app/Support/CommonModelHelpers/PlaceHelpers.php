@@ -1,7 +1,7 @@
 <?php
 // 営業所に関するサポート関数
 
-namespace App\Support\Common;
+namespace App\Support\CommonModelHelpers;
 use App\Models\Place as PlaceModel;
 
 class PlaceHelpers{

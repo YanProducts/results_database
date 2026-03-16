@@ -7,7 +7,6 @@ import BaseButton from "../../../Components/Common/BaseButton";
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
 import useSendProjectDefinitions from "../../../Definition/ProjectOperator/useSendProjectDefinitions";
 import useSendProjectActions from "../../../Action/ProjectOperator/useSendProjectActions";
-import DoubleSelectParts from "../../../Components/Common/DoubleSelectParts";
 import InputFiles from "../../../Components/Common/InputFiles";
 
 // 案件を営業所担当に送信

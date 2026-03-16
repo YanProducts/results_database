@@ -5,6 +5,7 @@ namespace App\Rules\Auth;
 use App\Support\Auth\UserRoleResolver;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Facades\Log;
 
 // Register前に統括者に事前に登録されているかどうか
 class isPreAuthorizedRule implements ValidationRule
@@ -24,6 +25,7 @@ class isPreAuthorizedRule implements ValidationRule
     {
         //モデルの取得
         $model_name=UserRoleResolver::get_model_from_route($this->route_name);
+
         //登録されているかを調べる
         if(!$model_name::where("user_name",$value)->exists()){
             $fail("まだ事前登録されておりません\n統括者に連絡してください");

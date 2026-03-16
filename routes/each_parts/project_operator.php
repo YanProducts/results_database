@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 // 案件担当者のできること一覧のコントローラー
 use App\Http\Controllers\ProjectOperator\ProjectDispatchController;
 use App\Http\Controllers\ProjectOperator\ProjectManagementController;
+use Inertia\Inertia;
 
 //webミドルウェアが適用される(CSRFTokenも適用)function郡(基本全て)
 Route::prefix("project_operator")
@@ -53,7 +54,16 @@ Route::prefix("project_operator")
                   //   案件の決定
                   Route::post("dispatch_project","dispatch_project_post")
                   ->name("dispatch_project_post");
-                  //   現在降った案件の確認
+
+                  // 重複可能性のある案件の確認
+                  Route::get("confirm_dispatch","confirm_dispatch")
+                  ->name("confirm_dispatch");
+
+                  // 重複可能性のある案件をどうするか決定した時の処理
+                  Route::post("confirm_dispatch","confirm_dispatch_post")
+                  ->name("confirm_dispatch_post");
+
+                  //   現在の営業所に振り終えた案件の確認
                   Route::get("project_overview","project_overview")
                   ->name("project_overview");
 

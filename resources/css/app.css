@@ -25,7 +25,7 @@
 @layer components {
     /* bodyの高さ */
     .custom_body{
-      @apply min-h-full h-screen;
+      @apply min-h-screen h-full pb-5;
     }
 
     .base_h{
@@ -45,6 +45,9 @@
     }
     .base_btn{
       @apply block bg-gray-200 p-1 rounded-sm mx-auto text-center hover:cursor-pointer active:translate-y-1;
+    }
+    .base_two_btn_div{
+      @apply base_frame flex justify-around max-w-120 min-w-75
     }
     .base_information{
         @apply  base_backColor font-bold text-center border-y py-1 border-black mt-0 mb-8 overflow-hidden;

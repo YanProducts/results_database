@@ -14,7 +14,7 @@ export default function Register({pageNameSets}){
   const { data, setData, post, processing, errors, reset, prefix, what, backColor}=useAuthDefinitions(pageNameSets);
 
   // 動き
-  const {onUserChange,onPassChange,onPassConfirmChange,onEmailChange,onNewPassChange,onNewPassConfirmChange,onSubmitBtnClick}=useAuthActions(prefix,setData,post,prefix + ".register_post");
+  const {onUserChange,onPassChange,onPassConfirmChange,onEmailChange,onNewPassChange,onNewPassConfirmChange,onSubmitBtnClick}=useAuthActions(setData,post,prefix + ".register_post");
 
   return(
     <Layout title={`${what}新規登録`}>
