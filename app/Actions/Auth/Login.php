@@ -64,7 +64,6 @@ class Login{
         // roleモデルの取得(なければ内部でエラーに)
         $model_name=UserRoleResolver::get_model_from_route($route);
 
-
         // そのモデルから該当ユーザー名のuserauthsでのidを取得
         $user_id=self::get_id_in_userauths_table($model_name,$user_name) ?? throw new BusinessException("該当ユーザーが見つかりません");
 

@@ -28,7 +28,8 @@ class NoticePageController extends Controller
 
         // sessionがある際は、そのエラーを表示
         return Inertia::render("Error",[
-            "message"=>session("error_message")
+            "message"=>session("error_message"),
+            "backRoute"=>session("back_route")
         ]);
     }
 }

@@ -2,6 +2,8 @@
 // ユーザーの種類(ログインなどに使う)
 // phpのEnumで定義(casesという関数で全てのEnumをEnumとして配列化。valueでその値を取り出し、keyでそのキーを取り出す)
 namespace App\Enums;
+
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 enum UserRole : string{
@@ -30,6 +32,7 @@ enum UserRole : string{
 
     //  トップページのルート名を返す
     public static function top_page_route_name($curerent_route_name){
+
         // トップページの文字列を返す(将来的にパターンが増えたことを考慮して、現時点ではtop_pageが多いがベタ打ちにする)
         return match(true){
             str_contains($curerent_route_name,self::FieldStaff->value)=>"field_staff.write_report",

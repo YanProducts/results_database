@@ -59,8 +59,7 @@ class Read{
                         // UIの表示用
                         // 全部一括でOKかやり直すか
                         "projectName"=>$project_name,
-                        "city"=>$each_sets["city"],
-                        "town"=>$each_sets["town"],
+                        "address"=>$each_sets["city"].$each_sets["town"],
                     ];
                 }
             }

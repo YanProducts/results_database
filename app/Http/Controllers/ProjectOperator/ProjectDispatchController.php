@@ -7,8 +7,10 @@ use App\Actions\ProjectOperator\CheckDispatch\Flow as CheckFlow;
 use App\Http\Controllers\Controller;
 use App\Support\CommonModelHelpers\PlaceHelpers;
 use App\Actions\ProjectOperator\StoreDispatch;
+use App\Exceptions\BusinessException;
 use App\Http\Requests\ProjectOperator\DispatchRequest;
 use App\Support\ProjectOperator\DispatchCSVProcessor;
+use App\Utils\Session;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 
@@ -59,10 +61,12 @@ class ProjectDispatchController extends Controller
 
     // 重複可能性がある案件をどうするかを確認
     public function confirm_dispatch(){
+        // sessionがないときはエラーページへ
+        if(empty(session("same_projects_data")) && empty(session("same_towns_data"))){
+            throw new BusinessException("再度ファイル取得してください","project_operator.dispatch_project",true);
+        }
 
-    Log::info(session("same_projects_data"));
-    Log::info(session("same_towns_data"));
-
+        // 表示
         return Inertia::render("ProjectOperator/ProjectDispatch/ConfirmDispatch",[
             "what"=>"案件担当",
             "type"=>"割り当ての重複確認",

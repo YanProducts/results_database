@@ -6,9 +6,11 @@ export default function useConfirmDispatchDefinitions(){
   const { data, setData, post, processing, errors, reset}=useForm({
     // 重複候補のプロジェクトのリスト
     // 新しい案件の場合のみ、projectのidを記載
-    "newProject":[],
+    "newProjects":[],
     //重複候補の町目は自動的に変更(「やり直す」以外は)
   });
 
-  return { data, setData, post, processing, errors, reset}
+  const [pageMinWidth,pageMaxWidth]=["min-w-150","max-w-250"]
+
+  return { data, setData, post, processing, errors, reset,pageMinWidth,pageMaxWidth}
 }

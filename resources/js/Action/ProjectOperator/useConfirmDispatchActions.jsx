@@ -11,11 +11,13 @@ export default function useComfirmDispatchActions(post,data,setData){
     // チェックされているかの取得
     const isChecked=e.currentTarget.checked;
 
-    if(!isChecked){
-        setData("newProject",[...data.newProject,targetId]);
+    if(isChecked){
+        // チェックされたときは今回のidを追加
+        setData("newProjects",[...data.newProjects,Number(targetId)]);
     }else{
+        // チェックが外れたときは今回のidを削除
         setData(
-            "newProject",data.newProject.filter((eachId)=>eachId!=targetId)
+            "newProjects",data.newProjects.filter((eachId)=>Number(eachId)!=Number(targetId))
         );
     }
  }

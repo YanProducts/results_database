@@ -2,7 +2,6 @@ import BaseButton from "./BaseButton";
 
 // 入力系統のinput
 export default function InputFiles({name,minWidth="min-w-60", maxWitdh="max-w-140",onChange,prefix,prefixPercent="w-[40%]", labelPercent="w-[60%]", attributes={},data,onFileDeleteClick}){
-    console.log(data.fileSets);
   return(
     <>
         <div className={`flex items-center base_frame mx-auto my-3 ${minWidth} ${maxWitdh}`}>

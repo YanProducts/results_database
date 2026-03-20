@@ -15,7 +15,7 @@
 
 /* 自作コンポーネントを自作コンポーネントで再利用したい場合はutility */
 @utility base_frame {
-    @apply w-4/5 min-w-[300px] max-w-[1000px] mx-auto;
+    @apply w-4/5 min-w-75 max-w-250 mx-auto;
   }
 @utility base_backColor{
       @apply bg-white/80;

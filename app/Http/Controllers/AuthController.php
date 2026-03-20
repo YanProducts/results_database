@@ -54,20 +54,31 @@ class AuthController extends Controller
     public function post_login(LoginRequest $request){
         // sessionの再生(その後に作成した方が良い)
         $request->session()->regenerate();
+
+        // 今回ログインを試みたroute
+        $route=$request->route()->getName();
+
         // ログインを試みて、無理ならログインページへ
         if (Login::attempt_login($request)){
             // それぞれのトップページへ
-            if(str_contains($request->route()->getName(),"whole_data")){
+            if(str_contains($route,"whole_data")){
                 // 全般管理の場合(authがない状態で試みたページとは関係なくトップへ)
                 return redirect()->route("whole_data.provision");
             }else{
-
                 // roleがある場合はauthがない状態で保存されたページへ
 
-                // 違う権限でログインを試みたページに行く可能性！
-                // supportで操作する必要あり！
+                $role_top_page=RedirectTopPage::redirect_top_page($route);
 
-                return redirect()->intended(RedirectTopPage::redirect_top_page($request->route()->getName()));
+                // ログインしているページのprefixが、intendedでログインを試みた時に保存されているページに含まれるかを確認
+                $intended=session("url.intended");
+                if($intended && str_contains($intended,UserRoleResolver::get_page_name_sets($route)["prefix"])){
+                    // 含まれていたら、そのページへリダイレクト
+                    return redirect()->intended($role_top_page);
+                }
+
+                // 含まれていなければ、各トップページへ
+                return redirect()->route($role_top_page);
+
             }
         }
         return back()->withErrors([

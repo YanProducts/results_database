@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -38,7 +39,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->respond(function(Response $response,Throwable $e, Request $request){
             // fetch送信は適用させない
             // 直リンクでの404や403のエラーはそのままbladeで表示(リンクが違った場合などInertia絡みのものだけ遷移される)
-            if ($request->header('X-Inertia')){
+            if ($request->header('X-Inertia') || ($e instanceof BusinessException && $e->get_custom_error_flag())){
                 $http_responce_code=$response->getStatusCode();
                 $error_message=match(true){
                     $http_responce_code>=500=>(app()->isLocal() || $e instanceof BusinessException) ? $e->getMessage() : "システムエラーです",
@@ -48,13 +49,12 @@ return Application::configure(basePath: dirname(__DIR__))
                 };
 
                 if($http_responce_code>=500 || in_array($http_responce_code,[403,404])){
-                    return redirect()->route("")->with(["error_message"=>$error_message]);
+                    return redirect()->route("view_error")->with([
+                        "error_message"=>$error_message,
+                        "back_route"=>$e instanceof BusinessException ? ($e->get_back_route() ?? "top_pgae") : "top_page"
+                    ]);
                 }
             }
-            // 404や403は拾わず、SQL,文法,自分で投げたthrowのエラーなどを披露
-            // if($response->getStatusCode()>=500){
-            //     return redirect()->route("view_error")->with(["error_message"=>(app()->isLocal() || $e instanceof BusinessException) ? $e->getMessage() : "システムエラーです"]);
-            // }
             return $response;
         });
 
