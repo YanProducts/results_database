@@ -4,6 +4,7 @@ namespace App\Http\Requests\ProjectOperator;
 
 use App\Rules\ProjectOperator\ProjectsExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class ConfirmRequest extends FormRequest
 {
@@ -26,15 +27,15 @@ class ConfirmRequest extends FormRequest
         // プロジェクトリストの存在、配列か、各々のプロジェクト名が存在するか
         return [
             //配列自体は存在すれば空でも良い
-            "newProjects"=>["required","array"],
+            "newProjects"=>["present","array"],
             "newProjects.*"=>[new ProjectsExistsRule]
         ];
     }
-    public function massages(): array
+    public function messages(): array
     {
         // プロジェクトリストの存在、配列か、各々のプロジェクト名が存在するか
         return [
-            "newProjects.required"=>"データがありません",
+            "newProjects.present"=>"データがありません",
             "newProjects.array"=>"予期せぬエラーです",
         ];
     }

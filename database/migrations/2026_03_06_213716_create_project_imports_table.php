@@ -26,6 +26,7 @@ return new class extends Migration
             // ①確実に変更の場合②変更可能性の場合のプロジェクトのId、変更しない場合はnull
             $table->foreignId("project_id")->nullable()->constrained("projects");
             // 独立もしくは確実に変更の場合はtrue、変更可能性の場合はfalse=後に逆に変更！初期が変更しないfalse！
+            // 後にautomatic_change_flagという名称で、「期限内のための自動更新のフラグ」の意味合いに変更(確認後に変更するものはrequestの値とproject_idが合っているかで検証)
             $table->boolean("change_flag")->default(true);
             $table->timestamps();
         });

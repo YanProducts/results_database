@@ -27,7 +27,7 @@ export default function useComfirmDispatchActions(post,data,setData){
   const onSubmitBtnClick=(e)=>{
         e.preventDefault();
     // バリデーションはlaravelに任せる(遷移しないため)
-       post(route("project_operator.confrim_dispatch_post"));
+       post(route("project_operator.confirm_dispatch_post"));
   }
 
   // やり直すボタンを押した時

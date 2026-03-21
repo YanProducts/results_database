@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Support\CommonModelHelpers\PlaceHelpers;
 use App\Actions\ProjectOperator\StoreDispatch;
 use App\Exceptions\BusinessException;
+use App\Http\Requests\ProjectOperator\ConfirmRequest;
 use App\Http\Requests\ProjectOperator\DispatchRequest;
 use App\Support\ProjectOperator\DispatchCSVProcessor;
 use App\Utils\Session;
@@ -18,6 +19,9 @@ class ProjectDispatchController extends Controller
 {
     // 営業所(外注含む)へ振る案件を選択する画面を表示
     public function dispatch_project(){
+
+        // 確認中のsessionの削除
+        Session::delete_sessions(["same_projects_data","same_towns_data"]);
 
         // 現在そのユーザーが投稿した「確認中」のテーブルは消去する
         CheckDelete::automatic_delete_from_same_user();
@@ -43,11 +47,15 @@ class ProjectDispatchController extends Controller
 
 
         if(!empty($same_projects_data) || !empty($same_towns_data)){
-
-            // 既存のものと重複可能性がある場合は確認ページへ
-            return redirect()->route("project_operator.confirm_dispatch")->with([
+            // フラッシュセッションだとバリデーション時のエラー捕捉がやりにくい
+            Session::create_sessions([
                 "same_projects_data"=>$same_projects_data,
                 "same_towns_data"=>$same_towns_data
+            ]);
+            // 既存のものと重複可能性がある場合は確認ページへ
+            return redirect()->route("project_operator.confirm_dispatch",[
+                "same_projects_data"=>session($same_projects_data),
+                "same_towns_data"=>session($same_towns_data)
             ]);
         }
 
@@ -77,8 +85,14 @@ class ProjectDispatchController extends Controller
     }
 
     // 重複可能性がある案件をどうするかの確認からの決定
-    public function comfirm_dispatch_post(){
+    public function confirm_dispatch_post(ConfirmRequest $request){
 
+        // ProjectImportにて新案件は新案件ナンバーを追加、既存案件の場合は最終期限を直す
+        // Importの消去
+        // DistributionPlanImportにて、元から問題ないものは登録、期限が不明だったものは上記に連動してProjectのIdを取得
+        CheckFlow::after_confirm_flow($request->newProjects ?? []);
+
+        return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"project_operator.project_overview","linkPageInJpn"=>"確認ページ"]);
     }
 
     // 案件の確認

@@ -15,7 +15,7 @@ class Read{
     // 案件が以前と同じものが存在するかの確認
     public static function check_same_project_data($project_name_and_towns){
 
-        // ①プロジェクト名、②start_dateの最早い日付を取得
+        // ①プロジェクト名、②start_dateの最も早い日付を取得
         foreach($project_name_and_towns as $project_name=>$date_town_sets){
             if(ProjectHelpers::need_user_confirm($project_name,$date_town_sets)){
                 // 違うプロジェクトの可能性を踏まえて挿入
@@ -28,7 +28,7 @@ class Read{
             }
         }
 
-        // 同案件可能性が2つあるものを返す
+        // 同案件可能性があるものを返す
         // スコープが別の宣言のため、宣言されていない場合も考慮
         return $duplicate_sets ?? [];
     }
@@ -56,8 +56,9 @@ class Read{
 
                 if(DistributionPlanHelpers::data_is_exists($project_id,$address_id) || DistributionRecordHelpers::data_is_exists($project_id,$address_id)){
                     $duplicate_sets[]=[
-                        // UIの表示用
+                        // UIの表示用(orojectIdは打ち消し線に使用)
                         // 全部一括でOKかやり直すか
+                        "projectId"=>$project_id,
                         "projectName"=>$project_name,
                         "address"=>$each_sets["city"].$each_sets["town"],
                     ];

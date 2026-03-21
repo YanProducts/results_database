@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class Delete{
-    // 同じユーザーからアップされた「同じ案件かの確認」の段階で止まっている情報がある場合は消去
+    // 同じユーザーからアップされた確認データの消去(本登録終了後、もしくは「同じ案件かの確認」の段階で止まっている情報)
     public static function automatic_delete_from_same_user(){
         // 登録しているユーザーのid
         $user_id=Auth::user()->id;

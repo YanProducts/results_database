@@ -12,10 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('projects', function (Blueprint $table) {
-            //projectsにplaceIdカラムを追加
-            // (後にやっぱり消去した)
-            $table->dropForeign(["place_id"]);
-            $table->foreignId("place_id")->constrained("places");
+            //同案件フラグの初期値を0にする
+             $table->unsignedInteger("another_project_flag")->default(0)->change();
         });
     }
 
@@ -25,8 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('projects', function (Blueprint $table) {
-            //
-            $table->dropColumn("place_id");
-        });
+             $table->unsignedInteger("another_project_flag")->default(1);
+       });
     }
 };

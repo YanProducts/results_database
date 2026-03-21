@@ -2,10 +2,11 @@ import Layout from "../../../Layout/Layout";
 import { RoleLayout } from "../../../Layout/RoleLayout";
 import useComfirmDispatchActions from "../../../Action/ProjectOperator/useConfirmDispatchActions";
 import useConfirmDispatchDefinitions from "../../../Definition/ProjectOperator/useComfirmDispatchDefinitions";
-import ToggleLists from "../../../Components/Common/ToggleLists";
 import ViewValidationErrors from "../../../Components/Common/ViewValidationErrors";
 import SubmitOrBackButtons from "../../../Components/Common/SubmitOrBackButtons";
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
+import ProjectPart from "../../../Components/Part/ProjectOperator/ConfirmDispatch/ProjectPart";
+import TownPart from "../../../Components/Part/ProjectOperator/ConfirmDispatch/TownPart";
 
 // 重複可能性のある案件をどうするかの確認
 export default function ConfirmDispatch({what,type,prefix,sameProjectsData,sameTownsData}){
@@ -28,44 +29,12 @@ export default function ConfirmDispatch({what,type,prefix,sameProjectsData,sameT
 
     <div className={`base_frame ${pageMinWidth} ${pageMaxWidth} bg-gray-300 pt-3 pb-1 border-2 border-black rounded-sm mb-5`}>
 
-      <div className={`base_backColor base_frame border-2 border-black  text-left mt-5 mb-10 p-2 min-w-140`}>
-        <h2 className="base_h">１：案件データの重複</h2>
-        {sameProjectsData ?
-        <>
-          <p className="px-2">下記の案件が、前回の同名の案件から１ヶ月が経過しておりますが、同じ案件でしょうか？</p>
-          <ToggleLists contents={sameProjectsData} onToggleListsChange={onProjectsCheckClick} formLists={data.newProjects} labelWhenTrue="新案件" labelWhenFalse="既存と同じ"/>
-        </>
-        :
-        <p>前回の案件の終了予定日から1か月以上が経過している重複案件データはありません(1月以内の場合、自動的に同じ案件を見なされます)</p>
-        }
-      </div>
+     {/* 案件の操作(新案件or既存案件) */}
+     <ProjectPart sameProjectsData={sameProjectsData} onProjectsCheckClick={onProjectsCheckClick} data={data}/>
 
-      <div className={`base_backColor base_frame border-2 border-black  text-left mt-5 mb-10 p-2 min-w-140`}>
-        <h2 className="base_h">２：町目データの重複</h2>
-        {sameTownsData ?
-        <>
-            <p>下記の案件の下記の町目では、同案件名の最新のバージョンでは既に町目を振り終えております。<br/>分割したなどの特殊状況で間違いないかを確認し、決定かやり直すかを選択してください</p>
-            <div className="mt-5 text-center">
-                 <div className="flex border bg-orange-200 border-black border-collapse">
-                        <span className="inline-block border px-5  borer-black box-border border-collapse font-bold w-2/5">案件名</span>
-                        <span className="inline-block border border-black box-border border-collapse font-bold w-3/5">町丁目名</span>
-                  </div>
-            {
-                sameTownsData.map((eachTownData,index)=>
-                  <div key={index} className="flex border bg-lime-200 border-black border-collapse">
-                        <span className="inline-block border px-5  borer-black box-border border-collapse w-2/5">{eachTownData.projectName}</span>
-                        <span className="inline-block border border-black box-border border-collapse w-3/5">{eachTownData.address}</span>
-                  </div>
-                )
-            }
-            </div>
-        </>
+    {/* 町目の確認 */}
+     <TownPart sameTownsData={sameTownsData} data={data}/>
 
-        :
-        <p>同案件の最終版には、既に割り振りを終えている町目はありません。重複案件データはありません</p>
-        }
-
-      </div>
     </div>
 
       {/* バリデーションエラー */}

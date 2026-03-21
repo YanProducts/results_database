@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('projects', function (Blueprint $table) {
-            //projectsにplaceIdカラムを追加
-            // (後にやっぱり消去した)
-            $table->dropForeign(["place_id"]);
-            $table->foreignId("place_id")->constrained("places");
+            //project_importsからplace_idカラムを消す(案件名が同じで複数の営業所に振っている案件が存在)
+            // placeはditribution_pplanや同じくrecordで確認
+             $table->dropForeign(["place_id"]);
+            $table->dropColumn("place_id");
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     {
         Schema::table('projects', function (Blueprint $table) {
             //
-            $table->dropColumn("place_id");
+            $table->foreignId("place_id")->constrained("places");
         });
     }
 };

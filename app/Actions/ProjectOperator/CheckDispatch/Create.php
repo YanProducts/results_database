@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 class Create{
     // 一時保存テーブルに格納(案件)
     public static function store_project_imports($project_name_and_towns,$same_projects_data,$place_id){
+
         foreach($project_name_and_towns as $project_name=>$each_sets){
             $import=new ProjectImport();
 
@@ -29,16 +30,14 @@ class Create{
 
             // データ重複可能性が存在していればidを返す
             // 同じ案件名で複数地図があったとしても更新するものとしないものが混ざっていないと仮定
-            if(in_array($project_name,array_column($same_projects_data,"project_name"))){
+            if(in_array($project_name,array_column($same_projects_data,"nameForUI"))){
                 // 同案件か不明の場合の、同案件とした場合のid
                 $import->project_id=ProjectHelpers::get_latest_project_id_from_name($project_name);
             }
 
             // 最新の同案件ナンバー(1ヶ月以内のものも含むため最新のものを保存)
             $import->another_project_flag=ProjectHelpers::get_latest_another_project_flag($project_name);
-            // 営業所
-            $import->place_id=$place_id;
-
+         
             $import->save();
         }
     }

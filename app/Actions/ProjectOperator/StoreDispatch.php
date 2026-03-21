@@ -3,112 +3,112 @@
 namespace App\Actions\ProjectOperator;
 
 use App\Models\DistributionPlan;
+use App\Models\DistributionPlanImport;
 use App\Models\Project;
 use App\Support\CommonModelHelpers\AddressHelpers;
 use App\Support\CommonModelHelpers\DistributionPlanHelpers;
 use App\Support\CommonModelHelpers\ProjectHelpers;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\ProjectImport;
+use App\Support\ProjectOperator\DispatchHelpers;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 // 営業所ごとに登録する
 class StoreDispatch{
 
 
-    // projectのsql挿入(日付と名前)
+    // 重ならないと決まった時のprojectとDistributionPlanのsql挿入(日付と名前)
     // むしろProjectテーブルいらないかも！？
     // 今後にProjectの大元を管理することも含めておいておく
     public static function store_projects_data($project_name_and_towns,$place){
+        // projectsテーブルに挿入(*projectsテーブル自体がなくなる可能性はあり)
+
+        self::upsert_projects_table($project_name_and_towns);
 
          foreach($project_name_and_towns as $project_name=>$date_town_sets){
-            // projectsテーブルに挿入(*projectsテーブル自体がなくなる可能性はあり)
-            self::insert_projects_table($date_town_sets,$project_name,$place);
 
             // 配布予定テーブルに挿入(プロジェクトIdを取得する必要があるため、前項と別々に行う)
             self::insert_distribution_plans_table($date_town_sets,$project_name,$place);
-
         }
 
     }
 
-    // projectsテーブルに挿入
+    // projectsテーブルに挿入(全て確認不要or確認し終えたデータ)
     // projectsテーブル自体がなくなる可能性はあり
-    public static function insert_projects_table($date_town_sets,$project_name,$place_id){
+    public static function upsert_projects_table($project_name_and_towns){
 
-        DB::transaction(function()use($project_name,$date_town_sets,$place_id){
-
-                // 更新か作成かの選択(案件の開始が同じプロジェクト名の締め切りより１ヶ月経過していない時は「同案件」とみなすので追加せず開始と終了を更新する)
-
-                // 案件のstart_dateの中で最も早いものが、end_dateの１ヶ月以内かどうか()
-                if(ProjectHelpers::need_user_confirm($project_name,$date_town_sets)){
-                    // １ヶ月以上空いている(check時にどうするかが決定されているので、その番号を取得)
-
-
-                }else{
-                    // ①存在しない②存在しても1ヶ月以上なのでアップザートの処理を行う
-                    self::automatic_upsert_to_projects($project_name,$date_town_sets,$place_id);
-                }
-        });
-    }
-
-    // 配布データに町目だけ入れる
-    public static function insert_distribution_plans_table($date_town_sets,$project_name,$place_id){
-        DB::transaction(function()use($project_name,$date_town_sets,$place_id){
-
-            // 存在すれば案件のId
-            $project_id=ProjectHelpers::get_latest_project_id_from_name($project_name);
-
-            foreach($date_town_sets as $each_sets){
-                $city=$each_sets["city"]; $town=$each_sets["town"];
-                $address_id=AddressHelpers::get_id_from_city_and_town($city,$town);
-                $start_date=$each_sets["start_date"];
-                $end_date=$each_sets["end_date"];
-
-                // 同じプロジェクトIdとtownがすでに存在するかどうかで自由に選択できるかを決定
-                if(DistributionPlanHelpers::data_is_exists($project_id,$address_id)){
-                    // ユーザーの選択によって新規登録か更新かを決定
-                    self::upsert_after_confirmation_to_plans($project_name,$start_date,$end_date,$address_id,$place_id);
-
-                }else{
-                    // 自動挿入
-                  self::automatic_insert_to_plans($project_name,$start_date,$end_date,$address_id,$place_id);
-                }
-
-
-
-
-            }
-
-        });
-    }
-
-    // projectsテーブルを自動的にアップザート(自動更新期限内にあるor名前が重なる案件がない)
-    public static function automatic_upsert_to_projects($project_name,$date_town_sets,$place_id){
-        Project::updateOrCreate(
-            //対象となるキー。ここで同じものがあればupdate(アップザートの要領)
-            ["project_name"=>$project_name],
-            //作成もしくは更新する
-            [
+        // upsert(複数データの変換可能)の基本形。作成するならこの情報
+        $upsert_array=Arr::map($project_name_and_towns,fn($date_town_sets,$project_name)=>[
+                "project_name" => $project_name,
+                "another_project_flag" => ProjectHelpers::get_latest_another_project_flag($project_name),//存在しないものは-0で返る(新規作成ではゼロ) //ここでは変更しない
                 "created_by"=>Auth::user()->id,
-                "start_date"=>min(array_column($date_town_sets,"start_date")),
-                "end_date"=>max(array_column($date_town_sets,"end_date")),
-                "place_id"=>$place_id
-                //同案件フラグナンバーは存在していればそのまま、新規作成のものは1になる
-                //saveは自動で行われる
-            ]
+                // 投稿されたファイルと既存データの早い方をstart_dateに
+                "start_date"=>DispatchHelpers::get_earliest_start_date($project_name,$date_town_sets),
+                // 投稿されたファイルと既存データの遅い方をend_dateに
+                "end_date"=>DispatchHelpers::get_lateest_end_date($project_name,$date_town_sets),
+        ]);
+
+        // すでに重複データの除外は終了
+        DB::transaction(function()use($upsert_array){
+
+         //対象となるキー。ここで同じものがあればupdate
+          Project::upsert(
+            // 基本変換リスト
+            $upsert_array,
+            // もし同じプロジェクト名で、同案件フラグナンバーが最大のものが存在した場合(1か月内なのでアップデート)
+            ["project_name","another_project_flag"],
+            // 重なる場合はstart_dateとend_dateのみアップデート
+            ["start_date","end_date"],
             );
+        });
     }
+
 
     // projectsテーブルを確認した値に応じてアップザート(自動更新期限切れかつ名前が重なる案件が存在）
-    public static function upsert_after_confirmation_to_projects($project_name,$date_town_sets,$place_id){
-        // フラグの受け取り後に作用
+    public static function upsert_after_confirmation_to_projects($new_projects){
+
+        $user_id=Auth::user()->id;
+
+       // ログインユーザーによって候補に挿入されているデータ
+        $project_imports=ProjectImport::where("created_by",$user_id)->get();
+
+
+        // 新案件で渡されてきたリストのプロジェクト
+        $new_projects_lists=$project_imports->filter(fn($import)=>in_array($import->project_id,$new_projects));
+
+        // 既存のプロジェクトとは違う新案件だと渡されてきたものは、同案件ナンバーを1つ足す
+        self::add_another_project_flag($new_projects_lists,$user_id);
+
+        // upsertに渡す配列(現在データにないものは新規作成、あるものは自動更新でend_dateを変更)
+        $upsert_imports_array=DispatchHelpers::change_after_confirm_post_data_for_upsert($project_imports,$new_projects);
+
+        // アップザート
+        self::upsert_projects_table($upsert_imports_array);
 
     }
 
-    // distribution_plansテーブルに自動的に挿入(案件名と町目が重なる案件がない)
-    public static function automatic_insert_to_plans($project_name,$start_date,$end_date, $address_id,$place_id){
 
+    // 既存のプロジェクトとは違う新案件だと渡されてきたものは、同案件ナンバーを1つ足す
+    public static function add_another_project_flag($new_projects_lists,$user_id){
+        foreach($new_projects_lists as $new_project){
+            $project_name=$new_project->project_name;
+            $project=new Project;
+            $project->start_date=$new_project->start_date;
+            $project->end_date=$new_project->end_date;
+            $project->project_name=$project_name;
+            $project->created_by=$user_id;
+            $project->another_project_flag=ProjectHelpers::get_latest_another_project_flag($project_name)+1;
+            $project->save();
+        }
+    }
+
+
+    // 重ならないと決定したあとで、配布予定の案件や町目などを入れていく
+    public static function insert_distribution_plans_table($date_town_sets,$project_name,$place_id){
+        DB::transaction(function()use($project_name,$date_town_sets,$place_id){
+            foreach($date_town_sets as $each_sets){
                 $distribution_plans=new DistributionPlan();
                 // 誰が登録したか
                 $distribution_plans->created_by=Auth::user()->id;
@@ -117,19 +117,38 @@ class StoreDispatch{
                 // 営業所Id
                 $distribution_plans->place_id=$place_id;
                 // 期限
-                $distribution_plans->start_date=$start_date;
-                $distribution_plans->end_date=$end_date;
+                $distribution_plans->start_date=$each_sets["start_date"];
+                $distribution_plans->end_date=$each_sets["end_date"];
                 // 住所
-                $distribution_plans->address_id=$address_id;
+                $distribution_plans->address_id==AddressHelpers::get_id_from_city_and_town($each_sets["city"],$each_sets["town"]);
                 // 備考(案件担当から)
                 $distribution_plans->remark_from_operator="";
                 $distribution_plans->save();
+            }
+        });
     }
 
 
-    // distribution_plansテーブルを確認した値に応じてアップザート(町目分割可能性ありの時）
-    public static function upsert_after_confirmation_to_plans($project_name,$start_date,$end_date,$address_id,$place_id){
-        // フラグの受け取り後に作用
+    // 町目の重複確認をしたあとで、大丈夫だったき
+    public static function upsert_after_confirmation_to_plans(){
+        // このユーザーによって保存されたImport(必ずこの試行のみになる)
+        $import_data=DistributionPlanImport::where("created_by",Auth::user()->id)->get();
+
+        foreach($import_data as $each_import){
+            $plan=new DistributionPlan();
+            $plan->project_id=$each_import->project_id;
+            $plan->place_id=$each_import->place_id;
+            $plan->start_date=$each_import->start_date;
+            $plan->end_date=$each_import->end_date;
+            $plan->address_id=$each_import->address_id;
+            $plan->created_by=$each_import->created_by;
+            // 同じプロジェクトの同じ住所を、複数の営業所もしくは回数に分けているとき
+            // importのditribution_plan_idもしくはdistribution_record_idが記入されていて、かつrequest->newProjectsに格納されているproject_idが今回のproject_idと同じだった時
+            // same_project_flagを更新
+
+            $plan->save();
+        }
+
 
     }
 

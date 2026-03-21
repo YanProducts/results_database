@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('project_imports', function (Blueprint $table) {
-            //project_importsにおける、独立か変更の場合、change_flagの初期を変更しないを表す「false」に変更
-            // 後にautomatic_change_flagという名称で、「期限内のための自動更新のフラグ」の意味合いに変更
-            $table->boolean("change_flag")->default(false)->change();
+            //project_importsからplace_idカラムを消す(案件名が同じで複数の営業所に振っている案件が存在)
+            // placeはditribution_pplanや同じくrecordで確認
+            $table->dropForeign(["place_id"]);
+            $table->dropColumn("place_id");
         });
     }
 
@@ -25,7 +26,7 @@ return new class extends Migration
     {
         Schema::table('project_imports', function (Blueprint $table) {
             //
-            $table->boolean("change_flag")->default(true);
+            $table->foreignId("place_id")->constrained("places");
         });
     }
 };

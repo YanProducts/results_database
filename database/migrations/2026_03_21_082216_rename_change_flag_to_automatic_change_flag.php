@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('project_imports', function (Blueprint $table) {
-            //project_importsにおける、独立か変更の場合、change_flagの初期を変更しないを表す「false」に変更
-            // 後にautomatic_change_flagという名称で、「期限内のための自動更新のフラグ」の意味合いに変更
-            $table->boolean("change_flag")->default(false)->change();
+            //project_importsのchange_flagをautomatic_change_flagに変更
+            // 意味合いも「期限内の自動更新フラグ」に変更する(end_dateのみ変更するため)
+            // とはいえ、現状使用しない可能性も多々あり
+            $table->renameColumn("change_flag","automatic_change_flag");
         });
     }
 
@@ -24,8 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('project_imports', function (Blueprint $table) {
-            //
-            $table->boolean("change_flag")->default(true);
+            $table->renameColumn("automatic_change_flag",   "change_flag");
         });
     }
 };
