@@ -27,18 +27,19 @@ class DispatchRequest extends FormRequest
             // 営業所
             "place"=>["required",new PlaceExistsRule],
             // ファイルの大元
-            "fileSets" => ["required", "array"],
+            "fileSets" => ["required", "array","max:20"],
             // 各ファイル(別途、ruleで例外除去)
-            "fileSets.*" => ["file", "mimes:csv", "max:2048"],
+            "fileSets.*" => ["file", "mimes:csv", "mimetypes:text/csv,text/plain","max:2048"],
         ];
     }
     public function messages(){
         return[
             "place.required"=>"営業所は選択必須です",
             "fileSets.required"=>"ファイルが選択されていません",
-            "fileSets.arrays"=>"ファイル選択でエラーが発生しました",
+            "fileSets.array"=>"ファイル選択でエラーが発生しました",
             "fileSets.*.file"=>"ファイル選択でエラーが発生しました",
             "fileSets.*.mimes"=>"ファイルがcsvではありません",
+            "fileSets.*.mimetypes"=>"ファイルの内容がcsvではありません",
             "fileSets.*.max"=>"ファイルサイズが最大を超えています"
 
         ];

@@ -35,7 +35,10 @@ class Regex{
         return preg_match("/[\x{3000}]/u",$value);
     }
 
-
+    // 案件名(英語-数字)
+    public static function check_projects_name($project_name){
+        return preg_match("/^([A-Za-z]+-[0-9]+)$/u",$project_name);
+    }
 
 
 }
