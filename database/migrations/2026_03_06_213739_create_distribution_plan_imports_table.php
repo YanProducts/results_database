@@ -31,6 +31,7 @@ return new class extends Migration
             //備考
             $table->string("remark_from_operator")->nullable();
             // 外部連動されている場合は外部キー(その町目についてOKの場合はnull、重なっていたらid記入。操作途中で親が削除されたらnullになる)
+            // =後に存在確認に変更！
             $table->foreignId("distribution_plan_id")->nullable()->constrained("distribution_plans")->nullOnDelete();
             $table->foreignId("distribution_record_id")->nullable()->constrained("distribution_records")->nullOnDelete();
 

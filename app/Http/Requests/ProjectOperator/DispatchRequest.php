@@ -38,7 +38,7 @@ class DispatchRequest extends FormRequest
             "fileSets.required"=>"ファイルが選択されていません",
             "fileSets.arrays"=>"ファイル選択でエラーが発生しました",
             "fileSets.*.file"=>"ファイル選択でエラーが発生しました",
-            "fileSets.*.mines"=>"ファイルがcsvではありません",
+            "fileSets.*.mimes"=>"ファイルがcsvではありません",
             "fileSets.*.max"=>"ファイルサイズが最大を超えています"
 
         ];

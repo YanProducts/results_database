@@ -10,8 +10,12 @@ use App\Actions\ProjectOperator\StoreDispatch;
 use App\Exceptions\BusinessException;
 use App\Http\Requests\ProjectOperator\ConfirmRequest;
 use App\Http\Requests\ProjectOperator\DispatchRequest;
+use App\Models\DistributionPlanImport;
+use App\Models\ProjectImport;
 use App\Support\ProjectOperator\DispatchCSVProcessor;
+use App\Support\ProjectOperator\DispatchHelpers;
 use App\Utils\Session;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 
@@ -20,10 +24,7 @@ class ProjectDispatchController extends Controller
     // 営業所(外注含む)へ振る案件を選択する画面を表示
     public function dispatch_project(){
 
-        // 確認中のsessionの削除
-        Session::delete_sessions(["same_projects_data","same_towns_data"]);
-
-        // 現在そのユーザーが投稿した「確認中」のテーブルは消去する
+        // 現在の確認ページ用のsessionと、そのユーザーが投稿した「確認中」のテーブルは消去する
         CheckDelete::automatic_delete_from_same_user();
 
         return Inertia::render("ProjectOperator/ProjectDispatch/SendProjectToBranch",[
@@ -70,9 +71,7 @@ class ProjectDispatchController extends Controller
     // 重複可能性がある案件をどうするかを確認
     public function confirm_dispatch(){
         // sessionがないときはエラーページへ
-        if(empty(session("same_projects_data")) && empty(session("same_towns_data"))){
-            throw new BusinessException("再度ファイル取得してください","project_operator.dispatch_project",true);
-        }
+        DispatchHelpers::check_confirm_data_exisits();
 
         // 表示
         return Inertia::render("ProjectOperator/ProjectDispatch/ConfirmDispatch",[
@@ -87,9 +86,12 @@ class ProjectDispatchController extends Controller
     // 重複可能性がある案件をどうするかの確認からの決定
     public function confirm_dispatch_post(ConfirmRequest $request){
 
+         // sessionがないときはエラーページへ
+        DispatchHelpers::check_confirm_data_exisits();
+
         // ProjectImportにて新案件は新案件ナンバーを追加、既存案件の場合は最終期限を直す
+        // DistributionPlanImportにて、重複ないものは記入、重複あるものは同じ案件No.を追加、新案件の場合はProjectのIdを上記に連動して取得
         // Importの消去
-        // DistributionPlanImportにて、元から問題ないものは登録、期限が不明だったものは上記に連動してProjectのIdを取得
         CheckFlow::after_confirm_flow($request->newProjects ?? []);
 
         return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"project_operator.project_overview","linkPageInJpn"=>"確認ページ"]);

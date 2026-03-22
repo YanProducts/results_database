@@ -8,6 +8,7 @@ use App\Actions\ProjectOperator\CheckDispatch\Create as CheckCreate;
 use App\Actions\ProjectOperator\CheckDispatch\Delete as CheckDelete;
 use App\Actions\ProjectOperator\StoreDispatch;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Flow{
     // ファイルが読み込まれてから最初の重複チェック
@@ -30,14 +31,14 @@ class Flow{
 
     // 確認後の流れ
     public static function after_confirm_flow($new_projects){
-        // 新案件かどうかを考慮しての案件の更新
-        StoreDispatch::upsert_after_confirmation_to_projects($new_projects);
-
-        // 町目の更新(そのまま更新)
-        StoreDispatch::upsert_after_confirmation_to_plans($new_projects);
-
-        // 案件の消去
-        CheckDelete::automatic_delete_from_same_user();
+        DB::transaction(function()use($new_projects){
+            // 新案件かどうかを考慮しての案件の更新
+            StoreDispatch::upsert_after_confirmation_to_projects($new_projects);
+            // 町目の更新(そのまま更新)
+            StoreDispatch::upsert_after_confirmation_to_plans($new_projects);
+            // 案件の消去
+            CheckDelete::automatic_delete_from_same_user();
+        });
 
     }
 }

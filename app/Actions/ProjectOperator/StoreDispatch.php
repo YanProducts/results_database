@@ -2,8 +2,10 @@
 
 namespace App\Actions\ProjectOperator;
 
+use App\Exceptions\BusinessException;
 use App\Models\DistributionPlan;
 use App\Models\DistributionPlanImport;
+use App\Models\DistributionRecord;
 use App\Models\Project;
 use App\Support\CommonModelHelpers\AddressHelpers;
 use App\Support\CommonModelHelpers\DistributionPlanHelpers;
@@ -120,7 +122,7 @@ class StoreDispatch{
                 $distribution_plans->start_date=$each_sets["start_date"];
                 $distribution_plans->end_date=$each_sets["end_date"];
                 // 住所
-                $distribution_plans->address_id==AddressHelpers::get_id_from_city_and_town($each_sets["city"],$each_sets["town"]);
+                $distribution_plans->address_id=AddressHelpers::get_id_from_city_and_town($each_sets["city"],$each_sets["town"]);
                 // 備考(案件担当から)
                 $distribution_plans->remark_from_operator="";
                 $distribution_plans->save();
@@ -130,21 +132,51 @@ class StoreDispatch{
 
 
     // 町目の重複確認をしたあとで、大丈夫だったき
-    public static function upsert_after_confirmation_to_plans(){
+    public static function upsert_after_confirmation_to_plans($new_projects){
         // このユーザーによって保存されたImport(必ずこの試行のみになる)
         $import_data=DistributionPlanImport::where("created_by",Auth::user()->id)->get();
 
         foreach($import_data as $each_import){
             $plan=new DistributionPlan();
-            $plan->project_id=$each_import->project_id;
             $plan->place_id=$each_import->place_id;
             $plan->start_date=$each_import->start_date;
             $plan->end_date=$each_import->end_date;
             $plan->address_id=$each_import->address_id;
             $plan->created_by=$each_import->created_by;
-            // 同じプロジェクトの同じ住所を、複数の営業所もしくは回数に分けているとき
-            // importのditribution_plan_idもしくはdistribution_record_idが記入されていて、かつrequest->newProjectsに格納されているproject_idが今回のproject_idと同じだった時
-            // same_project_flagを更新
+            $plan->remark_from_operator="";
+
+
+            // project_idを更新しないとき＝これまでと重複の場合
+            if(!in_array($each_import->project_id,$new_projects)){
+
+                // プロジェクトは変更なしの時はプロジェクトのidをそのまま挿入
+                // これまでと重複ではなく全く新しい案件の場合は新たに作られたidを取得
+                $plan->project_id=$each_import->project_id ?? ProjectHelpers::get_latest_project_id_from_name($each_import->project_name);
+
+                // importのditribution_plan_idもしくはdistribution_record_idが記入されているとき、つまり同じプロジェクトの同じ住所を、複数の営業所もしくは回数に分けているとき
+                if(!empty($each_import->distribution_plan_exists) || !empty($each_import->distribution_record_exists)){
+                    // same_project_flagを更新(recordのみに入っているものは、0にならずに1になる)
+                    // そのプロジェクトと町丁目におけるrecordとplanの数を取得
+
+
+                    // この部分、本来はN+1検索になっているので、データ増えた時に要注意!!!
+
+                    // planに入っている個数
+                    $plan_counts=DistributionPlan::where("project_id",$each_import->project_id)->where("address_id",$each_import->address_id)->count();
+                    // recordに入っている個数(都度更新されるので0か1)
+                    $record_counts=DistributionRecord::where("project_id",$each_import->project_id)->where("address_id",$each_import->address_id)->exists();
+                    // 同町目ナンバーを記載
+                    $plan->same_project_flag=$plan_counts+$record_counts;
+                }
+            }else{
+                // 新しい案件に更新するとき(トランザクション内部でも更新が反映)
+                // projectsテーブルのprojectIdにおける最新の同案件ナンバーのidを取得
+                if(empty($new_project_id= ProjectHelpers::get_latest_project_id_from_name(ProjectHelpers::get_project_name_from_id($each_import->project_id)))){
+                    throw new BusinessException("予期せぬエラーが発生しました\n最初からやり直してください");
+                };
+
+                $plan->project_id=$new_project_id;
+            }
 
             $plan->save();
         }

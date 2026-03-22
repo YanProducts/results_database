@@ -8,7 +8,11 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class ProjectHelpers{
-    // 案件名から、その案件名に該当する最新のプロジェクト名を返還
+    // idから案件名を取得(見つからなかったらNullが返る)
+    public static function get_project_name_from_id($project_id){
+        return Project::find($project_id)?->project_name;
+    }
+    // 案件名から、その案件名に該当する最新のidを返還
     public static function get_latest_project_id_from_name($project_name){
         // ない場合は空のコレクションからidも存在せずnullが返却
        return
@@ -28,6 +32,7 @@ class ProjectHelpers{
             // 前回のプロジェクト終了から、今回のプロジェクト開始が、１ヶ月より長いものがあれば、まずは確認後、処理を決定
             if(Project::where([
                 ["project_name",$project_name],
+                ["another_project_flag",self::get_latest_another_project_flag($project_name)],
                 ["end_date","<",Carbon::parse(min(array_column($date_town_sets,"start_date")))->subMonth() ]
             ])->exists()){
                 // １ヶ月以上間あり。まずは確認

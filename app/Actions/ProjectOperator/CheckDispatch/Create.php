@@ -37,7 +37,7 @@ class Create{
 
             // 最新の同案件ナンバー(1ヶ月以内のものも含むため最新のものを保存)
             $import->another_project_flag=ProjectHelpers::get_latest_another_project_flag($project_name);
-         
+
             $import->save();
         }
     }
@@ -56,15 +56,19 @@ class Create{
                 $import->created_by=Auth::user()->id;
 
                 $import->project_name=$project_name;
+
+
                 // 案件id(同名のものは最新のもの)
                 // 全て新しい案件でも、この項目は必要。なぜなら「同じ案件なので問答無用で更新」版で「同じ町目」のことが存在するから
                 // 重複可能性の配列にプロジェクト名が含まれているもののみ選択
-                if(in_array($project_name,array_column($same_town_data,"project_name"))){
+
+                if(in_array($project_name,array_column($same_town_data,"projectName"))){
                     // プロジェクトのid(２度以上使うので格納)
                     $project_id=ProjectHelpers::get_latest_project_id_from_name($project_name);
+
                     $import->project_id=$project_id;
-                    $import->distribution_plan_id=DistributionPlanHelpers::get_id_from_project_and_address($project_id,$address_id);
-                    $import->distribution_record_id=DistributionRecordHelpers::get_id_from_project_and_address($project_id,$address_id);
+                    $import->distribution_plan_exists=DistributionPlanHelpers::data_is_exists($project_id,$address_id);
+                    $import->distribution_record_exists=DistributionRecordHelpers::data_is_exists($project_id,$address_id);
 ;                }
                 // 営業所
                 $import->place_id=$place_id;

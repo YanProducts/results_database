@@ -3,8 +3,12 @@
 // 案件割り振りの際のヘルパー関数
 namespace App\Support\ProjectOperator;
 
+use App\Exceptions\BusinessException;
+use App\Models\DistributionPlanImport;
 use App\Models\Project;
+use App\Models\ProjectImport;
 use App\Support\CommonModelHelpers\ProjectHelpers;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class DispatchHelpers{
@@ -45,6 +49,14 @@ class DispatchHelpers{
 
         // 最大値は元のデータが存在しない場合はnullと渡されたデータの比較で渡されたデータになる
         return $now_data_in_sql ==null ? $max_data_in_sets :max($now_data_in_sql,$max_data_in_sets);
-
     }
+
+    // confirm時に必要な一式がない時はエラーページへ
+    public static function check_confirm_data_exisits(){
+        if(empty(session("same_projects_data")) && empty(session("same_towns_data"))|| !ProjectImport::where("created_by",Auth::user()->id)->exists() || !DistributionPlanImport::where("created_by",Auth::user()->id)->exists()){
+            throw new BusinessException("再度ファイル取得してください","project_operator.dispatch_project",true);
+        }
+    }
+
+
 }

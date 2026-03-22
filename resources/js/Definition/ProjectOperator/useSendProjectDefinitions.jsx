@@ -14,6 +14,7 @@ export default function useSendProjectDefinitions(){
     "fileSets":[]
   });
 
+  const [pageMinWidth,pageMaxWidth]=["min-w-105","max-w-170"]
 
-  return { data, setData, post, processing, errors, reset}
+  return { data, setData, post, processing, errors, reset,pageMinWidth,pageMaxWidth}
 }
