@@ -28,8 +28,10 @@ class DispatchRequest extends FormRequest
             "place"=>["required",new PlaceExistsRule],
             // ファイルの大元
             "fileSets" => ["required", "array","max:20"],
-            // 各ファイル(別途、ruleで例外除去)
-            "fileSets.*" => ["file", "mimes:csv", "mimetypes:text/csv,text/plain","max:2048"],
+            // 各ファイル(別途、ファイル読み込みの際に各データを除外)
+            // mimeはcsvにならない場合があるので行わない
+            // mimetypesはcontent-typeを見る。あまり信用しすぎない
+            "fileSets.*" => ["file", "mimetypes:text/csv,text/plain","max:2048"],
         ];
     }
     public function messages(){
@@ -38,7 +40,7 @@ class DispatchRequest extends FormRequest
             "fileSets.required"=>"ファイルが選択されていません",
             "fileSets.array"=>"ファイル選択でエラーが発生しました",
             "fileSets.*.file"=>"ファイル選択でエラーが発生しました",
-            "fileSets.*.mimes"=>"ファイルがcsvではありません",
+            // "fileSets.*.mimes"=>"ファイルがcsvではありません",
             "fileSets.*.mimetypes"=>"ファイルの内容がcsvではありません",
             "fileSets.*.max"=>"ファイルサイズが最大を超えています"
 

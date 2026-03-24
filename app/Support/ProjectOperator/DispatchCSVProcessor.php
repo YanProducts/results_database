@@ -3,6 +3,7 @@
 namespace App\Support\ProjectOperator;
 
 use App\Exceptions\BusinessException;
+use App\Utils\FileHelper;
 use App\Utils\Regex;
 use Illuminate\Support\Facades\Log;
 
@@ -13,16 +14,22 @@ class DispatchCSVProcessor{
         // 返却用
         $return_sets=[];
         foreach($files as $file){
-            // ファイルにアクセス
-            $handle = fopen($file->getRealPath(), 'r');
+
             // ファイルのの内容を見る(fgetsCSVが自動的に1行ずつ見てくれる)
-            // 返却用
+
+            // BOMを削除したポインタを返す
+            $tmp_handler=FileHelper::get_non_BOM_pointer($file);
+
+           // そもそもファイルがCSVとして読み取り可能か
+            DispatchCSVValidation::is_csv_file($tmp_handler);
+
             // サブ案件リスト
             $sub_projects_lists=[];
             // 何行目か
             $row_num=1;
+
             // 各案件リスト
-            while (($row = fgetcsv($handle)) !== false) {
+            while (($row = fgetcsv($tmp_handler)) !== false) {
                 if($row_num==1){
                     // メインプロジェクト名を取得（この内部でエラーチェック）
                     $main_project_name=self::get_main_projects_name($row);
@@ -42,6 +49,8 @@ class DispatchCSVProcessor{
                 $row_num++;
             }
         }
+        // データがタイトル行までしか存在しないときを弾く
+        DispatchCSVValidation::is_csv_contents_exists($row_num);
 
         Log::info($return_sets);
         //PHPのforeachはスコープを作らないのでこれでOK

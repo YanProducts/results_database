@@ -45,14 +45,9 @@ class Read{
             // 計画中のものor結果に同案件＆同町目が存在するか
             foreach($each_project_sets as $each_sets){
 
+                // 存在確認は前段階で行っている
                 $address_id=AddressHelpers::get_id_from_city_and_town($each_sets["city"],$each_sets["town"]);
 
-
-                // address_idがない時は例外をスローしてエラーページへ(確認の段階だから、まだテーブルはimportも合わせて1つも作られていない)
-                // とはいえ、本来はバリデーションの段階で行うべき
-                if(empty($address_id)){
-                    throw new BusinessException($each_sets["city"].$each_sets["town"]."という町名が見当たりませんでした");
-                }
 
                 if(DistributionPlanHelpers::data_is_exists($project_id,$address_id) || DistributionRecordHelpers::data_is_exists($project_id,$address_id)){
                     $duplicate_sets[]=[
