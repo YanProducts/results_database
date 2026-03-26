@@ -13,12 +13,13 @@ use Exception;
 
 class DispatchCSVValidation{
 
-    // そもそもファイルがCSVか
+    // そもそもファイルがCSVとして読み取り可能か(試しに中身を読み取る。その後にファイルポインタを戻す)
     public static function is_csv_file($handle){
         $first_row=fgetcsv($handle);
         if($first_row==false){
             throw new BusinessException("ファイルがCSV書式ではありません");
         }
+        rewind($handle);
     }
 
     // ファイルがタイトル行までしかなかった時
@@ -67,7 +68,7 @@ class DispatchCSVValidation{
         }
 
         // 日付の順序
-        if(!DateHelper::is_chronological($row_num[0],$row_num[1])){
+        if(!DateHelper::is_chronological($row[0],$row[1])){
                 throw new BusinessException("メイン案件名が".$main_project_name."のファイルの\n".$row_num."行目の開始日が終了日より後になっています");
         }
 

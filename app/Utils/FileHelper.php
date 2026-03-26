@@ -2,6 +2,9 @@
 
 // ファイルの操作をまとめる
 namespace App\Utils;
+
+use Illuminate\Support\Facades\Log;
+
 class FileHelper{
     // BOMの除去
     public static function remove_BOM($file){
@@ -11,6 +14,7 @@ class FileHelper{
 
     // BOMを削除したポインタを返す
     public static function get_non_BOM_pointer($file){
+
             // 中身を取得してBOMを外して変換
             $contents=self::remove_BOM($file);
 

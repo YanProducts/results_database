@@ -20,7 +20,7 @@ class DispatchCSVProcessor{
             // BOMを削除したポインタを返す
             $tmp_handler=FileHelper::get_non_BOM_pointer($file);
 
-           // そもそもファイルがCSVとして読み取り可能か
+           // そもそもファイルがCSVとして読み取り可能か(試しに中身を読み取る。その後にファイルポインタを戻す)
             DispatchCSVValidation::is_csv_file($tmp_handler);
 
             // サブ案件リスト
@@ -52,10 +52,8 @@ class DispatchCSVProcessor{
         // データがタイトル行までしか存在しないときを弾く
         DispatchCSVValidation::is_csv_contents_exists($row_num);
 
-        Log::info($return_sets);
         //PHPのforeachはスコープを作らないのでこれでOK
         return $return_sets;
-
     }
 
     // メインプロジェクトの名前の取得

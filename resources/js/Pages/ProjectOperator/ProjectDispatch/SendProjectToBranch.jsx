@@ -25,7 +25,7 @@ export default function SendProjectToBranch({prefix,what,type,placeSets}){
 
 
     {/* 投稿フォーム */}
-    <form onSubmit={onSubmitBtnClick}>
+    <form encType="multipart/form-data" onSubmit={onSubmitBtnClick}>
             {/* 選択項目 */}
             <InputPageHeader what={what} type={type} minWidth={pageMinWidth} maxWidth={pageMaxWidth} specialMessage="以下を選択してください"/>
 

@@ -137,6 +137,7 @@ class StoreDispatch{
         $import_data=DistributionPlanImport::where("created_by",Auth::user()->id)->get();
 
         foreach($import_data as $each_import){
+
             $plan=new DistributionPlan();
             $plan->place_id=$each_import->place_id;
             $plan->start_date=$each_import->start_date;
@@ -145,9 +146,9 @@ class StoreDispatch{
             $plan->created_by=$each_import->created_by;
             $plan->remark_from_operator="";
 
-
+            // 初登校データのとき(すでにplan側にtransaction内部で保存されている)
             // project_idを更新しないとき＝これまでと重複の場合
-            if(!in_array($each_import->project_id,$new_projects)){
+            if($each_import->project_id==null || !in_array($each_import->project_id,$new_projects)){
 
                 // プロジェクトは変更なしの時はプロジェクトのidをそのまま挿入
                 // これまでと重複ではなく全く新しい案件の場合は新たに作られたidを取得
@@ -157,10 +158,7 @@ class StoreDispatch{
                 if(!empty($each_import->distribution_plan_exists) || !empty($each_import->distribution_record_exists)){
                     // same_project_flagを更新(recordのみに入っているものは、0にならずに1になる)
                     // そのプロジェクトと町丁目におけるrecordとplanの数を取得
-
-
                     // この部分、本来はN+1検索になっているので、データ増えた時に要注意!!!
-
                     // planに入っている個数
                     $plan_counts=DistributionPlan::where("project_id",$each_import->project_id)->where("address_id",$each_import->address_id)->count();
                     // recordに入っている個数(都度更新されるので0か1)
@@ -174,14 +172,12 @@ class StoreDispatch{
                 if(empty($new_project_id= ProjectHelpers::get_latest_project_id_from_name(ProjectHelpers::get_project_name_from_id($each_import->project_id)))){
                     throw new BusinessException("予期せぬエラーが発生しました\n最初からやり直してください");
                 };
-
                 $plan->project_id=$new_project_id;
+                // デフォルトで０だが念の為
+                $plan->same_project_flag=0;
+
             }
-
-            $plan->save();
         }
-
-
     }
 
 
