@@ -43,7 +43,7 @@ class ProjectDispatchController extends Controller
         //placeはすでにplaceがid
         $place_id=$request->place;
 
-        //重複チェックの一連の流れを行い、重複データを変換
+        //重複チェックの一連の流れを行い、重複データを変換(この過程でsqlデータを初期化する)
         [$same_projects_data,$same_towns_data]=CheckFlow::check_flow($project_name_and_towns,$place_id);
 
         if(!empty($same_projects_data) || !empty($same_towns_data)){

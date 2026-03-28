@@ -136,6 +136,7 @@ class StoreDispatch{
         // このユーザーによって保存されたImport(必ずこの試行のみになる)
         $import_data=DistributionPlanImport::where("created_by",Auth::user()->id)->get();
 
+
         foreach($import_data as $each_import){
 
             $plan=new DistributionPlan();
@@ -177,6 +178,7 @@ class StoreDispatch{
                 $plan->same_project_flag=0;
 
             }
+            $plan->save();
         }
     }
 

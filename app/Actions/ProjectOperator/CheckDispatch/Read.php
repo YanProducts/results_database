@@ -17,10 +17,11 @@ class Read{
 
         // ①プロジェクト名、②start_dateの最も早い日付を取得
         foreach($project_name_and_towns as $project_name=>$date_town_sets){
+
             // 最新の同案件フラグを取得
             $latest_another_project_flag_id=ProjectHelpers::get_latest_project_id_from_name($project_name);
 
-            if(ProjectHelpers::need_user_confirm($project_name,$date_town_sets,$latest_another_project_flag_id)){
+            if(ProjectHelpers::need_user_confirm($latest_another_project_flag_id,$date_town_sets)){
                 // 違うプロジェクトの可能性を踏まえて挿入
                 // データ挿入は別途、表示用にプロジェクト名のみ入れる
                 $duplicate_sets[]=[

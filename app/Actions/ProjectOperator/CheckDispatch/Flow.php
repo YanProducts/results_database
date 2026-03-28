@@ -9,12 +9,17 @@ use App\Actions\ProjectOperator\CheckDispatch\Delete as CheckDelete;
 use App\Actions\ProjectOperator\StoreDispatch;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Flow{
     // ファイルが読み込まれてから最初の重複チェック
     public static function check_flow($project_name_and_towns,$place_id){
+        // データの初期化(その人が投稿したimportsのテーブルの削除&)
+        CheckDelete::automatic_delete_from_same_user();
+
         // 同じ案件の可能性があるものを返す(１ヶ月以内は問答無用で「同じ」)
         $same_projects_data=CheckRead::check_same_project_data($project_name_and_towns);
+
         // 同じ案件候補で同じ町目が既に登録されているものを返す
         $same_towns_data=CheckRead::check_same_town_data($project_name_and_towns);
 
