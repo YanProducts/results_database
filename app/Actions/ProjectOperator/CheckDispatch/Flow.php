@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Log;
 class Flow{
     // ファイルが読み込まれてから最初の重複チェック
     public static function check_flow($project_name_and_towns,$place_id){
+
+    // project_name_and_townsは[テーマ名]=> ["main"=>["project_names"=>"","date_town_sets"=>"","sub"=>["ptojrct_name"と"date_town_sets"がいくつかの配列]]のデータ取得
+
         // データの初期化(その人が投稿したimportsのテーブルの削除&)
         CheckDelete::automatic_delete_from_same_user();
 
@@ -44,6 +47,5 @@ class Flow{
             // 案件の消去
             CheckDelete::automatic_delete_from_same_user();
         });
-
     }
 }

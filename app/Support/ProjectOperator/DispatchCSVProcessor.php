@@ -34,8 +34,14 @@ class DispatchCSVProcessor{
                     // メインプロジェクト名を取得（この内部でエラーチェック）
                     $main_project_name=self::get_main_projects_name($row);
                     // 返却する案件=>town,dateのリスト(内容違いの同じ案件が登録されるケースを考え、無条件での初期化はしない)
-                    if(!isset($return_sets[$main_project_name])){
-                        $return_sets[$main_project_name]=[];
+                    if(!isset($return_sets[$main_project_name."0"])){
+                        // return_sets_keyはイメージ的にはファイル名のようなもの。この中にmainで案件名とdateと町目、subで案件名ごとにdateと町目を記載
+                        $return_sets_key=$main_project_name."0";
+                    }else{
+                        // 同じメイン案件名で同じセットで2案件目(併配セットや場所が違うなど)
+
+                        // whileで10までは可能とする
+
                     }
 
                 }else if($row_num==2){
@@ -43,14 +49,22 @@ class DispatchCSVProcessor{
                     $sub_projects_lists=self::get_heihai_projects_name($row);
                     $second_row_count=count($row);
                 }else{
+
                     // 各データを入れる（この内部でエラーチェック）
-                    $return_sets=self::get_each_town_data($second_row_count,$row_num,$row,$main_project_name,$sub_projects_lists,$return_sets);
+                    $return_sets=self::get_each_town_data($second_row_count,$row_num,$row,$main_project_name,$sub_projects_lists,$return_sets,$return_sets_key);
+
                 }
                 $row_num++;
             }
         }
         // データがタイトル行までしか存在しないときを弾く
         DispatchCSVValidation::is_csv_contents_exists($row_num);
+
+
+        Log::info($return_sets);
+        dd("a");
+
+
 
         //PHPのforeachはスコープを作らないのでこれでOK
         return $return_sets;
@@ -71,7 +85,7 @@ class DispatchCSVProcessor{
 
 
     // 各csvのファイル内部での3行目以下の町目記入の処理
-    public static function get_each_town_data($second_row_count,$row_num,$row,$main_project_name,$sub_projects_lists,$return_sets){
+    public static function get_each_town_data($second_row_count,$row_num,$row,$main_project_name,$sub_projects_lists,$return_sets,$return_sets_key){
 
             //データのチェック
             DispatchCSVValidation::check_data_row($second_row_count,$row_num,$row,$main_project_name);
@@ -81,17 +95,23 @@ class DispatchCSVProcessor{
                 "end_date"=>$row[1],
                 // 現在のCSVデータには県のデータがない
                 "city"=>$row[2],
-                "town"=>$row[3]
+                "town"=>$row[3],
+                // 分割
+                "map_number"=>$row[count($row)-1]
             ];
 
                 // メイン案件リストに追加(同じ案件内でも併配によって期日が違う場合があるので、Dateも1つずつ行う)
-                $return_sets[$main_project_name][]=$each_town_list;
+                $return_sets[$return_sets_key]["main"]=[
+                    "project_name"=>$main_project_name,
+                    "date_town_sets"=>$each_town_list
+                ];
 
                 // 併配リストに「○」がついているとき、サブ案件リストに追加(単配は除外)
+                // それぞれの行の最後はMapナンバー
                 if(count($row)>=5){
-                    for($column=5;$column<count($row);$column++){
+                    for($column=5;$column<count($row)-1;$column++){
                         if(in_array($row[$column],["〇","○","○"])){
-                        $return_sets[$sub_projects_lists[$column-5]][]=$each_town_list;
+                            $return_sets[$return_sets_key]["sub"][]=["project_name"=>$sub_projects_lists[$column-5],"date_town_sets"=>$each_town_list];
                         }
                     }
                 }

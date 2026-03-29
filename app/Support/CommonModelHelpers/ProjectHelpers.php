@@ -5,6 +5,7 @@ namespace App\Support\CommonModelHelpers;
 
 use App\Exceptions\BusinessException;
 use App\Models\Project;
+use App\Utils\DateHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -52,18 +53,6 @@ class ProjectHelpers{
             ["project_name","=",$project_name],["another_project_flag","=",$flag]
         ]);
     }
-    // 該当営業所の該当機関に来ている案件を返す
-    public static function get_projects_in_the_place_and_period($place_id,$date_sets){
 
-        // dateが存在しないとき (issetは複数キーの同時チェック可能)
-        if (!isset($date_sets['start'], $date_sets['end'])) {
-            throw new BusinessException("日付取得時のエラーです");
-        }
-
-
-        return Project::where("place_id",$place_id)->where("start_date","<=",$date_sets["start"])
-        ->where("end_date",">=",$date_sets["end"])
-        ->get();
-    }
 
 }

@@ -37,7 +37,7 @@ class ProjectDispatchController extends Controller
     // 営業所(外注含む)へ振る案件投稿→以前と同じものか確認
     public function dispatch_project_post(DispatchRequest $request){
 
-        // CSVから案件名=>[town,start,end]の入れ子配列の取得
+        // CSVからテーマ名=>["main"=>["projects"=>"","date_town_sets"=>"","sub"=>["ptojrct_name"と"date_town_sets"がいくつかの配列]]のデータ取得
         $project_name_and_towns=DispatchCSVProcessor::get_data_in_files($request->fileSets);
 
         //placeはすでにplaceがid
