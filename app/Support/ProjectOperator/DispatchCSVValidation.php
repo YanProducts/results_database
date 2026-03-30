@@ -11,6 +11,8 @@ use App\Utils\DateHelper;
 use App\Utils\Regex;
 use Exception;
 
+use function PHPUnit\Framework\isNumeric;
+
 class DispatchCSVValidation{
 
     // そもそもファイルがCSVとして読み取り可能か(試しに中身を読み取る。その後にファイルポインタを戻す)
@@ -29,6 +31,13 @@ class DispatchCSVValidation{
         }
     }
 
+    // 同じメイン案件が20個以上送られていたとき
+    public static function check_same_name_main_project_counts_limit($main_project_name,$round_number,$round_limit){
+        if($round_number>$round_limit){
+            throw new BusinessException("同案件は".$round_limit."ファイルまでしか送信できません。\n案件名".$main_project_name);
+        }
+    }
+
 
     // ファイルの１行目（メイン案件名）
     public static function check_first_row($row){
@@ -39,6 +48,7 @@ class DispatchCSVValidation{
             throw new BusinessException("案件名".$row[1]."の名前はルールに沿っていません");
         }
     }
+
     // ファイルの２行目（サブ案件名）
     public static function check_second_row($row){
         // 単配でも4。4以下の時はエラー
@@ -47,7 +57,7 @@ class DispatchCSVValidation{
         }
         // 4要素目以降は案件名に従っているか
         if(count($row)>4){
-            for($column=4;$column<count($row);$column++){
+            for($column=4;$column<count($row)-1;$column++){
                 if(!Regex::check_projects_name($row[$column])){
                     throw new BusinessException("案件名".$row[$column]."の名前はルールに沿っていません");
                 }
@@ -72,8 +82,20 @@ class DispatchCSVValidation{
                 throw new BusinessException("メイン案件名が".$main_project_name."のファイルの\n".$row_num."行目の開始日が終了日より後になっています");
         }
 
+        // 住所に存在
         if(!AddressHelpers::is_address_exists($row[2],$row[3])){
             throw new BusinessException("メイン案件名が".$main_project_name."のファイルの".$row_num."行目の\n".$row[2].$row[3]."という町目が町目データにありません");
+        }
+
+        // mapNoに数字以外が含まれていたらアウト
+        $map_number=$row[count($row)-1];
+        if(!ctype_digit($map_number)){
+            throw new BusinessException("メイン案件名が".$main_project_name."のファイルの".$row_num."行目の\nマップの番号が数字ではありません");
+            }
+
+        // マップ番号100以降はアウト(変更可能性はあり)
+        if($row[count($row)-1]>100){
+            throw new BusinessException("メイン案件名が".$main_project_name."のファイルの".$row_num."行目の\nマップの番号が100を超えています");
         }
 
     }

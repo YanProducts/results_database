@@ -31,6 +31,8 @@ class ProjectHelpers{
 
     // 更新するか作成するかの選択(そのプロジェクトのidと日付が引数)
     public static function need_user_confirm($latest_another_project_flag_id,$date_town_sets){
+
+
             // 同じプロジェクトで1月以上の期間が開いているものがあるかの取得
             // 前回のプロジェクト終了から、今回のプロジェクト開始が、１ヶ月より長いものがあれば、まずは確認後、処理を決定
             if(Project::where([

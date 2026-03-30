@@ -22,9 +22,12 @@ class Flow{
 
         // 同じ案件の可能性があるものを返す(１ヶ月以内は問答無用で「同じ」)
         $same_projects_data=CheckRead::check_same_project_data($project_name_and_towns);
+        dd("a");
 
         // 同じ案件候補で同じ町目が既に登録されているものを返す
         $same_towns_data=CheckRead::check_same_town_data($project_name_and_towns);
+
+        dd("a");
 
         // どちらかが引っ掛かれば確認ページに行くので、両方のデータを一時保存に挿入
         if(!empty($same_projects_data) || !empty($same_towns_data)){

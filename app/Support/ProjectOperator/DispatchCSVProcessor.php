@@ -23,26 +23,31 @@ class DispatchCSVProcessor{
            // そもそもファイルがCSVとして読み取り可能か(試しに中身を読み取る。その後にファイルポインタを戻す)
             DispatchCSVValidation::is_csv_file($tmp_handler);
 
-            // サブ案件リスト
-            $sub_projects_lists=[];
             // 何行目か
             $row_num=1;
+
+            // csvデータの内部を取得
+            [$return_sets,$row_num]=self::get_csv_inner_data($tmp_handler,$return_sets,$row_num);
+        }
+
+        // データがタイトル行までしか存在しないときを弾く
+        DispatchCSVValidation::is_csv_contents_exists($row_num);
+
+
+        //PHPのforeachはスコープを作らないのでこれでOK
+        return $return_sets;
+    }
+
+    // 内部データの取得
+    public static function get_csv_inner_data($tmp_handler,$return_sets,$row_num){
+            // サブ案件リスト
+            $sub_projects_lists=[];
 
             // 各案件リスト
             while (($row = fgetcsv($tmp_handler)) !== false) {
                 if($row_num==1){
-                    // メインプロジェクト名を取得（この内部でエラーチェック）
-                    $main_project_name=self::get_main_projects_name($row);
-                    // 返却する案件=>town,dateのリスト(内容違いの同じ案件が登録されるケースを考え、無条件での初期化はしない)
-                    if(!isset($return_sets[$main_project_name."0"])){
-                        // return_sets_keyはイメージ的にはファイル名のようなもの。この中にmainで案件名とdateと町目、subで案件名ごとにdateと町目を記載
-                        $return_sets_key=$main_project_name."0";
-                    }else{
-                        // 同じメイン案件名で同じセットで2案件目(併配セットや場所が違うなど)
-
-                        // whileで10までは可能とする
-
-                    }
+                  // １行目の処理(同じメイン案件名(ファイルのテーマ名)が何回目の登場かのdo~whileを行い、ファイル名とメイン案件名を記入し、配列を返す)
+                    [$return_sets,$return_sets_key,$main_project_name]=self::get_first_row_data($row,$return_sets);
 
                 }else if($row_num==2){
                     // CSVの1行目は併配の名前を入れる（この内部でエラーチェック）
@@ -56,18 +61,32 @@ class DispatchCSVProcessor{
                 }
                 $row_num++;
             }
-        }
-        // データがタイトル行までしか存在しないときを弾く
-        DispatchCSVValidation::is_csv_contents_exists($row_num);
+        return [$return_sets,$row_num];
+    }
 
+    // １行目の処理(同じメイン案件名(ファイルのテーマ名)が何回目の登場かのdo~whileを行い、ファイル名とメイン案件名を記入し、配列を返す)
+    public static function get_first_row_data($row,$return_sets){
 
-        Log::info($return_sets);
-        dd("a");
+                   // 同じメイン案件名が何回出てくるか
+                    $round_number=0;
 
+                    // メインプロジェクト名を取得（この内部でエラーチェック）
+                    $main_project_name=self::get_main_projects_name($row);
 
+                    // 同案件のファイルをいくつまで同時送信して良いとするか
+                    $round_limit=20;
 
-        //PHPのforeachはスコープを作らないのでこれでOK
-        return $return_sets;
+                    do{
+                      DispatchCSVValidation::check_same_name_main_project_counts_limit($main_project_name,$round_number,$round_limit);
+                      if(!isset($return_sets[$main_project_name."_".$round_number])){
+                        // return_sets_keyはイメージ的にはファイル名のようなもの。この中にmainで案件名とdateと町目、subで案件名ごとにdateと町目を記載
+                        $return_sets_key=$main_project_name."_".$round_number;
+                        $return_sets[$return_sets_key]["main"]["project_name"]=$main_project_name;
+                        break;
+                     }
+                     $round_number++;
+                    }while($round_number<$round_limit+1);
+                return [$return_sets,$return_sets_key,$main_project_name];
     }
 
     // メインプロジェクトの名前の取得
@@ -101,14 +120,11 @@ class DispatchCSVProcessor{
             ];
 
                 // メイン案件リストに追加(同じ案件内でも併配によって期日が違う場合があるので、Dateも1つずつ行う)
-                $return_sets[$return_sets_key]["main"]=[
-                    "project_name"=>$main_project_name,
-                    "date_town_sets"=>$each_town_list
-                ];
+                $return_sets[$return_sets_key]["main"]["date_town_sets"][]=$each_town_list;
 
                 // 併配リストに「○」がついているとき、サブ案件リストに追加(単配は除外)
                 // それぞれの行の最後はMapナンバー
-                if(count($row)>=5){
+                if(count($row)>=6){
                     for($column=5;$column<count($row)-1;$column++){
                         if(in_array($row[$column],["〇","○","○"])){
                             $return_sets[$return_sets_key]["sub"][]=["project_name"=>$sub_projects_lists[$column-5],"date_town_sets"=>$each_town_list];
