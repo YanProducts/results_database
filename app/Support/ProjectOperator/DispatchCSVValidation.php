@@ -51,11 +51,11 @@ class DispatchCSVValidation{
 
     // ファイルの２行目（サブ案件名）
     public static function check_second_row($row){
-        // 単配でも4。4以下の時はエラー
-        if(count($row)<4){
+        // 単配でも5。5以下の時はエラー
+        if(count($row)<5){
             throw new BusinessException("CSV書式のエラーです");
         }
-        // 4要素目以降は案件名に従っているか
+        // 4要素目以降~MapNoの手前までは案件名に従っているか
         if(count($row)>4){
             for($column=4;$column<count($row)-1;$column++){
                 if(!Regex::check_projects_name($row[$column])){

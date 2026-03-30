@@ -40,8 +40,6 @@ class DispatchCSVProcessor{
 
     // 内部データの取得
     public static function get_csv_inner_data($tmp_handler,$return_sets,$row_num){
-            // サブ案件リスト
-            $sub_projects_lists=[];
 
             // 各案件リスト
             while (($row = fgetcsv($tmp_handler)) !== false) {
@@ -51,12 +49,14 @@ class DispatchCSVProcessor{
 
                 }else if($row_num==2){
                     // CSVの1行目は併配の名前を入れる（この内部でエラーチェック）
-                    $sub_projects_lists=self::get_heihai_projects_name($row);
+                    $return_sets=self::get_heihai_projects_name($return_sets,$return_sets_key,$row);
+                    // 2行目の列の数
                     $second_row_count=count($row);
+
                 }else{
 
                     // 各データを入れる（この内部でエラーチェック）
-                    $return_sets=self::get_each_town_data($second_row_count,$row_num,$row,$main_project_name,$sub_projects_lists,$return_sets,$return_sets_key);
+                    $return_sets=self::get_each_town_data($second_row_count,$row_num,$row,$main_project_name,$return_sets,$return_sets_key);
 
                 }
                 $row_num++;
@@ -96,16 +96,24 @@ class DispatchCSVProcessor{
     }
 
     // 併配のプロジェクトの名前の取得(行の２行目)
-    public static function get_heihai_projects_name($row){
+    public static function get_heihai_projects_name($return_sets,$return_sets_key,$row){
         DispatchCSVValidation::check_second_row($row);
-        // ２行目の場合、rowデータの案件名(5列目以降)を取得し保存する
-        return array_slice($row,4);
+
+        // 併配案件を代入(要素数5以下はバリデーションで除去済)。
+        // 最後の列はMapNo
+        for($column=4;$column<count($row)-1;$column++){
+            $return_sets[$return_sets_key]["sub"][$column-4]=[
+                "project_name"=>$row[$column],
+                "date_town_sets"=>[]
+            ];
+        }
+
+        return $return_sets;
     }
 
 
     // 各csvのファイル内部での3行目以下の町目記入の処理
-    public static function get_each_town_data($second_row_count,$row_num,$row,$main_project_name,$sub_projects_lists,$return_sets,$return_sets_key){
-
+    public static function get_each_town_data($second_row_count,$row_num,$row,$main_project_name,$return_sets,$return_sets_key){
             //データのチェック
             DispatchCSVValidation::check_data_row($second_row_count,$row_num,$row,$main_project_name);
 
@@ -125,15 +133,14 @@ class DispatchCSVProcessor{
                 // 併配リストに「○」がついているとき、サブ案件リストに追加(単配は除外)
                 // それぞれの行の最後はMapナンバー
                 if(count($row)>=6){
-                    for($column=5;$column<count($row)-1;$column++){
+                    for($column=4;$column<count($row)-1;$column++){
                         if(in_array($row[$column],["〇","○","○"])){
-                            $return_sets[$return_sets_key]["sub"][]=["project_name"=>$sub_projects_lists[$column-5],"date_town_sets"=>$each_town_list];
+                            $return_sets[$return_sets_key]["sub"][$column-4]["date_town_sets"][]=$each_town_list;
                         }
                     }
                 }
 
         return $return_sets;
-
     }
 
 }

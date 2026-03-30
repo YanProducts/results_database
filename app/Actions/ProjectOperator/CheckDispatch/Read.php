@@ -26,12 +26,6 @@ class Read{
             // 該当案件における併配セット
             if(array_key_exists("sub",$each_project_sets)){
                 foreach($each_project_sets["sub"] as $each_sub_set){
-
-                Log::info($each_sub_set["project_name"]);
-                Log::info($each_sub_set["date_town_sets"]);
-
-
-
                    $duplicate_sets=self::add_duplicated_projects_sets($each_sub_set["project_name"],$each_sub_set["date_town_sets"],$duplicate_sets);
                }
             }
@@ -43,8 +37,6 @@ class Read{
 
     // 1つ1つ見ていったファイルから、重複しているもののセットを捕捉
     public static function add_duplicated_projects_sets($project_name,$date_town_sets,$duplicate_sets){
-
-Log::info($date_town_sets);
 
             // その案件の最新の同案件フラグナンバーの取得
             $latest_another_project_flag_id=ProjectHelpers::get_latest_project_id_from_name($project_name);
