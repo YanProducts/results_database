@@ -37,7 +37,7 @@ class DateHelper{
             $base_date=Carbon::now();
         }
         return[
-            "staet"=>$base_date->addDays($start_offset),
+            "start"=>$base_date->addDays($start_offset),
             "end"=>$base_date->addDays($end_offset)
         ];
     }

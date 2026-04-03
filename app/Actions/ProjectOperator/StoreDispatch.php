@@ -34,11 +34,16 @@ class StoreDispatch{
                 // メイン案件
                 $main_sets=$each_project["main"];
                 $main_project_name=$main_sets["project_name"];
+
                 self::insert_distribution_plans_table($main_sets["date_town_sets"],$main_sets["project_name"],$place,true,null);
 
                 // サブ案件
                 $sub_sets=$each_project["sub"];
-                self::insert_distribution_plans_table($sub_sets["date_town_sets"],$sub_sets["project_name"],$place,false,$main_project_name);
+
+                foreach($sub_sets as $each_sets){
+
+                    self::insert_distribution_plans_table($each_sets["date_town_sets"],$each_sets["project_name"],$place,false,$main_project_name);
+                }
             }
         });
 
@@ -51,8 +56,10 @@ class StoreDispatch{
         foreach($project_name_and_towns as $each_project){
             // project_name_and_townsは[テーマ名]=> ["main"=>["project_names"=>"","date_town_sets"=>"","sub"=>["ptojrct_name"と"date_town_sets"がいくつかの配列]]のデータ取得
             // project_name=>date_town_setsの配列に変更
-            $main_project_array=array_combine(array_column($each_project,"main"),array_column($each_project,"date_town_sets"));
-            $sub_project_array=array_combine(array_column($each_project,"sub"),array_column($each_project,"date_town_sets"));
+
+            $main_project_array=[$each_project["main"]["project_name"]=>$each_project["main"]["date_town_sets"]];
+
+            $sub_project_array=array_combine(array_column($each_project["sub"],"project_name"),array_column($each_project["sub"],"date_town_sets"));
 
             // アップザート
             self::project_upsert_query([...$main_project_array,...$sub_project_array]);
@@ -67,8 +74,10 @@ class StoreDispatch{
                 "project_name" => $project_name,
                 "another_project_flag" => ProjectHelpers::get_latest_another_project_flag($project_name),//存在しないものは-0で返る(新規作成ではゼロ) //ここでは変更しない
                 "created_by"=>Auth::user()->id,
+
                 // 投稿されたファイルと既存データの早い方をstart_dateに
                 "start_date"=>DispatchHelpers::get_earliest_start_date($project_name,$date_town_sets),
+
                 // 投稿されたファイルと既存データの遅い方をend_dateに
                 "end_date"=>DispatchHelpers::get_lateest_end_date($project_name,$date_town_sets),
         ]);
@@ -131,13 +140,16 @@ class StoreDispatch{
 
     // project_name_and_townsは[テーマ名]=> ["main"=>["project_names"=>"","date_town_sets"=>"","sub"=>["ptojrct_name"と"date_town_sets"がいくつかの配列]]のデータ取得
 
+
             foreach($date_town_sets as $each_sets){
                 $address_id=AddressHelpers::get_id_from_city_and_town($each_sets["city"],$each_sets["town"]);
+                $project_id=ProjectHelpers::get_latest_project_id_from_name($project_name);
+
                 $distribution_plans=new DistributionPlan();
                 // 誰が登録したか
                 $distribution_plans->created_by=Auth::user()->id;
                 //プロジェクトのId
-                $distribution_plans->project_id=ProjectHelpers::get_latest_project_id_from_name($project_name);
+                $distribution_plans->project_id=$project_id;
                 // 営業所Id
                 $distribution_plans->place_id=$place_id;
                 // 期限
@@ -153,7 +165,11 @@ class StoreDispatch{
                 // メイン案件のid(メインとは分けて行っているため、必ずメイン案件は保存されている)
                 if(!$is_main){
                     $distribution_plans->main_id=DistributionPlan::where([
-                        ["project_name","=",$main_project_name],
+                        // このメインプロジェクト、住所、営業所でmain_idがnullのものがメイン案件(念のため同案件フラグNo.まで同じの同じ案件同じ町目が何回も行った場合に備えてround_numberも設定)
+                        ["project_id","=",ProjectHelpers::get_latest_project_id_from_name($main_project_name)],
+                        ["main_id","=",null],
+                        //round_number
+
                         ["place_id","=",$place_id],
                         ["address_id","=",$address_id],
                         ])->orderBy("id","desc")->value("id");
@@ -170,12 +186,9 @@ class StoreDispatch{
         // このユーザーによって保存されたImport(必ずこの試行のみになる)
         $import_data=DistributionPlanImport::where("created_by",Auth::user()->id)->get();
 
-
         foreach($import_data as $each_import){
             $address_id=$each_import->address_id;
             $place_id=$each_import->place_id;
-
-
             $plan=new DistributionPlan();
             $plan->place_id=$place_id;
             $plan->start_date=$each_import->start_date;
@@ -184,8 +197,11 @@ class StoreDispatch{
             $plan->created_by=$each_import->created_by;
             $plan->map_number=$each_import->map_number;
 
-            //セットになっているメイン案件の同町目のセットが保存されるidを返す。メインプロジェクトの名前を取得し、その名前における最新同案件ナンバーのProjectにおけるIdを取得し、住所と営業所が同じDistributionPlanのidを取得
-            $plan->main_id=DistributionPlan::where("project_id",ProjectHelpers::get_latest_project_id_from_name(DistributionPlanImport::where("id",$each_import->main_id)->value("project_name")))->where("address_id",$address_id)->where("place_id",$place_id)->value("id") ?? throw new BusinessException("予期せぬエラーです");
+            //セットになっているメイン案件の同町目のセットが保存されるidを返す。メインプロジェクトの名前を取得し、その名前における最新同案件ナンバーのProjectにおけるIdを取得し、住所と営業所が同じDistributionPlanのidを取得(メイン案件の場合はnull)
+            $main_id=DistributionPlanImport::where("id",$each_import->main_id)->value("project_name");
+            if(!$main_id==null){
+                $plan->main_id=DistributionPlan::where("project_id",ProjectHelpers::get_latest_project_id_from_name($main_id))->where("address_id",$address_id)->where("place_id",$place_id)->value("id") ?? throw new BusinessException("予期せぬエラーです");
+            }
 
             $plan->remark_from_operator="";
 
