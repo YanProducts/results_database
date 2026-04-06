@@ -50,8 +50,6 @@ export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,
 
                 {/* MapNoとスタッフ */}
                 <MapLists projectsAndTowns={projectsAndTowns} selectedMainProject={selectedMainProject} staffs={staffs} handleAssignChangeInMaps={handleAssignChangeInMaps}/>
-
-
               </div>
 
       {/* バリデーションエラー */}
