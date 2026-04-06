@@ -1,42 +1,55 @@
 import Layout from "../../../Layout/Layout";
 import { RoleLayout } from "../../../Layout/RoleLayout";
+import SelectPartsForViewChange from "../../../Components/Common/SelectPartsForViewChange";
 import InputPageHeader from "../../../Components/Common/InputPageHeader";
 import ViewValidationErrors from "../../../Components/Common/ViewValidationErrors";
 import BaseButton from "../../../Components/Common/BaseButton";
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
 import useAssignProjectToStaffDefinitions from "../../../Definition/BranchManager/ProjectAssingment/useAssignProjectToStaffDefinitions";
 import useAssignProjectToStaffActions from "../../../Action/BranchManager/ProjectAssignment/useAssingProjectToStaffActions";
+import RadioButton from "../../../Components/Common/RadioButton";
+import MapLists from "../../../Components/Part/BranchManager/StaffAssign/MapLists";
 
 // 案件を営業所担当に送信
-export default function AssingProjectToStaff({prefix,what,type}){
+export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,dateSets,staffs}){
 
   // 定義(フォームなど)
-  const { data, setData, post, processing, errors, reset}=useAssignProjectToStaffDefinitions();
+  const { data, setData, post, processing, errors, reset, assignPlan,setAssignPlan,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,selectedMapNumber,setSelectedMapNumber,townAssign,setTownAssign}=useAssignProjectToStaffDefinitions();
 
   // 動き
-  const {onPlaceChange,onSubmitBtnClick}=useAssignProjectToStaffActions();
+  const {onSubmitBtnClick,onSelectedDateChange,onSelectedMainProjectChange,onChangeMapOrTown,handleAssignChangeInMaps,handleAssignChangeInTowns}=useAssignProjectToStaffActions(duseAssignProjectToStaffActions(dateSets,projectsAndTowns,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,selectedMapNumber,setSelectedMapNumber,setSelectedDate));
 
   return(
     <Layout title={`${what}-${type}`}>
     <RoleLayout prefix={prefix}>
 
     {/* タイトル */}
-    <InputPageHeader what={what} type={type} inputWhat="日付"/>
+    <InputPageHeader what={what}value={date} type={type} inputWhat="日付"/>
 
     {/* 投稿フォーム */}
     <form onSubmit={onSubmitBtnClick}>
              <div className="base_frame min-w-80 max-w-100 base_backColor md:p-3 sm:p-2 p-0 border-2 border-black rounded-sm mb-5">
 
-                {/* 日付 */}
-                {/* <SelectParts name="places" value={data.place} onChange={onPlaceChange} prefix={"期限："} keyValueSets={placeSets} allowEmptyOption={false}/> */}
+                {/* 5日後までの日付(select変化でメイン案件名変化) */}
+                <SelectPartsForViewChange onChange={onSelectedDateChange} prefix={"日付："} keyValueSets={dateSets}/>
 
-                {/* メイン案件名 */}
-                {/* <SelectParts name="places" value={data.place} onChange={onPlaceChange} prefix={"期限："} keyValueSets={placeSets} allowEmptyOption={false}/> */}
+                {/* メイン案件名(クリックすれば「MapNo選択⇨必要なら修正」or「町目リストから直接」の項目開く) */}
+                <SelectPartsForViewChange onChange={onSelectedMainProjectChange} prefix={"案件名："} keyValueSets={dateSets}/>
 
-                {/* 町名(textareaを設定して貼り付ける形にする)とスタッフ */}
-                {/* 併配リスト(textareaを設定して○✖️を貼り付ける形にする) */}
-                {/* {data.role=="field_staff" &&
-                <InputParts type="text" name="staffName" value={data.staffName} onChange={onStaffNameChange} prefix={"スタッフ名："}/>} */}
+
+                {/* 案件ナンバーと町目リストのどちらから選ぶか */}
+                <RadioButton onChange={onChangeMapOrTown} contentsSets={[
+                    {"prefix":"地図番号から選ぶ","value":"mapNumber"},
+                    {"prefix":"町目リストから選ぶ","value":"townList"}
+                ]} radioName="mapOrTown" stateForSelected={needNumber}/>
+
+
+                {/* 町目リストとスタッフ */}
+                <TownLists projectsAndTowns={projectsAndTowns} selectedMainProject={selectedMainProject} staffs={staffs} handleAssignChangeInTowns={handleAssignChangeInTowns}/>
+
+
+                {/* MapNoとスタッフ */}
+                <MapLists projectsAndTowns={projectsAndTowns} selectedMainProject={selectedMainProject} staffs={staffs} handleAssignChangeInMaps={handleAssignChangeInMaps}/>
 
 
               </div>

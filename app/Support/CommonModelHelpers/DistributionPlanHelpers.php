@@ -42,7 +42,6 @@ class DistributionPlanHelpers{
         ->get();
 
         return $plan_in_the_place_and_period;
-
     }
 
 }
