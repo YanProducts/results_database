@@ -21,8 +21,10 @@ export default function TownLists(projectAndTowns,selectedMainProject,staffs,han
             </tr>
         </thead>
          <tbody className="text-center">
-          {ptojectTownLists.map(townData=>
-            <tr key={townData.id}>
+          {ptojectTownLists.map(function(townData){
+            const planId=townData.id;
+            return(
+             <tr key={planId}>
                 {/* 町目名 */}
                 <td>{townData.address_name}</td>
                 {/* 併配がaddress_nameに含まれてていれば○ */}
@@ -34,9 +36,10 @@ export default function TownLists(projectAndTowns,selectedMainProject,staffs,han
                 }
                {/* スタッフ選択 */}
                 <td>
-                <SelectParts name="mapStaffs" value={selectedMapNumber[selectedMainProject][mapNumber]} onChange={(e,mapNumber)=>handleAssignChangeInMaps(e,mapNumber)} prefix={mapNumber} keyValueSets={staffs} maxWidth="max-w-40" minWidth="min-w-30" allowEmptyOption={false} />
+                <SelectParts name="mapStaffs" value={selectedMapNumber[selectedMainProject][mapNumber]} onChange={(e,planId)=>handleAssignChangeInTowns(e,planId)} prefix={mapNumber} keyValueSets={staffs} maxWidth="max-w-40" minWidth="min-w-30" allowEmptyOption={false} />
                 </td>
             </tr>
+            )}
             )}
          </tbody>
        </table>

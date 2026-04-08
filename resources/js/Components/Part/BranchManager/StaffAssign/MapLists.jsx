@@ -11,15 +11,6 @@ export default function MapLists(projectAndTowns,selectedMainProject,staffs,hand
         mapNumberLists.map(mapNumber=>
             <div lassName={`flex items-center base_frame ${minWidth} ${maxWidth} mx-auto my-3`} key={mapNumber}>
                 <span className={`inline-block ${prefixPercent} min-w-32 text-right`}>{mapNumber}</span>
-                {/* selectOptinonSetsにスタッフをユーザー名⇨本名の形式で渡す */}
-                {/* <select className="inline-block w-[60%] min-w-35 bg-white border-black border rounded-b-sm" value={selectedMapNumber[selectedMainProject][mapNumber]} onChange={(e,mapNumber)=>handleAssignChangeInMaps(e,mapNumber)}>
-                  <>
-                    <option hidden value="">選択してください</option>
-                    {staffs.map(staff=>
-                    <option value={staff.id}>{staff?.staff_name || staff.user_name}</option>
-                    )}
-                  </>
-                </select> */}
                 {/* スタッフの選択 */}
                 <SelectParts name="mapStaffs" value={selectedMapNumber[selectedMainProject][mapNumber]} onChange={(e,mapNumber)=>handleAssignChangeInMaps(e,mapNumber)} prefix={mapNumber} keyValueSets={staffs} allowEmptyOption={false} />
             </div>
