@@ -1,11 +1,15 @@
 // スタッフの割り当てを町目から選ぶ場合
 export default function TownLists(projectAndTowns,selectedMainProject,staffs,handleAssignChangeInTowns,prefixPercent="w-[30%]",maxWidth="max-w-80", minWidth="min-w-72.5"){
+    // メイン案件が選択されていないとき
+    if(!selectedMainProject){
+        return<div className="text-center"><p>メイン案件を選択してください</p></div>
+    }
 
     // 案件情報の取得
     const projectTownLists=projectAndTowns[selectedMainProject];
 
     // subは上記のsubに[project_nameとid_sets]の入れ子配列で入っている
-    const subSets=projectAndTowns["sub"];
+    const subSets=projectTownLists["sub"];
 
     return(
     <>
