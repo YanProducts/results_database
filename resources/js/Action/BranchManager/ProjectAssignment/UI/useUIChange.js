@@ -9,11 +9,6 @@ export default function useUIChange(setSelectedDate,setSelectedMainProject,setNe
     const onSelectedMainProjectChange=(e)=>{
         setSelectedMainProject(e.currentTarget.value)
     }
-
-    // 表示するのはmapからかtownからか
-    const onChangeMapOrTown=(e)=>{
-        setNeedNumber(e.currentTarget.value);
-    }
-
-    return [onSelectedDateChange,onSelectedMainProjectChange,onChangeMapOrTown];
+    
+    return [onSelectedDateChange,onSelectedMainProjectChange];
 }

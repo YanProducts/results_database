@@ -28,7 +28,7 @@ class Flow{
        $projects_and_towns=GetDataInPlaceAndPeriod::get_projects_and_towns_in_the_place_and_period($place_id,$start_offset,$end_offset);
 
         // 指定曜日に出勤しているスタッフの取得
-        // 日付=>[スタッフリスト(それぞれid,user_name,staff_nameが入れ子)]の順で取得
+        // 日付=>[スタッフリスト(それぞれid=>staff_nameないときはユーザー名)]の順で取得
         $staffs_in_the_period=GetStaffsInPlaceAndPeriod::get_staffs_in_the_place_and_preriod($place_id,"",$start_offset,$end_offset);
 
         return [$projects_and_towns,$staffs_in_the_period];

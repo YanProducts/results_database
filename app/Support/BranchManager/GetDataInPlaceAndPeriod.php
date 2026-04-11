@@ -46,6 +46,8 @@ class GetDataInPlaceAndPeriod{
 
 
             // 上記をmain案件⇨["each_sets"=>[id(distribution_plans)⇨,address_name⇨,"sub"=>["project_name"=>"",id_sets=>[]]]の配列に返還
+
+            // メイン案件のeach_setsの中身
             $plan_sets_grouped_by_project_name=$plan_sets_grouped_by_project_id->mapWithKeys(fn($value,$key)=>
                 [ProjectHelpers::get_project_name_from_id($key)=>
                     $value->map(fn($inner_value)=>
@@ -58,6 +60,11 @@ class GetDataInPlaceAndPeriod{
 
 
             foreach($plan_sets_grouped_by_project_name as $main_project_name=>$each_main_sets){
+
+
+
+
+
                 if(array_key_exists($main_project_name,$return_sets)){
 
                 }else{
@@ -74,15 +81,17 @@ class GetDataInPlaceAndPeriod{
     // 併配案件の配列を作る
     public static function get_sub_projects_array($plan_sets_in_the_day,$each_main_sets){
 
+        // dd($plan_sets_in_the_day);
         // その日の配布計画(すでにコレクション)から、その日のメイン案件のidの配列のいずれかを親に持つ配列を取得し、案件名ごとにまとめる(つまり配る町目が書かれた併配セット)
+        // $sub_plan_sets_grouped_by_id=$plan_sets_in_the_day->whereIn("main_id",array_column($each_main_sets,"id"))->groupBy("project_id");
         $sub_plan_sets_grouped_by_id=$plan_sets_in_the_day->whereIn("main_id",array_column($each_main_sets,"id"))->groupBy("project_id");
+
 
         // 上記をプロジェクト名=>each_setsの配列に変換
         $sub_plan_sets=$sub_plan_sets_grouped_by_id->mapWithKeys(
             fn($value,$key)=>[
-                    "project_name"=>ProjectHelpers::get_project_name_from_id($key),
-                    "id_sets"=>array_column($value->toArray(),"main_id"),
-            ]
+                    ProjectHelpers::get_project_name_from_id($key)=>array_column($value->toArray(),"main_id"),
+             ]
         );
 
         return $sub_plan_sets->toArray();

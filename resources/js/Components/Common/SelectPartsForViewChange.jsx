@@ -7,7 +7,7 @@ export default function SelectPartsForViewChange({value,onChange,prefix,prefixPe
         {/* 未登録の場合 */}
         {(!keyValueSets || Object.keys(keyValueSets).length==0) ? <option disabled value="">登録されていません</option> :
             <>
-               <option disabled value="">選択してください</option>
+            <option disabled value="">選択してください</option>
             {Object.entries(keyValueSets).map((keyValueSet)=>
                 <option key={keyValueSet[0]} value={keyValueSet[0]}>{keyValueSet[1]}</option>)}
          </>

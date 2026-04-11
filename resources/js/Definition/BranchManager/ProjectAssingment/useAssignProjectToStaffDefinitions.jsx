@@ -11,10 +11,13 @@ export default function useAssignProjectToStaffDefinitions(){
   // フォームに送信する前段階では、planIdをキーにし、スタッフIdを配列にして保存(変更がしやすいため)
   const [assignPlan,setAssignPlan]=React.useState({});
 
+  // 確認表示か投稿表示か
+  const [isConfirm,setIsConfirm]=React.useState(false);
+
   // 表示する日付(選択中のY-m-d型の文字列を返す)
-  const [selectedDate,setSelectedDate]=React.useState();
+  const [selectedDate,setSelectedDate]=React.useState("");
   // 表示するメイン案件名
-  const [selectedMainProject,setSelectedMainProject]=React.useState();
+  const [selectedMainProject,setSelectedMainProject]=React.useState("");
 
 
   // 割り当てはMapNumberと町目直接のどちらで行うか
@@ -29,7 +32,9 @@ const [townAssign,setTownAssign]=React.useState({
 
 });
 
+// ページの横幅
+const [pageMinWidth,pageMaxWidth]=["min-w-140","max-w-180"];
 
 
-  return { data, setData, post, processing, errors, reset,assignPlan,setAssignPlan,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,selectedMapNumber,setSelectedMapNumber,townAssign,setTownAssign}
+  return { data, setData, post, processing, errors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,selectedMapNumber,setSelectedMapNumber,townAssign,setTownAssign,pageMinWidth,pageMaxWidth}
 }
