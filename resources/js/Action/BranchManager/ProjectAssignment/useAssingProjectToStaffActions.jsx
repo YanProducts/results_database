@@ -1,11 +1,12 @@
 import {route} from 'ziggy-js';
 import React from 'react';
-import useHandleAssignChangeInMaps from './formSets/useHandleAssignChangeInMaps';
-import useHandleAssignChangeInTowns from './formSets/useHandleAssignChangeInTowns';
-import useUIChange from './UI/useUIChange';
-import { useHandleChangeMapOrTown } from './formSets/useHandleChangeMapOrTown';
+import useHandleAssignChangeInMaps from './DataInput/formSets/useHandleAssignChangeInMaps';
+import useHandleAssignChangeInTowns from './DataInput/formSets/useHandleAssignChangeInTowns';
+import useUIChange from './DataInput/UI/useUIChange';
+import { useHandleChangeMapOrTown } from './DataInput/formSets/useHandleChangeMapOrTown';
+import FormatDataForFormAndView from './DataConfirm/FormatDataForFormAndView';
 
-export default function useAssignProjectToStaffActions(dateSets,projectsAndTowns,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,selectedMapNumber, setSelectedMapNumber,setSelectedDate,setIsConfirm){
+export default function useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,selectedMapNumber, setSelectedMapNumber,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData}){
 
 
  //useReducerで定義する
@@ -16,6 +17,14 @@ React.useEffect(()=>{
  setSelectedDate(Object.keys(dateSets)[1]);
 },[]);
 
+// 確認表示になった時に実行
+React.useEffect(()=>{
+    if(!isConfirm){
+        return;
+    }
+    // データを①form用②表示で使える用の土台に変換(この段階では、スタッフも町名もIdで格納)
+    FormatDataForFormAndView({assignPlan,staffs,projectsAndTowns,setAssignPlanForConfirmView,setData});
+},[isConfirm])
 
 
 // データ入力時のUIの変化(formを伴わない)
@@ -40,7 +49,6 @@ const handleAssignChangeInTowns=(e,planId)=>{
   // 決定ボタンを押した際は確認ページを表示する
   const onSubmitBtnClick=(e)=>{
         e.preventDefault();
-
         setIsConfirm(true);
  }
 

@@ -1,36 +1,40 @@
-export default function AssignSetsForConfirming({assignPlan,staffs}){
-    console.log(assignPlan);
+import BaseTable from "../../../../Common/BaseTable";
 
-    let assignPlanByStaff={};
-    // スタッフを１人１人見ていく
-    staffs.map((staff)=>function(){
-        // 入力したデータをメインプロジェクトごとに取得
-        Object.entries(assignPlan).map((mainSets,index)=>{
-            // プロジェクト名(assignPlanのキー)
-            const mainProjectName=mainSets[0];
-            // planId:スタッフのオブジェクト(assignPlanの値)
-            const planIdsInTheMainProject=mainSets[1];
-
-            // そのプロジェクトでそのスタッフが担当予定の案件ごと町目
-            const planIdsInTheStaff=Object.values(planIdsInTheMainProject).filter((staffInPlanId)=>staffInPlanId===staff)
-
-            // オブジェクトに格納(そのスタッフのメイン案件に関しては1回の施行でOKなのでmainProjectName側にスプレッド構文は必要ない)
-            assignPlanByStaff[staff]={
-                ...assignPlanByStaff[staff],
-                mainProjectName:[planIdsInTheStaff]
-            }
-
-
-
-        })
-    })
-
-
+export default function AssignSetsForConfirming({assignPlanForConfirmView,pageMinWidth,pageMaxWidth}){
 
     return(
-        <>
+        <div className={`base_frame ${pageMinWidth} ${pageMaxWidth} mt-2 mb-4`}>
+            {/* 基本はbaseの形のtableを使いつつ、tbosyの中身のみカスタム */}
+            <BaseTable tableTheme="割り当ての確認" thSets={{"staff":"スタッフ名","project":"案件名","map":"地図の番号","town":"町目"}} allData={"カスタムなので除外"} pageMaxWidth={pageMaxWidth} pageMinWidth={pageMinWidth} width={"w-[80%]"}>
+                {/* スタッフId:メイン案件:案件Idセットの文字列のオブジェクトを見て行く */}
+                {Object.entries(assignPlanForConfirmView).map(function(eachPlanByStaff,index){
+                    const staffName=eachPlanByStaff[0];
+                    const projectsToStaff=Object.keys(eachPlanByStaff[1]);
 
-        </>
+                    return(
+                    // スタッフが担当するメイン案件の数によって行の数が変更するためprojectNameでmap
+                    projectsToStaff.map(function(projectName,innerIndex){
+                        const eachPlanByStaffInTheProject=eachPlanByStaff[1][projectName];
+                        return(
+                        <tr className="border-black border-2" key={ index + "-" + innerIndex}>
+                                {/* スタッフ名 */}
+                                {innerIndex ==0 &&
+                                <td className="border-black border-2 w-[25%]" rowSpan={projectsToStaff.length}>{staffName}</td>
+                                }
+                                {/* 案件名 */}
+                                <td className="border-black border-2 w-[25%]">{projectName}</td>
+                                {/* マップ */}
+                                <td className="border-black border-2 w-[15%]">
+                                {eachPlanByStaffInTheProject.mapComment}
+                                </td>
+                                {/* 町目名(idを変更させる必要あり) */}
+                                <td className="border-black border-2 w-[35%] px-2 whitespace-pre-line text-left">{eachPlanByStaffInTheProject.planId.join("\n")}</td>
+                            </tr>
+                        )})
+                    )
+                 })}
+            </BaseTable>
+        </div>
     )
 
 }

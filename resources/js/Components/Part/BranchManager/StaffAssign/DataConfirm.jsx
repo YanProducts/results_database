@@ -1,16 +1,18 @@
 import SubmitOrBackButtons from "../../../Common/SubmitOrBackButtons";
 import AssignSetsForConfirming from "./Inner/AssignSetsForConfirming";
+import BasePageHeader from "../../../Common/BasePageHeader";
 
 // スタッフを割り当てた後のデータ確認ページ
-export default function DataConfirm({what,type,pageMinWidth,pageMaxWidth,assignPlan,staffs,processing,onConfirmOkClick,onConfirmCancelClick}){
+export default function DataConfirm({what,type,pageMinWidth,pageMaxWidth,processing,onConfirmOkClick,onConfirmCancelClick,assignPlanForConfirmView}){
 
     return(
     <div className={`base_frame ${pageMinWidth} ${pageMaxWidth}`}>
-        <p>　</p>
-        <h1 className={`base_h base_h1 ${pageMaxWidth} ${pageMinWidth}`}>{what}-{type}-</h1>
-        <h3 className={`base_frame text-center mb-4 ${pageMaxWidth} ${pageMinWidth}`}>以下でよろしいですか？</h3>
+
+        <BasePageHeader {...{what,type,pageMaxWidth,pageMinWidth,subtitle:"以下でよろしいですか？"}}/>
+
+
         {/* スタッフ⇨案件名⇨町目セット */}
-        <AssignSetsForConfirming {...{assignPlan,staffs}} />
+        <AssignSetsForConfirming {...{assignPlanForConfirmView,pageMinWidth,pageMaxWidth}} />
 
         <SubmitOrBackButtons minWidth={pageMinWidth} maxWidth={pageMaxWidth} processing={processing} onSubmitBtnClick={onConfirmOkClick} onCancelBtnClick=
        {onConfirmCancelClick}/>

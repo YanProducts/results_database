@@ -15,7 +15,7 @@ export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitB
 
     {/* 投稿フォーム */}
     <form onSubmit={onSubmitBtnClick} className={`${pageMinWidth} ${pageMaxWidth} mx-auto`}>
-             <div className={`base_frame base_backColor md:p-3 sm:p-2 p-0 border-2 border-black rounded-sm mb-5 `}>
+             <div className={`base_frame base_backColor md:p-3 sm:p-2 p-0 border-2 border-black rounded-sm mb-5 max-w-150`}>
 
                 {/* 5日後までの日付(select変化でメイン案件名変化) */}
                 <SelectPartsForViewChange value={selectedDate} onChange={onSelectedDateChange} prefix={"日付："} keyValueSets={dateSets}/>
@@ -24,7 +24,7 @@ export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitB
                 <SelectPartsForViewChange value={selectedMainProject} onChange={onSelectedMainProjectChange} prefix={"メイン案件名："} keyValueSets={Object.fromEntries(Object.keys(projectsAndTowns).map(project=>[project,project]))}/>
 
                 {/* 案件ナンバーと町目リストのどちらから選ぶか */}
-                <RadioButton onChange={(e)=>{onChangeMapOrTown(e)}} minWidth="min-w-80" maxWitdh="w-[100%]"
+                <RadioButton onChange={(e)=>{onChangeMapOrTown(e)}} minWidth="min-w-80" maxWitdh="max-w-100"
                 contentsSets={[{"prefix":"地図番号から選ぶ","value":"mapNumber"},{"prefix":"町目リストから選ぶ","value":"townList"}]} radioName="mapOrTown" stateForSelected={needNumber}/>
 
               </div>

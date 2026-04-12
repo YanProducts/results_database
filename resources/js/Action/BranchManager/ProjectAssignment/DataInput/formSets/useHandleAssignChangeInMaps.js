@@ -35,6 +35,6 @@ export default function useHandleAssignChangeInMaps(e,mapNumber,projectsAndTowns
         }));
 
         // 保存用
-        console.log(assignPlan);
+        // console.log(assignPlan);
 
 }
