@@ -6,7 +6,7 @@ import useUIChange from './DataInput/UI/useUIChange';
 import { useHandleChangeMapOrTown } from './DataInput/formSets/useHandleChangeMapOrTown';
 import FormatDataForFormAndView from './DataConfirm/FormatDataForFormAndView';
 
-export default function useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,selectedMapNumber, setSelectedMapNumber,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData}){
+export default function useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData}){
 
 
  //useReducerで定義する
@@ -16,6 +16,18 @@ React.useEffect(()=>{
 // 表示するdateを翌日に(0番目は今日、翌日は1番目)
  setSelectedDate(Object.keys(dateSets)[1]);
 },[]);
+
+
+// 確認用
+React.useEffect(()=>{
+    console.log(mapMeta)
+},[mapMeta])
+
+
+
+
+
+
 
 // 確認表示になった時に実行
 React.useEffect(()=>{
@@ -31,18 +43,17 @@ React.useEffect(()=>{
 const [onSelectedDateChange,onSelectedMainProjectChange]=useUIChange(setSelectedDate,setSelectedMainProject,setNeedNumber);
 
 const onChangeMapOrTown=(e)=>{
-    useHandleChangeMapOrTown(e,needNumber,setNeedNumber,selectedMainProject,setAssignPlan,setSelectedMapNumber)
+    useHandleChangeMapOrTown(e,needNumber,setNeedNumber,selectedMainProject,setAssignPlan,setMapMeta)
 }
 
  // mapにスタッフの選択が変わった時(formを伴う)
 const handleAssignChangeInMaps=(e,mapNumber)=>{
-    useHandleAssignChangeInMaps(e,mapNumber,projectsAndTowns,selectedMapNumber,selectedMainProject,setSelectedMapNumber,setAssignPlan,assignPlan)
+    useHandleAssignChangeInMaps(e,mapNumber,projectsAndTowns,mapMeta,selectedMainProject,setMapMeta,setAssignPlan,assignPlan)
 }
 
 //  町目にスタッフの選択が変わった時(formを伴う)
 const handleAssignChangeInTowns=(e,planId)=>{
-
-    useHandleAssignChangeInTowns(e,planId,selectedMainProject,setAssignPlan)
+    useHandleAssignChangeInTowns(e,planId,selectedMainProject,setAssignPlan,mapMeta,setMapMeta,projectsAndTowns)
 }
 
 

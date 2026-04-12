@@ -1,5 +1,5 @@
 // mapにおけるスタッフの変化が変わったとき
-export default function useHandleAssignChangeInMaps(e,mapNumber,projectsAndTowns,selectedMapNumber,selectedMainProject,setSelectedMapNumber,setAssignPlan,assignPlan){
+export default function useHandleAssignChangeInMaps(e,mapNumber,projectsAndTowns,mapMeta,selectedMainProject,setMapMeta,setAssignPlan,assignPlan){
 
     // スタッフが選択されたvalueになる
     const staffId=e.currentTarget.value;
@@ -7,11 +7,15 @@ export default function useHandleAssignChangeInMaps(e,mapNumber,projectsAndTowns
     const selectedProjectSets=projectsAndTowns[selectedMainProject];
 
     // optionで選択中の地図番号を変更(表示用。handle関数には引数で渡す)
-    setSelectedMapNumber(prev=>({
+    setMapMeta(prev=>({
         ...prev,
         [selectedMainProject]:{
-            ...selectedMapNumber[selectedMainProject],
-            [mapNumber]:staffId
+            ...mapMeta[selectedMainProject],
+            [mapNumber]:{
+                "staffId":staffId,
+                "addTown":[],
+                "removeTown":[]
+            }
         }
      }))
 

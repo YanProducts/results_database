@@ -2,7 +2,7 @@ import SelectParts from "../../../../Common/SelectParts";
 import React from "react";
 
 // スタッフの割り当てをMapNumberから選ぶ場合
-export default function MapLists({projectsAndTowns,selectedMainProject,selectedMapNumber,staffs,handleAssignChangeInMaps,maxWidth="max-w-80", minWidth="min-w-72.5"}){
+export default function MapLists({projectsAndTowns,selectedMainProject,mapMeta,staffs,handleAssignChangeInMaps,maxWidth="max-w-80", minWidth="min-w-72.5"}){
 
     // メイン案件が選択されていないとき
     if(!selectedMainProject){
@@ -19,7 +19,7 @@ export default function MapLists({projectsAndTowns,selectedMainProject,selectedM
         mapNumberLists.map(mapNumber=>
             <div className={`flex items-center base_frame ${minWidth} ${maxWidth} mx-auto my-0 border border-black base_backColor text-center h-9`} key={mapNumber}>
                 {/* スタッフの選択 */}
-                <SelectParts name="mapStaffs" value={ selectedMapNumber?.[selectedMainProject]?.[mapNumber] || "" } onChange={(e)=>handleAssignChangeInMaps(e,mapNumber)} prefix={mapNumber + "："} prefixPercent="w-[20%]" selectPercent="w-[75%]" prefixMinWidth="min-w-10" selectMinWidth="min-w-40" keyValueSets={staffs} allowEmptyOption={false} />
+                <SelectParts name="mapStaffs" value={ mapMeta?.[selectedMainProject]?.[mapNumber].staffId || "" } onChange={(e)=>handleAssignChangeInMaps(e,mapNumber)} prefix={mapNumber + "："} prefixPercent="w-[20%]" selectPercent="w-[75%]" prefixMinWidth="min-w-10" selectMinWidth="min-w-40" keyValueSets={staffs} allowEmptyOption={false} />
             </div>
         )}
         </div>

@@ -10,10 +10,10 @@ import DataConfirm from "../../../Components/Part/BranchManager/StaffAssign/Data
 export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,dateSets,staffs}){
 
   // 定義(フォームなど)
-  const { data, setData, post, processing, errors, reset, assignPlan,setAssignPlan,isConfirm,setIsConfirm,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,selectedMapNumber,setSelectedMapNumber,assignPlanForConfirmView,setAssignPlanForConfirmView,pageMinWidth,pageMaxWidth}=useAssignProjectToStaffDefinitions();
+  const { data, setData, post, processing, errors, reset, assignPlan,setAssignPlan,isConfirm,setIsConfirm,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,pageMinWidth,pageMaxWidth}=useAssignProjectToStaffDefinitions();
 
   // 動き
-  const {onSubmitBtnClick,onSelectedDateChange,onSelectedMainProjectChange,onChangeMapOrTown,handleAssignChangeInMaps,handleAssignChangeInTowns,onConfirmOkClick,onConfirmCancelClick}=useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,selectedMapNumber,setSelectedMapNumber,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData});
+  const {onSubmitBtnClick,onSelectedDateChange,onSelectedMainProjectChange,onChangeMapOrTown,handleAssignChangeInMaps,handleAssignChangeInTowns,onConfirmOkClick,onConfirmCancelClick}=useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData});
 
   return(
     <Layout title={`${what}-${type}`}>
@@ -21,7 +21,7 @@ export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,
 
     {!isConfirm ?
     // データ入力用
-    <DataInput {...{what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,dateSets,selectedMainProject,onSelectedMainProjectChange,projectsAndTowns,onChangeMapOrTown,needNumber,selectedMapNumber,staffs,handleAssignChangeInMaps,assignPlan,handleAssignChangeInTowns,errors,processing}}/>
+    <DataInput {...{what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,dateSets,selectedMainProject,onSelectedMainProjectChange,projectsAndTowns,onChangeMapOrTown,needNumber,mapMeta,staffs,handleAssignChangeInMaps,assignPlan,handleAssignChangeInTowns,errors,processing}}/>
     :
     <DataConfirm {...{what,type,pageMinWidth,pageMaxWidth,processing,onConfirmOkClick,onConfirmCancelClick,assignPlanForConfirmView}} />
     }

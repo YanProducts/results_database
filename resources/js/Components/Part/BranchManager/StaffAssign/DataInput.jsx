@@ -7,7 +7,7 @@ import MapLists from "./Inner/MapLists";
 import TownLists from "./Inner/TownLists";
 
 // スタッフを割り当てる際のデータ入力ページ
-export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,dateSets,selectedMainProject,onSelectedMainProjectChange,projectsAndTowns,onChangeMapOrTown,needNumber,selectedMapNumber,staffs,handleAssignChangeInMaps,assignPlan,handleAssignChangeInTowns,errors,processing}){
+export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,dateSets,selectedMainProject,onSelectedMainProjectChange,projectsAndTowns,onChangeMapOrTown,needNumber,mapMeta,staffs,handleAssignChangeInMaps,assignPlan,handleAssignChangeInTowns,errors,processing}){
     return(
             <>
     {/* タイトル */}
@@ -32,7 +32,7 @@ export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitB
             {/* 振り分けはmapNumberと町目リストのどちらで行うか */}
             {needNumber==="mapNumber" ?
                 // 地図リスト表示
-                <MapLists projectsAndTowns={projectsAndTowns} selectedMainProject={selectedMainProject} selectedMapNumber={selectedMapNumber} staffs={staffs} handleAssignChangeInMaps={handleAssignChangeInMaps}/>
+                <MapLists projectsAndTowns={projectsAndTowns} selectedMainProject={selectedMainProject} mapMeta={mapMeta} staffs={staffs} handleAssignChangeInMaps={handleAssignChangeInMaps}/>
             :
                 // 町目リスト表示
                 <TownLists projectsAndTowns={projectsAndTowns} selectedMainProject={selectedMainProject} assignPlan={assignPlan} staffs={staffs} handleAssignChangeInTowns={handleAssignChangeInTowns}/>
