@@ -19,7 +19,7 @@ export default function MapLists({projectsAndTowns,selectedMainProject,mapMeta,s
         mapNumberLists.map(mapNumber=>
             <div className={`flex items-center base_frame ${minWidth} ${maxWidth} mx-auto my-0 border border-black base_backColor text-center h-9`} key={mapNumber}>
                 {/* スタッフの選択 */}
-                <SelectParts name="mapStaffs" value={ mapMeta?.[selectedMainProject]?.[mapNumber].staffId || "" } onChange={(e)=>handleAssignChangeInMaps(e,mapNumber)} prefix={mapNumber + "："} prefixPercent="w-[20%]" selectPercent="w-[75%]" prefixMinWidth="min-w-10" selectMinWidth="min-w-40" keyValueSets={staffs} allowEmptyOption={false} />
+                <SelectParts name="mapStaffs" value={ mapMeta?.[selectedMainProject]?.[mapNumber]?.staffId || "" } onChange={(e)=>handleAssignChangeInMaps(e,mapNumber)} prefix={mapNumber + "："} prefixPercent="w-[20%]" selectPercent="w-[75%]" prefixMinWidth="min-w-10" selectMinWidth="min-w-40" keyValueSets={staffs} allowEmptyOption={false} />
             </div>
         )}
         </div>

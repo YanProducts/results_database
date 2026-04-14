@@ -1,10 +1,11 @@
 import {route} from 'ziggy-js';
 import React from 'react';
-import useHandleAssignChangeInMaps from './DataInput/formSets/useHandleAssignChangeInMaps';
-import useHandleAssignChangeInTowns from './DataInput/formSets/useHandleAssignChangeInTowns';
-import useUIChange from './DataInput/UI/useUIChange';
-import { useHandleChangeMapOrTown } from './DataInput/formSets/useHandleChangeMapOrTown';
+import useHandleAssignChangeInMaps from './DataInput/useHandleAssignChangeInMaps';
+import useHandleAssignChangeInTowns from './DataInput/useHandleAssignChangeInTowns';
+import { useHandleChangeMapOrTown } from './DataInput/useHandleChangeMapOrTown';
 import FormatDataForFormAndView from './DataConfirm/FormatDataForFormAndView';
+import useHandleDataChange from './DataInput/useHandleDateChange';
+import useHandleProjectChange from './DataInput/useHandleProjectChange';
 
 export default function useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData}){
 
@@ -18,17 +19,6 @@ React.useEffect(()=>{
 },[]);
 
 
-// 確認用
-React.useEffect(()=>{
-    console.log(mapMeta)
-},[mapMeta])
-
-
-
-
-
-
-
 // 確認表示になった時に実行
 React.useEffect(()=>{
     if(!isConfirm){
@@ -40,8 +30,19 @@ React.useEffect(()=>{
 
 
 // データ入力時のUIの変化(formを伴わない)
-const [onSelectedDateChange,onSelectedMainProjectChange]=useUIChange(setSelectedDate,setSelectedMainProject,setNeedNumber);
+// const [onSelectedDateChange,onSelectedMainProjectChange]=useUIChange(setSelectedDate,setSelectedMainProject,setNeedNumber);
 
+// 日付の変更
+const onSelectedDateChange=(e)=>{
+    useHandleDataChange(setSelectedDate,e)
+}
+
+// 案件の変更
+const onSelectedMainProjectChange=(e)=>{
+    useHandleProjectChange(mapMeta,selectedMainProject,setMapMeta,setSelectedMainProject,e);
+}
+
+// 表示が地図か町目か
 const onChangeMapOrTown=(e)=>{
     useHandleChangeMapOrTown(e,needNumber,setNeedNumber,selectedMainProject,setAssignPlan,setMapMeta)
 }

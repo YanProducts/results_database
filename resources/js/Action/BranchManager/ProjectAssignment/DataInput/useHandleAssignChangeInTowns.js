@@ -25,13 +25,13 @@ export default function useHandleAssignChangeInTowns(e,planId,selectedMainProjec
         }
 
         // 選択された町目セットの情報
-        const selectedTownInformation=projectsAndTowns[selectedMainProject].each_sets.filter(eachSet=>eachSet.planId==planId);
+        const selectedTownInformation=projectsAndTowns[selectedMainProject].each_sets.filter(eachSet=>eachSet.id==planId)[0];
 
         // planIdに対応するMapNumber
-        const mapNumberCorrespondingToPlanId=selectedTownInformation.mapNumber;
+        const mapNumberCorrespondingToPlanId=selectedTownInformation.map_number;
 
         // 上記のMapNumberが既に選択されていた場合、=modifiedに[-その町目](つまり、に該当する場合)
-        if(Object.keys(mapMetaInSelectedMainProject).includes(mapNumberCorrespondingToPlanId)){
+        if((Object.keys(mapMetaInSelectedMainProject).map(eachKey=>Number(eachKey))).includes(mapNumberCorrespondingToPlanId)){
             setMapMeta(prev=>({
                 ...prev,
                 [selectedMainProject]:{
@@ -44,20 +44,23 @@ export default function useHandleAssignChangeInTowns(e,planId,selectedMainProjec
             }))
         }
 
-
-
         // このメイン案件で地図選択から振り終えた人の配列
         const staffIdListsInTheMainProject=Object.values(mapMetaInSelectedMainProject).map(assignedMetaMap=>assignedMetaMap.staffId)
 
-        // 上記の人の中に今回選択した人が含まれていた場合、この町をその人の部分に付け加え=modifiedに[+その町目]を追加(つまり、新たに選択されたstaffIdが上記配列の中に含まれていた時)
+
+        // 上記の人の中に今回選択した人が含まれていた場合、この町をその人の部分に付け加え=modifiedに[+その町目]を追加(つまり、新たに選択されたstaffIdが上記配列の中に含まれていた時
         if(staffIdListsInTheMainProject.includes(staffId)){
+
+            // addTownは未設定の場合もあるので前もって定義
+            const addTownBefore=mapMetaInSelectedMainProject [mapNumberCorrespondingToPlanId]?.addTown || [];
+
             setMapMeta(prev=>({
                 ...prev,
                 [selectedMainProject]:{
                     ...mapMetaInSelectedMainProject,
-                     [mapNumberCorrespondingToPlanId]:{
-                        ...mapMetaInSelectedMainProject [mapNumberCorrespondingToPlanId],
-                        "addTown":[...mapMetaInSelectedMainProject [mapNumberCorrespondingToPlanId].addTown,selectedTownInformation.address_name]
+                     [staffId]:{
+                        ...mapMetaInSelectedMainProject[staffId],
+                        "addTown":[...addTownBefore,selectedTownInformation.address_name]
                      }
                 }
             }))
