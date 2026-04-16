@@ -9,6 +9,12 @@ import useHandleProjectChange from './DataInput/useHandleProjectChange';
 
 export default function useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData}){
 
+// 実験用
+React.useEffect(()=>{
+    console.log(mapMeta)
+},[mapMeta])
+
+
 
  //useReducerで定義する
 
@@ -18,19 +24,15 @@ React.useEffect(()=>{
  setSelectedDate(Object.keys(dateSets)[1]);
 },[]);
 
-
 // 確認表示になった時に実行
 React.useEffect(()=>{
     if(!isConfirm){
         return;
     }
     // データを①form用②表示で使える用の土台に変換(この段階では、スタッフも町名もIdで格納)
-    FormatDataForFormAndView({assignPlan,staffs,projectsAndTowns,setAssignPlanForConfirmView,setData});
+    FormatDataForFormAndView({assignPlan,staffs,projectsAndTowns,setAssignPlanForConfirmView,setData,mapMeta});
 },[isConfirm])
 
-
-// データ入力時のUIの変化(formを伴わない)
-// const [onSelectedDateChange,onSelectedMainProjectChange]=useUIChange(setSelectedDate,setSelectedMainProject,setNeedNumber);
 
 // 日付の変更
 const onSelectedDateChange=(e)=>{
@@ -39,7 +41,7 @@ const onSelectedDateChange=(e)=>{
 
 // 案件の変更
 const onSelectedMainProjectChange=(e)=>{
-    useHandleProjectChange(mapMeta,selectedMainProject,setMapMeta,setSelectedMainProject,e);
+    useHandleProjectChange(mapMeta,setMapMeta,setSelectedMainProject,e);
 }
 
 // 表示が地図か町目か

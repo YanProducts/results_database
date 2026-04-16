@@ -3,7 +3,7 @@ import AssignSetsForConfirming from "./Inner/AssignSetsForConfirming";
 import BasePageHeader from "../../../Common/BasePageHeader";
 
 // スタッフを割り当てた後のデータ確認ページ
-export default function DataConfirm({what,type,pageMinWidth,pageMaxWidth,processing,onConfirmOkClick,onConfirmCancelClick,assignPlanForConfirmView}){
+export default function DataConfirm({what,type,pageMinWidth,pageMaxWidth,processing,onConfirmOkClick,onConfirmCancelClick,assignPlanForConfirmView,mapMeta}){
 
     return(
     <div className={`base_frame ${pageMinWidth} ${pageMaxWidth}`}>

@@ -23,6 +23,7 @@ export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,
     // データ入力用
     <DataInput {...{what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,dateSets,selectedMainProject,onSelectedMainProjectChange,projectsAndTowns,onChangeMapOrTown,needNumber,mapMeta,staffs,handleAssignChangeInMaps,assignPlan,handleAssignChangeInTowns,errors,processing}}/>
     :
+    // データ確認用
     <DataConfirm {...{what,type,pageMinWidth,pageMaxWidth,processing,onConfirmOkClick,onConfirmCancelClick,assignPlanForConfirmView}} />
     }
 
