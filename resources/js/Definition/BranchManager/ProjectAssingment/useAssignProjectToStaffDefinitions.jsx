@@ -26,15 +26,12 @@ export default function useAssignProjectToStaffDefinitions(){
  // mapにスタッフを割り当てた場合の表示用のstate。mainProject:{mapNumber:スタッフ名}の形式
   const [mapMeta,setMapMeta]=React.useState({});
 
-  // 確認用のビューに出すための地図
-
 
   //   確認用のviewに表示するための配列
   const [assignPlanForConfirmView,setAssignPlanForConfirmView]=React.useState({});
 
-
-// ページの横幅
-const [pageMinWidth,pageMaxWidth]=["min-w-200","max-w-300"];
+   // ページの横幅
+   const [pageMinWidth,pageMaxWidth]=["min-w-200","max-w-300"];
 
 
   return { data, setData, post, processing, errors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,pageMinWidth,pageMaxWidth}

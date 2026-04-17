@@ -26,53 +26,28 @@ export default function useHandleAssignChangeInTowns(e,planId,selectedMainProjec
 
         // 選択された町目セットの情報
         const selectedTownInformation=projectsAndTowns[selectedMainProject].each_sets.filter(eachSet=>eachSet.id==planId)[0];
+        const address_name=selectedTownInformation.address_name;
+        // 既にその人が振られているmapに、新たに振られた町目をaddTownで追加
+        // 人が変更された町目を含む地図から、現在担当のスタッフをremoveTownでマイナス
 
-        // planIdに対応するMapNumber
-        const mapNumberCorrespondingToPlanId=selectedTownInformation.map_number;
+        // １：既に変更された町目を再変更する場合、２：翌日以降に、その地図を振る場合が未設定
 
-        // 上記のMapNumberが既に選択されていた場合、=modifiedに[-その町目](つまり、に該当する場合)
-        if((Object.keys(mapMetaInSelectedMainProject).map(eachKey=>Number(eachKey))).includes(mapNumberCorrespondingToPlanId)){
-            setMapMeta(prev=>({
-                ...prev,
-                [selectedMainProject]:{
-                    ...mapMetaInSelectedMainProject,
-                    [mapNumberCorrespondingToPlanId]:{
-                        ...mapMetaInSelectedMainProject[mapNumberCorrespondingToPlanId],
-                        "removeTown":[...mapMetaInSelectedMainProject[mapNumberCorrespondingToPlanId].removeTown,selectedTownInformation.address_name]
+        setMapMeta(prev=>({
+            ...prev,
+            [selectedMainProject]:Object.fromEntries(Object.entries(mapMetaInSelectedMainProject).map(function(eachMetaMap){
+                    let newEntriesArray={};
+                    const eachMapNumber=eachMetaMap[0];
+                    const eachMapInfo=eachMetaMap[1];
+
+                    // 既にその人が振られているmapに、新たに振られた町目をaddTownで追加
+                    newEntriesArray=Number(eachMapInfo.staffId)==Number(staffId) ? [eachMapNumber,{...eachMapInfo,"addTown":[...eachMapInfo.addTown,address_name]}] : [eachMapNumber,eachMapInfo]
+
+                    // 人が変更された町目を含む地図から、現在担当のスタッフをremoveTownでマイナス
+                    newEntriesArray=Number(eachMapNumber==selectedTownInformation.map_number) ? [eachMapNumber,{...newEntriesArray[1],"removeTown":[...eachMapInfo.removeTown,address_name]}] : [eachMapNumber,newEntriesArray[1]]
+
+                    return newEntriesArray;
                     }
-                }
+                ))
             }))
-        }
+         }
 
-        // このメイン案件で地図選択から振り終えた人の配列
-        const staffIdListsInTheMainProject=Object.values(mapMetaInSelectedMainProject).map(assignedMetaMap=>assignedMetaMap.staffId)
-
-
-        // 上記の人の中に今回選択した人が含まれていた場合、この町をその人の部分に付け加え=modifiedに[+その町目]を追加(つまり、新たに選択されたstaffIdが上記配列の中に含まれていた時
-        if(staffIdListsInTheMainProject.includes(staffId)){
-
-            // addTownは未設定の場合もあるので前もって定義
-            const addTownBefore=mapMetaInSelectedMainProject [mapNumberCorrespondingToPlanId]?.addTown || [];
-
-            setMapMeta(prev=>({
-                ...prev,
-                [selectedMainProject]:{
-                    ...mapMetaInSelectedMainProject,
-                     [staffId]:{
-                        ...mapMetaInSelectedMainProject[staffId],
-                        "addTown":[...addTownBefore,selectedTownInformation.address_name]
-                     }
-                }
-            }))
-        }
-
-
-
-
-
-
-
-
-
-
-}

@@ -44,4 +44,10 @@ class DistributionPlanHelpers{
         return $plan_in_the_place_and_period;
     }
 
+    // その町目予定は割り当てなどで選択された日の中に入っているか(バリデーションなどで使用)
+    public static function is_plan_id_within_the_date($date){
+
+
+    }
+
 }

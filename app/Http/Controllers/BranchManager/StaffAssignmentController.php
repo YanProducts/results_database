@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use App\Actions\BranchManager\Assgin\Flow as AssignFlow;
 use App\Constants\Date as DateConstants;
+use App\Http\Requests\BranchManager\AssignStaffRequest;
 use App\Utils\DateHelper;
 
 // スタッフへの案件割り当て系統を行う
@@ -34,7 +35,9 @@ class StaffAssignmentController extends Controller
         ]);
     }
     //案件割り当て投稿
-    public function assign_staff_post(){
+    public function assign_staff_post(AssignStaffRequest $request){
+        // 
+
 
     }
 }

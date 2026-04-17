@@ -7,21 +7,14 @@ import FormatDataForFormAndView from './DataConfirm/FormatDataForFormAndView';
 import useHandleDataChange from './DataInput/useHandleDateChange';
 import useHandleProjectChange from './DataInput/useHandleProjectChange';
 
-export default function useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData}){
+export default function useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData}){
 
-// 実験用
-React.useEffect(()=>{
-    console.log(mapMeta)
-},[mapMeta])
-
-
-
- //useReducerで定義する
+//useReducerで定義する
 
  // 初期設定
 React.useEffect(()=>{
-// 表示するdateを翌日に(0番目は今日、翌日は1番目)
- setSelectedDate(Object.keys(dateSets)[1]);
+// dateも初期は表示しない
+
 },[]);
 
 // 確認表示になった時に実行
@@ -30,13 +23,22 @@ React.useEffect(()=>{
         return;
     }
     // データを①form用②表示で使える用の土台に変換(この段階では、スタッフも町名もIdで格納)
-    FormatDataForFormAndView({assignPlan,staffs,projectsAndTowns,setAssignPlanForConfirmView,setData,mapMeta});
+    FormatDataForFormAndView({assignPlan,staffs,selectedDate,projectsAndTowns,setAssignPlanForConfirmView,setData,mapMeta});
 },[isConfirm])
 
 
 // 日付の変更
 const onSelectedDateChange=(e)=>{
     useHandleDataChange(setSelectedDate,e)
+}
+
+// 日付の初期化(全データが初期化される)
+const onClickDateReset=()=>{
+    if(!confirm("入力中のデータは初期化されます。\nよろしいですか？")){
+        return;
+    }
+    setAssignPlan({});
+    setSelectedDate("");
 }
 
 // 案件の変更
@@ -72,7 +74,7 @@ const handleAssignChangeInTowns=(e,planId)=>{
       // データをスタッフ⇨町目リストに並び替え
       // バリデーションはlaravelに任せる(遷移しないため)
 
-      post(route("branch_manager.assign_project"));
+      post(route("branch_manager.assign_staff_post"));
   }
 
   const onConfirmCancelClick=(e)=>{
@@ -82,7 +84,7 @@ const handleAssignChangeInTowns=(e,planId)=>{
   }
 
   return{onSubmitBtnClick,
-    onSelectedDateChange,
+    onSelectedDateChange,onClickDateReset,
     onSelectedMainProjectChange,
     onChangeMapOrTown,
     handleAssignChangeInMaps,handleAssignChangeInTowns

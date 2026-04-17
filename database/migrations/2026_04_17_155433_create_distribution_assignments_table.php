@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            //projectsにplaceIdカラムを追加
-            $table->foreignId("place_id")->constrained("places");
+        Schema::create('distribution_assignments', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
         });
     }
 
@@ -22,9 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            //
-           $table->dropConstrainedForeignId("place_id");
-        });
+        Schema::dropIfExists('distribution_assignments');
     }
 };

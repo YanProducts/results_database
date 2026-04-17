@@ -15,6 +15,7 @@ export default function TownLists({projectsAndTowns,selectedMainProject,assignPl
     // mainのセットはこの中に捕捉
     const mainSets=projectTownLists["each_sets"];
 
+
     return(
     <>
         <div className="bg-amber-300 w-[80%] min-w-150 max-w-600 mx-auto border-black border-2 mb-3"><h3 className="mb-0 pb-0 text-center font-bold text-lg">選択してください</h3></div>
