@@ -36,7 +36,6 @@ class HandleInertiaRequests extends Middleware
     // 全ページ共通のpropsを渡すのもここ
     public function share(Request $request): array
     {
-
         // 全ページ共通
        $role_sets=UserRoleResolver::get_page_name_sets($request->route()->getName());
 

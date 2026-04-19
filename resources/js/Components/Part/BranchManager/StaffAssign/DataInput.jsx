@@ -46,9 +46,6 @@ export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitB
                 <div></div>
             }
 
-            {/* バリデーションエラー */}
-            <ViewValidationErrors errors={errors} />
-
             {/* 提出ボタン */}
             <BaseButton processing={processing}/>
 

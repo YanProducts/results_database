@@ -9,10 +9,21 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    // 営業所でスタッフに分割が終えたもの
     public function up(): void
     {
         Schema::create('distribution_assignments', function (Blueprint $table) {
             $table->id();
+            // 町目や案件のデータはplanに入っていて、plan_idが消されたら消去される
+            $table->foreignId("plan_id")->constrained("distribution_plans");
+            $table->foreignId("staff_id")->constrained("field_staff_lists");
+            // 複数日で判断して配布できる場合はend_dataをつける
+            $table->date("date");
+            // 単日配布の場合はnullable
+            $table->date("end_date")->nullable();
+            //結果データなし&日程まだ(0) & 結果データなし&
+            // 今後の構造変更を考え(migrationを再設定必要になるなど)、Enumではなくstringで登録
+            $table->unsignedInteger("status")->default(0);
             $table->timestamps();
         });
     }

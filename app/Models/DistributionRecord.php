@@ -8,6 +8,6 @@ class DistributionRecord extends Model
 {
     //町丁目ごとの配布部数のデータ
     protected $fillable=[
-        "distribution_date","distribution_count","address_id","project_id","staff_id","remark"
+        "distribution_date","distribution_count","address_id","project_id","staff_id","remark","plan_id"
     ];
 }

@@ -7,7 +7,7 @@ import FormatDataForFormAndView from './DataConfirm/FormatDataForFormAndView';
 import useHandleDataChange from './DataInput/useHandleDateChange';
 import useHandleProjectChange from './DataInput/useHandleProjectChange';
 
-export default function useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData}){
+export default function useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,setDuplicatedCheck,flash}){
 
 //useReducerで定義する
 
@@ -73,9 +73,14 @@ const handleAssignChangeInTowns=(e,planId)=>{
       e.preventDefault();
       // データをスタッフ⇨町目リストに並び替え
       // バリデーションはlaravelに任せる(遷移しないため)
-
       post(route("branch_manager.assign_staff_post"));
-  }
+
+     // 重複確認で戻ってきたとき
+     if(flash?.duplicated){
+        setDuplicatedCheck(true)
+     }
+
+    }
 
   const onConfirmCancelClick=(e)=>{
     e.preventDefault();

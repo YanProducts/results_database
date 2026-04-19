@@ -44,9 +44,16 @@ class DistributionPlanHelpers{
         return $plan_in_the_place_and_period;
     }
 
-    // その町目予定は割り当てなどで選択された日の中に入っているか(バリデーションなどで使用)
-    public static function is_plan_id_within_the_date($date){
+    // その町目予定は割り当てなどで選択された日の中に入っているか(バリデーションなどで使用)、正否が返る
+    public static function is_plan_id_within_the_date($date,$plan_ids){
 
+        // N+1防止のため先にコレクションを取得(idの内部に入っているものを先に取得)
+        // collectionがwhereで大小比較は難しくなるので、配列にしてarray_filterで大小比較
+        $plan_in_sql=DistributionPlan::select("id","start_date","end_date")->whereIn("id",$plan_ids)->get();
+
+        // 全てのコレクションのstartとendが期間内に入っているかを比較
+        // everyは全てに置いて成り立つかのチェック
+        return $plan_in_sql->every(fn($plan)=>$plan["start_date"]<=$date && $plan["end_date"]>=$date);
 
     }
 

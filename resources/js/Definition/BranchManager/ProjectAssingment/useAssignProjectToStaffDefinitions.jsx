@@ -14,6 +14,9 @@ export default function useAssignProjectToStaffDefinitions(){
   // 確認表示か投稿表示か
   const [isConfirm,setIsConfirm]=React.useState(false);
 
+  // 重複確認表示
+  const [duplicatedCheck,setDuplicatedCheck]=React.useState(false);
+
   // 表示する日付(選択中のY-m-d型の文字列を返す)
   const [selectedDate,setSelectedDate]=React.useState("");
   // 表示するメイン案件名
@@ -34,5 +37,5 @@ export default function useAssignProjectToStaffDefinitions(){
    const [pageMinWidth,pageMaxWidth]=["min-w-200","max-w-300"];
 
 
-  return { data, setData, post, processing, errors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,pageMinWidth,pageMaxWidth}
+  return { data, setData, post, processing, errors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,pageMinWidth,pageMaxWidth}
 }
