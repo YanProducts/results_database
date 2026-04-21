@@ -2,9 +2,15 @@
 // 重複チェックに関するメソッド
 namespace App\Actions\BranchManager\Assgin\CheckAssign;
 
+use App\Models\DistributionAssignImport;
+use Illuminate\Support\Facades\Auth;
+
 class Read{
     // 今回新たに振られたplan_idがこれまでのデータに入っているかの重複確認(同じ町を2人で分けたときなどがあるので自然にアウトはさせない)
     public static function duplicated_data_check($all_data){
+
+        // 過去の重複データを消す
+        Delete::delete_imports_by_auth_user();
 
         // 重複データ同時を返す(それぞれ重複しているデータの内容が入る)
         return ["duplicated_in_sql"=>self::duplicated_check_in_sql_data($all_data),"duplicated_in_post"=>self::duplicated_check_in_post_data($all_data)];

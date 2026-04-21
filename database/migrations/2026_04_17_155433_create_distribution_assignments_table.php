@@ -21,9 +21,13 @@ return new class extends Migration
             $table->date("date");
             // 単日配布の場合はnullable
             $table->date("end_date")->nullable();
+            // 挿入した人
+            $table->foreignId("created_by")->constrained("user_auths");
             //結果データなし&日程まだ(0) & 結果データなし&
             // 今後の構造変更を考え(migrationを再設定必要になるなど)、Enumではなくstringで登録
             $table->unsignedInteger("status")->default(0);
+            // plan_idとstaff_idとdateのセットは必ず1つ（1回で書けやというやつ）
+            $table->unique(["plan_id","staff_id","date"],"plan_staff_date_set");
             $table->timestamps();
         });
     }

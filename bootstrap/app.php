@@ -31,6 +31,8 @@ return Application::configure(basePath: dirname(__DIR__))
             "redirectUnMatchedRole"=>\App\Http\Middleware\RedirectIfUnMatchedRole::class,
             // 全般管理データのログイン認証
             "redirectWholeDataUnAuth"=>\App\Http\Middleware\RedirectIfWholeDataUnAuthenticated::class,
+            // Assign時の重複確認のルートに重複確認テーブルがない
+            "assignStaffDuplicatedCheck"=>App\Http\Middleware\Import\AssignStaffDuplicatedCheck::class,
             // 開発環境以外は通さない(SQL挿入など)
             "onlyLocal"=>\App\Http\Middleware\AbortIfProductionMiddleware::class
         ]);

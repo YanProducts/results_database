@@ -7,7 +7,7 @@ import FormatDataForFormAndView from './DataConfirm/FormatDataForFormAndView';
 import useHandleDataChange from './DataInput/useHandleDateChange';
 import useHandleProjectChange from './DataInput/useHandleProjectChange';
 
-export default function useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,setDuplicatedCheck,flash}){
+export default function useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash}){
 
 //useReducerで定義する
 
@@ -78,20 +78,32 @@ const handleAssignChangeInTowns=(e,planId)=>{
      // 重複確認で戻ってきたとき
      if(flash?.duplicated){
         setDuplicatedCheck(true)
-     }
-
     }
 
-  const onConfirmCancelClick=(e)=>{
+}
+
+// 確認キャンセルの時(重複時も同じ)
+const onConfirmCancelClick=(e)=>{
     e.preventDefault();
+    // 重複確認後の可能性も考慮して重複確認も戻す
+    if(duplicatedCheck){
+        setDuplicatedCheck(false)
+    }
     // UIを投稿に戻す
     setIsConfirm(false);
   }
+
+// 重複確認でOKなとき
+ const onDuplicatedOkClick=(e)=>{
+    e.preventDefault();
+    // sqlのimportテーブルから移行
+    post(route("branch_manager.store_including_duplicated_plans"));
+ }
 
   return{onSubmitBtnClick,
     onSelectedDateChange,onClickDateReset,
     onSelectedMainProjectChange,
     onChangeMapOrTown,
     handleAssignChangeInMaps,handleAssignChangeInTowns
-    ,onConfirmOkClick,onConfirmCancelClick}
+    ,onConfirmOkClick,onConfirmCancelClick,onDuplicatedOkClick}
 }
