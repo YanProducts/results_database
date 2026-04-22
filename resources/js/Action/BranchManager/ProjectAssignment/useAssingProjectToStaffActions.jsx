@@ -7,7 +7,7 @@ import FormatDataForFormAndView from './DataConfirm/FormatDataForFormAndView';
 import useHandleDataChange from './DataInput/useHandleDateChange';
 import useHandleProjectChange from './DataInput/useHandleProjectChange';
 
-export default function useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash}){
+export default function useAssignProjectToStaffActions({post,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash}){
 
 //useReducerで定義する
 
@@ -37,18 +37,19 @@ const onClickDateReset=()=>{
     if(!confirm("入力中のデータは初期化されます。\nよろしいですか？")){
         return;
     }
+    setMapMeta({});
     setAssignPlan({});
     setSelectedDate("");
 }
 
 // 案件の変更
 const onSelectedMainProjectChange=(e)=>{
-    useHandleProjectChange(mapMeta,setMapMeta,setSelectedMainProject,e);
+    useHandleProjectChange(needNumber,mapMeta,setMapMeta,setSelectedMainProject,e);
 }
 
 // 表示が地図か町目か
 const onChangeMapOrTown=(e)=>{
-    useHandleChangeMapOrTown(e,needNumber,setNeedNumber,selectedMainProject,setAssignPlan,setMapMeta)
+    useHandleChangeMapOrTown(e,needNumber,setNeedNumber,selectedMainProject,assignPlan,setAssignPlan,setMapMeta)
 }
 
  // mapにスタッフの選択が変わった時(formを伴う)

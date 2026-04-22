@@ -9,6 +9,7 @@ use App\Rules\BranchManager\StaffIsWorkingRule;
 use App\Rules\BranchManager\PlanIdIsExistsRule;
 use App\Rules\BranchManager\PlanValidateForDateRule;
 use App\Rules\BranchManager\StaffIsExistsRule;
+use Illuminate\Support\Facades\Log;
 
 class AssignStaffRequest extends FormRequest
 {
@@ -33,8 +34,8 @@ class AssignStaffRequest extends FormRequest
             "allData"=>["required","array"],
             // そのスタッフが存在するか、その日に出席しているスタッフか
             "allData.*.staffId"=>["required",new StaffIsExistsRule,new StaffIsWorkingRule],
-            // planIdsは配列で渡る
-            "allData.*.planIds"=>["required","array"],
+            // planIdsは配列で渡る(そのスタッフの案件が未定の場合も考える)
+            "allData.*.planIds"=>["present","array"],
             // 選ばれたplanIdが存在するか, planIdは投稿された日の中に入っているか
             "allDate.*.planIds.*"=>[new PlanIdIsExistsRule,new PlanValidateForDateRule($this->input("assignDate"))]
 
@@ -42,13 +43,13 @@ class AssignStaffRequest extends FormRequest
 
         ];
     }
-    public function message(): array
+    public function messages(): array
     {
         return [
             "allData.required"=>"地図もしくは町目が選択されていません",
             "allData.array"=>"データの形が異常です",
             "allData.*.staffId.required"=>"データの形が異常です",
-            "allData.*.planId.required"=>"データの形が異常です",
+            "allData.*.planIds.required"=>"データの形が異常です",
         ];
     }
 }

@@ -11,11 +11,7 @@ use App\Actions\BranchManager\Assgin\GetDataFlowBeforeAssign;
 use App\Actions\BranchManager\Assgin\StoreAssign;
 use App\Constants\Date as DateConstants;
 use App\Http\Requests\BranchManager\AssignStaffRequest;
-use App\Models\DistributionAssignImport;
 use App\Utils\DateHelper;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 // スタッフへの案件割り当て系統を行う
 class StaffAssignmentController extends Controller
@@ -40,6 +36,7 @@ class StaffAssignmentController extends Controller
             "staffs"=>$staffs
         ]);
     }
+
     //案件割り当て投稿
     public function assign_staff_post(AssignStaffRequest $request){
         // データの取得(何度か使うため前もって展開)
@@ -51,7 +48,6 @@ class StaffAssignmentController extends Controller
 
         // 重複があれば確認ページへ
         if(!empty($duplicated_in_sql ||!empty($duplicated_in_post))){
-
             // 重複ありのflash sessionを添えて返す
             return back()->with([
                 "duplicated"=>[
@@ -66,7 +62,7 @@ class StaffAssignmentController extends Controller
         // 重複がなければ投稿して確認ページへ
         StoreAssign::assign_staffs_to_plans($date,$all_data);
 
-        return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"","linkPageInJpn"=>"現在の割り当ての確認"]);
+        return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"branch_manager.handing_assignment","linkPageInJpn"=>"現在の割り当ての確認"]);
     }
 
     // 重複確認でOKだった時(既にimportのsqlには入れている)
@@ -75,7 +71,7 @@ class StaffAssignmentController extends Controller
         // そのユーザーのデータをImportからAssign本番へ挿入（と削除）
         StoreAssign::commit_duplicated_imports();
 
-        return redirect()->routeroute("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"","linkPageInJpn"=>"現在の割り当ての確認"]);
+        return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"","linkPageInJpn"=>"現在の割り当ての確認"]);
     }
 
 }

@@ -1,6 +1,5 @@
 import SelectPartsForViewChange from "../../../../Components/Common/SelectPartsForViewChange";
 import InputPageHeader from "../../../../Components/Common/InputPageHeader";
-import ViewValidationErrors from "../../../../Components/Common/ViewValidationErrors";
 import BaseButton from "../../../../Components/Common/BaseButton";
 import RadioButton from "../../../../Components/Common/RadioButton";
 import MapLists from "./Inner/MapLists";
@@ -47,7 +46,7 @@ export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitB
             }
 
             {/* 提出ボタン */}
-            <BaseButton processing={processing}/>
+            <BaseButton processing={processing} disabled={Object.keys(assignPlan).length == 0}/>
 
         </form>
      </>

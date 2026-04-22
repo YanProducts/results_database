@@ -6,6 +6,7 @@ import useAssignProjectToStaffActions from "../../../Action/BranchManager/Projec
 import DataInput from "../../../Components/Part/BranchManager/StaffAssign/DataInput";
 import DataConfirm from "../../../Components/Part/BranchManager/StaffAssign/DataConfirm";
 
+
 // 案件を営業所担当に送信
 export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,dateSets,staffs,flash={}}){
 
@@ -13,7 +14,7 @@ export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,
   const { data, setData, post, processing, errors, reset, assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,pageMinWidth,pageMaxWidth}=useAssignProjectToStaffDefinitions();
 
   // 動き
-  const {onSubmitBtnClick,onSelectedDateChange,onClickDateReset,onSelectedMainProjectChange,onChangeMapOrTown,handleAssignChangeInMaps,handleAssignChangeInTowns,onConfirmOkClick,onConfirmCancelClick,onDuplicatedOkClick}=useAssignProjectToStaffActions({dateSets,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash});
+  const {onSubmitBtnClick,onSelectedDateChange,onClickDateReset,onSelectedMainProjectChange,onChangeMapOrTown,handleAssignChangeInMaps,handleAssignChangeInTowns,onConfirmOkClick,onConfirmCancelClick,onDuplicatedOkClick}=useAssignProjectToStaffActions({post,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash});
 
   return(
     <Layout title={`${what}-${type}`}>
@@ -24,12 +25,8 @@ export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,
     <DataInput {...{what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,selectedMainProject,onSelectedMainProjectChange,projectsAndTowns,onChangeMapOrTown,needNumber,mapMeta,staffs,handleAssignChangeInMaps,assignPlan,handleAssignChangeInTowns,errors,processing}}/>
     :
     // データ確認用
-    <DataConfirm {...{what,type,pageMinWidth,pageMaxWidth,processing,selectedDate,onConfirmOkClick,onConfirmCancelClick,assignPlanForConfirmView,duplicatedCheck,flash,onDuplicatedOkClick}} />
+    <DataConfirm {...{what,type,errors,pageMinWidth,pageMaxWidth,processing,selectedDate,onConfirmOkClick,onConfirmCancelClick,assignPlanForConfirmView,duplicatedCheck,flash,onDuplicatedOkClick}} />
     }
-
-    {/* バリデーションエラー */}
-    <ViewValidationErrors errors={errors} />
-
 
     {/* リンク */}
       <div className="mt-4">

@@ -14,7 +14,7 @@ return new class extends Migration
         // 結果にplan_idをつける
         // assign時に重複していてもOKかの確認を行うため
         Schema::table('distribution_records', function (Blueprint $table) {
-           $table->foreignId("plan_id")->constrained("distribuiton_plans")->nullOnDelete();
+           $table->foreignId("plan_id")->nullable()->constrained("distribution_plans")->nullOnDelete();
         });
     }
 

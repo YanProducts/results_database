@@ -65,9 +65,6 @@ class Read{
             // サブ案件名が重複している場合はリスト追加
             // 存在確認は前段階で行っている
             foreach($sub_sets as $each_sub){
-
-                // Log::info($each_sub);
-
                 $duplicate_sets=self::add_duplicated_town_sets($each_sub["project_name"],$each_sub["date_town_sets"],$duplicate_sets);
             }
          }

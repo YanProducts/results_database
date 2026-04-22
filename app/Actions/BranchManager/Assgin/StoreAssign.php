@@ -1,6 +1,5 @@
 <?php
 // Assignで投稿されたデータをSQLに入れる過程でのメソッド
-
 namespace App\Actions\BranchManager\Assgin;
 
 use App\Actions\BranchManager\Assgin\CheckAssign\Delete;
@@ -17,15 +16,15 @@ class StoreAssign{
         DB::transaction(function()use($date,$all_data){
             $new_assigned_data=[];
             // 複数回取得するので先に抽出
-            $staff_id=$all_data["staffId"];
             foreach($all_data as $data){
+                $staff_id=$data["staffId"];
                 foreach($data["planIds"] as $plan_id){
                     $new_assigned_data[]=[
                         // 日付とスタッフとplanのidを挿入(このセットが重複したらupdateせずにエラーを出す)
                         "date"=>$date,
                         "staff_id"=>$staff_id,
                         "plan_id"=>$plan_id,
-                        "createrd_by"=>Auth::user()->id,
+                        "created_by"=>Auth::user()->id,
                         "created_at"=>Carbon::now(),
                         "updated_at"=>Carbon::now(),
                     ];

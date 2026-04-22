@@ -43,7 +43,8 @@ Route::prefix("branch_manager")
                   Route::get("assign_staff","assign_staff")
                   ->name("assign_staff");
                   // 担当/案件/町目/日付の割り当ての決定
-                  Route::post("assign_staff","assign_staff_post");
+                  Route::post("assign_staff","assign_staff_post")
+                  ->name("assign_staff_post");
                  //町目の重複確認でOKだった時
                  Route::post("store_including_duplicated_plans","store_including_duplicated_plans")
                  ->middleware(["assignStaffDuplicatedCheck"])
@@ -53,7 +54,8 @@ Route::prefix("branch_manager")
             // 案件を自分で登録する系統
             Route::controller(ProjectHandingController::class)
             ->group(function(){
-
+                Route::get("handing_assignment","handing_assignment")
+                ->name("handing_assignment");
             });
             Route::controller(ProjectRecordController::class)
             ->group(function(){
