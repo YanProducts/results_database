@@ -3,7 +3,7 @@
 // その営業所で、その期間に出勤するスタッフを返す
 // 本来はシフトサイト連動。ひとまずは実験的に営業所全員のデータを返す
 
-namespace App\Support\BranchManager;
+namespace App\Actions\BranchManager\Assgin\DataFetches;
 
 use App\Models\FieldStaffList;
 use Illuminate\Support\Facades\DB;

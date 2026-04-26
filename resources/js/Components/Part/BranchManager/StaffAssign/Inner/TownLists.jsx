@@ -1,6 +1,6 @@
 import SelectParts from "../../../../Common/SelectParts";
 // スタッフの割り当てを町目から選ぶ場合
-export default function TownLists({projectsAndTowns,selectedMainProject,assignPlan,staffs,handleAssignChangeInTowns,prefixPercent="w-[30%]",maxWidth="max-w-80", minWidth="min-w-72.5"}){
+export default function TownLists({projectsAndTowns,selectedDate,selectedMainProject,assignPlan,staffs,handleAssignChangeInTowns,maxWidth="max-w-80", minWidth="min-w-72.5"}){
 
     // メイン案件が選択されていないとき
     if(!selectedMainProject){
@@ -34,6 +34,16 @@ export default function TownLists({projectsAndTowns,selectedMainProject,assignPl
 
           {mainSets.map(function(townData){
             const planId=townData.id;
+
+            if(townData.start_date > selectedDate || townData.end_date < selectedDate){
+                return(
+                 <tr className="border-black border-2  border-collapse base_backColor" key={planId}>
+                    <td className="border-black border-2 border-collapse py-2" colSpan={Object.keys(subSets).length+2}>{townData.address_name + "は配布期間外です"}</td>
+                </tr>
+                )
+            }
+
+
             return(
              <tr className="border-black border-2 border-collapse" key={planId}>
                 {/* 町目名 */}

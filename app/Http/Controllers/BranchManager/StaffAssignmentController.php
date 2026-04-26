@@ -23,8 +23,9 @@ class StaffAssignmentController extends Controller
         // 今から何日後のデータまで取得するか
         $start_offset=DateConstants::StartOffsetInStaffAssignMent;
         $end_offset=DateConstants::EndOffsetInStaffAssignMent;
-        // その営業所に来ている案件と、（その日出席している）所属スタッフを返す(当日から5日先まで)
-        [$projects_and_towns,$staffs]=GetDataFlowBeforeAssign::get_projects_and_staffs_in_branch($start_offset,$end_offset);
+
+        // 日付セット、その営業所に来ている案件と、日付と案件(町目)のインデックス、（その日出席している）所属スタッフを返す(当日から5日先まで)
+        [$date_sets,$projects_and_towns,$date_projects_index,$staffs]=GetDataFlowBeforeAssign::get_projects_and_staffs_in_branch($start_offset,$end_offset);
 
         // 日付と案件とスタッフ一覧が表示(取り急ぎ併配も含めた案件ごと、のちにメイン案件でまとめる)
         return Inertia::render("BranchManager/ProjectAssignment/AssignProjectToStaff",[
@@ -32,7 +33,8 @@ class StaffAssignmentController extends Controller
             "what"=>"営業所担当",
             "type"=>"スタッフ割り当て",
             "projectsAndTowns"=>$projects_and_towns,
-            "dateSets"=>DateHelper::get_date_key_value_sets_for_view("",$start_offset,$end_offset),
+            "dateSets"=>$date_sets,
+            "dateProjectsIndex"=>$date_projects_index,
             "staffs"=>$staffs
         ]);
     }

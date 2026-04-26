@@ -7,6 +7,7 @@ namespace App\Support\CommonModelHelpers;
 use App\Exceptions\BusinessException;
 use App\Models\DistributionPlan;
 use App\Support\CommonModelHelpers\AddressHelpers;
+use Illuminate\Support\Facades\Log;
 
 //
 class DistributionPlanHelpers{
@@ -31,14 +32,13 @@ class DistributionPlanHelpers{
     // 該当営業所の該当機関に来ている案件を返す
     public static function get_plan_in_the_place_and_period($place_id,$date_sets){
 
-        // dateが存在しないとき (issetは複数キーの同時チェック可能)、もしくはdateがCarbonではない時
-        if (!isset($date_sets['start'], $date_sets['end'])) {
-            throw new BusinessException("日付取得時のエラーです");
-        }
+    $start=$date_sets["start"] ?? throw new BusinessException("日付取得のエラーです");
+    $end=$date_sets["end"] ?? throw new BusinessException("日付取得のエラーです");
 
 
-        $plan_in_the_place_and_period=DistributionPlan::where("place_id",$place_id)->where("start_date","<=",$date_sets["start"])
-        ->where("end_date",">=",$date_sets["end"])
+        // 「表示する日付内の最初でまだ終わっていない」かつ「表示する日付の最後ですでに始まっている」ものを選択
+        $plan_in_the_place_and_period=DistributionPlan::where("place_id",$place_id)->where("start_date","<=",$end)
+        ->where("end_date",">=",$start)
         ->get();
 
         return $plan_in_the_place_and_period;

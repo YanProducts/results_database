@@ -22,6 +22,12 @@ class AddressHelpers{
         return Address::select(DB::raw("CONCAT(city, town) as address_name"))->where("id",$address_id)->value("address_name") ?? null;
     }
 
+    // 住所idに対する住所名をid=>名前の配列で一括取得(n+1防止)
+    public static function get_city_and_town_arrays_key_by_id($ids){
+        return
+        Address::whereIn("id",$ids)->pluck(DB::raw("CONCAT(city, town) as address_name"),"id")->toArray();
+    }
+
     // 住所が存在するか
     public static function is_address_exists($city,$town){
         return Address::where([

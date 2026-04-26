@@ -21,8 +21,9 @@ export default function AssignSetsForConfirming({assignPlanForConfirmView,pageMi
                     // スタッフが担当するメイン案件の数によって行の数が変更するためprojectNameでmap
                     projectsToStaff.map(function(projectName,innerIndex){
                         const eachPlanByStaffInTheProject=eachPlanByStaff[1][projectName];
+                        if(eachPlanByStaff){
                         return(
-                        <tr className="border-black border-2" key={ index + "-" + innerIndex}>
+                            <tr className="border-black border-2" key={ index + "-" + innerIndex}>
                                 {/* スタッフ名 */}
                                 {innerIndex ==0 &&
                                 <td className={`border-black border-2 ${isMapModified ? "w-[20%]" :"w-[25%]"}`} rowSpan={projectsToStaff.length}>{staffName}</td>
@@ -30,14 +31,17 @@ export default function AssignSetsForConfirming({assignPlanForConfirmView,pageMi
                                 {/* 案件名 */}
                                 <td className={`border-black border-2 ${isMapModified ? "w-[20%]" :"w-[25%]"}`}>{projectName}</td>
                                 {/* マップ */}
-                                {console.log(eachPlanByStaffInTheProject.mapComment)}
                                 <td className={`border-black border-2 ${isMapModified ? "text-left w-[30%] px-2" :"w-[15%]"} whitespace-pre-wrap`}>
                                 {eachPlanByStaffInTheProject.mapComment}
                                 </td>
                                 {/* 町目名(idを変更させる必要あり) */}
                                 <td className={`border-black border-2 ${isMapModified ? "w-[30%]" :"w-[35%]"} px-2 whitespace-pre-line text-left`}>{eachPlanByStaffInTheProject.planId.join("\n")}</td>
                             </tr>
-                        )})
+                          )}else{
+                              return null;
+                          }
+                          }
+                        )
                     )
                  })}
             </BaseTable>

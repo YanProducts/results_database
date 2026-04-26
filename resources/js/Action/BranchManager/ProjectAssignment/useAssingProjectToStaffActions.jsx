@@ -39,6 +39,7 @@ const onClickDateReset=()=>{
     }
     setMapMeta({});
     setAssignPlan({});
+    setSelectedMainProject("");
     setSelectedDate("");
 }
 

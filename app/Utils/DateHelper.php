@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use App\Exceptions\BusinessException;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -33,9 +34,9 @@ class DateHelper{
             if(!self::is_Ymd_date($base_Ymd_date)){
                 throw new BusinessException("日付の取得のエラーです");
             }
-            $base_date=Carbon::parse($base_Ymd_date);
+            $base_date=CarbonImmutable::parse($base_Ymd_date);
         }else{
-            $base_date=Carbon::now();
+            $base_date=CarbonImmutable::now();
         }
 
         return $base_date;
@@ -47,6 +48,7 @@ class DateHelper{
 
         // 基準日が日付になっているかを確認し、基準日の入力がある場合はdateかチェック
         $base_date=self::check_and_get_base_Ymd_date($base_Ymd_date);
+
 
         return[
             "start"=>$base_date->addDays($start_offset),
@@ -62,9 +64,9 @@ class DateHelper{
 
         // 基準の日
         for($add_day=$start_offset;$add_day<$end_offset;$add_day++){
-            // Carbonはmutable
-            $base_date->addDay();
-            $date_key_value_sets[$base_date->format("Y-m-d")]=$base_date->format("n月j日");
+            // Carbonはimmutableで宣言
+            $added_date=$base_date->addDays($add_day);
+            $date_key_value_sets[$added_date->format("Y-m-d")]=$added_date->format("n月j日");
         }
         return $date_key_value_sets;
     }

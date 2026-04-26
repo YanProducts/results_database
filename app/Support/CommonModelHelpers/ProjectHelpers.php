@@ -10,13 +10,20 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class ProjectHelpers{
+
     // idから案件名を取得(見つからなかったらNullが返る)
     public static function get_project_name_from_id($project_id){
         return Project::find($project_id)?->project_name;
     }
+
+    // そのプロジェクトidに対応するプロジェクト名を一括取得してid=>案件名の配列で返す
+    public static function get_project_names_array_key_by_id($ids){
+        return Project::whereIn("id",$ids)->pluck("project_name","id");
+    }
+
+
     // 案件名から、その案件名に該当する最新のidを返還
     public static function get_latest_project_id_from_name($project_name){
-
         // ない場合は空のコレクションからidも存在せずnullが返却
        return
         Project::where("project_name",$project_name)->orderBy("another_project_flag","desc")->value("id");

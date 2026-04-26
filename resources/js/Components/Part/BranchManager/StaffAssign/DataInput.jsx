@@ -6,7 +6,8 @@ import MapLists from "./Inner/MapLists";
 import TownLists from "./Inner/TownLists";
 
 // スタッフを割り当てる際のデータ入力ページ
-export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,selectedMainProject,onSelectedMainProjectChange,projectsAndTowns,onChangeMapOrTown,needNumber,mapMeta,staffs,handleAssignChangeInMaps,assignPlan,handleAssignChangeInTowns,errors,processing}){
+export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,selectedMainProject,onSelectedMainProjectChange,projectsAndTowns,dateProjectsIndex,onChangeMapOrTown,needNumber,mapMeta,staffs,handleAssignChangeInMaps,assignPlan,handleAssignChangeInTowns,processing}){
+
     return(
             <>
     {/* タイトル */}
@@ -20,7 +21,7 @@ export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitB
                 <SelectPartsForViewChange value={selectedDate} onChange={onSelectedDateChange} prefix={"日付："} keyValueSets={dateSets} disabled={selectedDate ? true :false} fixed={selectedDate ? true :false} fixContents={selectedDate ? new Date(selectedDate).toLocaleDateString("ja-JP", {month: "long",day: "numeric"}) : ""}/>
 
                 {/* メイン案件名(クリックすれば「MapNo選択⇨必要なら修正」or「町目リストから直接」の項目開く) */}
-                <SelectPartsForViewChange value={selectedMainProject} onChange={onSelectedMainProjectChange} prefix={"メイン案件名："} keyValueSets={Object.fromEntries(Object.keys(projectsAndTowns).map(project=>[project,project]))} disabled={selectedDate ? false :true} opacity={selectedDate ? "opacity-100" : "opacity-30"}/>
+                <SelectPartsForViewChange value={selectedMainProject} onChange={onSelectedMainProjectChange} prefix={"メイン案件名："} keyValueSets={selectedDate ? Object.fromEntries(Object.values(dateProjectsIndex[selectedDate]).map(project=>[project,project])) : {}} disabled={selectedDate ? false :true} opacity={selectedDate ? "opacity-100" : "opacity-30"}/>
 
                 {/* 案件ナンバーと町目リストのどちらから選ぶか */}
                 <RadioButton onChange={(e)=>{onChangeMapOrTown(e)}} minWidth="min-w-80" maxWitdh="max-w-100"
@@ -36,10 +37,10 @@ export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitB
             {selectedDate ?
              (needNumber==="mapNumber" ?
                 // 地図リスト表示
-                <MapLists projectsAndTowns={projectsAndTowns} selectedMainProject={selectedMainProject} mapMeta={mapMeta} staffs={staffs} handleAssignChangeInMaps={handleAssignChangeInMaps}/>
+                <MapLists projectsAndTowns={projectsAndTowns} selectedDate={selectedDate} selectedMainProject={selectedMainProject} mapMeta={mapMeta} staffs={staffs} handleAssignChangeInMaps={handleAssignChangeInMaps}/>
             :
                 // 町目リスト表示
-                <TownLists projectsAndTowns={projectsAndTowns} selectedMainProject={selectedMainProject} assignPlan={assignPlan} staffs={staffs} handleAssignChangeInTowns={handleAssignChangeInTowns}/>
+                <TownLists projectsAndTowns={projectsAndTowns} selectedDate={selectedDate} selectedMainProject={selectedMainProject} assignPlan={assignPlan} staffs={staffs} handleAssignChangeInTowns={handleAssignChangeInTowns}/>
              )
             :
                 <div></div>
