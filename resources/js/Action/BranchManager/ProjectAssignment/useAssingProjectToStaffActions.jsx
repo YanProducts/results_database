@@ -54,8 +54,8 @@ const onChangeMapOrTown=(e)=>{
 }
 
  // mapにスタッフの選択が変わった時(formを伴う)
-const handleAssignChangeInMaps=(e,mapNumber)=>{
-    useHandleAssignChangeInMaps(e,mapNumber,projectsAndTowns,mapMeta,selectedMainProject,setMapMeta,setAssignPlan,assignPlan)
+const handleAssignChangeInMaps=(e,mapNumber,outOfPeriodAddresses)=>{
+    useHandleAssignChangeInMaps(e,mapNumber,outOfPeriodAddresses,projectsAndTowns,mapMeta,selectedMainProject,setMapMeta,setAssignPlan)
 }
 
 //  町目にスタッフの選択が変わった時(formを伴う)

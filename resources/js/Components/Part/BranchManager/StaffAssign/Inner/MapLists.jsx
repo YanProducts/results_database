@@ -16,38 +16,32 @@ export default function MapLists({projectsAndTowns,selectedDate,selectedMainProj
     const mapDuplicatedNumberLists=(mainSets).map(eachSet=>eachSet.map_number);
     const mapNumberLists=([...new Set(mapDuplicatedNumberLists)]).sort((a,b)=>a-b);
 
-    // マップ内で特定の町目のみ日付が違うとき([...mapNumberLists]で集合を配列に直す)
-    const dateExceptionInMap=[...mapNumberLists].map(mapNumber=>({
-       "mapNumber":mapNumber,
-       "outOfPeriodSets":(mainSets.filter(eachSet=>(eachSet.start_date > selectedDate || eachSet.end_date < selectedDate) && eachSet.map_number==mapNumber)).map(eachFilteredSet=>({
-                "planId":eachFilteredSet.id,
-                "addressName":eachFilteredSet.address_name,
-            }))
-
-    }));
-
-
     return(
         <div className="mb-3">
         {
-        mapNumberLists.map(mapNumber=>
-            // 期間外の町目が存在するとき
-            (dateExceptionInMap.filter(eachOutOfSet=>Number(eachOutOfSet.mapNumber)==Number(mapNumber) && eachOutOfSet.outOfPeriodSets.length>0).length>0) ?
+        mapNumberLists.map(function(mapNumber){
+            // その地図における、配布期間外の町目のセットを先に定義
+            const outOfPeriodAddresses=mainSets.filter(eachSet=>(eachSet.start_date > selectedDate || eachSet.end_date < selectedDate) && eachSet.map_number==mapNumber).map(eachSet=>eachSet.address_name);
+            return(
+            // その地図に配布期間外の町目があるかで分岐
+            outOfPeriodAddresses.length>0 ?
             <div key={mapNumber} className={`h-auto base_backColor base_frame mx-auto my-0 border border-black ${minWidth} ${maxWidth} text-center`}>
                 <div className={`flex items-center h-9`}>
                     {/* スタッフの選択 */}
-                    <SelectParts name="mapStaffs" value={ mapMeta?.[selectedMainProject]?.[mapNumber]?.staffId || "" } onChange={(e)=>handleAssignChangeInMaps(e,mapNumber)} prefix={mapNumber + "："} prefixPercent="w-[20%]" selectPercent="w-[75%]" prefixMinWidth="min-w-10" selectMinWidth="min-w-40" keyValueSets={staffs} allowEmptyOption={false} />
+                    <SelectParts name="mapStaffs" value={ mapMeta?.[selectedMainProject]?.[mapNumber]?.staffId || "" } onChange={(e)=>handleAssignChangeInMaps(e,mapNumber,outOfPeriodAddresses)} prefix={mapNumber + "："} prefixPercent="w-[20%]" selectPercent="w-[75%]" prefixMinWidth="min-w-10" selectMinWidth="min-w-40" keyValueSets={staffs} allowEmptyOption={false} />
                 </div>
-                <div className={`text-sm w-[30%] mx-auto text-left min-w-40 mb-1`}><p className={`my-0 whitespace-pre-wrap`}>＊下記は配布期間外です<br/>{dateExceptionInMap.find(eachOutOfSet=>Number(eachOutOfSet.mapNumber)==Number(mapNumber)).outOfPeriodSets.map(eachSet=>eachSet.addressName).join("\n")}</p></div>
+                {/* 配布期間外の町目を取得 */}
+                <div className={`text-sm w-[30%] mx-auto text-left min-w-40 mb-1`}><p className={`my-0 whitespace-pre-wrap`}>＊下記は配布期間外です<br/>{outOfPeriodAddresses.join("\n")}</p></div>
             </div>
             :
+
             // 全て期間内のとき
             <div className={`flex items-center base_frame ${minWidth} ${maxWidth} mx-auto my-0 border border-black base_backColor text-center h-9`} key={mapNumber}>
                 {/* スタッフの選択 */}
-                <SelectParts name="mapStaffs" value={ mapMeta?.[selectedMainProject]?.[mapNumber]?.staffId || "" } onChange={(e)=>handleAssignChangeInMaps(e,mapNumber)} prefix={mapNumber + "："} prefixPercent="w-[20%]" selectPercent="w-[75%]" prefixMinWidth="min-w-10" selectMinWidth="min-w-40" keyValueSets={staffs} allowEmptyOption={false} />
+                <SelectParts name="mapStaffs" value={ mapMeta?.[selectedMainProject]?.[mapNumber]?.staffId || "" } onChange={(e)=>handleAssignChangeInMaps(e,mapNumber,[])} prefix={mapNumber + "："} prefixPercent="w-[20%]" selectPercent="w-[75%]" prefixMinWidth="min-w-10" selectMinWidth="min-w-40" keyValueSets={staffs} allowEmptyOption={false} />
             </div>
-
-        )}
+            );
+        })}
         </div>
     )
 }

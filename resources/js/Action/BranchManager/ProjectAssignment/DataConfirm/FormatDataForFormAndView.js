@@ -29,7 +29,7 @@ export default function FormatDataForFormAndView({assignPlan,staffs,selectedDate
             const mapComment=
             mapMeta[mainProjectName] ?
                 Object.entries(mapMeta[mainProjectName]).filter(mapDataInTheProject=>Number(mapDataInTheProject[1].staffId)==Number(staffId)).map(eachMapData=>
-                    "Map" + eachMapData[0] + ((eachMapData[1]?.addTown && eachMapData[1].addTown.length>0 ) ? "\n\+" + eachMapData[1].addTown.join("\n\+") : "") + ((eachMapData[1]?.removeTown && eachMapData[1].removeTown.length>0) ? "\n\-" + eachMapData[1].removeTown.join("\n\-") : "")
+                    "Map" + eachMapData[0] + ((eachMapData[1]?.addTown && eachMapData[1].addTown.length>0 ) ? "\n\+" + eachMapData[1].addTown.join("\n\+") : "") + ((eachMapData[1]?.removeTown && eachMapData[1].removeTown.length>0) ? "\n\-" + eachMapData[1].removeTown.join("\n\-") : "") + ((eachMapData[1]?.outOfPeriodSets && eachMapData[1].outOfPeriodSets.length>0) ? "\n期間外" +eachMapData[1]?.outOfPeriodSets.join("\n期間外") : "" )
             ).join("\n") :
             "町目からのみ分割";
 
