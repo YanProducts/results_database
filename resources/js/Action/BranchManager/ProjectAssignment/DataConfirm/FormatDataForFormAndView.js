@@ -1,12 +1,6 @@
 // 一時的に保存されたデータをformの形式に変換
 export default function FormatDataForFormAndView({assignPlan,staffs,selectedDate,projectsAndTowns,setAssignPlanForConfirmView,setData,mapMeta}){
 
-
-    console.log(mapMeta)
-
-
-
-
     // 格納用。setDataでallDataの内部に{["staffId":,"planId":],["staffId","planId"]...この配列で格納}
     let assignPlanForForm=[];
 
