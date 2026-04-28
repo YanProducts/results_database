@@ -1,6 +1,12 @@
 // 一時的に保存されたデータをformの形式に変換
 export default function FormatDataForFormAndView({assignPlan,staffs,selectedDate,projectsAndTowns,setAssignPlanForConfirmView,setData,mapMeta}){
 
+
+    console.log(mapMeta)
+
+
+
+
     // 格納用。setDataでallDataの内部に{["staffId":,"planId":],["staffId","planId"]...この配列で格納}
     let assignPlanForForm=[];
 
@@ -29,7 +35,7 @@ export default function FormatDataForFormAndView({assignPlan,staffs,selectedDate
             const mapComment=
             mapMeta[mainProjectName] ?
                 Object.entries(mapMeta[mainProjectName]).filter(mapDataInTheProject=>Number(mapDataInTheProject[1].staffId)==Number(staffId)).map(eachMapData=>
-                    "Map" + eachMapData[0] + ((eachMapData[1]?.addTown && eachMapData[1].addTown.length>0 ) ? "\n\+" + eachMapData[1].addTown.join("\n\+") : "") + ((eachMapData[1]?.removeTown && eachMapData[1].removeTown.length>0) ? "\n\-" + eachMapData[1].removeTown.join("\n\-") : "") + ((eachMapData[1]?.outOfPeriodSets && eachMapData[1].outOfPeriodSets.length>0) ? "\n期間外" +eachMapData[1]?.outOfPeriodSets.join("\n期間外") : "" )
+                    "Map" + eachMapData[0] + ((eachMapData[1]?.addTown && eachMapData[1].addTown.length>0 ) ? "\n\+" + eachMapData[1].addTown.join("\n\+") : "") + ((eachMapData[1]?.removeTown && eachMapData[1].removeTown.length>0) ? "\n\-" + eachMapData[1].removeTown.join("\n\-") : "") + ((eachMapData[1]?.outOfPeriodAddresses && eachMapData[1].outOfPeriodAddresses.length>0) ? "\n期間外..." + eachMapData[1].outOfPeriodAddresses.length + "町" : "" )
             ).join("\n") :
             "町目からのみ分割";
 

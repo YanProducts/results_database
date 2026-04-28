@@ -11,12 +11,6 @@ export default function useAssignProjectToStaffActions({post,projectsAndTowns,st
 
 //useReducerで定義する
 
- // 初期設定
-React.useEffect(()=>{
-// dateも初期は表示しない
-
-},[]);
-
 // 確認表示になった時に実行
 React.useEffect(()=>{
     if(!isConfirm){
@@ -55,7 +49,7 @@ const onChangeMapOrTown=(e)=>{
 
  // mapにスタッフの選択が変わった時(formを伴う)
 const handleAssignChangeInMaps=(e,mapNumber,outOfPeriodAddresses)=>{
-    useHandleAssignChangeInMaps(e,mapNumber,outOfPeriodAddresses,projectsAndTowns,mapMeta,selectedMainProject,setMapMeta,setAssignPlan)
+    useHandleAssignChangeInMaps(e,mapNumber,outOfPeriodAddresses,projectsAndTowns,selectedDate,mapMeta,selectedMainProject,setMapMeta,setAssignPlan)
 }
 
 //  町目にスタッフの選択が変わった時(formを伴う)

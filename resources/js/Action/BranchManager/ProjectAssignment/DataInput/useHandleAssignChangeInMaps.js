@@ -1,14 +1,10 @@
 // mapにおけるスタッフの変化が変わったとき
-export default function useHandleAssignChangeInMaps(e,mapNumber,outOfPeriodAddresses,projectsAndTowns,mapMeta,selectedMainProject,setMapMeta,setAssignPlan){
+export default function useHandleAssignChangeInMaps(e,mapNumber,outOfPeriodAddresses,projectsAndTowns,selectedDate,mapMeta,selectedMainProject,setMapMeta,setAssignPlan){
 
     // スタッフが選択されたvalueになる
     const staffId=e.currentTarget.value;
     // 選択中のメインプロジェクトの情報が入ったセット
     const selectedProjectSets=projectsAndTowns[selectedMainProject];
-
-
-    console.log(outOfPeriodAddresses);
-
 
     // optionで選択中の地図番号を変更(表示用。handle関数には引数で渡す)
     setMapMeta(prev=>({
@@ -20,7 +16,7 @@ export default function useHandleAssignChangeInMaps(e,mapNumber,outOfPeriodAddre
                 "addTown":[],
                 "removeTown":[],
                 // 期間外セット
-                "outOfPeriodAddresses":outOfPeriodAddresses.map(eachSet=>eachSet.address_name)
+                "outOfPeriodAddresses":outOfPeriodAddresses
             }
         }
      }))

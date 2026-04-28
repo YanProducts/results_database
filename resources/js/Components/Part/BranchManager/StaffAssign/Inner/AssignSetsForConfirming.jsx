@@ -4,7 +4,7 @@ export default function AssignSetsForConfirming({assignPlanForConfirmView,pageMi
 
     // mapコメントに+か-がついているかどうかで表示の長さを変更
     const isMapModified=Object.values(assignPlanForConfirmView).some(projectsAndDataSets=>
-        Object.values(projectsAndDataSets).filter(eachData=>(eachData.mapComment.includes("\+") || eachData.mapComment.includes("\-"))).length>0
+        Object.values(projectsAndDataSets).filter(eachData=>(eachData.mapComment.includes("\+") || eachData.mapComment.includes("\-")) || eachData.mapComment.includes("期間外")).length>0
     )
 
 
