@@ -4,7 +4,7 @@ import React from "react";
 export default function useAssignProjectToStaffDefinitions(){
 
   // フォーム
-  const { data, setData, post, processing, errors, reset}=useForm({
+  const { data, setData, post, processing, errors,clearErrors, reset}=useForm({
         // 送信はバリデーションのしやすさも含め、[staff_id=>[plan_idの配列]]という配列
   });
 
@@ -37,5 +37,5 @@ export default function useAssignProjectToStaffDefinitions(){
    const [pageMinWidth,pageMaxWidth]=["min-w-200","max-w-300"];
 
 
-  return { data, setData, post, processing, errors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,pageMinWidth,pageMaxWidth}
+  return { data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,pageMinWidth,pageMaxWidth}
 }

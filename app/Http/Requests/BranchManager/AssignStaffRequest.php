@@ -35,12 +35,11 @@ class AssignStaffRequest extends FormRequest
             // そのスタッフが存在するか、その日に出席しているスタッフか
             "allData.*.staffId"=>["required",new StaffIsExistsRule,new StaffIsWorkingRule],
             // planIdsは配列で渡る(そのスタッフの案件が未定の場合も考える)
-            "allData.*.planIds"=>["present","array"],
             // 選ばれたplanIdが存在するか, planIdは投稿された日の中に入っているか
-            "allDate.*.planIds.*"=>[new PlanIdIsExistsRule,new PlanValidateForDateRule($this->input("assignDate"))]
+            "allData.*.planIds"=>["present","array",new PlanIdIsExistsRule,new PlanValidateForDateRule($this->input("assignDate"))],
+
 
             // その日の出席スタッフが網羅されているかは、スタッフの一部のみが利用することも踏まえ、js側で確認を出すようにする
-
         ];
     }
     public function messages(): array
@@ -49,7 +48,8 @@ class AssignStaffRequest extends FormRequest
             "allData.required"=>"地図もしくは町目が選択されていません",
             "allData.array"=>"データの形が異常です",
             "allData.*.staffId.required"=>"データの形が異常です",
-            "allData.*.planIds.required"=>"データの形が異常です",
+            "allData.*.planIds.present"=>"データの形が異常です",
+            "allData.*.planIds.array"=>"データの形が異常です",
         ];
     }
 }

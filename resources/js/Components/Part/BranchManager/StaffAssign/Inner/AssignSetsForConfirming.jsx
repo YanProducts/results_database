@@ -10,7 +10,7 @@ export default function AssignSetsForConfirming({assignPlanForConfirmView,pageMi
 
     return(
         <div className={`base_frame ${pageMinWidth} ${pageMaxWidth} mt-2 mb-4`}>
-            {/* 基本はbaseの形のtableを使いつつ、tbosyの中身のみカスタム */}
+            {/* 基本はbaseの形のtableを使いつつ、tbodyの中身のみカスタム */}
             <BaseTable tableTheme={`日付：${new Date(selectedDate).toLocaleDateString("ja-JP", {month: "long",day: "numeric"})}`} thSets={{"staff":"スタッフ名","project":"案件名","map":"地図の番号","town":"町目"}} allData={"カスタムなので除外"} pageMaxWidth={pageMaxWidth} pageMinWidth={pageMinWidth} width={isMapModified ? "w-[90%]":"w-[80%]"}>
                 {/* スタッフId:メイン案件:案件Idセットの文字列のオブジェクトを見て行く */}
                 {Object.entries(assignPlanForConfirmView).map(function(eachPlanByStaff,index){
@@ -53,7 +53,7 @@ export default function AssignSetsForConfirming({assignPlanForConfirmView,pageMi
                             </tr>
                         : null)})
                         :
-                         <tr className="border-black border-2">
+                         <tr className="border-black border-2" key={ index + "-nonAssigned"}>
                              <td className="border-black border-2">{staffName}</td>
                              <td className="border-black border-2" colSpan="3">このスタッフは分割されていません</td>
                          </tr>

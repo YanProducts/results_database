@@ -20,7 +20,7 @@ export default function DataConfirm({what,type,errors,pageMinWidth,pageMaxWidth,
         {/* スタッフ⇨案件名⇨町目セット */}
         <AssignSetsForConfirming {...{assignPlanForConfirmView,pageMinWidth,pageMaxWidth,selectedDate}} />
 
-        <SubmitOrBackButtons minWidth={pageMinWidth} maxWidth={pageMaxWidth} processing={processing} onSubmitBtnClick={onConfirmOkClick} onCancelBtnClick=
+        <SubmitOrBackButtons minWidth={pageMinWidth} maxWidth={pageMaxWidth} processing={processing} errors={errors} onSubmitBtnClick={onConfirmOkClick} onCancelBtnClick=
        {onConfirmCancelClick}/>
        </>
     :

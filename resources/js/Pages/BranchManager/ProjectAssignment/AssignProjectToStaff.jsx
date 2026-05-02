@@ -11,10 +11,10 @@ import DataConfirm from "../../../Components/Part/BranchManager/StaffAssign/Data
 export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,dateSets,dateProjectsIndex,staffs,flash={}}){
 
   // 定義(フォームなど)
-  const { data, setData, post, processing, errors, reset, assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,pageMinWidth,pageMaxWidth}=useAssignProjectToStaffDefinitions();
+  const { data, setData, post, processing, errors,clearErrors, reset, assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,pageMinWidth,pageMaxWidth}=useAssignProjectToStaffDefinitions();
 
   // 動き
-  const {onSubmitBtnClick,onSelectedDateChange,onClickDateReset,onSelectedMainProjectChange,onChangeMapOrTown,handleAssignChangeInMaps,handleAssignChangeInTowns,onConfirmOkClick,onConfirmCancelClick,onDuplicatedOkClick}=useAssignProjectToStaffActions({post,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash});
+  const {onSubmitBtnClick,onSelectedDateChange,onClickDateReset,onSelectedMainProjectChange,onChangeMapOrTown,handleAssignChangeInMaps,handleAssignChangeInTowns,onConfirmOkClick,onConfirmCancelClick,onDuplicatedOkClick}=useAssignProjectToStaffActions({data,post,clearErrors,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash});
 
   return(
     <Layout title={`${what}-${type}`}>

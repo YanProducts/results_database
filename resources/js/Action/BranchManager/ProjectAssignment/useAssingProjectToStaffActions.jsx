@@ -7,7 +7,7 @@ import FormatDataForFormAndView from './DataConfirm/FormatDataForFormAndView';
 import useHandleDataChange from './DataInput/useHandleDateChange';
 import useHandleProjectChange from './DataInput/useHandleProjectChange';
 
-export default function useAssignProjectToStaffActions({post,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash}){
+export default function useAssignProjectToStaffActions({data,post,clearErrors,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash}){
 
 //useReducerで定義する
 
@@ -67,6 +67,13 @@ const handleAssignChangeInTowns=(e,planId)=>{
     //   確認後OKのボタンが押されたとき
   const onConfirmOkClick=(e)=>{
       e.preventDefault();
+
+     // 割り当てのないスタッフの確認
+    const nonAssignedStaffs=Object.keys(staffs).filter(staffId=>data.allData.some(eachData=>eachData.staffId==staffId && eachData.planIds.length==0));
+    if(nonAssignedStaffs.length>0 && !confirm("以下のスタッフが割り当てられていません。\nよろしいですか？\n\n" + nonAssignedStaffs.map(eachNonAssignedStaffId=>("・" + staffs[eachNonAssignedStaffId])).join("\n"))){
+        return;
+    }
+
       // データをスタッフ⇨町目リストに並び替え
       // バリデーションはlaravelに任せる(遷移しないため)
       post(route("branch_manager.assign_staff_post"));
@@ -81,6 +88,10 @@ const handleAssignChangeInTowns=(e,planId)=>{
 // 確認キャンセルの時(重複時も同じ)
 const onConfirmCancelClick=(e)=>{
     e.preventDefault();
+
+    // エラー後にやり直す際のことを考慮
+    clearErrors();
+
     // 重複確認後の可能性も考慮して重複確認も戻す
     if(duplicatedCheck){
         setDuplicatedCheck(false)
