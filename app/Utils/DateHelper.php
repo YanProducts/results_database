@@ -49,8 +49,8 @@ class DateHelper{
         // 基準日が日付になっているかを確認し、基準日の入力がある場合はdateかチェック
         $base_date=self::check_and_get_base_Ymd_date($base_Ymd_date);
 
-
         return[
+            // CarbonのaddDaysはDatetimeのaddと違い負の数もOK
             "start"=>$base_date->addDays($start_offset),
             "end"=>$base_date->addDays($end_offset)
         ];

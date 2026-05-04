@@ -16,6 +16,12 @@ class ProjectHelpers{
         return Project::find($project_id)?->project_name;
     }
 
+    // そのプロジェクトidに対応するプロジェクト一覧をid=>案件名(round_number込み)の配列で返す
+    public static function get_project_names_with_round_number_array_key_by_id($ids){
+
+       return Project::whereIn("id",$ids)->get()->mapWithKeys(fn($each_project)=>[$each_project->id=>$each_project->project_name . ($each_project->round_number == 0 ? "" : $each_project->round_number)]);
+    }
+
     // そのプロジェクトidに対応するプロジェクト名を一括取得してid=>案件名の配列で返す
     public static function get_project_names_array_key_by_id($ids){
         return Project::whereIn("id",$ids)->pluck("project_name","id");
