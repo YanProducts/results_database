@@ -1,7 +1,8 @@
 import React from "react";
 import BaseTable from "../../../Common/BaseTable";
-import InputTbody from "./InputTbody";
+import TbodyInner from "./TbodyInner";
 import setTdWidthByProjectCounts from "../../../../Support/WriteReport/setTdWidthByProjectCounts";
+import TrForSum from "./TrForSum";
 
 // 報告書テーブルの内部
 export default function ReportInner({pageMinWidth,pageMaxWidth,assignDataToStaff,selectedDate,onAssignedInputChange,inputRefs,inputValues,isConfirm}){
@@ -21,8 +22,10 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,assignDataToStaff
                 {/* その日そのメイン案件におけるセットが「keyValueSets」で、それを町目ごとに見ていく */}
                 {Object.values(dataInEachMainProject).map((eachData,trIndex)=>
                 // テーブルの中身
-                <InputTbody key={trIndex} {...{mainProjectName,projectSets,eachData,trIndex,widthSets,onAssignedInputChange,inputRefs,inputValues,isConfirm}}/>
+                <TbodyInner key={trIndex} {...{mainProjectName,projectSets,eachData,trIndex,widthSets,onAssignedInputChange,inputRefs,inputValues,isConfirm}}/>
                 )}
+                {/* 合計 */}
+                <TrForSum {...{inputValues,mainProjectName,projectSets,widthSets}} />
                 </BaseTable>
                 </React.Fragment>
             )})

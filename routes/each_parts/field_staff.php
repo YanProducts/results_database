@@ -48,7 +48,7 @@ Route::prefix("field_staff")
                     Route::get("write_report","write_report")
                     ->name("write_report");
                     // 報告書提出
-                    Route::post("write_report","post_write_report")
+                    Route::post("write_report","write_report_post")
                     ->name("write_report_post");
                 });
 

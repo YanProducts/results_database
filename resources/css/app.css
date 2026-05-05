@@ -67,4 +67,7 @@
      .non_active_btn{
         @apply bg-gray-500 opacity-30 pointer-events-none
      }
+     .ui_attention{
+        @apply bg-gray-300 text-red-600 font-bold
+     }
   }

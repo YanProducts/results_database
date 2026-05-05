@@ -40,4 +40,9 @@ class WriteReportController extends Controller
       ]);
 
     }
+
+    // 投稿
+    public function write_report_post(){
+
+    }
 }

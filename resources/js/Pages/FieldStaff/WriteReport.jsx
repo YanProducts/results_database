@@ -9,7 +9,7 @@ import ReportConfirm from "../../Components/Part/FieldStaff/ReportConfirm";
 export default function WriteReport({what,type,prefix,staff,dateSets,assignDataToStaff}){
 
     const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,selectedDate,setSelectedDate,inputValues,setInputValues,inputRefs,pageMaxWidth,pageMinWidth}=useWriteReportDefinitions();
-    const {onSelectedDateChange,onAssignedInputChange,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}=useWriteReportActions({inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setData,post});
+    const {onSelectedDateChange,onAssignedInputChange,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}=useWriteReportActions({inputValues,setInputValues,inputRefs,assignDataToStaff,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setData,post});
 
     return(
     <Layout title={`${what}-${type}`}>
@@ -18,7 +18,7 @@ export default function WriteReport({what,type,prefix,staff,dateSets,assignDataT
         {!isConfirm ?
         <ReportDataInput {...{what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,processing,isConfirm}} />
         :
-        <ReportConfirm {...{what,type,pageMaxWidth,pageMinWidth,assignDataToStaff,selectedDate,inputRefs,inputValues,onAssignedInputChange,onConfirmOkClick,onConfirmCancelClick,errors,processing,isConfirm}}/>
+        <ReportConfirm {...{what,type,pageMaxWidth,pageMinWidth,data,assignDataToStaff,selectedDate,inputRefs,inputValues,onAssignedInputChange,onConfirmOkClick,onConfirmCancelClick,errors,processing,isConfirm}}/>
         }
      </RoleLayout>
     </Layout>
