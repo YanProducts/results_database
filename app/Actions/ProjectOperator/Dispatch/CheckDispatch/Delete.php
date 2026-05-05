@@ -1,6 +1,6 @@
 <?php
 // プロジェクトや町目が既存のものと同じかの確認
-namespace App\Actions\ProjectOperator\CheckDispatch;
+namespace App\Actions\ProjectOperator\Dispatch\CheckDispatch;
 
 use App\Utils\Session;
 use App\Models\DistributionPlanImport;

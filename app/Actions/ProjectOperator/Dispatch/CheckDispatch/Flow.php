@@ -2,10 +2,10 @@
 
 // 重複案件のcheckに関する一連の流れ(コントローラーから引き渡し)
 
-namespace App\Actions\ProjectOperator\CheckDispatch;
-use App\Actions\ProjectOperator\CheckDispatch\Read as CheckRead;
-use App\Actions\ProjectOperator\CheckDispatch\Create as CheckCreate;
-use App\Actions\ProjectOperator\CheckDispatch\Delete as CheckDelete;
+namespace App\Actions\ProjectOperator\Dispatch\CheckDispatch;
+use App\Actions\ProjectOperator\Dispatch\CheckDispatch\Read as CheckRead;
+use App\Actions\ProjectOperator\Dispatch\CheckDispatch\Create as CheckCreate;
+use App\Actions\ProjectOperator\Dispatch\CheckDispatch\Delete as CheckDelete;
 use App\Actions\ProjectOperator\StoreDispatch;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

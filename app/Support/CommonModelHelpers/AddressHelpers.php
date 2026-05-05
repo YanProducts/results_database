@@ -28,6 +28,12 @@ class AddressHelpers{
         Address::whereIn("id",$ids)->pluck(DB::raw("CONCAT(city, town) as address_name"),"id")->toArray();
     }
 
+    // 住所idに対する住所名と世帯数のセットをid=>[名前,世帯数セット]の配列で一括取得(n+1防止)
+    public static function get_address_name_and_household_set_arrays_key_by_id($ids){
+        return
+        Address::whereIn("id",$ids)->select("id",DB::raw("CONCAT(city, town) as address_name"),"household","apartment","detached","establishment")->get()->keyBy("id")->toArray();
+    }
+
     // 住所が存在するか
     public static function is_address_exists($city,$town){
         return Address::where([

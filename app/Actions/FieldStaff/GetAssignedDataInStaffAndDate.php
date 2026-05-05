@@ -57,8 +57,8 @@ class GetAssignedDataInStaffAndDate{
             // サブ案件のplanのコレクション
             $sub_plan_collections=DistributionPlan::select("id","project_id","round_number","address_id","main_id")->whereIn("main_id",$plan_ids)->get();
 
-            // 住所のキー=>市町目のセットで返す
-            $existed_address_sets=AddressHelpers::get_city_and_town_arrays_key_by_id(array_unique([...$existed_plan_collections->pluck("address_id"),...$sub_plan_collections->pluck("address_id")]));
+            // 住所のキー=>市町目&世帯数のセットで返す
+            $existed_address_sets=AddressHelpers::get_address_name_and_household_set_arrays_key_by_id(array_unique([...$existed_plan_collections->pluck("address_id"),...$sub_plan_collections->pluck("address_id")]));
 
             // 案件のキー=>(round_numberこみの)案件の名前のセットで返す
             $existed_projects_sets=ProjectHelpers::get_project_names_with_round_number_array_key_by_id(array_unique([...$existed_plan_collections->pluck("project_id"),...$sub_plan_collections->pluck("project_id")]));
@@ -84,7 +84,7 @@ class GetAssignedDataInStaffAndDate{
         // メイン案件が該当Idのものを取得(その町目の期限がメインとサブで違う時は考慮されていない)
          $sub_plan_in_the_day_and_projects=$sub_plan_collections->whereIn("main_id",$main_plan_ids);
 
-         $all_sub_projects_sets=($sub_plan_in_the_day_and_projects->map(fn($each_plan)=>$each_plan->project_id)->unique())->mapWithKeys(fn($each_project_id)=>[$each_project_id=>$existed_projects_sets[$each_project_id]]);
+         $all_sub_projects_sets=($sub_plan_in_the_day_and_projects->map(fn($each_plan)=>$each_plan->project_id)->unique())->mapWithKeys(fn($each_project_id)=>["id".$each_project_id=>$existed_projects_sets[$each_project_id]]);
 
          // 全サブ案件セットと、メイン案件でグループ分けされたものを返す
          return [$all_sub_projects_sets,$sub_plan_in_the_day_and_projects->groupBy("main_id")];
@@ -113,9 +113,17 @@ class GetAssignedDataInStaffAndDate{
 
                 // サブ案件も含めたプロジェクトのセット
                 $return_sets_by_date[$main_project]["project_set"]=[
-                     $existed_projects_sets->search($main_project)=>$main_project,
+                     "id".$existed_projects_sets->search($main_project)=>$main_project,
                     ...$all_sub_projects_sets
                 ];
+
+
+                // 必要な世帯数データを抽出する(集合や戸建など)
+
+
+
+
+
 
                 foreach($main_project_data_sets as $main_project_data){
                     $main_plan_id=$main_project_data->id; //そのmainplanのId(複数回使用するので取得)
@@ -126,9 +134,11 @@ class GetAssignedDataInStaffAndDate{
                         //  住所のid
                          "address_id"=>$address_id,
                         //  住所の名前
-                         "address_name"=>$existed_address_sets[$address_id],
-                         // 併配対策
-                         "sub_sets"=>$sub_sets_in_the_day[$main_plan_id],
+                         "address_name"=>$existed_address_sets[$address_id]["address_name"],
+                        // 世帯数(後日、場合わけ必要)
+                         "household"=>$existed_address_sets[$address_id]["household"],
+                         // 併配がある案件のセット
+                         "sub_sets"=>array_column($sub_sets_in_the_day[$main_plan_id]->toArray(),"project_id"),
                      ];
                  }
             }

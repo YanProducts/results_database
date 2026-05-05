@@ -1,6 +1,6 @@
 <?php
 // プロジェクトや町目が既存のものの登録
-namespace App\Actions\ProjectOperator\CheckDispatch;
+namespace App\Actions\ProjectOperator\Dispatch\CheckDispatch;
 
 use App\Exceptions\BusinessException;
 use App\Models\DistributionPlanImport;
