@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\FieldStaffs;
 
 use App\Actions\FieldStaff\GetAssignedDataInStaffAndDate;
+use App\Actions\FieldStaff\StoreAfterDistribution;
 use App\Constants\Date;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FieldStaff\WriteReportRequest;
 use App\Models\FieldStaffList;
 use App\Utils\DateHelper;
 use Carbon\Carbon;
@@ -23,7 +25,7 @@ class WriteReportController extends Controller
         $staff_id=Auth::user()->authable_id;
 
         // Constantsに書いている報告書記入が許される期間を取得
-        $date_sets=DateHelper::get_date_key_value_sets_for_view(Carbon::now()->format("Y-m-d"),Date::StartOffsetInReporPeriod,Date::EndOffsetInReportPeriod);
+        $date_sets=DateHelper::get_date_key_value_sets_for_view(Carbon::now()->format("Y-m-d"),Date::StartOffsetInReportPeriod,Date::EndOffsetInReportPeriod);
 
         // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名がサブキー:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
         $data_in_staff_and_date=GetAssignedDataInStaffAndDate::get_assigned_data($staff_id,$date_sets);
@@ -42,7 +44,11 @@ class WriteReportController extends Controller
     }
 
     // 投稿
-    public function write_report_post(){
+    public function write_report_post(WriteReportRequest $request){
+        // 投稿された値(dataとassignIdと、assignmentテーブルにis_mainがある場合は対応するprojectId)からプロジェクトIdと町目Idを取得し、それを保存する
+        StoreAfterDistribution::store_report_data_procedure($request);
+
+        return redirect()->route("view_information")->with(["information_message"=>"送信完了しました","linkRouteName"=>"","linkPageInJpn"=>"確認ページへ"]);
 
     }
 }

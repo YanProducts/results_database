@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\ProjectOperator;
 
-use App\Rules\ProjectOperator\ProjectsExistsRule;
+use App\Rules\Common\ProjectsExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
 

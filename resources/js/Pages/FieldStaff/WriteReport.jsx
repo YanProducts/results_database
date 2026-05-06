@@ -16,7 +16,7 @@ export default function WriteReport({what,type,prefix,staff,dateSets,assignDataT
      <RoleLayout prefix={prefix}>
         {/* 確認か入力か */}
         {!isConfirm ?
-        <ReportDataInput {...{what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,processing,isConfirm}} />
+        <ReportDataInput {...{what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,errors,processing,isConfirm}} />
         :
         <ReportConfirm {...{what,type,pageMaxWidth,pageMinWidth,data,assignDataToStaff,selectedDate,inputRefs,inputValues,onAssignedInputChange,onConfirmOkClick,onConfirmCancelClick,errors,processing,isConfirm}}/>
         }

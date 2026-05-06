@@ -1,13 +1,13 @@
 <?php
 
-// プロジェクトが存在するかどうか
-namespace App\Rules\ProjectOperator;
+namespace App\Rules\Common;
 
-use App\Models\Project;
+use App\Models\Address;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class ProjectsExistsRule implements ValidationRule
+// 住所のIdが存在するかどうか
+class AddressExistsRule implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -16,9 +16,8 @@ class ProjectsExistsRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        //プロジェクトが存在しなければfail
-        if(!Project::where("id",$value)->exists()){
-            $fail("プロジェクトが存在しません");
+        if(!Address::where("id",$value)->exists()){
+            $fail("存在しない住所が入っています");
         }
     }
 }

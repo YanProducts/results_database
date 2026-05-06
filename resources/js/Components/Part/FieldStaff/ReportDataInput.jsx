@@ -4,11 +4,15 @@ import ReportInner from "./Part/ReportInner";
 import BaseButton from "../../Common/BaseButton";
 
 // 報告書の記入
-export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,processing,isConfirm}){
+export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,errors,processing,isConfirm}){
   return(
     <>
       {/* タイトル */}
         <InputPageHeader what={what} type={type} minWidth={pageMinWidth} maxWidth={pageMaxWidth} inputWhat="以下"/>
+
+        {/* バリデーションエラー(post後にisConfirmが戻るため表示される) */}
+        <ViewValidationErrors errors={errors}/>
+
         {/* 投稿フォーム */}
         <form onSubmit={onSubmitBtnClick} className={`${pageMinWidth} ${pageMaxWidth} mx-auto`}>
             {/* 日付の選択 */}
