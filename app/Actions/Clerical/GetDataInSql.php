@@ -20,21 +20,21 @@ class GetDataInSql{
         $town_counts=DistributionPlan::select("project_id", DB::raw("count(*) as planned_town_counts"))->groupBy("project_id")->get();
 
         // 記入された町目数
-        $reported_counts=DistributionRecord::select("project_id", DB::raw("count(*) as recorded_town_counts, sum(distribution_count) as sum_distribution_counts"))->groupBy("project_id")->get();
+        $recorded_counts=DistributionRecord::select("project_id", DB::raw("count(*) as recorded_town_counts, sum(distribution_count) as sum_distribution_counts"))->groupBy("project_id")->get();
 
-        return [$project_sets,$town_counts,$reported_counts];
+        return [$project_sets,$town_counts,$recorded_counts];
     }
 
-    public static function data_change($project_sets,$town_counts,$reported_counts){
+    public static function data_change($project_sets,$town_counts,$recorded_counts){
         $projects_in_sql=[];
         foreach($project_sets as $project_id=>$project_data){
-            $reported_data=$reported_counts[$project_id];
+            $recorded_data=$recorded_counts[$project_id];
             $projects_in_sql[$project_id]=[
                 "project_name"=>$project_data["project_name"],
                 "end_date"=>$project_data["end_date"],
                 "planned_town_counts"=>$town_counts[$project_id]["planned_town_counts"],
-                "reported_town_counts"=>$reported_data["recorded_town_counts"],
-                "reported_distribution_counts"=>$reported_data["sum_distribution_counts"]
+                "recorded_town_counts"=>$recorded_data["recorded_town_counts"],
+                "recorded_distribution_counts"=>$recorded_data["sum_distribution_counts"]
             ];
         }
         return $projects_in_sql;

@@ -1,8 +1,9 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Clerical\WriteReportController;
+use App\Http\Controllers\Clerical\DataManagementController;
 use App\Http\Controllers\Clerical\ExportController;
+use App\Http\Controllers\Clerical\WriteReportController;
 
 //webミドルウェアが適用される(CSRFTokenも適用)function郡(基本全て)
 Route::prefix("clerical")
@@ -46,7 +47,7 @@ Route::prefix("clerical")
                         Route::post("write_report","post_write_report")
                         ->name("write_report_post");
                   });
-                Route::controller(ExportController::class)
+                Route::controller(DataManagementController::class)
                  ->group(function(){
                         // 入力担当が現時点で記録されているデータを確認、エクスポートか自分で記録追加かを決める
                         Route::get("management_report","management_report")
