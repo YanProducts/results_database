@@ -7,7 +7,6 @@ use App\Models\DistributionPlanImport;
 use App\Models\ProjectImport;
 use App\Support\CommonModelHelpers\AddressHelpers;
 use App\Support\CommonModelHelpers\DistributionPlanHelpers;
-use App\Support\CommonModelHelpers\DistributionRecordHelpers;
 use App\Support\CommonModelHelpers\ProjectHelpers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -106,7 +105,7 @@ class Create{
                     $project_id=ProjectHelpers::get_latest_project_id_from_name($project_name);
                     $import->project_id=$project_id;
                     $import->distribution_plan_exists=DistributionPlanHelpers::data_is_exists($project_id,$address_id);
-                    $import->distribution_record_exists=DistributionRecordHelpers::data_is_exists($project_id,$address_id);
+                    $import->distribution_record_exists=DistributionPlanHelpers::data_is_exists($project_id,$address_id);
 ;                }
                 // 営業所
                 $import->place_id=$place_id;

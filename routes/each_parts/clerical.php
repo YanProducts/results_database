@@ -48,12 +48,12 @@ Route::prefix("clerical")
                   });
                 Route::controller(ExportController::class)
                  ->group(function(){
-                        // 報告書エクスポート確認（どれをエクスポートするか）
-                        Route::get("export_report","export_report")
-                        ->name("export_report");
+                        // 入力担当が現時点で記録されているデータを確認、エクスポートか自分で記録追加かを決める
+                        Route::get("management_report","management_report")
+                        ->name("management_report");
                         // 報告書エクスポート(入力担当用)
-                        Route::post("export_report","decide_export_report")
-                        ->name("decide_report_post");
+                        Route::post("export_report","export_report")
+                        ->name("export_report");
                         // 発注書のエクスポート確認
                         Route::get("export_purchase_order","export_purchase_order")
                         ->name("export_purchase_order");

@@ -50,6 +50,9 @@ Route::prefix("field_staff")
                     // 報告書提出
                     Route::post("write_report","write_report_post")
                     ->name("write_report_post");
+                    // 提出した報告書の確認
+                    Route::get("confirm_reports","confirm_reports")
+                    ->name("confirm_reports");
                 });
 
             // ログアウト(そもそも認証されていないと無理)

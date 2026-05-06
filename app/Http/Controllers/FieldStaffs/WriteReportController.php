@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\FieldStaffs;
 
+use App\Actions\FieldStaff\DataExistsCheck;
 use App\Actions\FieldStaff\GetAssignedDataInStaffAndDate;
 use App\Actions\FieldStaff\StoreAfterDistribution;
 use App\Constants\Date;
@@ -10,7 +11,6 @@ use App\Http\Requests\FieldStaff\WriteReportRequest;
 use App\Models\FieldStaffList;
 use App\Utils\DateHelper;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -45,10 +45,20 @@ class WriteReportController extends Controller
 
     // 投稿
     public function write_report_post(WriteReportRequest $request){
-        // 投稿された値(dataとassignIdと、assignmentテーブルにis_mainがある場合は対応するprojectId)からプロジェクトIdと町目Idを取得し、それを保存する
-        StoreAfterDistribution::store_report_data_procedure($request);
 
-        return redirect()->route("view_information")->with(["information_message"=>"送信完了しました","linkRouteName"=>"","linkPageInJpn"=>"確認ページへ"]);
+        $date=$request->date;
+        $report_data=$request->reportData;
+        $staff_id=Auth::user()->authable_id;
+
+        // 存在確認
+        if(!empty($duplicated_sets=DataExistsCheck::data_exists_check($date,$staff_id))){
+            return back()->with($duplicated_sets);
+        }
+
+        // 投稿された値(dataとassignIdと、assignmentテーブルにis_mainがある場合は対応するprojectId)からプロジェクトIdと町目Idを取得し、それを保存する
+        StoreAfterDistribution::store_report_data_procedure($date,$report_data,$staff_id);
+
+        return redirect()->route("view_information")->with(["information_message"=>"送信完了しました","linkRouteName"=>"field_staff.confirm_reports","linkPageInJpn"=>"確認ページ"]);
 
     }
 }

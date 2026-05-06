@@ -7,6 +7,7 @@ use App\Rules\Common\ProjectsExistsRule;
 use App\Rules\FieldStaff\AssignedToAuthUserRule;
 use App\Rules\FieldStaff\ReportDateRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 // 報告書のバリデーション
 class WriteReportRequest extends FormRequest
@@ -37,8 +38,8 @@ class WriteReportRequest extends FormRequest
             "reportData.*.mainCount"=>["required","integer"],
             //サブ案件(この箱自体は必要だけど、単配の時は箱の中身は空でも良い)
             "reportData.*.subData"=>["present","array"],
-            "reportData.*.subData.projectId"=>["nullable",new ProjectsExistsRule], //カスタムルールはプロジェクトIdが存在するか
-            "reportData.*.subData.subCount"=>["nullable","integer"],
+            "reportData.*.subData.*.projectId"=>["nullable",new ProjectsExistsRule], //カスタムルールはプロジェクトIdが存在するか
+            "reportData.*.subData.*.subCount"=>["nullable","integer"],
         ];
     }
 

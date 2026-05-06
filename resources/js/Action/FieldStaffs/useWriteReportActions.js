@@ -1,5 +1,5 @@
-import { data } from "autoprefixer"
-import React from "react"
+import React from "react";
+import { route } from "ziggy-js";
 
 export default function useWriteReportActions({inputValues,setInputValues,inputRefs,assignDataToStaff,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setData,post}){
 
@@ -77,7 +77,7 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
         // バリデーション対策にinputデータを初期化はしないでおく
 
         // ポスト
-        post("write_report_post");
+        post(route("field_staff.write_report_post"));
 
         // バリデーション失敗した時に備えてconfirmはチェンジ
         setIsConfirm(false)
@@ -88,7 +88,7 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
         // 投稿データの初期化(inputデータは持っておく)
         setData();
         // UIを戻す
-        setIsConfirm(false);
+        // setIsConfirm(false);
     }
 
     return {onSelectedDateChange,onAssignedInputChange,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}

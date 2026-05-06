@@ -2,6 +2,7 @@ import InputPageHeader from "../../Common/InputPageHeader";
 import SelectPartsForViewChange from "../../Common/SelectPartsForViewChange";
 import ReportInner from "./Part/ReportInner";
 import BaseButton from "../../Common/BaseButton";
+import ViewValidationErrors from "../../Common/ViewValidationErrors";
 
 // 報告書の記入
 export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,errors,processing,isConfirm}){
@@ -11,7 +12,7 @@ export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,onS
         <InputPageHeader what={what} type={type} minWidth={pageMinWidth} maxWidth={pageMaxWidth} inputWhat="以下"/>
 
         {/* バリデーションエラー(post後にisConfirmが戻るため表示される) */}
-        <ViewValidationErrors errors={errors}/>
+        <ViewValidationErrors errors={errors} minWidth={pageMinWidth} maxWidth={pageMaxWidth}/>
 
         {/* 投稿フォーム */}
         <form onSubmit={onSubmitBtnClick} className={`${pageMinWidth} ${pageMaxWidth} mx-auto`}>

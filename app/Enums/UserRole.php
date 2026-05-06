@@ -36,7 +36,7 @@ enum UserRole : string{
         // トップページの文字列を返す(将来的にパターンが増えたことを考慮して、現時点ではtop_pageが多いがベタ打ちにする)
         return match(true){
             str_contains($curerent_route_name,self::FieldStaff->value)=>"field_staff.write_report",
-            str_contains($curerent_route_name,self::Clerical->value)=>"clerical.top_page",
+            str_contains($curerent_route_name,self::Clerical->value)=>"clerical.confirm_report",
             str_contains($curerent_route_name,self::ProjectOperator->value)=>"project_operator.dispatch_project",
             str_contains($curerent_route_name,self::BranchManager->value)=>"branch_manager.assign_staff",
         };

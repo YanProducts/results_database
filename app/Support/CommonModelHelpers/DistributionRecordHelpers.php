@@ -1,29 +1,12 @@
 <?php
-
-// 配布予定と結果に共通するモデルのヘルパー関数
-
+// 配布済データのモデルヘルパー
 namespace App\Support\CommonModelHelpers;
+use App\Models\DistributionRecord;
 
-use App\Models\DistributionPlan;
-use App\Support\CommonModelHelpers\AddressHelpers;
-
-//
 class DistributionRecordHelpers{
-    //  すでにデータが存在しているかの確認(町目分割の可能性updateはしない)
-    public static function data_is_exists($project_id,$address_id){
-        return
-            DistributionPlan::where([
-                ["project_id",$project_id],
-                ["address_id",$address_id]
-            ])->exists();
-    }
+    // その日、そのスタッフのデータを返す
+    public static function data_in_the_date_and_staff($date,$staff){
+        return DistributionRecord::where("staff_id",$staff)->where("distribution_date",$date)->get();
 
-    // プロジェクトと住所のidから、テーブルのidを返す
-    public static function get_id_from_project_and_address($project_id,$address_id){
-        return
-            DistributionPlan::where([
-                ["project_id",$project_id],
-                ["address_id",$address_id]
-            ])->value("id");
     }
 }

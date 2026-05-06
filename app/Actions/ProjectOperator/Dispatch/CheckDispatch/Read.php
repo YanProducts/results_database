@@ -6,7 +6,6 @@ namespace App\Actions\ProjectOperator\Dispatch\CheckDispatch;
 use App\Exceptions\BusinessException;
 use App\Support\CommonModelHelpers\AddressHelpers;
 use App\Support\CommonModelHelpers\DistributionPlanHelpers;
-use App\Support\CommonModelHelpers\DistributionRecordHelpers;
 use App\Support\CommonModelHelpers\ProjectHelpers;
 use Illuminate\Support\Facades\Log;
 
@@ -84,7 +83,7 @@ class Read{
             foreach($date_town_sets as $date_town_set){
             $address_id=AddressHelpers::get_id_from_city_and_town($date_town_set["city"],$date_town_set["town"]);
 
-            if(DistributionPlanHelpers::data_is_exists($project_id,$address_id) || DistributionRecordHelpers::data_is_exists($project_id,$address_id)){
+            if(DistributionPlanHelpers::data_is_exists($project_id,$address_id) || DistributionPlanHelpers::data_is_exists($project_id,$address_id)){
                 $duplicate_sets[]=[
                     // UIの表示用(orojectIdは打ち消し線に使用)
                     // 全部一括でOKかやり直すか
