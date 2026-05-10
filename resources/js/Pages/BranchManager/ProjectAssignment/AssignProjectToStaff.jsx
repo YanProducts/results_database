@@ -30,7 +30,7 @@ export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,
 
     {/* リンク */}
       <div className="mt-4">
-        <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName="whole_data.logout"  what="ログアウト"/>
+        <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.logout`}  what="ログアウト"/>
       </div>
 
       <p>　</p>

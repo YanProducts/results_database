@@ -11,7 +11,7 @@ export default function BaseTable({tableTheme,allData,thSets,width="w-[80%]",thW
                 <tr className="border-black border-2">
                     {/* thSetsの値を展開 */}
                     {Object.values(thSets).map((thName,index)=>
-                        <th className={`border-black border-2 ${thWidthSets.length>0 ? thWidthSets[index] : ""}`} key={index}>{thName}</th>
+                        <th className={`border-black border-2 whitespace-pre-wrap ${thWidthSets.length>0 ? thWidthSets[index] : ""}`} key={index}>{thName}</th>
                     )}
                 </tr>
             </thead>

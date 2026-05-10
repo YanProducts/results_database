@@ -4,6 +4,7 @@
 namespace App\Actions\Clerical;
 
 use App\Exceptions\BusinessException;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class FormatData{
@@ -19,7 +20,7 @@ class FormatData{
 
             $projects_in_sql[$project_id]=[
                 "project_name"=>$project_data["project_name"],
-                "end_date"=>$project_data["end_date"],
+                "end_date"=>Carbon::parse($project_data["end_date"])->format("n月j日"),
                 // 割り当てで振られた町目数
                 "planned_town_counts"=>$town_counts[$project_id]["planned_town_counts"] ?? 0,
                 // 入力済の町目数

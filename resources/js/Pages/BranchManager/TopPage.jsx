@@ -23,7 +23,7 @@ export default function TopPage({what,type}){
 
     {/* リンク */}
       <div className="mt-4">
-        <BaseLinkLine routeName="whole_data.logout"  what="ログアウト"/>
+        <BaseLinkLine routeName={`${prefix}.logout`} what="ログアウト"/>
       </div>
     </RoleLayout>
    </Layout>

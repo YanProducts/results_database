@@ -54,7 +54,7 @@ export default function SendProjectToBranch({prefix,what,type,placeSets}){
 
     {/* リンク */}
       <div className="mt-4">
-        <BaseLinkLine routeName="whole_data.logout" minWidth={pageMinWidth} maxWidth={pageMaxWidth} what="ログアウト"/>
+        <BaseLinkLine routeName={`${prefix}.logout`} minWidth={pageMinWidth} maxWidth={pageMaxWidth} what="ログアウト"/>
       </div>
     </RoleLayout>
     </Layout>

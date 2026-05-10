@@ -22,7 +22,7 @@ class GetDataInSql{
         $town_counts=DistributionPlan::select("project_id", DB::raw("count(*) as planned_town_counts"))->groupBy("project_id")->get()->keyBy("project_id");
 
         // 記入された町目数
-        $recorded_counts=DistributionRecord::select(DB::raw("count(*) as recorded_town_counts, sum(distribution_count) as sum_distribution_counts"))->groupBy("project_id")->get()->keyBy("project_id");
+        $recorded_counts=DistributionRecord::select(DB::raw("project_id, count(*) as recorded_town_counts, sum(distribution_count) as sum_distribution_counts"))->groupBy("project_id")->get()->keyBy("project_id");
 
         return [$project_sets,$town_counts,$recorded_counts];
     }

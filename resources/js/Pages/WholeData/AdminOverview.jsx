@@ -38,7 +38,7 @@ export default function AdminOverview({what,type,prefix,userDataSets,userKeyInJp
       <div className="mt-4">
         <BaseLinkLine routeName="whole_data.register_places"  what="営業所の登録"/>
         <BaseLinkLine routeName="whole_data.provision"  what="ユーザーの事前登録"/>
-        <BaseLinkLine routeName="whole_data.logout"  what="ログアウト"/>
+        <BaseLinkLine routeName={`${prefix}.logout`} what="ログアウト"/>
       </div>
      </RoleLayout>
     </Layout>

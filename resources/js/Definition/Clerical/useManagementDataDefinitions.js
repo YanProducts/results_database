@@ -13,7 +13,7 @@ export default function useManagementDataDefinitions(){
       const [isComplete,setIsComplete]=React.useState({});
 
     // ページの横幅
-      const [pageMinWidth,pageMaxWidth]=["min-w-200","max-w-300"];
+      const [pageMinWidth,pageMaxWidth]=["min-w-250","max-w-350"];
 
       return {data, setData, post, processing, errors,clearErrors, reset,CSVOutputSets,setCSVOutputSets,isComplete,setIsComplete,pageMinWidth,pageMaxWidth};
 }

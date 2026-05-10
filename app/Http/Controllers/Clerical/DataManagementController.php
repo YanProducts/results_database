@@ -6,6 +6,7 @@ use App\Actions\Clerical\ChangeDataInSql;
 use App\Actions\Clerical\CSVExportFlow;
 use App\Actions\Clerical\FormatData;
 use App\Actions\Clerical\GetDataInSql;
+use App\Constants\Date;
 use App\Constants\Download;
 use App\Exceptions\BusinessException;
 use App\Http\Controllers\Controller;
@@ -24,7 +25,6 @@ class DataManagementController extends Controller
         // SQLからデータを取得
         [$project_sets,$town_count_sets,$reported_count_sets]=GetDataInSql::get_aggregated_data_in_sql();
 
-
         // データをUI用に変換
         $projects_in_sql=FormatData::data_change_for_management_page($project_sets,$town_count_sets,$reported_count_sets);
 
@@ -33,7 +33,8 @@ class DataManagementController extends Controller
         "prefix"=>"clerical",
         "what"=>"入力担当",
         "type"=>"案件データ一覧",
-        "projectsInSql"=>$projects_in_sql
+        "projectsInSql"=>$projects_in_sql,
+        "archiveCutOffDate"=>Carbon::now()->addDays((Date::EndOffsetForClericalExport)-1)->format("n月j月")
         ]);
     }
 
