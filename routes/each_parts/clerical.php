@@ -37,11 +37,11 @@ Route::prefix("clerical")
             ->group(function(){
                 Route::controller(WriteReportController::class)
                  ->group(function(){
-                        // トップページへ(報告書入力以外に発注書作成なども考える)
-                        Route::get("top_page","top_page")
-                        ->name("top_page");
-                        // 報告書作成(入力担当用)
-                        Route::get("write_report","write_report")
+                        // // トップページへ(報告書入力以外に発注書作成なども考える)
+                        // Route::get("top_page","top_page")
+                        // ->name("top_page");
+                        // 報告書編集(入力担当用)
+                        Route::get("write_report/{edit_id}","write_report")
                         ->name("write_report");
                         // 報告書提出(入力担当用)
                         Route::post("write_report","post_write_report")
@@ -52,13 +52,32 @@ Route::prefix("clerical")
                         // 入力担当が現時点で記録されているデータを確認、エクスポートか自分で記録追加かを決める
                         Route::get("management_report","management_report")
                         ->name("management_report");
-                        // 報告書エクスポート(入力担当用)
-                        Route::post("export_report","export_report")
-                        ->name("export_report");
+                        // 報告書CSV作成(入力担当用)
+                        Route::post("create_report_csv","create_report_csv")
+                        ->name("create_report_csv");
+                        // 上記のCSVダウンロード(入力担当用) *Inertiaの仕様上ルートを分けている
+                        Route::get("download_report_csv","download_report_csv")
+                        ->name("create_report_csv");
+                        // 以前の報告データのチェック
+                        Route::get("check_archives","check_archives")
+                        ->name("check_archives");
+                        // 完成フラグの決定(fetch)
+                        Route::post("toggle_complete","toggle_complete")
+                        ->name("toggle_complete");
+
+                    });
+
+                // 発注書作成系統
+                 Route::controller(DataManagementController::class)
+                 ->group(function(){
                         // 発注書のエクスポート確認
                         Route::get("export_purchase_order","export_purchase_order")
                         ->name("export_purchase_order");
-                    });
+                        // 発注書のエクスポート
+                        Route::post("export_purchase_order","export_purchase_order_post")
+                        ->name("export_purchase_order_post");
+                 });
+
                 // ログアウト(そもそも認証されていないと無理)
                 Route::get("logout",[AuthController::class,"logout"])
                 ->name("logout");

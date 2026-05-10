@@ -1,7 +1,7 @@
 <?php
 // ProjectModelに関するサポート関数
 
-namespace App\Support\CommonModelHelpers;
+namespace App\Support\Common\ModelHelpers;
 
 use App\Exceptions\BusinessException;
 use App\Models\Project;
@@ -18,7 +18,6 @@ class ProjectHelpers{
 
     // そのプロジェクトidに対応するプロジェクト一覧をid=>案件名(round_number込み)の配列で返す
     public static function get_project_names_with_round_number_array_key_by_id($ids){
-
        return Project::whereIn("id",$ids)->get()->mapWithKeys(fn($each_project)=>[$each_project->id=>$each_project->project_name . ($each_project->round_number == 0 ? "" : $each_project->round_number)]);
     }
 

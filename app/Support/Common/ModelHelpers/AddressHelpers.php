@@ -2,7 +2,7 @@
 
 // 住所に関するモデルのヘルパー
 
-namespace App\Support\CommonModelHelpers;
+namespace App\Support\Common\ModelHelpers;
 
 use App\Exceptions\BusinessException;
 use App\Models\Address;

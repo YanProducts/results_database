@@ -2,11 +2,11 @@
 
 // 配布予定と結果に共通するモデルのヘルパー関数
 
-namespace App\Support\CommonModelHelpers;
+namespace App\Support\Common\ModelHelpers;
 
 use App\Exceptions\BusinessException;
 use App\Models\DistributionPlan;
-use App\Support\CommonModelHelpers\AddressHelpers;
+use App\Support\Common\ModelHelpers\AddressHelpers;
 use Illuminate\Support\Facades\Log;
 
 //

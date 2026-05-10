@@ -3,8 +3,8 @@
 // その日、そのスタッフのデータが概に存在するか
 namespace App\Actions\FieldStaff;
 
-use App\Support\CommonModelHelpers\DistributionRecordHelper;
-use App\Support\CommonModelHelpers\DistributionRecordHelpers;
+use App\Support\Common\ModelHelpers\DistributionRecordHelper;
+use App\Support\Common\ModelHelpers\DistributionRecordHelpers;
 use Illuminate\Support\Facades\Auth;
 
 class DataExistsCheck{

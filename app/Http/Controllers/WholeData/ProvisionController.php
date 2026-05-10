@@ -9,7 +9,7 @@ use App\Http\Requests\WholeData\ProvisionRequest;
 
 use Inertia\Inertia;
 use App\Support\Auth\UserRoleResolver;
-use App\Support\CommonModelHelpers\PlaceHelpers;
+use App\Support\Common\ModelHelpers\PlaceHelpers;
 
 // wholeDataから各ユーザーの名前を登録していくコントローラー(パスワード等は別途Authで格納)
 class ProvisionController extends Controller

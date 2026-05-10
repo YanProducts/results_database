@@ -4,7 +4,7 @@
 namespace App\Actions\FieldStaff;
 
 use App\Models\DistributionAssignment;
-use App\Support\CommonModelHelpers\DistributionPlanHelpers;
+use App\Support\Common\ModelHelpers\DistributionPlanHelpers;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;

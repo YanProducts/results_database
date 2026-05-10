@@ -2,7 +2,7 @@
 
 // スタッフリストのモデルヘルパー
 
-namespace App\Support\CommonModelHelpers;
+namespace App\Support\Common\ModelHelpers;
 use App\Models\FieldStaffList;
 
 class FieldStaffListHelpers{

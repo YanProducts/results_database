@@ -42,15 +42,15 @@ return Application::configure(basePath: dirname(__DIR__))
             // fetch送信は適用させない
             // 直リンクでの404や403のエラーはそのままbladeで表示(リンクが違った場合などInertia絡みのものだけ遷移される)
             if ($request->header('X-Inertia') || ($e instanceof BusinessException && $e->get_custom_error_flag())){
-                $http_responce_code=$response->getStatusCode();
+                $http_response_code=$response->getStatusCode();
                 $error_message=match(true){
-                    $http_responce_code>=500=>(app()->isLocal() || $e instanceof BusinessException) ? $e->getMessage() : "システムエラーです",
-                    $http_responce_code==404=>"リンク先が不明です",
-                    $http_responce_code==403=>"このページを見る権限がありません",
+                    $http_response_code>=500=>(app()->isLocal() || $e instanceof BusinessException) ? $e->getMessage() : "システムエラーです",
+                    $http_response_code==404=>"リンク先が不明です",
+                    $http_response_code==403=>"このページを見る権限がありません",
                     default=>"予期せぬエラーです"
                 };
 
-                if($http_responce_code>=500 || in_array($http_responce_code,[403,404])){
+                if($http_response_code>=500 || in_array($http_response_code,[403,404])){
                     return redirect()->route("view_error")->with([
                         "error_message"=>$error_message,
                         "back_route"=>$e instanceof BusinessException ? ($e->get_back_route() ?? "top_pgae") : "top_page"

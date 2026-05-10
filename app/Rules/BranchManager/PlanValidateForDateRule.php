@@ -2,7 +2,7 @@
 
 namespace App\Rules\BranchManager;
 
-use App\Support\CommonModelHelpers\DistributionPlanHelpers;
+use App\Support\Common\ModelHelpers\DistributionPlanHelpers;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Log;

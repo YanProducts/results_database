@@ -5,7 +5,7 @@ namespace App\Http\Controllers\ProjectOperator;
 use App\Actions\ProjectOperator\Dispatch\CheckDispatch\Delete as CheckDelete;
 use App\Actions\ProjectOperator\Dispatch\CheckDispatch\Flow as CheckFlow;
 use App\Http\Controllers\Controller;
-use App\Support\CommonModelHelpers\PlaceHelpers;
+use App\Support\Common\ModelHelpers\PlaceHelpers;
 use App\Actions\ProjectOperator\StoreDispatch;
 use App\Exceptions\BusinessException;
 use App\Http\Requests\ProjectOperator\ConfirmRequest;
