@@ -5,12 +5,6 @@ import { useIsCompleteCheckClick } from "./ManagementData/useIsCompleteCheckClic
 
 export default function useManagementDataActions({post,data,setData,CSVOutputSets,setCSVOutputSets,isComplete,setIsComplete,projectsInSql}){
 
-    // 確認用
-    React.useEffect(()=>{
-        // console.log(CSVOutputSets)
-    },[CSVOutputSets])
-
-
     React.useEffect(()=>{
         // CSVエクスポートするかの初期状態
         // キーに案件名、valueに{id:とisExport:}が入ったオブジェクト
@@ -26,7 +20,7 @@ export default function useManagementDataActions({post,data,setData,CSVOutputSet
     // データがセットされたらCSVエクスポート(ボタンを押したらデータが変換される)
     React.useEffect(()=>{
         // 案件確認のcsvを作成-json受け取り-ダウンロード
-        createAndDownloadCSV(data);
+        createAndDownloadCSV(data,setData);
     },[data])
 
 
@@ -49,7 +43,7 @@ export default function useManagementDataActions({post,data,setData,CSVOutputSet
         e.preventDefault();
 
         // ここで"projectIds":[,,,]の配列に直す
-        const changeIds=Object.values(CSVOutputSets).map(eachSets=>eachSets.id)
+        const changeIds=Object.values(CSVOutputSets).filter(eachSet=>eachSet.isExport).map(exportSet=>exportSet.id)
 
         //projectName:{id...,isExport...}の形式で保存し、useEffectで投稿
         setData({"idSets":changeIds});

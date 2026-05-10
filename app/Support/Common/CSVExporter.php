@@ -2,6 +2,9 @@
 
 // CSVのエクスポートへの準備
 namespace App\Support\Common;
+
+use Illuminate\Support\Facades\Log;
+
 class CSVExporter{
 
     // CSVファイルの作成(filepathに作成される)
@@ -9,13 +12,15 @@ class CSVExporter{
         $fp=fopen($filepath,"w");
         // Excel向けUTF-8 BOM
         fwrite($fp, "\xEF\xBB\xBF");
+
         foreach($data_lists as $line){
             fputcsv($fp,$line,$separator);
         }
+
         fclose($fp);
     }
 
-    // CSVファイルのダウンロード
+    // CSVファイルのダウンロード(Laravelのresponse()->downloadで直接コントローラーで異形で行けるため使用しないケースが多々)
     public static function download_csv_files($filename_after_download,$now_filename){
         header('Content-Type: text/csv');
         header("Content-Disposition:attachment;filename=".$filename_after_download);

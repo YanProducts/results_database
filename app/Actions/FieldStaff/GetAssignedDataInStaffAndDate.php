@@ -60,8 +60,8 @@ class GetAssignedDataInStaffAndDate{
             // 住所のキー=>市町目&世帯数のセットで返す
             $existed_address_sets=AddressHelpers::get_address_name_and_household_set_arrays_key_by_id(array_unique([...$existed_plan_collections->pluck("address_id"),...$sub_plan_collections->pluck("address_id")]));
 
-            // 案件のキー=>(round_numberこみの)案件の名前のセットで返す
-            $existed_projects_sets=ProjectHelpers::get_project_names_with_round_number_array_key_by_id(array_unique([...$existed_plan_collections->pluck("project_id"),...$sub_plan_collections->pluck("project_id")]));
+            // 案件のキー=>(同案件フラグこみの)案件の名前のセットで返す
+            $existed_projects_sets=ProjectHelpers::get_project_names_with_another_project_flag_array_key_by_id(array_unique([...$existed_plan_collections->pluck("project_id"),...$sub_plan_collections->pluck("project_id")]));
 
             return[$existed_plan_collections,$existed_projects_sets,$existed_address_sets,$sub_plan_collections];
     }

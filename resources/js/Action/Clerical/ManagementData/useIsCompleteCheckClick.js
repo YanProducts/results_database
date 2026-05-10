@@ -4,7 +4,8 @@ export const useIsCompleteCheckClick=async(e,projectName,projectId,setIsComplete
         const response= await fetch(route("clerical.toggle_complete"),{
             method:"POST",
             headers:{
-              "Content-Type":"application/json","X-CSRF-TOKEN":document.querySelector('meta[name="csrf-token"]').content,
+              "Content-Type":"application/json",
+              "X-CSRF-TOKEN":document.querySelector('meta[name="csrf-token"]').content,
             },
             body:JSON.stringify({
                 // 同案件フラグもあるのでidも出す

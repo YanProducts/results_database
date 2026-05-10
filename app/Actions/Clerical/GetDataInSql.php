@@ -9,6 +9,8 @@ use Carbon\CarbonImmutable;
 use App\Constants\Date;
 use App\Support\Common\ModelHelpers\AddressHelpers;
 use App\Support\Common\ModelHelpers\DistributionRecordHelpers;
+use App\Support\Common\ModelHelpers\ProjectHelpers;
+use Illuminate\Support\Facades\Log;
 
 // 現在SQLに入っているデータを確認する
 class GetDataInSql{
@@ -29,8 +31,12 @@ class GetDataInSql{
 
     // 現在、プランされている案件のうち、id(projectsテーブルの)にある案件の町目id,部数,スタッフ(複数人の場合あり)を返す
     public static function get_detailed_planned_data_by_project_ids($project_ids){
+
         // DistrbutionPlanから、そのプロジェクトに対応するplanのidを取得し、そのidと町目idを取得(未配布や0枚の可能性もあるので、Recordのみからは取得しない)
         $plans_in_project_ids=DistributionPlan::select("id","project_id","address_id")->whereIn("project_id",$project_ids)->get();
+
+        // プロジェクトIdに対応するプロジェクト名とanother_project_flagの取得
+        $project_sets=ProjectHelpers::get_project_names_with_another_project_flag_array_key_by_id($project_ids);
 
         // n+1対策のため、上記のaddress_idに相当するaddress_nameを一括取得
         $address_sets=AddressHelpers::get_city_and_town_arrays_key_by_id($plans_in_project_ids->pluck("address_id"));
@@ -38,7 +44,7 @@ class GetDataInSql{
         // n+1対策のため、上記のplan_idに相当する配布結果セットを一括取得し、plan_idごとにまとめる
         $distribution_record_sets=DistributionRecordHelpers::get_record_sets_in_the_plan_ids_group_by_plan_ids($plans_in_project_ids->pluck("id"));
 
-        return [$plans_in_project_ids,$address_sets,$distribution_record_sets];
+        return [$plans_in_project_ids,$project_sets,$address_sets,$distribution_record_sets];
 
 
     }

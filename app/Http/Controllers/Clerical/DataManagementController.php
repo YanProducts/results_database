@@ -42,23 +42,26 @@ class DataManagementController extends Controller
     public function create_report_csv(CSVExportRequest $request){
         // CSV出力する案件の取得
         $project_ids=$request->idSets;
+
         try{
             // 案件をCSVデータに変換して保存
             CSVExportFlow::create_reports_csv_flow($project_ids);
+
             // ひとまずは成功jsonを返す(Inertiaではレスポンスを期待され、「ファイルをダウンロード」という処理ができない)
-            return response()->json(["is_create",true]);
+            return response()->json(["is_create"=>true]);
         }catch(\Throwable $e){
-            Log::info($e->getMessage());
             // ファイル作成失敗の場合
-            return response()->json(["is_create",false]);
+            return response()->json(["is_create"=>false]);
         }
     }
 
     //報告書CSVエクスポート
     public function download_report_csv(){
+
         $file_path=storage_path(Download::ReportCSVFilePath);
         if(file_exists($file_path)){
-            return response()->download($file_path,Download::ReportCSVFileName.Carbon::today()->toDateString());
+            return response()->download($file_path,Download::ReportCSVFileName.Carbon::today()->toDateString())
+            ->deleteFileAfterSend(true);
         }else{
             return redirect()->back()->withErrors(["download"=>"ファイル作成ができておりません\n失敗が続く場合は作成者にご連絡ください"]);
         }

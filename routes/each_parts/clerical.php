@@ -57,7 +57,7 @@ Route::prefix("clerical")
                         ->name("create_report_csv");
                         // 上記のCSVダウンロード(入力担当用) *Inertiaの仕様上ルートを分けている
                         Route::get("download_report_csv","download_report_csv")
-                        ->name("create_report_csv");
+                        ->name("download_report_csv");
                         // 以前の報告データのチェック
                         Route::get("check_archives","check_archives")
                         ->name("check_archives");
