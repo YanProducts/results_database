@@ -73,7 +73,8 @@ class DataManagementController extends Controller
     public function toggle_complete(ToggleCompleteRequest $request){
         // プロジェクトの該当idのis_completeを取得し変換
         // 存在確認はバリデーション済
-        $id=$request->id;
+        $id=$request->projectId;
+
         try{
             ChangeDataInSql::change_is_complete($id); //SQLに反映
         }catch(\Throwable $e){
@@ -83,9 +84,8 @@ class DataManagementController extends Controller
             }
             return response()->json(["fetchError"=>"undefined"]);
         }
-        //
+        // fetchだからこう返す
         return response()->json(["isOK"=>true]);
-
     }
 
 }

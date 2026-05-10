@@ -41,7 +41,7 @@ export default function useManagementDataActions({post,data,setData,CSVOutputSet
     }
 
     // 完成フラグのチェンジ(決定ボタンで投稿)
-    const onCompleteCheckClick=(e,projectName,projectId)=>{useIsCompleteCheckClick(e,projectName,projectId)}
+    const onCompleteCheckClick=(e,projectName,projectId)=>{useIsCompleteCheckClick(e,projectName,projectId,setIsComplete)}
 
 
     // 報告書CSVエクスポートがクリック=データ変換=dataに挿入=>useEffect作動
