@@ -54,6 +54,7 @@ Route::prefix("branch_manager")
             // 案件を自分で登録する系統
             Route::controller(ProjectHandingController::class)
             ->group(function(){
+            // その営業所における案件の登録
                 Route::get("handing_assignment","handing_assignment")
                 ->name("handing_assignment");
             });

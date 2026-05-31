@@ -12,6 +12,7 @@ class GetAssignedDataInStaffAndDate{
     // データの取得
     public static function get_assigned_data($staff_id,$date_sets){
 
+
             // sqlに入っている、そのスタッフの、期間内を含む案件を取得(n+1防止に一括取得)。それをdateでまとめる
             $data_in_staff_and_date=DistributionAssignment::where("staff_id",$staff_id)
             // 基本的には単日のdateが配列内部にあるとき
@@ -22,6 +23,7 @@ class GetAssignedDataInStaffAndDate{
                 ["end_date",">=",min($date_sets)],
                 ["date","<=",max($date_sets)]
             ])->get();
+
 
             // 構造をフロント用に変更されたデータを返す
             return self::form_data_for_form_and_view($data_in_staff_and_date,$date_sets);
@@ -93,6 +95,7 @@ class GetAssignedDataInStaffAndDate{
 
     // 日毎の処理
     public static function get_data_by_date($date,$fetched_assigned_data,$existed_plan_collections,$sub_plan_collections,$existed_projects_sets,$existed_address_sets){
+
     // その日に配布もしくはその日が期限内のassignされたデータを取得
             $main_assigned_data_in_date=$fetched_assigned_data->filter(fn($each_data)=>
                 $each_data->date==$date || ($each_data->end_data && ($each_data->end_date>=$date || $each_data->date < $date) )
@@ -119,12 +122,6 @@ class GetAssignedDataInStaffAndDate{
 
 
                 // 必要な世帯数データを抽出する(集合や戸建など)
-
-
-
-
-
-
                 foreach($main_project_data_sets as $main_project_data){
                     $main_plan_id=$main_project_data->id; //そのmainplanのId(複数回使用するので取得)
                     $address_id=$main_project_data->address_id; //住所Id(複数回取得するので先に取得)
@@ -138,7 +135,7 @@ class GetAssignedDataInStaffAndDate{
                         // 世帯数(後日、場合わけ必要)
                          "household"=>$existed_address_sets[$address_id]["household"],
                          // 併配がある案件のセット
-                         "sub_sets"=>array_column($sub_sets_in_the_day[$main_plan_id]->toArray(),"project_id"),
+                         "sub_sets"=>isset($sub_sets_in_the_day[$main_plan_id]) ? array_column($sub_sets_in_the_day[$main_plan_id]->toArray(),"project_id") : [],
                      ];
                  }
             }

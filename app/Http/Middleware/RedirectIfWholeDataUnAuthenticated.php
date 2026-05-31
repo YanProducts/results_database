@@ -16,7 +16,14 @@ class RedirectIfWholeDataUnAuthenticated
     // whole_dataの
     public function handle(Request $request, Closure $next): Response
     {
+        //ログインセッションがなかった時
         if(!$request->session()->has("whole_data_auth")){
+            // 行こうとしたページの保存
+            $request->session()->put(
+                'url.intended',
+                $request->fullUrl()
+            );
+
             // ログインしていなければ、全体統括用のログインページへ返却
             return redirect()->route("whole_data.login");
         }

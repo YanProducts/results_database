@@ -60,17 +60,19 @@ class AuthController extends Controller
 
         // ログインを試みて、無理ならログインページへ
         if (Login::attempt_login($request)){
+            // 前にアクセスを試みたページがあれば取得(認証で弾かれるなど)
+            $intended=session("url.intended");
             // それぞれのトップページへ
             if(str_contains($route,"whole_data")){
-                // 全般管理の場合(authがない状態で試みたページとは関係なくトップへ)
-                return redirect()->route("whole_data.provision");
+                // 全般管理(試みがない場合は確認ページへ)
+                $whole_data_top="whole_data.admin_overview/all";
+                if($intended){
+                  return redirect()->intended($whole_data_top);
+                }
             }else{
                 // roleがある場合はauthがない状態で保存されたページへ
-
                 $role_top_page=RedirectTopPage::redirect_top_page($route);
-
                 // ログインしているページのprefixが、intendedでログインを試みた時に保存されているページに含まれるかを確認
-                $intended=session("url.intended");
                 if($intended && str_contains($intended,UserRoleResolver::get_page_name_sets($route)["prefix"])){
                     // 含まれていたら、そのページへリダイレクト
                     return redirect()->intended($role_top_page);

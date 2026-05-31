@@ -16,7 +16,7 @@ class OverViewHelpers{
     // データを取得するqueryを返す
     public static function get_querys($role_name){
 
-        $select_lists=["id as role_id","user_name"];
+        $select_lists=["id","user_name"];
 
         if($role_name=="field_staff"){
             $select_lists[]="staff_name";

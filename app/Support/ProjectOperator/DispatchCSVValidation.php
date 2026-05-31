@@ -40,17 +40,20 @@ class DispatchCSVValidation{
 
 
     // ファイルの１行目（メイン案件名）
-    public static function check_first_row($row){
+    public static function check_first_row(array $row){
         if(count($row)<1){
             throw new BusinessException("メイン案件名が正しい位置にありません");
         }
-        if(!Regex::check_projects_name($row[1])){
-            throw new BusinessException("案件名".$row[1]."の名前はルールに沿っていません");
+
+        $converted_row=DispatchHelpers::convert_sjis_to_utf8($row[1]);
+        if(!Regex::check_projects_name($converted_row)){
+            throw new BusinessException("案件名".$converted_row."の名前はルールに沿っていません");
         }
     }
 
     // ファイルの２行目（サブ案件名）
-    public static function check_second_row($row){
+    public static function check_second_row(array $row){
+
         // 単配でも5。5以下の時はエラー
         if(count($row)<5){
             throw new BusinessException("CSV書式のエラーです");
@@ -58,8 +61,9 @@ class DispatchCSVValidation{
         // 4要素目以降~MapNoの手前までは案件名に従っているか
         if(count($row)>4){
             for($column=4;$column<count($row)-1;$column++){
-                if(!Regex::check_projects_name($row[$column])){
-                    throw new BusinessException("案件名".$row[$column]."の名前はルールに沿っていません");
+                $converted_row=DispatchHelpers::convert_sjis_to_utf8($row[$column]);
+                if(!Regex::check_projects_name($converted_row)){
+                    throw new BusinessException("案件名".$converted_row."の名前はルールに沿っていません");
                 }
             }
 
@@ -72,29 +76,33 @@ class DispatchCSVValidation{
         if(count($row)!==$second_row_count){
             throw new BusinessException("メイン案件名が".$main_project_name."のファイルの\n".$row_num."行目のデータの数が違う行が存在します");
         }
+
+        // 変換の値を２度使うものを変換
+        $converted_row1=DispatchHelpers::convert_sjis_to_utf8($row[0]);        $converted_row2=DispatchHelpers::convert_sjis_to_utf8($row[1]);
+        $converted_row3=DispatchHelpers::convert_sjis_to_utf8($row[2]);        $converted_row4=DispatchHelpers::convert_sjis_to_utf8($row[3]);   $converted_row_count=DispatchHelpers::convert_sjis_to_utf8($row[count($row)-1]);
+
         // 日付の書式
-        if(DateHelper::is_Ymd_date($row[0]) || DateHelper::is_Ymd_date($row[1])){
+        if(!DateHelper::is_Ymd_date($converted_row1) || !DateHelper::is_Ymd_date($converted_row2)){
             throw new BusinessException("メイン案件名が".$main_project_name."のファイルの\n".$row_num."行目の日付の書式の異常です");
         }
 
         // 日付の順序
-        if(!DateHelper::is_chronological($row[0],$row[1])){
+        if(!DateHelper::is_chronological($converted_row1,$converted_row2)){
                 throw new BusinessException("メイン案件名が".$main_project_name."のファイルの\n".$row_num."行目の開始日が終了日より後になっています");
         }
 
         // 住所に存在
-        if(!AddressHelpers::is_address_exists($row[2],$row[3])){
-            throw new BusinessException("メイン案件名が".$main_project_name."のファイルの".$row_num."行目の\n".$row[2].$row[3]."という町目が町目データにありません");
+        if(!AddressHelpers::is_address_exists($converted_row3,$converted_row4)){
+            throw new BusinessException("メイン案件名が".$main_project_name."のファイルの".$row_num."行目の\n".$converted_row3.$converted_row4."という町目が町目データにありません");
         }
 
         // mapNoに数字以外が含まれていたらアウト
-        $map_number=$row[count($row)-1];
-        if(!ctype_digit($map_number)){
+        if(!ctype_digit($converted_row_count)){
             throw new BusinessException("メイン案件名が".$main_project_name."のファイルの".$row_num."行目の\nマップの番号が数字ではありません");
             }
 
         // マップ番号100以降はアウト(変更可能性はあり)
-        if($row[count($row)-1]>100){
+        if($converted_row_count>100){
             throw new BusinessException("メイン案件名が".$main_project_name."のファイルの".$row_num."行目の\nマップの番号が100を超えています");
         }
 

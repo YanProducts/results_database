@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\ProjectOperator;
+namespace App\Actions\ProjectOperator\Dispatch;
 
 use App\Exceptions\BusinessException;
 use App\Models\DistributionPlan;

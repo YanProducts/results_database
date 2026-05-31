@@ -92,7 +92,7 @@ class DispatchCSVProcessor{
     // メインプロジェクトの名前の取得
     public static function get_main_projects_name($row){
         DispatchCSVValidation::check_first_row($row);
-        return $row[1];
+        return  DispatchHelpers::convert_sjis_to_utf8($row[1]);
     }
 
     // 併配のプロジェクトの名前の取得(行の２行目)
@@ -103,7 +103,7 @@ class DispatchCSVProcessor{
         // 最後の列はMapNo
         for($column=4;$column<count($row)-1;$column++){
             $return_sets[$return_sets_key]["sub"][$column-4]=[
-                "project_name"=>$row[$column],
+                "project_name"=>DispatchHelpers::convert_sjis_to_utf8($row[$column]),
                 "date_town_sets"=>[]
             ];
         }
@@ -118,13 +118,13 @@ class DispatchCSVProcessor{
             DispatchCSVValidation::check_data_row($second_row_count,$row_num,$row,$main_project_name);
 
             $each_town_list=[
-                "start_date"=>$row[0],
-                "end_date"=>$row[1],
+                "start_date"=>DispatchHelpers::convert_sjis_to_utf8($row[0]),
+                "end_date"=>DispatchHelpers::convert_sjis_to_utf8($row[1]),
                 // 現在のCSVデータには県のデータがない
-                "city"=>$row[2],
-                "town"=>$row[3],
+                "city"=>DispatchHelpers::convert_sjis_to_utf8($row[2]),
+                "town"=>DispatchHelpers::convert_sjis_to_utf8($row[3]),
                 // 分割
-                "map_number"=>$row[count($row)-1]
+                "map_number"=>DispatchHelpers::convert_sjis_to_utf8($row[count($row)-1])
             ];
 
                 // メイン案件リストに追加(同じ案件内でも併配によって期日が違う場合があるので、Dateも1つずつ行う)
@@ -134,7 +134,7 @@ class DispatchCSVProcessor{
                 // それぞれの行の最後はMapナンバー
                 if(count($row)>=6){
                     for($column=4;$column<count($row)-1;$column++){
-                        if(in_array($row[$column],["〇","○","○"])){
+                        if(in_array(DispatchHelpers::convert_sjis_to_utf8($row[$column]),["〇","○","○"])){
                             $return_sets[$return_sets_key]["sub"][$column-4]["date_town_sets"][]=$each_town_list;
                         }
                     }

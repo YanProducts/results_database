@@ -21,23 +21,39 @@ export default function AssignSetsForConfirming({assignPlanForConfirmView,pageMi
                     // 以下が全案件でnullの時を取得
                     const staffIsAssigned=Object.values(eachPlanByStaff[1]).some(eachSets=>eachSets?.planId.length>0)
 
+
+                    // 実験検証用
+                    console.log("検証用")
+                    // console.log(projectsToStaff);
+                    console.log(eachPlanByStaff);
+
+
                     return(
                     // 割り当てられていないスタッフは除外
                     staffIsAssigned ?
+
                     // スタッフが担当するメイン案件の数によって行の数が変更するためprojectNameでmap
                     projectsToStaff.map(function(projectName,innerIndex){
+
+
                         // 割り当てられていない案件は除外
                         const eachPlanByStaffInTheProject=eachPlanByStaff[1][projectName];
+                        {console.log("innerIndex"+innerIndex)}
+{console.log(eachPlanByStaffInTheProject)}
+
                         return(
-                         eachPlanByStaff ?
+                          eachPlanByStaff ?
                             <tr className="border-black border-2" key={ index + "-" + innerIndex}>
-                                {/* 案件名 */}
-                                {eachPlanByStaffInTheProject.planId.length>0 ?
                                 <>
                                     {/* スタッフ名 */}
+
                                     {innerIndex ==0 &&
-                                    <td className={`border-black border-2 ${isMapModified ? "w-[20%]" :"w-[25%]"}`} rowSpan={projectsToStaff.length}>{staffName}</td>
+                                        <td className={`border-black border-2 ${isMapModified ? "w-[20%]" :"w-[25%]"}`} rowSpan={projectsToStaff.length}>{staffName}</td>
                                     }
+
+                                    {/* 案件名 */}
+                                    {eachPlanByStaffInTheProject.planId.length>0 &&
+                                    <>
                                     <td className={`border-black border-2 ${isMapModified ? "w-[20%]" :"w-[25%]"}`}>{projectName}</td>
 
                                     {/* マップ */}
@@ -46,10 +62,9 @@ export default function AssignSetsForConfirming({assignPlanForConfirmView,pageMi
                                     </td>
                                     {/* 町目名(idを変更させる必要あり) */}
                                     <td className={`border-black border-2 ${isMapModified ? "w-[30%]" :"w-[35%]"} px-2 whitespace-pre-line text-left`}>{eachPlanByStaffInTheProject.planId.join("\n")}</td>
+                                    </>
+                                    }
                                 </>
-                                :
-                                null
-                            }
                             </tr>
                         : null)})
                         :

@@ -12,6 +12,18 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class DispatchHelpers{
+    // SJISをUTF8に直す
+    public static function convert_sjis_to_utf8(String $str){
+        return
+        mb_detect_encoding(
+            $str,
+            ['UTF-8', 'SJIS-win', 'EUC-JP'],
+            true
+        ) == "SJIS-win" ?
+        mb_convert_encoding($str, 'UTF-8', 'SJIS-win') : $str;
+    }
+
+
     // 確認後、新案件ではないデータを、upsert用に配列を変換
     public static function change_after_confirm_post_data_for_upsert($project_imports,$new_projects){
 
@@ -57,6 +69,5 @@ class DispatchHelpers{
             throw new BusinessException("再度ファイル取得してください","project_operator.dispatch_project",true);
         }
     }
-
 
 }

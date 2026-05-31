@@ -6,7 +6,7 @@ namespace App\Actions\ProjectOperator\Dispatch\CheckDispatch;
 use App\Actions\ProjectOperator\Dispatch\CheckDispatch\Read as CheckRead;
 use App\Actions\ProjectOperator\Dispatch\CheckDispatch\Create as CheckCreate;
 use App\Actions\ProjectOperator\Dispatch\CheckDispatch\Delete as CheckDelete;
-use App\Actions\ProjectOperator\StoreDispatch;
+use App\Actions\ProjectOperator\Dispatch\StoreDispatch;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;

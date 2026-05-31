@@ -64,6 +64,8 @@ class GetFileData{
   // ファイルの内側の行を当てはまるものに変化
   private static function inner_row_change($each_file_row,$pref){
 
+  dd();
+
     // 文字化けをなおす
     $encoded_each_file_row = mb_convert_encoding($each_file_row, 'UTF-8', 'SJIS-win');
 

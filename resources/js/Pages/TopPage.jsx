@@ -13,9 +13,8 @@ export default function TopPage({}){
       <ThemeLists routeName="project_operator.dispatch_project" label="案件を営業所へ"/>
       <ThemeLists routeName="branch_manager.assign_staff" label="案件をスタッフへ"/>
       <ThemeLists routeName="field_staff.write_report" label="報告書の記入(スタッフ)"/>
-      <ThemeLists routeName="clerical.write_report" label="報告書の記入(入力担当)"/>
+      <ThemeLists routeName="clerical.management_report" label="報告書データの操作/記入(入力担当)"/>
       <ThemeLists routeName="branch_manager.assign_staff" label="町丁目データの確認"/>
-      <ThemeLists routeName="clerical.export_report" label="報告書のエクスポート"/>
       <ThemeLists routeName="clerical.export_purchase_order" label="発注書のエクスポート"/>
       <ThemeLists routeName="whole_data.provision" label="現場/入力/営業所/案件の各担当登録"/>
       <ThemeLists routeName="whole_data.admin_overview" routeParams={{"type":"all"}} label="現場/入力/営業所/案件の各担当確認/編集"/>

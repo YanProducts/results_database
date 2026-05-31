@@ -37,7 +37,7 @@ export default function Register({pageNameSets}){
     </form>
     {/* リンク */}
     <div className="mt-4">
-      <BaseLinkLine routeName={`${prefix}.register`}  what="ログイン"/>
+      <BaseLinkLine routeName={`${prefix}.login`}  what="ログイン"/>
     </div>
 
     </div>
