@@ -16,6 +16,11 @@ export default function TopPage({}){
       <ThemeLists routeName="clerical.management_report" label="報告書データの操作/記入(入力担当)"/>
       <ThemeLists routeName="branch_manager.assign_staff" label="町丁目データの確認"/>
       <ThemeLists routeName="clerical.export_purchase_order" label="発注書のエクスポート"/>
+
+      <ThemeLists routeName="project_operator.project_overview" label="案件状況の確認"/>
+      <ThemeLists routeName="clerical.export_purchase_order" label="担当の仕事の確認"/>
+      <ThemeLists routeName="clerical.export_purchase_order" label="報告状況の確認"/>
+
       <ThemeLists routeName="whole_data.provision" label="現場/入力/営業所/案件の各担当登録"/>
       <ThemeLists routeName="whole_data.admin_overview" routeParams={{"type":"all"}} label="現場/入力/営業所/案件の各担当確認/編集"/>
       <ThemeLists routeName="whole_data.register_places" label="営業所の登録"/>

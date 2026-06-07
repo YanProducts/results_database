@@ -41,6 +41,15 @@ Route::prefix("project_operator")
             // 案件自体の登録や確認や削除などのコントローラー
             Route::controller(ProjectManagementController::class)
             ->group(function(){
+                //  振り終えた案件の確認
+                  Route::get("project_overview","project_overview")
+                  ->name("project_overview");
+                //   案件の編集画面へ
+                Route::get("edit_project_top/{edit_id}","edit_project_top")
+                ->name("edit_project_top");
+                //   案件の編集投稿
+                Route::post("edit_project_post","edit_project_post")
+                ->name("edit_project_post");
 
             });
           })
@@ -62,10 +71,6 @@ Route::prefix("project_operator")
                   // 重複可能性のある案件をどうするか決定した時の処理
                   Route::post("confirm_dispatch","confirm_dispatch_post")
                   ->name("confirm_dispatch_post");
-
-                  //   現在の営業所に振り終えた案件の確認
-                  Route::get("project_overview","project_overview")
-                  ->name("project_overview");
 
               });
                 // ログアウト(そもそも認証されていないと無理)

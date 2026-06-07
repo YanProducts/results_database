@@ -1,5 +1,5 @@
 // 基準となるテーブルのJSX
-export default function BaseTable({tableTheme,allData,thSets,width="w-[80%]",thWidthSets=[], minWidth="min-w-150", maxWidth="max-w-600",mb="", children}){
+export default function BaseTable({tableTheme,allData,thSets,width="w-[80%]",thWidthSets=[], minWidth="min-w-150", maxWidth="max-w-600",mb="", sortSets={} ,children}){
     // dataにはオブジェクトをラップした配列
     // thSetsにはdataの各オブジェクトのキーをキーに持ち値を日本語とする、各列のタイトルが格納
 
@@ -9,9 +9,9 @@ export default function BaseTable({tableTheme,allData,thSets,width="w-[80%]",thW
         <table className={`table-fixed ${width} ${minWidth} ${maxWidth} ${mb} mx-auto base_backColor border-black border-2 border-collapse`}>
             <thead className="font-bold  text-center">
                 <tr className="border-black border-2">
-                    {/* thSetsの値を展開 */}
+                    {/* thSetsの値を展開 onClickイベントはundefinedの場合は何も起こらない */}
                     {Object.values(thSets).map((thName,index)=>
-                        <th className={`border-black border-2 whitespace-pre-wrap ${thWidthSets.length>0 ? thWidthSets[index] : ""}`} key={index}>{thName}</th>
+                        <th className={`border-black border-2 whitespace-pre-wrap ${thWidthSets.length>0 ? thWidthSets[index] : ""} ${sortSets?.[thName] ? "cursor-pointer" : ""}`} onClick={sortSets?.[thName]}  key={index}>{thName}</th>
                     )}
                 </tr>
             </thead>

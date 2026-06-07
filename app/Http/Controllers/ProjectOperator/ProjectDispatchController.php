@@ -92,9 +92,5 @@ class ProjectDispatchController extends Controller
         return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"project_operator.project_overview","linkPageInJpn"=>"確認ページ"]);
     }
 
-    // 案件の確認
-    public function project_overview(){
-
-    }
 
 }
