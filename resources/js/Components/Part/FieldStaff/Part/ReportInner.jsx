@@ -1,7 +1,7 @@
 import React from "react";
 import BaseTable from "../../../Common/BaseTable";
 import TbodyInner from "./TbodyInner";
-import setTdWidthByProjectCounts from "../../../../Support/WriteReport/setTdWidthByProjectCounts";
+import setTdWidthByProjectCounts from "../../../../Support/FieldStaff/setTdWidthByProjectCounts";
 import TrForSum from "./TrForSum";
 
 // 報告書テーブルの内部

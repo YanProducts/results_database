@@ -13,10 +13,10 @@ import HiddenList from "../../../Components/Part/ProjectOperator/ProjectManageme
 export default function ProjectOverview({prefix,what,type,projectData}){
 
     // 定義
-    const {data, setData, post, processing, errors,clearErrors, reset,columnForHiddenLists,setColumnForHiddenLists,prioritySort,setPrioritySortallHiddenLists,setAllHiddenLists,pageMinWidth,pageMaxWidth}=useProjectOverviewDefinitions();
+    const {data, setData, post, processing, errors,clearErrors, reset, prioritySort,setPrioritySort,columnForHiddenLists,setColumnForHiddenLists,hiddenListVisible,setHiddenListsVisible,hiddenPatterns,allHiddenLists,setAllHiddenLists,pageMinWidth,pageMaxWidth}=useProjectOverviewDefinitions();
 
     // 動きの定義
-    const {onHiddenChangeClick,onHiddenListsChange}=useProjectOverviewActions(columnForHiddenLists,setColumnForHiddenLists,setAllHiddenLists);
+    const {onHiddenChangeClick,onHiddenListsChange}=useProjectOverviewActions({columnForHiddenLists,setHiddenListsVisible,setColumnForHiddenLists,setAllHiddenLists});
 
     return(
         <Layout title={`${what}-${type}`}>
@@ -27,7 +27,8 @@ export default function ProjectOverview({prefix,what,type,projectData}){
 
             <ViewValidationErrors errors={errors} minWidth={pageMinWidth} maxWidth={pageMaxWidth} />
 
-           <BaseTable tableTheme={`案件データ一覧`} thSets={Object.fromEntries(["案件名","開始日","終了日","割当済町目数","配布済町目数","設定部数","現在配布部数","編集"].map(title=>[title,title]))} maxWidth={pageMaxWidth} minWidth={pageMinWidth} mb={"mb-3"} sortSets={onHiddenChangeClick}>
+           <BaseTable tableTheme={`案件データ一覧`} thSets={Object.fromEntries(["案件名","開始日","終了日","割当済町目数","配布済町目数","設定部数","現在配布部数","編集"].map(title=>[title,title]))} maxWidth={pageMaxWidth} minWidth={pageMinWidth} mb={"mb-3"}
+           needSort={true} sortClick={onHiddenChangeClick}>
             {projectData.map(function(projectSets,index){
             //  trの中身
              return <TrInner key={index} {...{projectSets}} />
@@ -41,8 +42,10 @@ export default function ProjectOverview({prefix,what,type,projectData}){
 
             <p>　</p>
 
-            {/* sort */}
-            <HiddenList columnForHiddenLists={columnForHiddenLists} onHiddenListsChange={onHiddenListsChange} />
+{console.log(columnForHiddenLists)}
+            {/* 何を表示する/しないかのリスト */}
+            <HiddenList {...{columnForHiddenLists,onHiddenListsChange,hiddenListVisible,
+            hiddenPatterns,allHiddenLists}}/>
 
             </RoleLayout>
         </Layout>

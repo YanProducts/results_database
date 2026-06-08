@@ -1,24 +1,19 @@
 import React from "react"
-export default function useProjectOverviewActions({columnForHiddenLists,setColumnForHiddenLists,setAllHiddenLists}){
-
+export default function useProjectOverviewActions({columnForHiddenLists,setHiddenListsVisible,setColumnForHiddenLists,setAllHiddenLists}){
     // どの値の行を表示しないかの設定
     React.useEffect(()=>{
+        console.log(columnForHiddenLists)
         if(!columnForHiddenLists){
             return;
         }
-
+        setHiddenListsVisible(true)
     },[columnForHiddenLists])
 
+    // 何を表示させないかリストを表示
     // 共通tableの使用上、キーを日本語名で定義
-    const onHiddenChangeClick={
-        "案件名":(e)=>{setColumnForHiddenLists("projectName")},
-        "開始日":(e)=>{setColumnForHiddenLists("startDate")},
-        "終了日":(e)=>{setColumnForHiddenLists("endDate")},
-        "割当済町目数":(e)=>{setColumnForHiddenLists("townCount")},
-        "配布済町目数":(e)=>{setColumnForHiddenLists("finishedTownCount")},
-        "設定部数":(e)=>{setColumnForHiddenLists("distributionPlanCount")},
-        "現在配布部数":(e)=>{setColumnForHiddenLists("finishedDistributioncount")},
-    }
+    const onHiddenChangeClick=(thName)=>{
+        setColumnForHiddenLists(thName)
+    };
 
     // 実際にsortが変更したとき
     const onHiddenListsChange=(e,column)=>{
