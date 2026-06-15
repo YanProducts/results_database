@@ -1,5 +1,5 @@
 // ページ共通するヘッダー部分
-export default function BasePageHeader({what,type,subtitle="", pageMinWidth="min-w-75", pageMaxWidth="max-w-250"}){
+export default function BasePageHeader({what,type,subtitle="", pageMinWidth="min-w-75", pageMaxWidth="max-w-250",mb="mb-10"}){
     return(
      <>
       <p>　</p>
@@ -8,7 +8,7 @@ export default function BasePageHeader({what,type,subtitle="", pageMinWidth="min
 
         {/* サブタイトルは含まれる時のみ */}
         {subtitle &&
-        <div className={`base_frame base_backColor text-center ${pageMinWidth} ${pageMaxWidth}`}><h2 className={`base_h text-2xl mb-10 ${pageMinWidth} ${pageMaxWidth}`}>{subtitle}</h2></div>
+        <div className={`base_frame base_backColor text-center ${pageMinWidth} ${pageMaxWidth}`}><h2 className={`base_h text-2xl ${mb} ${pageMinWidth} ${pageMaxWidth}`}>{subtitle}</h2></div>
         }
      </>
     );

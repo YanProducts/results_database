@@ -14,6 +14,7 @@ export const createAndDownloadCSV=async(data,setData)=>{
           const response=await fetch(
             route("clerical.create_report_csv"),{
                 method:"POST",
+                credentials:"same-origin",
                 headers:{
                 "Content-Type":"application/json",
                 "X-CSRF-TOKEN":document.querySelector('meta[name="csrf-token"]').content,
@@ -22,8 +23,9 @@ export const createAndDownloadCSV=async(data,setData)=>{
              }
             )
 
-
             if(!response.ok){
+                console.log(document.querySelector('meta[name="csrf-token"]').content)
+                console.log(response);
                 alert("通信エラーが発生しました")
                 return;
             }

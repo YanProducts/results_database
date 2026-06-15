@@ -6,7 +6,7 @@ import ViewValidationErrors from "../../../Components/Common/ViewValidationError
 import BaseButton from "../../../Components/Common/BaseButton";
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
 import useSendProjectDefinitions from "../../../Definition/ProjectOperator/useSendProjectDefinitions";
-import useSendProjectActions from "../../../Action/ProjectOperator/useSendProjectActions";
+import useSendProjectActions from "../../../Action/ProjectOperator/Distpatch/useSendProjectActions";
 import InputFiles from "../../../Components/Common/InputFiles";
 
 // 案件を営業所担当に送信
@@ -54,6 +54,7 @@ export default function SendProjectToBranch({prefix,what,type,placeSets}){
 
     {/* リンク */}
       <div className="mt-4">
+        <BaseLinkLine routeName={`${prefix}.project_overview`} minWidth={pageMinWidth} maxWidth={pageMaxWidth} what="案件状況の確認"/>
         <BaseLinkLine routeName={`${prefix}.logout`} minWidth={pageMinWidth} maxWidth={pageMaxWidth} what="ログアウト"/>
       </div>
     </RoleLayout>

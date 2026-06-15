@@ -13,7 +13,7 @@ export default function BaseTable({tableTheme,allData,thSets,width="w-[80%]",thW
                     {Object.values(thSets).map((thName,index)=>
                         <th className={`border-black border-2 whitespace-pre-wrap ${thWidthSets.length>0 ? thWidthSets[index] : ""} ${needSort ? "cursor-pointer" : ""}`}
                         // クリックイベントは通常は何も生じない
-                        onClick={()=>{sortClick(thName)}}  key={index}>{thName}</th>
+                        onClick={(e)=>{sortClick(e,thName)}}  key={index}>{thName}</th>
                     )}
                 </tr>
             </thead>
