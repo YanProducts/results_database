@@ -1,13 +1,13 @@
 import React from "react";
 import popUpPositionSeeting from "../../../Support/Common/popUpPositionSetting";
-import sortProjectData from "./Part/sortProjectData";
+import sortData from "../../../Support/Common/sortData";
 export default function useProjectOverviewActions({projectData,overViewItems,setSortItemIsVisible,selectedSort,setSelectedSort,prioritySort,setPrioritySort,selectedAscOrDes,setSelectedAscOrDes,ascOrDes,setAscOrDes,columnForHiddenLists,setHiddenListsVisible,setColumnForHiddenLists,setAllHiddenLists,setShowFullData}){
 
     // sort項目の決定
     // useMemoは状態変数が変わるごとにレンダリング1回で変数を定義し直す(effectで更新してからstate更新なら2回になる)
     const sortedProjectData=React.useMemo(()=>{
-        return sortProjectData({overViewItems,prioritySort,ascOrDes,projectData});
-    },[projectData,prioritySort])
+        return sortData({...{prioritySort,ascOrDes,projectData},objForDataCheck:overViewItems,sourceData:projectData});
+    },[projectData,prioritySort,ascOrDes])
 
     // どの値の行を表示しないかの設定
     React.useEffect(()=>{
@@ -30,8 +30,11 @@ export default function useProjectOverviewActions({projectData,overViewItems,set
     // ソート変更を閉じるボタンのクリック(項目リスト自体を閉じる)
     const onSortChangeClose=()=>{
         setSortItemIsVisible(false);
+        // 初期選択を決定版に戻す
+        setSelectedSort(prioritySort);
+        setSelectedAscOrDes(ascOrDes);
     }
-        // 昇順降順の変更クリック
+    // 昇順降順の変更クリック
     const onAscOrDesClick=(e)=>{
         const target=e.currentTarget;
         setSelectedAscOrDes(target.value)
@@ -47,7 +50,7 @@ export default function useProjectOverviewActions({projectData,overViewItems,set
         //selectedSortの値で並び替え、ソート変更のリストを閉じる
         setAscOrDes(selectedAscOrDes)
         setPrioritySort(selectedSort)
-        onSortChangeClose();
+        setSortItemIsVisible(false);
     }
 
 

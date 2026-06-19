@@ -1,17 +1,17 @@
-// projectDataのsort
-export default function sortProjectData({overViewItems,ascOrDes,prioritySort,projectData}){
+// sourceDataのsort
+export default function sortData({objForDataCheck=null,ascOrDes,prioritySort,sourceData}){
+
     // 初期設定が完了されていない場合は何もしない
     if(!prioritySort){
-        return projectData;
+        return sourceData;
     }
 
-
-    // projectDataは参照渡しにはならないが非破壊にするほうが良い
-    const copied=[...projectData];
+    // sourceDataは参照渡しにはならないが非破壊にするほうが良い
+    const copied=[...sourceData];
 
     try{
-        // 取得文字列がエラーと思われる時（元のprojectDataは正しいと仮定=ここでの形式を疑うならsomeなどで行うべきだが、冗長さを考え今回は行わない）
-        if(!Object.keys(overViewItems).includes(prioritySort)){
+        // 取得文字列がエラーと思われる時（元のsourceDataは正しいと仮定=ここでの形式を疑うならsomeなどで行うべきだが、冗長さを考え今回は行わない）
+        if(objForDataCheck && !Object.keys(objForDataCheck).includes(prioritySort)){
             throw new Error("priority item" + prioritySort + "is unexpected");
         }
 
@@ -30,7 +30,7 @@ export default function sortProjectData({overViewItems,ascOrDes,prioritySort,pro
                 return 0;
             });
         }else{
-            throw new Error("last string is strange");
+            throw new Error("string is not asc nor des");
         }
 
     }catch(e){

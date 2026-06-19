@@ -1,6 +1,6 @@
 import Layout from "../../../Layout/Layout"
 import { RoleLayout } from "../../../Layout/RoleLayout"
-import useProjectOverviewDefinitions from "../../../Definition/ProjectOperator/useProjectOverviewDefinitions";
+import useProjectOverviewDefinitions from "../../../Definition/ProjectOperator/Overview/useProjectOverviewDefinitions";
 import useProjectOverviewActions from "../../../Action/ProjectOperator/Overview/useProjectOverviewActions";
 import BasePageHeader from "../../../Components/Common/BasePageHeader";
 import ViewValidationErrors from "../../../Components/Common/ViewValidationErrors";
@@ -30,7 +30,8 @@ export default function ProjectOverview({prefix,what,type,projectData}){
             <ViewValidationErrors errors={errors} minWidth={pageMinWidth} maxWidth={pageMaxWidth} />
 
            {/* テーブルを何でsortするか */}
-            <ChoiceSort minWidth={pageMinWidth} maxWidth={pageMaxWidth} {...{overViewItems,prioritySort,ascOrDes,onSortChangeClick,onSortKindChange,onSortChangeClose,sortItemIsVisible}} />
+            <ChoiceSort minWidth={pageMinWidth} maxWidth={pageMaxWidth} {...{overViewItems,prioritySort,selectedSort,ascOrDes,selectedAscOrDes,onAscOrDesClick,onSortChangeClick,onSortKindChange,onSortChangeClose,
+            onSortChangeDecide,sortItemIsVisible,columnForHiddenLists}} />
 
             {/* データの一覧 */}
            <BaseTable tableTheme={`案件データ一覧`} thSets={Object.fromEntries([...Object.values(overViewItems),"編集"].map(title=>[title,title]))} maxWidth={pageMaxWidth} minWidth={pageMinWidth} mb={"mb-3"}
@@ -43,6 +44,7 @@ export default function ProjectOverview({prefix,what,type,projectData}){
 
             {/* リンク */}
             <div className="mt-4">
+                <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.project_check_by_day`}  what="日ごとの案件確認"/>
                 <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.dispatch_project`}  what="案件の登録"/>
                 <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.logout`}  what="ログアウト"/>
             </div>

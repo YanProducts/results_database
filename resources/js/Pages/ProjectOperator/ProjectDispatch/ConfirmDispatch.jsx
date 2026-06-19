@@ -1,7 +1,7 @@
 import Layout from "../../../Layout/Layout";
 import { RoleLayout } from "../../../Layout/RoleLayout";
 import useComfirmDispatchActions from "../../../Action/ProjectOperator/Distpatch/useConfirmDispatchActions";
-import useConfirmDispatchDefinitions from "../../../Definition/ProjectOperator/useComfirmDispatchDefinitions";
+import useConfirmDispatchDefinitions from "../../../Definition/ProjectOperator/Dispatch/useComfirmDispatchDefinitions";
 import ViewValidationErrors from "../../../Components/Common/ViewValidationErrors";
 import SubmitOrBackButtons from "../../../Components/Common/SubmitOrBackButtons";
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";

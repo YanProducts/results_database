@@ -5,7 +5,7 @@ import SelectParts from "../../../Components/Common/SelectParts";
 import ViewValidationErrors from "../../../Components/Common/ViewValidationErrors";
 import BaseButton from "../../../Components/Common/BaseButton";
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
-import useSendProjectDefinitions from "../../../Definition/ProjectOperator/useSendProjectDefinitions";
+import useSendProjectDefinitions from "../../../Definition/ProjectOperator/Dispatch/useSendProjectDefinitions";
 import useSendProjectActions from "../../../Action/ProjectOperator/Distpatch/useSendProjectActions";
 import InputFiles from "../../../Components/Common/InputFiles";
 

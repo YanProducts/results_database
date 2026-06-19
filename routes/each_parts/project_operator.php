@@ -50,7 +50,9 @@ Route::prefix("project_operator")
                 //   案件の編集投稿
                 Route::post("edit_project_post","edit_project_post")
                 ->name("edit_project_post");
-
+                // 日毎の案件確認
+                Route::get("project_check_by_day","project_check_by_day")
+                ->name("project_check_by_day");
             });
           })
           ->group(function(){

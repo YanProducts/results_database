@@ -1,6 +1,6 @@
 import { useForm } from "@inertiajs/react";
 import React from "react";
-import baseHiddenPatterns from "../../Support/ProjectOperator/hiddenPattern";
+import baseHiddenPatterns from "../../../Support/ProjectOperator/hiddenPattern";
 
 // 案件確認の定義
 export default function useProjectOverviewDefinitions(){
@@ -51,6 +51,6 @@ export default function useProjectOverviewDefinitions(){
 
     // ページの横幅
     const [pageMinWidth,pageMaxWidth]=["min-w-250","max-w-350"];
-    
+
       return {data, setData, post, processing, errors,clearErrors,reset,overViewItems,prioritySort,setPrioritySort,selectedSort,setSelectedSort,ascOrDes,setAscOrDes,selectedAscOrDes,setSelectedAscOrDes,sortItemIsVisible,setSortItemIsVisible,columnForHiddenLists,setColumnForHiddenLists,hiddenListVisible,setHiddenListsVisible,hiddenPatterns,allHiddenLists,setAllHiddenLists,showFullData,setShowFullData,pageMinWidth,pageMaxWidth};
 }
