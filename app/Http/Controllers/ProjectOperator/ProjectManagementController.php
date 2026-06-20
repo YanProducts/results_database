@@ -35,6 +35,8 @@ class ProjectManagementController extends Controller
     public function project_check_by_day(){
         // 開始日付=>[営業所=>[案件名=>[終了日&併配リスト&市のリスト]]]
         $project_data=GetProjectDataInSql::get_data_by_day();
+
+
         return Inertia::render("ProjectOperator/ProjectManagement/ProjectCheckByDay",[
         "type"=>"日毎の案件確認(割当済町目締切：1か月以内)",
         "projectData"=>$project_data

@@ -1,11 +1,11 @@
 import Layout from "../../../Layout/Layout"
 import { RoleLayout } from "../../../Layout/RoleLayout"
-import useProjectOverviewDefinitions from "../../../Definition/ProjectOperator/Overview/useProjectOverviewDefinitions";
-import useProjectOverviewActions from "../../../Action/ProjectOperator/Overview/useProjectOverviewActions";
+import useProjectOverviewDefinitions from "../../../Definition/ProjectOperator/Management/useProjectOverviewDefinitions";
+import useProjectOverviewActions from "../../../Action/ProjectOperator/Manegement/useProjectOverviewActions";
 import BasePageHeader from "../../../Components/Common/BasePageHeader";
 import ViewValidationErrors from "../../../Components/Common/ViewValidationErrors";
 import BaseTable from "../../../Components/Common/BaseTable";
-import TrInner from "../../../Components/Part/ProjectOperator/ProjectManagement/TrInner";
+import TrInnerInOverVIew from "../../../Components/Part/ProjectOperator/ProjectManagement/TrInnerInOverView";
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
 import HiddenList from "../../../Components/Part/ProjectOperator/ProjectManagement/HiddenList";
 import ChoiceSort from "../../../Components/Part/ProjectOperator/ProjectManagement/ChoiceSort";
@@ -34,11 +34,11 @@ export default function ProjectOverview({prefix,what,type,projectData}){
             onSortChangeDecide,sortItemIsVisible,columnForHiddenLists}} />
 
             {/* データの一覧 */}
-           <BaseTable tableTheme={`案件データ一覧`} thSets={Object.fromEntries([...Object.values(overViewItems),"編集"].map(title=>[title,title]))} maxWidth={pageMaxWidth} minWidth={pageMinWidth} mb={"mb-3"}
+           <BaseTable tableTheme="案件データ一覧" thSets={Object.fromEntries([...Object.values(overViewItems),"編集"].map(title=>[title,title]))} maxWidth={pageMaxWidth} minWidth={pageMinWidth} mb={"mb-3"}
            needSort={true} sortClick={onHiddenChangeClick}>
             {sortedProjectData.map(function(projectSets,index){
             //  trの中身
-             return <TrInner key={index} {...{projectSets}} />
+             return <TrInnerInOverVIew key={index} {...{projectSets}} />
             })}
             </BaseTable>
 

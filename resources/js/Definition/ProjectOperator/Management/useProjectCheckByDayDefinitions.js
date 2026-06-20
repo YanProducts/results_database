@@ -8,14 +8,14 @@ export default function useProjectCheckByDayDefinitions(){
     const {data, setData, post, processing, errors,clearErrors, reset}=useForm({})
 
     // リストで表示する内容
-    const overViewItems={
-        // "project_id":"案件名",
-        // "start_date":"開始日",
-        // "end_date":"終了日",
-        // "town_count":"割当済町目数",
-        // "finished_town_count":"配布済町目数",
-        // "distribution_plan_count":"設定部数",
-        // "finished_distribution_count":"現在配布部数"
+    const checkByDayItems={
+        "start_date":"開始日",
+        "place_name":"営業所",
+        "main_project_name":"案件名",
+        // "round_number":"その営業所で何回目か",
+        "sub_project_lists":"併配リスト",
+        "city_name_lists":"市の名前リスト",
+        "end_date":"終了日",
     }
 
     // // 現在radioで選択中のソート項目
@@ -52,5 +52,5 @@ export default function useProjectCheckByDayDefinitions(){
     // ページの横幅
     const [pageMinWidth,pageMaxWidth]=["min-w-250","max-w-350"];
 
-      return {data, setData, post, processing, errors,clearErrors,reset,pageMinWidth,pageMaxWidth};
+      return {data, setData, post, processing, errors,clearErrors,reset,checkByDayItems,pageMinWidth,pageMaxWidth};
 }

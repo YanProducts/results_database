@@ -36,22 +36,18 @@ class GetProjectDataInSql{
     }
 
     // 日毎のデータの取得
-    // 開始日付=>[営業所=>[案件名=>[終了日&併配リスト&市のリスト]]]という形式にする
+    // 以下だと「同案件で何回目か」は取得できても、「同じコードの違う案件」で何回目かは取得できない！！！
+    // 開始日付=>[営業所=>[案件名=>[round_number(何回目か))=>[終了日&併配リスト&市のリスト]]]という形式にする
     // same_project_flagは「過去のものと同じか」//round_numberは同じ投稿で同じメイン案件が別々に投稿されたとき
     public static function get_data_by_day(){
 
         // 締切が1月前以内の案件を配布予定リストから取得
         $distribution_plans=DistributionPlan::select("id","project_id","round_number","place_id","start_date","end_date","address_id","main_id")->where("end_date",">",Carbon::now()->subMonth())->get();
 
-        // 上記のうち、メイン案件のみのデータ全てを抽出
-        $main_distribution_plans=$distribution_plans->where("main_id",null);
-
-        // 上記のうち、メイン案件のみの配列を重なりなしで取得(project_idとround_numberをセットで取得しpluck、uniueを使う)
-
-        // 上記のうち、サブ案件のみを抽出し、メイン案件=>という形式にして、その内部でuniqueする
-        $sub_distribution_plans=$distribution_plans->where("main_id","<>","null")->groupBy("main_id");
-
         // 案件名の取得(idがplanの締切1月以内に相当)// id対応のためvaluesつけない！//uniqueはつけない(単純な併配リストの時にround_numberが違う場合を考慮)
+
+        // 現状、same_project_flagには触れられていない！！！！！
+
         $project_name_corresponds_id=Project::select("id","project_name")->whereIn("id",$distribution_plans->pluck("project_id"))->pluck("project_name","id");
 
         // 市名の取得(idがplanの締切1月以内に相当)// id対応のためvaluesつけない！
@@ -61,46 +57,8 @@ class GetProjectDataInSql{
         // 営業所名の取得(idがplanの締切1月以内に相当)// id対応のためvaluesつけない！
         $place_name_corresponds_id=Place::select("id","place_name")->whereIn("id",$distribution_plans->pluck("place_id"))->pluck("place_name","id")->unique();
 
-        // planを(collectionにした後で)開始日ごとにまとめる
-        $plan_group_by_start_date=$main_distribution_plans->groupBy("start_date");
-
-
-        // さらに内部を営業所名で分割
-        $grouped_data=$plan_group_by_start_date->mapWithKeys(
-            fn($each_plan_by_start_date,$key1)=>[$key1=>$each_plan_by_start_date->groupBy("place_id")
-            ->mapWithKeys(fn($each_plan_by_place,$key_by_place)=>[$place_name_corresponds_id[$key_by_place]=>
-
-          // planをmain案件+round_numberが同じものでまとめ１：併配案件リスト、２：市名リスト、３：最も遅い終了日でまとえる
-
-            $each_plan_by_place->groupBy(fn($row)=>$row["project_id"]."_".$row["round_number"])->mapWithKeys(function($each_plan_by_project,$key_by_project)use($project_name_corresponds_id,$sub_distribution_plans,$city_name_corresponds_id){
-
-                // メイン案件名(キー)の操作
-                $under_ber_point=mb_strpos($key_by_project,"_");
-                $main_project_id=mb_substr($key_by_project,0,$under_ber_point);
-                $project_name=$project_name_corresponds_id[$main_project_id];
-                $key_name=mb_substr($key_by_project,$under_ber_point+1)==0 ? $project_name : $project_name."（".mb_substr($key_by_project,$under_ber_point+1)."回目）";
-
-
-                // サブ案件名を一挙取得
-                $sub_lists=implode(",",(($sub_distribution_plans[$main_project_id] ?? collect())->pluck("project_id")->map(fn($sub_project_id)=>$project_name_corresponds_id[$sub_project_id]))->toArray());
-
-                // 市の名前を一挙取得
-                $city_lists=implode(",",$each_plan_by_project->map(fn($each_plan)=>$city_name_corresponds_id[$each_plan["address_id"]])->unique()->toArray());
-
-                // 最も遅い終了日の取得
-                $lastest_end_date=$each_plan_by_project->max("end_date");
-
-                return
-                [
-                $key_name=>[
-                    "sub_lists"=>$sub_lists,
-                    "city_lists"=>$city_lists,
-                    "end_date"=>$lastest_end_date
-                ]];//メイン案件でのgroupBy
-            })
-            ])//営業所でのgroupby
-         ]);//日付でのgroupby
-
+        // フォーマット形式に合わせる
+        $grouped_data=OverviewByDayFormatter::change_data_for_overview_by_day($distribution_plans,$project_name_corresponds_id,$city_name_corresponds_id,$place_name_corresponds_id);
 
         return $grouped_data;
     }
