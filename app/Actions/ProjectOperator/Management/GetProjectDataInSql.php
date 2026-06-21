@@ -58,9 +58,8 @@ class GetProjectDataInSql{
         $place_name_corresponds_id=Place::select("id","place_name")->whereIn("id",$distribution_plans->pluck("place_id"))->pluck("place_name","id")->unique();
 
         // フォーマット形式に合わせる
-        $grouped_data=OverviewByDayFormatter::change_data_for_overview_by_day($distribution_plans,$project_name_corresponds_id,$city_name_corresponds_id,$place_name_corresponds_id);
+        return OverviewByDayFormatter::change_data_for_overview_by_day($distribution_plans,$project_name_corresponds_id,$city_name_corresponds_id,$place_name_corresponds_id);
 
-        return $grouped_data;
     }
 
 

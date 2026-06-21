@@ -1,5 +1,8 @@
 // 基準となるテーブルのJSX
 export default function BaseTable({tableTheme,allData,thSets,width="w-[80%]",thWidthSets=[], minWidth="min-w-150", maxWidth="max-w-600",mb="", needSort=false, sortClick=()=>{} ,children}){
+
+
+    console.log(thWidthSets)
     // dataにはオブジェクトをラップした配列
     // thSetsにはdataの各オブジェクトのキーをキーに持ち値を日本語とする、各列のタイトルが格納
 

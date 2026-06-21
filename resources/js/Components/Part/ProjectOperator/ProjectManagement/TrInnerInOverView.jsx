@@ -16,7 +16,7 @@ export default function TrInnerInOverView({projectSets}){
                 <td className="border-2 border-black">{projectSets["finished_distribution_count"]}</td>
 
                 {/* 編集ボタン*/}
-                <td className="border border-black"><Link className="cursor-pointer  text-blue-500 border-blue-500 border-b-2" href={route(`project_operator.edit_project_top`,{"edit_id":projectSets["project_id"] ?? 1})}><span>編集</span></Link></td>
+                <td className="border-2 border-black"><Link className="cursor-pointer  text-blue-500 border-blue-500 border-b-2" href={route(`project_operator.edit_project_top`,{"edit_id":projectSets["project_id"] ?? 1})}><span>編集</span></Link></td>
             </tr>
     )
 }

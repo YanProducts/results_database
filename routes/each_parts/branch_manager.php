@@ -49,8 +49,10 @@ Route::prefix("branch_manager")
                  Route::post("store_including_duplicated_plans","store_including_duplicated_plans")
                  ->middleware(["assignStaffDuplicatedCheck"])
                  ->name("store_including_duplicated_plans");
-
             });
+            // 簡易版(地図のみから選択)の
+
+
             // 案件を自分で登録する系統
             Route::controller(ProjectHandingController::class)
             ->group(function(){

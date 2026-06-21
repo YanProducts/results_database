@@ -1,9 +1,10 @@
 import { useForm } from "@inertiajs/react";
+import projectDataFlatter from "../../../Support/ProjectOperator/projectDataFlatter";
 import React from "react";
 
 
 // 案件確認の定義
-export default function useProjectCheckByDayDefinitions(){
+export default function useProjectCheckByDayDefinitions({projectData}){
 
     const {data, setData, post, processing, errors,clearErrors, reset}=useForm({})
 
@@ -12,11 +13,26 @@ export default function useProjectCheckByDayDefinitions(){
         "start_date":"開始日",
         "place_name":"営業所",
         "main_project_name":"案件名",
-        // "round_number":"その営業所で何回目か",
-        "sub_project_lists":"併配リスト",
-        "city_name_lists":"市の名前リスト",
+        "round_number":"回数",
+        "sub_project_lists":"併配",
+        "city_name_lists":"エリア",
         "end_date":"終了日",
     }
+
+    // テーブルの長さ
+    const thWidthSets=[
+        "w-[10%]",
+        "w-[10%]",
+        "w-[10%]",
+        "w-[5%]",
+        "w-[25%]",
+        "w-[25%]",
+        "w-[10%]",
+        "w-[5%]"
+    ];
+
+        // 平坦化したデータ
+    const flattedData=projectDataFlatter(projectData);
 
     // // 現在radioで選択中のソート項目
     // const [selectedSort,setSelectedSort]=React.useState("project_id");
@@ -52,5 +68,5 @@ export default function useProjectCheckByDayDefinitions(){
     // ページの横幅
     const [pageMinWidth,pageMaxWidth]=["min-w-250","max-w-350"];
 
-      return {data, setData, post, processing, errors,clearErrors,reset,checkByDayItems,pageMinWidth,pageMaxWidth};
+      return {data, setData, post, processing, errors,clearErrors,reset,checkByDayItems,flattedData,thWidthSets,pageMinWidth,pageMaxWidth};
 }
