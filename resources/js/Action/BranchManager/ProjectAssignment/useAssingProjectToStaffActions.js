@@ -69,8 +69,9 @@ const handleAssignChangeInTowns=(e,planId)=>{
       e.preventDefault();
 
      // 割り当てのないスタッフの確認
-    const nonAssignedStaffs=Object.keys(staffs).filter(staffId=>data.allData.some(eachData=>eachData.staffId==staffId && eachData.planIds.length==0));
-    if(nonAssignedStaffs.length>0 && !confirm("以下のスタッフが割り当てられていません。\nよろしいですか？\n\n" + nonAssignedStaffs.map(eachNonAssignedStaffId=>("・" + staffs[eachNonAssignedStaffId])).join("\n"))){
+     const staffsInSelectedDate=staffs[selectedDate];
+    const nonAssignedStaffs=Object.keys(staffsInSelectedDate).filter(staffId=>data.allData.some(eachData=>eachData.staffId==staffId && eachData.planIds.length==0));
+    if(nonAssignedStaffs.length>0 && !confirm("以下のスタッフが割り当てられていません。\nよろしいですか？\n\n" + nonAssignedStaffs.map(eachNonAssignedStaffId=>("・" + staffsInSelectedDate[eachNonAssignedStaffId])).join("\n"))){
         return;
     }
 

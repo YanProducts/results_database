@@ -84,9 +84,57 @@ class GetDataInPlaceAndPeriod{
              ]
         );
         return $sub_plan_sets->toArray();
+    }
+
+    // 簡易版のデータ取得
+    // 日付=>[{"mainProjectName":...,[["mapNumber":...],["planIds":...]{"""mapNumbers":[]},{}....]の形式で表示
+    public static function get_project_data_for_simple_pattern($date_sets,$place_id,$start_offset,$end_offset){
+
+        // 設定日後までの、その営業所にあるPlanのcollectionの取得(n+1を避けるため、1回の接続で済ませる)
+        $plan_in_the_place_and_period=DistributionPlanHelpers::get_plan_in_the_place_and_period($place_id,DateHelper::get_start_and_end_days("",$start_offset,$end_offset));
+
+        return self::get_projcets_data_array_for_simple($date_sets,$plan_in_the_place_and_period);
 
     }
 
 
+    // 簡易版の配列作成
+    // 日付=>[{"mainProjectName":...,[["mapNumber":...],["planIds":...]{"""mapNumbers":[]},{}....]
+    public static function get_projcets_data_array_for_simple($date_sets,$plan_in_the_place_and_period){
+
+        // その営業所&その期間でsort済みの案件リストから
+        // まずメイン案件でsort
+        // 次にproject_idとround_numberごとにまとめる(同案件フラグは月日が経たないとないものと判断
+
+        $project_and_maps_in_the_place_and_period=$plan_in_the_place_and_period->where("main_id",null)->groupBy(["project_id","round_number"])->mapWithKeys(fn($each_contents_with_round_number,$project_id)=>[
+            // プロジェクト名
+            ProjectHelpers::get_project_name_from_id($project_id)=>$each_contents_with_round_number->mapWithKeys(fn($each_contents,$round_number)=>
+            [
+            // 入れ子でround_number
+            // 値がそれぞれのprojectIdにおけるデータの配列。それをmapNumberでgroupByして、map_numberと、それに対応するplan_idsを取得する
+                $round_number=>[
+                // dayとprojectで連結したインデックス作成用
+                "each_sets"=>$each_contents,
+                "map_plan_data"=>
+                collect($each_contents)->groupBy("map_number")->map(fn($data_by_map_number,$map_number)=>
+                [
+                    "map_number"=>$map_number,
+                    "plan_ids"=>$data_by_map_number->pluck("id")
+                ]
+                )]
+            ]
+            )
+        ]);
+
+
+        // 日付とデータのインデックス(他からも共通で使うので、内部関数はいじらない)
+        // 日付=>その期間に入っている案件名で表示
+        // ここ、詳細版にround_number調べを入れて統一すべき！
+        $date_projects_index=GetDatePlanIndex::get_date_projects_index_for_simple($date_sets,$project_and_maps_in_the_place_and_period);
+
+
+        return [$project_and_maps_in_the_place_and_period,$date_projects_index];
+
+    }
 
 }

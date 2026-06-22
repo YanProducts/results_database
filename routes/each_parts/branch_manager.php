@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BranchManager\ProjectHandingController;
 use App\Http\Controllers\BranchManager\ProjectRecordController;
+use App\Http\Controllers\BranchManager\SimpleAssignMentController;
 use App\Http\Controllers\BranchManager\StaffAssignmentController;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -51,8 +52,19 @@ Route::prefix("branch_manager")
                  ->name("store_including_duplicated_plans");
             });
             // 簡易版(地図のみから選択)の
-
-
+            Route::controller(SimpleAssignMentController::class)
+            ->group(function(){
+                  // 簡易：担当/案件/町目/日付の割り当てのトップへ
+                  Route::get("simple_assign_staff","assign_staff")
+                  ->name("simple_assign_staff");
+                  // 担当/案件/町目/日付の割り当ての決定
+                  Route::post("simple_assign_staff","assign_staff_post")
+                  ->name("simple_assign_staff_post");
+                 //町目の重複確認でOKだった時
+                 Route::post("simple_store_including_duplicated_plans","store_including_duplicated_plans")
+                 ->middleware(["assignStaffDuplicatedCheck"])
+                 ->name("simple_store_including_duplicated_plans");
+            });
             // 案件を自分で登録する系統
             Route::controller(ProjectHandingController::class)
             ->group(function(){

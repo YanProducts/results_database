@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use App\Actions\BranchManager\Assgin\GetDataFlowBeforeAssign;
 use App\Actions\BranchManager\Assgin\StoreAssign;
-use App\Constants\Date as DateConstants;
 use App\Http\Requests\BranchManager\AssignStaffRequest;
 use App\Utils\DateHelper;
 
@@ -20,12 +19,8 @@ class StaffAssignmentController extends Controller
     //案件割り当て画面へ
     public function assign_staff(){
 
-        // 今から何日後のデータまで取得するか
-        $start_offset=DateConstants::StartOffsetInStaffAssignMent;
-        $end_offset=DateConstants::EndOffsetInStaffAssignMent;
-
         // 日付セット、その営業所に来ている案件と、日付と案件(町目)のインデックス、（その日出席している）所属スタッフを返す(当日から5日先まで)
-        [$date_sets,$projects_and_towns,$date_projects_index,$staffs]=GetDataFlowBeforeAssign::get_projects_and_staffs_in_branch($start_offset,$end_offset);
+        [$date_sets,$projects_and_towns,$date_projects_index,$staffs]=GetDataFlowBeforeAssign::get_projects_and_staffs_in_branch();
 
         // 日付と案件とスタッフ一覧が表示(取り急ぎ併配も含めた案件ごと、のちにメイン案件でまとめる)
         return Inertia::render("BranchManager/ProjectAssignment/AssignProjectToStaff",[

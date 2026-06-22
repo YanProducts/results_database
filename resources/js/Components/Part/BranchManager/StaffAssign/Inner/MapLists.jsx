@@ -28,7 +28,7 @@ export default function MapLists({projectsAndTowns,selectedDate,selectedMainProj
             <div key={mapNumber} className={`h-auto base_backColor base_frame mx-auto my-0 border border-black ${minWidth} ${maxWidth} text-center`}>
                 <div className={`flex items-center h-9`}>
                     {/* スタッフの選択 */}
-                    <SelectParts name="mapStaffs" value={ mapMeta?.[selectedMainProject]?.[mapNumber]?.staffId || "" } onChange={(e)=>handleAssignChangeInMaps(e,mapNumber,outOfPeriodAddresses)} prefix={mapNumber + "："} prefixPercent="w-[20%]" selectPercent="w-[75%]" prefixMinWidth="min-w-10" selectMinWidth="min-w-40" keyValueSets={staffs} allowEmptyOption={false} />
+                    <SelectParts name="mapStaffs" value={ mapMeta?.[selectedMainProject]?.[mapNumber]?.staffId || "" } onChange={(e)=>handleAssignChangeInMaps(e,mapNumber,outOfPeriodAddresses)} prefix={mapNumber + "："} prefixPercent="w-[20%]" selectPercent="w-[75%]" prefixMinWidth="min-w-10" selectMinWidth="min-w-40" keyValueSets={staffs[selectedDate]} allowEmptyOption={false} />
                 </div>
                 {/* 配布期間外の町目を取得 */}
                 <div className={`text-sm w-[30%] mx-auto text-left min-w-40 mb-1`}><p className={`my-0 whitespace-pre-wrap`}>＊下記は配布期間外です<br/>{outOfPeriodAddresses.join("\n")}</p></div>
@@ -38,7 +38,7 @@ export default function MapLists({projectsAndTowns,selectedDate,selectedMainProj
             // 全て期間内のとき
             <div className={`flex items-center base_frame ${minWidth} ${maxWidth} mx-auto my-0 border border-black base_backColor text-center h-9`} key={mapNumber}>
                 {/* スタッフの選択 */}
-                <SelectParts name="mapStaffs" value={ mapMeta?.[selectedMainProject]?.[mapNumber]?.staffId || "" } onChange={(e)=>handleAssignChangeInMaps(e,mapNumber,[])} prefix={mapNumber + "："} prefixPercent="w-[20%]" selectPercent="w-[75%]" prefixMinWidth="min-w-10" selectMinWidth="min-w-40" keyValueSets={staffs} allowEmptyOption={false} />
+                <SelectParts name="mapStaffs" value={ mapMeta?.[selectedMainProject]?.[mapNumber]?.staffId || "" } onChange={(e)=>handleAssignChangeInMaps(e,mapNumber,[])} prefix={mapNumber + "："} prefixPercent="w-[20%]" selectPercent="w-[75%]" prefixMinWidth="min-w-10" selectMinWidth="min-w-40" keyValueSets={staffs[selectedDate]} allowEmptyOption={false} />
             </div>
             );
         })}

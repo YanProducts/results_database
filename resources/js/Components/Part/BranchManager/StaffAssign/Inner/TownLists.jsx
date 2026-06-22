@@ -58,7 +58,7 @@ export default function TownLists({projectsAndTowns,selectedDate,selectedMainPro
 
                {/* スタッフ選択 */}
                 <td className="border-black border-2 border-collapse">
-                <SelectParts name="townStaffs"  value={assignPlan?.[selectedMainProject]?.[planId] ?? ""} onChange={(e)=>handleAssignChangeInTowns(e,planId)} prefix={""} keyValueSets={staffs} prefixPercent={"w-[0%]"} prefixMinWidth={"min-w-0"} selectPercent={"w-[100%]"} selectMinWidth={"min-w-12"} maxWidth="max-w-20" minWidth="min-w-12" allowEmptyOption={false} />
+                <SelectParts name="townStaffs"  value={assignPlan?.[selectedMainProject]?.[planId] ?? ""} onChange={(e)=>handleAssignChangeInTowns(e,planId)} prefix={""} keyValueSets={staffs[selectedDate]} prefixPercent={"w-[0%]"} prefixMinWidth={"min-w-0"} selectPercent={"w-[100%]"} selectMinWidth={"min-w-12"} maxWidth="max-w-20" minWidth="min-w-12" allowEmptyOption={false} />
                 </td>
             </tr>
             )}

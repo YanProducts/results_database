@@ -7,9 +7,11 @@ export default function FormatDataForFormAndView({assignPlan,staffs,selectedDate
     // 表示用。スタッフ名前:メイン案件:[map:地図番号(もしくは地図番号からの改変)][townSets:町名セット]の文字列のオブジェクトで格納
     let assignPlanForView={};
 
+    const staffsInSelectedDate=staffs[selectedDate]
+
     // スタッフを１人１人見ていく
-    (Object.keys(staffs)).forEach((staffId)=>{
-        const staffName=staffs[staffId];
+    (Object.keys(staffsInSelectedDate)).forEach((staffId)=>{
+        const staffName=staffsInSelectedDate[staffId];
         // そのスタッフにおける、form挿入用のフォーム
         let planIdsForForm=[];
 

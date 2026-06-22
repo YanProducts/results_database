@@ -6,15 +6,21 @@
 namespace App\Actions\BranchManager\Assgin\DataFetches;
 
 use App\Models\FieldStaffList;
+use App\Utils\DateHelper;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class GetStaffsInPlaceAndPeriod{
     // その期間に該当営業所で出勤するスタッフを取得
 
-    public static function get_staffs_in_the_place_and_preriod($place_id,$base_date,$start_offset,$end_offset){
+    public static function get_staffs_in_the_place_and_preriod($place_id,$date_sets){
+
+        // その営業所の全スタッフの取得
+        $staffs=DB::table("field_staff_lists")->selectRaw("id, coalesce(staff_name,user_name) as staff_name")->where("place_id",$place_id)->pluck("staff_name","id");
 
         // 本来はシフトサイト連動だが、簡易的に現在のデータ全てから取得
-        // return FieldStaffList::select("id","user_name","staff_name")->where("place_id",$place_id)->get();
-        return DB::table("field_staff_lists")->selectRaw("id, coalesce(staff_name,user_name) as staff_name")->where("place_id",$place_id)->pluck("staff_name","id");
+        // date=>出席スタッフで返す(現段階では全スタッフ)
+        return collect($date_sets)->mapWithKeys(fn($date_in_jpn,$date_in_Ymd)=>[$date_in_Ymd=>$staffs]);
+
     }
 }

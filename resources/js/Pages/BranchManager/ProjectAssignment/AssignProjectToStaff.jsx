@@ -30,6 +30,9 @@ export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,
 
     {/* リンク */}
       <div className="mt-4">
+        <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.simple_assign_staff`}  what="簡易版"/>
+      </div>
+      <div className="mt-4">
         <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.logout`}  what="ログアウト"/>
       </div>
 
