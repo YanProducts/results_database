@@ -1,16 +1,7 @@
-import React from "react";
-import PopUpForMultiChoice from "../../../../Common/PopUpForMultiChoice";
+import PopUpForMapChoiceByStaff from "./PopUpForMapChoiceByStaff";
 import BaseTable from "../../../../Common/BaseTable";
-import { list } from "postcss";
 
-export default function StaffListsForSimple({selectedDate,pageMinWidth,pageMaxWidth,staffsInSelectedDate,planIdsAndMapsByMainProjects,projectNameInTheDay,staffInChoice,popUpVisible,onMapChoiceClick,onMapDecide,choicedMap}){
-        // popUp用にリストを作り替える(プロジェクト名=>mapのNumber)
-        const listForPopUp=Object.fromEntries(projectNameInTheDay.map(eachProjectSets=>
-            // round_numberを渡すかどうか
-            [
-            eachProjectSets.project_name,
-                Object.values(planIdsAndMapsByMainProjects[eachProjectSets.project_name][eachProjectSets.round_number].map_plan_data).map(eachSet=>eachSet.map_number)
-        ]))
+export default function StaffListsForSimple({selectedDate,pageMinWidth,pageMaxWidth,staffsInSelectedDate,planIdsAndMapsByMainProjects,staffInChoice,popUpVisible,onMapChoiceClick,onMapDecide,onMapChoiceClose,choicedMap}){
 
       return(
         <>
@@ -20,10 +11,10 @@ export default function StaffListsForSimple({selectedDate,pageMinWidth,pageMaxWi
                 // スタッフごとに列を並べる
                 <tr className="border-2 border-black" key={index}>
                         {/* スタッフ名 */}
-                        <td  className="border-2 border-black base_backColor w-[30%] align-middle text-center">{eachStaff}</td>
+                        <td  className={`border-2 border-black w-[30%] align-middle text-center ${staffInChoice == eachStaff ? "bg-green-300" : "base_backColor"}`}>{eachStaff}</td>
                         {/* プロジェクト名とmapの選択(popUp) */}
                         <td className="border-2 border-black base_backColor w-[40%] align-middle text-center">
-                            <span className="cursor-pointer" onClick={(e)=>{onMapChoiceClick(e,eachStaff)}}>選択してください</span>
+                            <span className={`${popUpVisible ? "opacity-30" : "cursor-pointer opacity-100"}`} onClick={popUpVisible ? ()=>{} : (e)=>{onMapChoiceClick(e,eachStaff)}}>選択してください</span>
                         </td>
 
                         <td>
@@ -35,7 +26,7 @@ export default function StaffListsForSimple({selectedDate,pageMinWidth,pageMaxWi
         </BaseTable>
 
         {/* クリックイベントで動的に発動 */}
-        <PopUpForMultiChoice lists={listForPopUp} valueA={staffInChoice} clickEvent={(e,projectName,mapNumber,choicedStaff)=>{onMapDecide(choicedStaff,projectName,mapNumber)}} checkState={choicedMap[selectedDate]} {...{popUpVisible}}/>
+        <PopUpForMapChoiceByStaff {...{planIdsAndMapsByMainProjects,popUpVisible,staffInChoice,choicedMap,selectedDate,onMapDecide,onMapChoiceClose}}/>
 
         </>
         )

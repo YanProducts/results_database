@@ -19,17 +19,15 @@ export default function useAssignProjectToStaffDefinitions(){
 
   // 表示する日付(選択中のY-m-d型の文字列を返す)
   const [selectedDate,setSelectedDate]=React.useState("");
-  
+
   // 表示するメイン案件名
   const [selectedMainProject,setSelectedMainProject]=React.useState("");
-
 
   // 割り当てはMapNumberと町目直接のどちらで行うか
   const [needNumber,setNeedNumber]=React.useState("mapNumber");
 
  // mapにスタッフを割り当てた場合の表示用のstate。mainProject:{mapNumber:スタッフ名}の形式
   const [mapMeta,setMapMeta]=React.useState({});
-
 
   //   確認用のviewに表示するための配列
   const [assignPlanForConfirmView,setAssignPlanForConfirmView]=React.useState({});

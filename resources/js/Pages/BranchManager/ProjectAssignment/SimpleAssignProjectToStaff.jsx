@@ -14,7 +14,7 @@ export default function SimpleAssingProjectToStaff({prefix,what,type,dateSets,da
   const {data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,choicedMap,setChoicedMap,staffInChoice,setStaffInChoice,popUpVisible,setPopUpVisible,pageMinWidth,pageMaxWidth}=useSimpleAssignProjectToStaffDefinitions();
 
   // 動き
-  const {onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onSubmitBtnClick}=useSimpleAssignProjectToStaffActions({data,post,isConfirm,selectedDate,setSelectedDate,setChoicedMap,planIdsAndMapsByMainProjects,setStaffInChoice,setPopUpVisible});
+  const {onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onMapChoiceClose,onSubmitBtnClick}=useSimpleAssignProjectToStaffActions({data,post,isConfirm,selectedDate,setSelectedDate,choicedMap,setChoicedMap,planIdsAndMapsByMainProjects,setStaffInChoice,setPopUpVisible});
 
 
     return(
@@ -22,7 +22,7 @@ export default function SimpleAssingProjectToStaff({prefix,what,type,dateSets,da
             <RoleLayout  prefix={prefix} >
     {!isConfirm ?
     // データ入力用
-    <DataInputForSimple {...{what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,onMapChoiceClick,onMapDecide,
+    <DataInputForSimple {...{what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,onMapChoiceClick,onMapDecide,onMapChoiceClose,
     planIdsAndMapsByMainProjects,dateProjectsIndex,staffs,staffInChoice,popUpVisible,choicedMap}}/>
     :
     // データ確認用

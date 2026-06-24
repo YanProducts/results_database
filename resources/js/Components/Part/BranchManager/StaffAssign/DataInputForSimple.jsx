@@ -8,7 +8,7 @@ import StaffListsForSimple from "./Inner/StaffListsForSimple";
 
 // スタッフを割り当てる際のデータ入力ページ
 export default function DataInputForSimple({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,
-onMapChoiceClick,onMapDecide,
+onMapChoiceClick,onMapDecide,onMapChoiceClose,
 planIdsAndMapsByMainProjects,dateProjectsIndex,staffs,staffInChoice,popUpVisible,choicedMap}){
 
 return(
@@ -30,7 +30,8 @@ return(
                 <StaffListsForSimple
                     staffsInSelectedDate={staffs[selectedDate]}
                     projectNameInTheDay={dateProjectsIndex[selectedDate]}
-                    {...{selectedDate,pageMinWidth,pageMaxWidth,planIdsAndMapsByMainProjects,staffInChoice,popUpVisible,onMapChoiceClick,onMapDecide,choicedMap}}
+                    {...{selectedDate,pageMinWidth,pageMaxWidth,planIdsAndMapsByMainProjects,staffInChoice,popUpVisible,onMapChoiceClick,onMapDecide,
+                    onMapChoiceClose,choicedMap}}
                 />
 
             }
