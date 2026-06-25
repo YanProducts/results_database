@@ -18,8 +18,6 @@ export default function ProjectCheckByDay({prefix,what,type,projectData}){
     // 動きの定義
     const {}=useProjectCheckByDayActions();
 
-    console.log(flattedData)
-
     return(
         <Layout title={`${what}-${type}`}>
 

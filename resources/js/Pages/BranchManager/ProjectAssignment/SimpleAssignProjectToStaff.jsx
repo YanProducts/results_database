@@ -5,16 +5,19 @@ import Layout from "../../../Layout/Layout";
 import { RoleLayout } from "../../../Layout/RoleLayout";
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
 import DataInputForSimple from "../../../Components/Part/BranchManager/StaffAssign/DataInputForSimple";
+import DataConfirmForSimple from "../../../Components/Part/BranchManager/StaffAssign/DataConfirmForSimple";
 
 
 // 案件を営業所担当に送信
 export default function SimpleAssingProjectToStaff({prefix,what,type,dateSets,dateProjectsIndex,staffs,planIdsAndMapsByMainProjects}){
 
+    console.log(staffs)
+
   // 定義(フォームなど)
-  const {data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,choicedMap,setChoicedMap,staffInChoice,setStaffInChoice,popUpVisible,setPopUpVisible,pageMinWidth,pageMaxWidth}=useSimpleAssignProjectToStaffDefinitions();
+  const {data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,choicedMap,setChoicedMap,staffInChoice,setStaffInChoice,popUpVisible,setPopUpVisible,choicedByProjects,setChoicedByProjects,pageMinWidth,pageMaxWidth}=useSimpleAssignProjectToStaffDefinitions();
 
   // 動き
-  const {onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onMapChoiceClose,onSubmitBtnClick}=useSimpleAssignProjectToStaffActions({data,post,isConfirm,selectedDate,setSelectedDate,choicedMap,setChoicedMap,planIdsAndMapsByMainProjects,setStaffInChoice,setPopUpVisible});
+  const {onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onMapChoiceClose,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick,}=useSimpleAssignProjectToStaffActions({data,setData,post,clearErrors,staffs,isConfirm,setIsConfirm,selectedDate,setSelectedDate,choicedMap,setChoicedMap,choicedByProjects,setChoicedByProjects,planIdsAndMapsByMainProjects,staffInChoice,setStaffInChoice,setPopUpVisible});
 
 
     return(
@@ -22,14 +25,20 @@ export default function SimpleAssingProjectToStaff({prefix,what,type,dateSets,da
             <RoleLayout  prefix={prefix} >
     {!isConfirm ?
     // データ入力用
-    <DataInputForSimple {...{what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,onMapChoiceClick,onMapDecide,onMapChoiceClose,
-    planIdsAndMapsByMainProjects,dateProjectsIndex,staffs,staffInChoice,popUpVisible,choicedMap}}/>
+    <DataInputForSimple {...{what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,onMapChoiceClick,onMapDecide,onMapChoiceClose,planIdsAndMapsByMainProjects,dateProjectsIndex,staffs,staffInChoice,popUpVisible,choicedMap,processing}}/>
     :
     // データ確認用
-    <></>
+    <DataConfirmForSimple {...{what,type,errors,pageMinWidth,pageMaxWidth,processing,selectedDate,staffs,choicedMap,choicedByProjects,onConfirmOkClick,onConfirmCancelClick}}/>
     }
 
             {/* リンク */}
+            <div className="mt-4">
+            <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.assign_staff`}  what="割当の確認(未)"/>
+            </div>
+            <div className="mt-4">
+            <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.assign_staff`}  what="案件の編集(未)"/>
+            </div>
+
             <div className="mt-4">
             <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.assign_staff`}  what="詳細版"/>
             </div>

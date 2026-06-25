@@ -22,12 +22,6 @@ export default function AssignSetsForConfirming({assignPlanForConfirmView,pageMi
                     const staffIsAssigned=Object.values(eachPlanByStaff[1]).some(eachSets=>eachSets?.planId.length>0)
 
 
-                    // 実験検証用
-                    console.log("検証用")
-                    // console.log(projectsToStaff);
-                    console.log(eachPlanByStaff);
-
-
                     return(
                     // 割り当てられていないスタッフは除外
                     staffIsAssigned ?
@@ -38,8 +32,6 @@ export default function AssignSetsForConfirming({assignPlanForConfirmView,pageMi
 
                         // 割り当てられていない案件は除外
                         const eachPlanByStaffInTheProject=eachPlanByStaff[1][projectName];
-                        {console.log("innerIndex"+innerIndex)}
-{console.log(eachPlanByStaffInTheProject)}
 
                         return(
                           eachPlanByStaff ?

@@ -29,6 +29,14 @@ export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,
     }
 
     {/* リンク */}
+    <div className="mt-4">
+    <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.assign_staff`}  what="割当の確認(未)"/>
+    </div>
+    <div className="mt-4">
+    <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.assign_staff`}  what="案件の編集(未)"/>
+    </div>
+
+
       <div className="mt-4">
         <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.simple_assign_staff`}  what="簡易版"/>
       </div>

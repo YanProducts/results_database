@@ -5,8 +5,8 @@ namespace App\Http\Controllers\BranchManager;
 use App\Http\Controllers\Controller;
 use App\Constants\Date as DateConstants;
 use App\Actions\BranchManager\Assgin\GetDataFlowBeforeAssign;
+use App\Http\Requests\BranchManager\AssignStaffRequest;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
 
 //営業所からスタッフ割り当ての際の簡易版(地図番号から行う)のコントローラー
 class SimpleAssignMentController extends Controller
@@ -33,7 +33,8 @@ class SimpleAssignMentController extends Controller
     }
 
     //案件割り当て投稿
-    public function assign_staff_post($request){
+    // バリデーションは詳細版と同じものを使用(planIdsでどちらも投稿されているため)
+    public function assign_staff_post(AssignStaffRequest $request){
 
     }
 
