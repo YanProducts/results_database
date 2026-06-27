@@ -1,12 +1,12 @@
 <?php
 // 重複チェックに関するメソッド
-namespace App\Actions\BranchManager\Assgin\CheckAssign;
+namespace App\Actions\BranchManager\Assgin\DuplicatedChek\Detail;
 
 use App\Models\DistributionAssignImport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class Read{
+class Check{
     // 今回新たに振られたplan_idがこれまでのデータに入っているかの重複確認(同じ町を2人で分けたときなどがあるので自然にアウトはさせない)
     public static function duplicated_data_check($all_data){
 

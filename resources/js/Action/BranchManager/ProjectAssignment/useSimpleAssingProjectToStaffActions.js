@@ -98,10 +98,10 @@ const onMapChoiceClose=()=>{
         setChoicedByProjects(newChoicedByProject);
 
         // 送信フォームに入れる日付とスタッフに対応するplanIdsのセット
-        let planIdsByStaffArrayForForm=SimpleDataFormatToFormData({planIdsAndMapsByMainProjects,choicedMap,selectedDate})
+        let planIdsByStaffArrayForForm=SimpleDataFormatToFormData({staffs,planIdsAndMapsByMainProjects,choicedMap,selectedDate})
 
         // 送信フォームに設定
-        setData({"date":selectedDate,"allData":planIdsByStaffArrayForForm})
+        setData({"assignDate":selectedDate,"allData":planIdsByStaffArrayForForm})
 
  }
 

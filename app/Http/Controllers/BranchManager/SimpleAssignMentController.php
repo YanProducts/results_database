@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\BranchManager;
 
 use App\Http\Controllers\Controller;
-use App\Constants\Date as DateConstants;
 use App\Actions\BranchManager\Assgin\GetDataFlowBeforeAssign;
 use App\Http\Requests\BranchManager\AssignStaffRequest;
+use App\Actions\BranchManager\Assgin\StoreAssign;
+use App\Actions\BranchManager\Assgin\DuplicatedChek\Simple\Check as SimpleCheck;
+use App\Actions\BranchManager\Assgin\DuplicatedChek\Simple\Insert;
 use Inertia\Inertia;
 
 //営業所からスタッフ割り当ての際の簡易版(地図番号から行う)のコントローラー
@@ -35,12 +37,33 @@ class SimpleAssignMentController extends Controller
     //案件割り当て投稿
     // バリデーションは詳細版と同じものを使用(planIdsでどちらも投稿されているため)
     public function assign_staff_post(AssignStaffRequest $request){
+        // データの取得(何度か使うため前もって展開)
+        $all_data=$request->allData;
+        $date=$request->assignDate;
 
+        //該当planIdを持ったMapを全て他の人が消化し切っていた場合=配布済エリア重複の可能性。一応戻して確認。
+        $already_finisihed_maps=SimpleCheck::detail_check($all_data);
+        if($already_finisihed_maps->isEmpty()){
+            // 上記が存在する場合、importに投稿されたデータを全てそのまま登録
+            Insert::insert_assign_import($date,$all_data);
+
+            return back()->with([
+                "finishedMap"=>[$already_finisihed_maps]
+            ]);
+        }
+
+        //登録 //登録時に行うことはfrom_simple_flagをつけるだけで他は同じ
+        StoreAssign::assign_staffs_to_plans($date,$all_data,true);
+        
+        return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"branch_manager.handing_assignment","linkPageInJpn"=>"現在の割り当ての確認"]);
     }
 
     // 重複確認
     public function store_including_duplicated_plans(){
+        // そのユーザーのデータをImportからAssign本番へ挿入（と削除）
+        // StoreAssign::commit_duplicated_imports();
 
+        return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"","linkPageInJpn"=>"現在の割り当ての確認"]);
     }
 
 

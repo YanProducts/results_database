@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\BranchManager;
 
-use App\Actions\BranchManager\Assgin\CheckAssign\Read;
+use App\Actions\BranchManager\Assgin\DuplicatedChek\Detail\Check as CheckDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -40,8 +40,12 @@ class StaffAssignmentController extends Controller
         $all_data=$request->allData;
         $date=$request->assignDate;
 
+
+        // ここまだできてない！！！！
+
         // plan_idが現時点で登録されているAssignやrecordと重複していた場合(内部で過去の重複データを消す)
-        [$duplicated_in_sql,$duplicated_in_post]=Read::duplicated_data_check($all_data);
+        // Import(確認のための一時保存のもの)のみ削除
+        [$duplicated_in_sql,$duplicated_in_post]=CheckDetail::duplicated_data_check($all_data);
 
         // 重複があれば確認ページへ
         if(!empty($duplicated_in_sql ||!empty($duplicated_in_post))){
@@ -57,7 +61,7 @@ class StaffAssignmentController extends Controller
         }
 
         // 重複がなければ投稿して確認ページへ
-        StoreAssign::assign_staffs_to_plans($date,$all_data);
+        StoreAssign::assign_staffs_to_plans($date,$all_data,false);
 
         return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"branch_manager.handing_assignment","linkPageInJpn"=>"現在の割り当ての確認"]);
     }

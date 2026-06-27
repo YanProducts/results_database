@@ -1,6 +1,6 @@
 <?php
 // 重複チェックの削除のメソッド
-namespace App\Actions\BranchManager\Assgin\CheckAssign;
+namespace App\Actions\BranchManager\Assgin\DuplicatedChek\Detail;
 
 use App\Models\DistributionAssignImport;
 use Illuminate\Support\Facades\Auth;

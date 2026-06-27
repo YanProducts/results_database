@@ -11,8 +11,6 @@ import DataConfirmForSimple from "../../../Components/Part/BranchManager/StaffAs
 // 案件を営業所担当に送信
 export default function SimpleAssingProjectToStaff({prefix,what,type,dateSets,dateProjectsIndex,staffs,planIdsAndMapsByMainProjects}){
 
-    console.log(staffs)
-
   // 定義(フォームなど)
   const {data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,choicedMap,setChoicedMap,staffInChoice,setStaffInChoice,popUpVisible,setPopUpVisible,choicedByProjects,setChoicedByProjects,pageMinWidth,pageMaxWidth}=useSimpleAssignProjectToStaffDefinitions();
 

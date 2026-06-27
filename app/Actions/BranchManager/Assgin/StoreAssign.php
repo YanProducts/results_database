@@ -2,18 +2,18 @@
 // Assignで投稿されたデータをSQLに入れる過程でのメソッド
 namespace App\Actions\BranchManager\Assgin;
 
-use App\Actions\BranchManager\Assgin\CheckAssign\Delete;
+use App\Actions\BranchManager\Assgin\DuplicatedChek\Detail\Delete;
 use App\Models\DistributionAssignImport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class StoreAssign{
-    // スタッフを町目に当てはめる
+    // スタッフを町目に当てはめる(シンプル、詳細とも同じ)
     //allData以下は入れ子の配列。その配列下のplan_idsにはdistribution_planのidが格納。そのidにはプロジェクトのidも紐づけられている
-    public static function assign_staffs_to_plans($date,$all_data){
+    public static function assign_staffs_to_plans($date,$all_data,$from_simple_flag){
         // すでに重複確認は終えているのでimportではなくassignmentに入れる
-        DB::transaction(function()use($date,$all_data){
+        DB::transaction(function()use($date,$all_data,$from_simple_flag){
             $new_assigned_data=[];
             // 複数回取得するので先に抽出
             foreach($all_data as $data){
@@ -24,6 +24,7 @@ class StoreAssign{
                         "date"=>$date,
                         "staff_id"=>$staff_id,
                         "plan_id"=>$plan_id,
+                        "from_simple_flag"=>$from_simple_flag,
                         "created_by"=>Auth::user()->id,
                         "created_at"=>Carbon::now(),
                         "updated_at"=>Carbon::now(),
@@ -36,7 +37,7 @@ class StoreAssign{
     }
 
 
-    // 重複(町目の複数人もしくは複数日分割)ありの場合の登録
+    // 重複(町目の複数人もしくは複数日分割)ありの場合の本登録
     // すでにImportには登録されており、それをコピーする
     public static function commit_duplicated_imports(){
         // 重複を含むデータ

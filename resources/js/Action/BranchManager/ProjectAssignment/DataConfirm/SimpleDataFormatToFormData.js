@@ -1,11 +1,11 @@
 // 各スタッフにおける選択したmapに対応したplan_idを取得する(formへの格納のため)
-export default function SimpleDataFormatToFormData({planIdsAndMapsByMainProjects,choicedMap,selectedDate}){
+export default function SimpleDataFormatToFormData({staffs,planIdsAndMapsByMainProjects,choicedMap,selectedDate}){
 
     // スタッフごとのMapに対応するplanId(form用)
     let planIdsByStaffArrayForForm=[];
 
     // choicedMapに連動したplanIdを作成し、日付:スタッフ:planIdsの順で格納する
-    Object.entries(choicedMap[selectedDate]).forEach(function([staff,eachSetsByStaff]){
+    Object.entries(choicedMap[selectedDate]).forEach(function([staffName,eachSetsByStaff]){
     // スタッフごとのplanIdの取得
      const planIdsByStaffs=
       Object.entries(eachSetsByStaff).map(([projectName,eachSetsByProjectName])=>
@@ -26,7 +26,9 @@ export default function SimpleDataFormatToFormData({planIdsAndMapsByMainProjects
       )//案件ごと
 
         // スタッフごとにplanIdを格納
-        planIdsByStaffArrayForForm.push({"staffId":staff,"planIds":planIdsByStaffs.flat(2)})
+        // staffはIdを取得(findなら見つかった時点で検索終了なのでfilterより軽い、また?.[0]を行うことでundefinedでもエラーなく終了)
+        // 重複確認でmapNumberの再取得を行うが、mapNumberは
+        planIdsByStaffArrayForForm.push({"staffId":Object.entries(staffs).find(([,staffNameFromObj])=>staffName==staffNameFromObj)?.[0],"planIds":planIdsByStaffs.flat(2)})
 
     })//スタッフごと
 
