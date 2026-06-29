@@ -1,4 +1,4 @@
-import SelectParts from "../../../../Common/SelectParts";
+import SelectParts from "../../../../../Common/SelectParts";
 // スタッフの割り当てを町目から選ぶ場合
 export default function TownLists({projectsAndTowns,selectedDate,selectedMainProject,assignPlan,staffs,handleAssignChangeInTowns,maxWidth="max-w-80", minWidth="min-w-72.5"}){
 

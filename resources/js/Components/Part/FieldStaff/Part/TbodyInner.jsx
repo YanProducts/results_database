@@ -2,7 +2,8 @@ import MainTdInner from "./MainTdinner";
 import SubTdInner from "./SubTdInner";
 
 // 報告書入力のtableの中身
-export default function TbodyInner({mainProjectName,projectSets,eachData,trIndex,widthSets,onAssignedInputChange,inputRefs,inputValues,isConfirm}){
+export default function TbodyInner({mainProjectName,projectSets,eachData,mapNumber,trIndex,widthSets,onAssignedInputChange,inputRefs,inputValues,isConfirm}){
+
         const assignId=eachData.assign_id;
         return(
                 <tr className="border-black border-2 base_backColor" key={trIndex}>
@@ -27,7 +28,8 @@ export default function TbodyInner({mainProjectName,projectSets,eachData,trIndex
                         :
                         <td key={"sub" + index} className={`border-black border-2 ${widthSets[index+2]}`}>-</td>
                         )
-                  })}
+                    })}
+                 <td className={`border-black border-2 ${widthSets[widthSets.length-1]}`}>{mapNumber}</td>
             </tr>
     )
 }

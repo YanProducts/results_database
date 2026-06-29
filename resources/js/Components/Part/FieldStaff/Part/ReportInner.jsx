@@ -6,23 +6,34 @@ import TrForSum from "./TrForSum";
 
 // 報告書テーブルの内部
 export default function ReportInner({pageMinWidth,pageMaxWidth,assignDataToStaff,selectedDate,onAssignedInputChange,inputRefs,inputValues,isConfirm}){
+
     return(
          Object.entries(assignDataToStaff[selectedDate]).map(function(keyValueSets,index){
+            console.log(Object.keys(keyValueSets[1]["project_set"]).length)
                 // プロジェクトの数に応じてthやtdの長さの変化
                 const widthSets=setTdWidthByProjectCounts(Object.keys(keyValueSets[1]["project_set"]).length)
 
                 const mainProjectName=keyValueSets[0];
+
                 const projectSets=keyValueSets[1]["project_set"];
                 const dataInEachMainProject=keyValueSets[1]["each_data"]
+
+
+                console.log(widthSets);
+
 
                 return(
                 <React.Fragment key={index}>
 
-                <BaseTable tableTheme={mainProjectName} width={"w-[97.5%]"} thSets={{"town":"町名","household":"世帯数",...projectSets}} thWidthSets={widthSets} maxWidth={pageMaxWidth} minWidth={pageMinWidth} allData={[]} mb={"mb-4"}>
-                {/* その日そのメイン案件におけるセットが「keyValueSets」で、それを町目ごとに見ていく */}
-                {Object.values(dataInEachMainProject).map((eachData,trIndex)=>
-                // テーブルの中身
-                <TbodyInner key={trIndex} {...{mainProjectName,projectSets,eachData,trIndex,widthSets,onAssignedInputChange,inputRefs,inputValues,isConfirm}}/>
+                <BaseTable tableTheme={mainProjectName} width={"w-[97.5%]"} thSets={{"town":"町名","household":"世帯数",...projectSets,"mapNumber":"地図番号"}} thWidthSets={widthSets} maxWidth={pageMaxWidth} minWidth={pageMinWidth} allData={[]} mb={"mb-4"}>
+
+                {/* その日そのメイン案件におけるセットが「keyValueSets」で、それをmapごとにわけ、それを町目ごとに見ていく */}
+
+                 {Object.entries(dataInEachMainProject).map(([mapNumber,eachDataByMap],trIndex)=>
+                    Object.values(eachDataByMap).map((eachData,indexWithMaps)=>
+                        // テーブルの中身
+                        <TbodyInner key={`${trIndex}_${indexWithMaps}`} {...{mainProjectName,projectSets,eachData,mapNumber,trIndex,widthSets,onAssignedInputChange,inputRefs,inputValues,isConfirm}}/>
+                 )
                 )}
                 {/* 合計 */}
                 <TrForSum {...{inputValues,mainProjectName,projectSets,widthSets}} />

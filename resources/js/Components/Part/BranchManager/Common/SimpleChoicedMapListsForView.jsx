@@ -39,7 +39,7 @@ export default function SimpleChoicedMapListsForView({eachStaff,choicedMap,selec
             <React.Fragment key={indexInEachMapInfo}>
                 <span className="font-bold">{eachMapInfo.projectNameForView}</span>
                 <span>{`：${eachMapInfo.mapsInTheRoundNumber}`}</span>
-                {indexInEachMapInfo!=choicedMapArrayForview.length-1 && needBr &&<br/>}
+                {indexInEachMapInfo!=choicedMapArrayForview.length-1 && (needBr ? <br/> : <span>　</span>)}
             </React.Fragment>
        )
        :

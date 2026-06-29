@@ -27,8 +27,9 @@ export default function SimpleDataFormatToFormData({staffs,planIdsAndMapsByMainP
 
         // スタッフごとにplanIdを格納
         // staffはIdを取得(findなら見つかった時点で検索終了なのでfilterより軽い、また?.[0]を行うことでundefinedでもエラーなく終了)
-        // 重複確認でmapNumberの再取得を行うが、mapNumberは
-        planIdsByStaffArrayForForm.push({"staffId":Object.entries(staffs).find(([,staffNameFromObj])=>staffName==staffNameFromObj)?.[0],"planIds":planIdsByStaffs.flat(2)})
+        // 重複確認でmapNumberの再取得を行うが、mapNumberは案件やroundNumberごとに分かれ、また重複確認まで戻る可能性も少ないので、ここでmapNumberは設定しない
+
+        planIdsByStaffArrayForForm.push({"staffId":Object.entries(staffs[selectedDate]).find(([,staffNameFromObj])=>staffName==staffNameFromObj)?.[0],"planIds":planIdsByStaffs.flat(3)})
 
     })//スタッフごと
 

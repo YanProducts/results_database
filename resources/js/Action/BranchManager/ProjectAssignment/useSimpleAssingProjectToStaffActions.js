@@ -5,14 +5,15 @@ import popUpPositionSeeting from '../../../Support/Common/popUpPositionSetting';
 import SimpleFormatDataByProjects from './DataConfirm/SimpleFormatDataByProjects';
 import SimpleDataFormatToFormData from './DataConfirm/SimpleDataFormatToFormData';
 
-export default function useSimpleAssignProjectToStaffActions({data,setData,post,clearErrors,staffs,isConfirm,setIsConfirm,selectedDate,setSelectedDate,choicedMap,setChoicedMap,choicedByProjects,setChoicedByProjects,planIdsAndMapsByMainProjects,staffInChoice,setStaffInChoice,setPopUpVisible}){
+export default function useSimpleAssignProjectToStaffActions({data,setData,post,processing,clearErrors,staffs,isConfirm,setIsConfirm,selectedDate,setSelectedDate,choicedMap,setChoicedMap,choicedByProjects,setChoicedByProjects,planIdsAndMapsByMainProjects,staffInChoice,setStaffInChoice,setPopUpVisible}){
 
 //useReducerで定義する
 
 
 // 確認と投稿の値が得られた時に確認ページを表示する
 React.useEffect(()=>{
-    if(!choicedByProjects || Object.keys(choicedByProjects).length == 0 || !data?.date || data.date!=selectedDate){
+
+    if(!choicedByProjects || Object.keys(choicedByProjects).length == 0 || !data?.assignDate || data.assignDate!=selectedDate){
         setIsConfirm(false);
         return;
     }
@@ -108,7 +109,10 @@ const onMapChoiceClose=()=>{
 //   確認後OKのボタンが押されたとき
   const onConfirmOkClick=(e)=>{
       e.preventDefault();
-
+    //   processingはpostの後に発動(超高速だと間に合わない？)
+      if(processing){
+        return;
+      }
       // バリデーションはlaravelに任せる(遷移しないため)
       post(route("branch_manager.simple_assign_staff_post"));
 }
@@ -128,9 +132,9 @@ const onConfirmCancelClick=(e)=>{
 
 // 重複確認でOKなとき
  const onDuplicatedOkClick=(e)=>{
-    e.preventDefault();
-    // sqlのimportテーブルから移行
-    post(route("branch_manager.store_including_duplicated_plans"));
+    // e.preventDefault();
+    // // sqlのimportテーブルから移行
+    // post(route("branch_manager.store_including_duplicated_plans"));
  }
 
   return{onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onMapChoiceClose,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick,}

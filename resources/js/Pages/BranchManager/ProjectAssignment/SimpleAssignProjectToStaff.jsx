@@ -9,7 +9,7 @@ import DataConfirmForSimple from "../../../Components/Part/BranchManager/StaffAs
 
 
 // 案件を営業所担当に送信
-export default function SimpleAssingProjectToStaff({prefix,what,type,dateSets,dateProjectsIndex,staffs,planIdsAndMapsByMainProjects}){
+export default function SimpleAssingProjectToStaff({prefix,what,type,dateSets,dateProjectsIndex,staffs,planIdsAndMapsByMainProjects,flash=""}){
 
   // 定義(フォームなど)
   const {data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,choicedMap,setChoicedMap,staffInChoice,setStaffInChoice,popUpVisible,setPopUpVisible,choicedByProjects,setChoicedByProjects,pageMinWidth,pageMaxWidth}=useSimpleAssignProjectToStaffDefinitions();
@@ -21,13 +21,15 @@ export default function SimpleAssingProjectToStaff({prefix,what,type,dateSets,da
     return(
         <Layout title={`${what}-${type}`}>
             <RoleLayout  prefix={prefix} >
-    {!isConfirm ?
-    // データ入力用
-    <DataInputForSimple {...{what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,onMapChoiceClick,onMapDecide,onMapChoiceClose,planIdsAndMapsByMainProjects,dateProjectsIndex,staffs,staffInChoice,popUpVisible,choicedMap,processing}}/>
-    :
-    // データ確認用
-    <DataConfirmForSimple {...{what,type,errors,pageMinWidth,pageMaxWidth,processing,selectedDate,staffs,choicedMap,choicedByProjects,onConfirmOkClick,onConfirmCancelClick}}/>
-    }
+
+            {!isConfirm ?
+            // データ入力用
+            <DataInputForSimple {...{what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,onMapChoiceClick,onMapDecide,onMapChoiceClose,planIdsAndMapsByMainProjects,dateProjectsIndex,staffs,staffInChoice,popUpVisible,choicedMap,processing}}/>
+            :
+            // データ確認用
+            <DataConfirmForSimple {...{what,type,errors,pageMinWidth,pageMaxWidth,processing,selectedDate,staffs,choicedMap,choicedByProjects,onConfirmOkClick,onConfirmCancelClick,flash}}/>
+            }
+
 
             {/* リンク */}
             <div className="mt-4">

@@ -1,4 +1,4 @@
-import BaseTable from "../../../../Common/BaseTable";
+import BaseTable from "../../../../../Common/BaseTable";
 
 export default function AssignSetsForConfirming({assignPlanForConfirmView,pageMinWidth,pageMaxWidth,selectedDate}){
 

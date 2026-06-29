@@ -1,4 +1,4 @@
-import SelectParts from "../../../../Common/SelectParts";
+import SelectParts from "../../../../../Common/SelectParts";
 import React from "react";
 
 // スタッフの割り当てをMapNumberから選ぶ場合

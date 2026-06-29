@@ -1,7 +1,7 @@
 import React from "react";
 import PopUpForMapChoiceByStaff from "./PopUpForMapChoiceByStaff";
-import BaseTable from "../../../../Common/BaseTable";
-import SimpleChoicedMapListsForView from "../../Common/SimpleChoicedMapListsForView";
+import BaseTable from "../../../../../Common/BaseTable";
+import SimpleChoicedMapListsForView from "../../../Common/SimpleChoicedMapListsForView";
 
 export default function StaffListsForSimple({selectedDate,pageMinWidth,pageMaxWidth,staffsInSelectedDate,planIdsAndMapsByMainProjects,staffInChoice,popUpVisible,onMapChoiceClick,onMapDecide,onMapChoiceClose,choicedMap,onClickDateReset}){
 

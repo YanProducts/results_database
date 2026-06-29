@@ -1,5 +1,5 @@
 import React from "react";
-import simpleGetProjectNameForView from "../../../../../Support/BranchManager/simpleGetProjectNameForView";
+import simpleGetProjectNameForView from "../../../../../../Support/BranchManager/simpleGetProjectNameForView";
 
 // スタッフの欄のクリック時に表示される地図番号のリストをpopUp
 // 複数選択の時のpopUp(divで表示して、checkBoxに格納し、React連動)

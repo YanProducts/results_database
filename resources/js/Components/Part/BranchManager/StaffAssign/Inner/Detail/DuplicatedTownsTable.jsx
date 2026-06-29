@@ -1,4 +1,4 @@
-import BaseTable from "../../../../Common/BaseTable";
+import BaseTable from "../../../../../Common/BaseTable";
 
 // 重複している町のテーブル
 export default function DuplicatedTownsTable(duplicatedSets){

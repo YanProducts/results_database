@@ -2,8 +2,8 @@ import SelectPartsForViewChange from "../../../../Components/Common/SelectPartsF
 import InputPageHeader from "../../../../Components/Common/InputPageHeader";
 import BaseButton from "../../../../Components/Common/BaseButton";
 import RadioButton from "../../../../Components/Common/RadioButton";
-import MapLists from "./Inner/MapLists";
-import TownLists from "./Inner/TownLists";
+import MapLists from "./Inner/Detail/MapLists";
+import TownLists from "./Inner/Detail/TownLists";
 
 // スタッフを割り当てる際のデータ入力ページ
 export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,selectedMainProject,onSelectedMainProjectChange,projectsAndTowns,dateProjectsIndex,onChangeMapOrTown,needNumber,mapMeta,staffs,handleAssignChangeInMaps,assignPlan,handleAssignChangeInTowns,processing}){

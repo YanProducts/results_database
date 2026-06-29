@@ -1,7 +1,7 @@
 import SelectPartsForViewChange from "../../../Common/SelectPartsForViewChange";
 import InputPageHeader from "../../../Common/InputPageHeader";
 import BaseButton from "../../../Common/BaseButton";
-import StaffListsForSimple from "./Inner/StaffListsForSimple";
+import StaffListsForSimple from "./Inner/Simple/StaffListsForSimple";
 
 // スタッフを割り当てる際のデータ入力ページ
 export default function DataInputForSimple({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,
