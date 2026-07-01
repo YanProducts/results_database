@@ -22,15 +22,18 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
     }
 
     // 入力された部数が変化したとき
-    const onAssignedInputChange=({e,assignId,subProjectId=null,mainProjectName,trIndex,index})=>{
+    const onAssignedInputChange=({e,assignId,subProjectId=null,mainProjectName,trIndex,indexWithMaps,index})=>{
         const target=e.currentTarget.value;
         if(target && !Number.isInteger(Number(target))){
             alert("数値以外は入力できません")
             return;
         }
 
-        // 変化したinput要素をfocus
-        inputRefs.current[mainProjectName][trIndex][index]?.focus();
+
+        console.log(inputRefs.current[mainProjectName])
+        console.log(inputRefs.current[mainProjectName][trIndex][indexWithMaps])
+        // 変化したinput要素をfocus(indexは併配の数)
+        inputRefs.current[mainProjectName][trIndex][indexWithMaps][index]?.focus();
 
         // input要素のvalueの更新
         setInputValues(prev=>({

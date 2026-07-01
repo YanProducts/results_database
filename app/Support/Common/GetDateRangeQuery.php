@@ -20,7 +20,7 @@ class GetDateRangeQuery{
             ->orWhere([
                 ["end_date","<>",null],
                 ["end_date",">=",min($date_sets)],
-                ["date","<=",max($date_sets)]
+                [$date_column,"<=",max($date_sets)]
                 ]);
             });
     }

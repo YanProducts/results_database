@@ -2,7 +2,7 @@ import BaseTable from "../../../../../Common/BaseTable";
 import SubmitOrBackButtons from "../../../../../Common/SubmitOrBackButtons";
 // 簡易版の際に、すでに全町目を行き終えている場合の「間違いないか」の確認の表(すでに行き終えているmapを表示)
 export default function DuplicatedTownsTable({flash,pageMaxWidth,pageMinWidth,errors,processing}){
-    console.log(flash)
+
     // テーブル
 
         {/* 確認の表 */}
@@ -10,7 +10,7 @@ export default function DuplicatedTownsTable({flash,pageMaxWidth,pageMinWidth,er
 
         {/* カスタムかどうかは今後判断 */}
         <tr>
-            
+
         </tr>
 
         </BaseTable>

@@ -11,8 +11,6 @@ import DuplicatedTownsTable from "./Inner/Detail/DuplicatedTownsTable";
 // スタッフを割り当てた後のデータ確認ページ
 export default function DataConfirmForSimple({what,type,errors,pageMinWidth,pageMaxWidth,processing,selectedDate,staffs,choicedMap,choicedByProjects,onConfirmOkClick,onConfirmCancelClick,flash}){
 
-    console.log(flash)
-
     const staffsInSelectedDate=staffs[selectedDate]
 
     return(
