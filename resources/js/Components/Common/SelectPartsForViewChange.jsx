@@ -1,7 +1,8 @@
 // 表示変更に繋げるselect(formとは直接は連動せず/非アクティブ化やselectがない場合との切り替えも可能)
-export default function SelectPartsForViewChange({value,onChange,prefix,prefixPercent="w-[30%]",maxWidth="max-w-80", minWidth="min-w-72.5", keyValueSets, disabled=false, opacity="opacity-100" ,fixed=false, fixContents=""}){
+export default function SelectPartsForViewChange({value,onChange,prefix,prefixPercent="w-[30%]",maxWidth="max-w-80", minWidth="min-w-72.5", keyValueSets, disabled=false, opacity="opacity-100" ,fixed=false, fixContents="",afterSelectDivOption=""}){
+
   return(
-    <div className={`flex items-center base_frame ${minWidth} ${maxWidth} mx-auto my-3`}>
+    <div className={`flex items-center base_frame ${minWidth} ${maxWidth} mx-auto my-3 ${fixed && afterSelectDivOption}`}>
       <span className={`inline-block ${prefixPercent} min-w-32 text-right`}>{prefix}</span>
 
     {!fixed ?
@@ -16,7 +17,7 @@ export default function SelectPartsForViewChange({value,onChange,prefix,prefixPe
          }
       </select>
     :
-      <span className="w-full text-left font-bold">{fixContents}</span>
+      <span className={`w-full text-left font-bold`}>{fixContents}</span>
     }
     </div>
   )

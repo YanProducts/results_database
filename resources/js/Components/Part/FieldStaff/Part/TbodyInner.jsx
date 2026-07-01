@@ -6,30 +6,30 @@ export default function TbodyInner({mainProjectName,projectSets,eachData,mapNumb
 
         const assignId=eachData.assign_id;
         return(
-                <tr className="border-black border-2 base_backColor" key={trIndex}>
-                    <td className={`border-black border-2 ${widthSets[0]}`}>{eachData.address_name}</td>
-                    <td className={`border-black border-2 bg-yellow-300 ${widthSets[1]}`}>{eachData.household}</td>
+                <tr className={`border-black border-2 ${indexWithMaps == 0 ? "border-t-3" : "border-t-2"} base_backColor`} key={trIndex}>
+                    <td className={`border-black border-x-2 ${widthSets[0]} `}>{eachData.address_name}</td>
+                    <td className={`border-black border-x-2 bg-yellow-300 ${widthSets[1]}`}>{eachData.household}</td>
                     {/* 案件ごとの配布数 案件数によって数を変化 */}
                     {Object.keys(projectSets).map(function(eachSet,index){
                         const subProjectId=Number(eachSet.substring(2))
                         // メイン案件
                         if(index==0){
                             return(
-                                <td key="main" className={`border-black border-2 ${widthSets[2]} ${(isConfirm && !inputValues?.[mainProjectName]?.[assignId]?.["main"]) && "ui_attention"}`}>
+                                <td key="main" className={`border-black border-x-2 ${widthSets[2]} ${(isConfirm && !inputValues?.[mainProjectName]?.[assignId]?.["main"]) && "ui_attention"}`}>
                                     <MainTdInner {...{isConfirm,onAssignedInputChange,assignId,mainProjectName,trIndex,indexWithMaps,index,inputValues,inputRefs}} />
                                 </td>
                        )}
                         // 併配セット
                         return(
                             eachData.sub_sets.map(subProjectIdInnAssignSets=>Number(subProjectIdInnAssignSets)).includes(subProjectId) ?
-                            <td key={"sub" + index} className={`border-black border-2 ${widthSets[index+2]} ${(isConfirm && !inputValues?.[mainProjectName]?.[assignId]?.[subProjectId]) &&  "ui_attention"} `}>
+                            <td key={"sub" + index} className={`border-black border-x-2 ${widthSets[index+2]} ${(isConfirm && !inputValues?.[mainProjectName]?.[assignId]?.[subProjectId]) &&  "ui_attention"} `}>
                              <SubTdInner {...{isConfirm,onAssignedInputChange,assignId,subProjectId,mainProjectName,trIndex,indexWithMaps,index,inputValues,inputRefs}}/>
                             </td>
                         :
-                        <td key={"sub" + index} className={`border-black border-2 ${widthSets[index+2]}`}>-</td>
+                        <td key={"sub" + index} className={`border-black border-x-2 ${widthSets[index+2]}`}>-</td>
                         )
                     })}
-                 <td className={`border-black border-2 ${widthSets[widthSets.length-1]}`}>{mapNumber}</td>
+                 <td className={`border-black border-x-2 font-bold ${widthSets[widthSets.length-1]} bg-orange-200`}>{mapNumber}</td>
             </tr>
     )
 }

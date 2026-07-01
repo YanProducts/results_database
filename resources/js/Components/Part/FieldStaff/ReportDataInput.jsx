@@ -17,7 +17,9 @@ export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,onS
         {/* 投稿フォーム */}
         <form onSubmit={onSubmitBtnClick} className={`${pageMinWidth} ${pageMaxWidth} mx-auto`}>
             {/* 日付の選択 */}
-            <SelectPartsForViewChange value={selectedDate} onChange={onSelectedDateChange} prefix={"日付："} keyValueSets={dateSets} disabled={assignDataToStaff[selectedDate] ? true :false} fixed={assignDataToStaff[selectedDate] ? true :false} fixContents={assignDataToStaff[selectedDate] ? new Date(selectedDate).toLocaleDateString("ja-JP", {month: "long",day: "numeric"}) : ""}/>
+            <SelectPartsForViewChange value={selectedDate} onChange={onSelectedDateChange} prefix={"日付："} keyValueSets={dateSets} disabled={assignDataToStaff[selectedDate] ? true :false} fixed={assignDataToStaff[selectedDate] ? true :false} fixContents={assignDataToStaff[selectedDate] ? new Date(selectedDate).toLocaleDateString("ja-JP", {month: "long",day: "numeric"}) : ""}
+            afterSelectDivOption="bg-yellow-300 border-2 border-black rounded-sm"
+            />
 
             {/* 報告書の入力 */}
             {selectedDate &&  (assignDataToStaff[selectedDate] ?

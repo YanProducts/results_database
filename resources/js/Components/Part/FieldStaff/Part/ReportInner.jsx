@@ -21,6 +21,33 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,assignDataToStaff
 
                 <BaseTable tableTheme={mainProjectName} width={"w-[97.5%]"} thSets={{"town":"町名","household":"世帯数",...projectSets,"mapNumber":"地図番号"}} thWidthSets={widthSets} maxWidth={pageMaxWidth} minWidth={pageMinWidth} allData={[]} mb={"mb-4"}>
 
+{/* 持ち出し */}
+<tr className={`border-black border-2 base_backColor`}>
+    <td className="bg-purple-100 border-x-2" colSpan={2}>持ち出し</td>
+    {Object.keys(projectSets).map((eachSet)=>
+    <td className="border-x-2"></td>
+    )}
+</tr>
+
+{/* 返却 */}
+<tr className={`border-black border-2 base_backColor`}>
+    <td className="bg-purple-100 border-x-2" colSpan={2}>返却</td>
+    {Object.keys(projectSets).map((eachSet)=>
+    <td className="border-x-2" ></td>
+    )}
+</tr>
+
+{/* 自分が配った枚数 */}
+<tr className={`border-black border-2 base_backColor`}>
+    <td className="bg-purple-100 border-x-2" colSpan={2}>自分が配った枚数</td>
+    {Object.keys(projectSets).map((eachSet)=>
+    <td className="border-x-2"></td>
+    )}
+</tr>
+
+
+
+
                 {/* その日そのメイン案件におけるセットが「keyValueSets」で、それをmapごとにわけ、それを町目ごとに見ていく */}
 
                  {Object.entries(dataInEachMainProject).map(function([mapNumber,eachDataByMap],trIndex){
