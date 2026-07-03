@@ -1,7 +1,7 @@
 import React from "react";
 import { route } from "ziggy-js";
 
-export default function useWriteReportActions({inputValues,setInputValues,inputRefs,assignDataToStaff,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setData,post}){
+export default function useWriteReportActions({inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post}){
 
 
     // 日付が変更されたらpost用のデータにセット(他のデータは自動的に初期化)
@@ -21,6 +21,24 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
         setSelectedDate(e.currentTarget.value)
     }
 
+    // 持ち出し&返却のまとめ //mapNumberは必要ない
+    const onIssuedOrReturnedCountsChange=(e,mainProjectName,eachProjectName,setState)=>{
+
+        const targetValue=e.target.value;
+        if(targetValue && !Number.isInteger(Number(targetValue))){
+            alert("数値以外は入力できません")
+            return;
+        }
+        setState(prev=>({
+            ...prev,
+            [mainProjectName]:{
+                ...prev?.[mainProjectName],
+                [eachProjectName]:targetValue
+            }
+        }))
+    }
+
+
     // 入力された部数が変化したとき
     const onAssignedInputChange=({e,assignId,subProjectId=null,mainProjectName,trIndex,indexWithMaps,index})=>{
         const target=e.currentTarget.value;
@@ -29,9 +47,6 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
             return;
         }
 
-
-        console.log(inputRefs.current[mainProjectName])
-        console.log(inputRefs.current[mainProjectName][trIndex][indexWithMaps])
         // 変化したinput要素をfocus(indexは併配の数)
         inputRefs.current[mainProjectName][trIndex][indexWithMaps][index]?.focus();
 
@@ -94,6 +109,6 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
         // setIsConfirm(false);
     }
 
-    return {onSelectedDateChange,onAssignedInputChange,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}
+    return {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}
 
 }

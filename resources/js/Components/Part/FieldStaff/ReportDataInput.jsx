@@ -5,7 +5,8 @@ import BaseButton from "../../Common/BaseButton";
 import ViewValidationErrors from "../../Common/ViewValidationErrors";
 
 // 報告書の記入
-export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,errors,processing,isConfirm}){
+export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,errors,processing,isConfirm}){
+
   return(
     <>
       {/* タイトル */}
@@ -25,9 +26,10 @@ export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,onS
             {selectedDate &&  (assignDataToStaff[selectedDate] ?
             // 報告書テーブルの内部
              <>
-                <ReportInner {...{pageMinWidth,pageMaxWidth,assignDataToStaff,selectedDate,onAssignedInputChange,inputRefs,inputValues,isConfirm}} />
+                <ReportInner {...{pageMinWidth,pageMaxWidth,assignDataToStaff,selectedDate,issuedCount,returnedCount,setIssuedCount,setReturnedCount,onIssuedOrReturnedCountsChange,onAssignedInputChange,inputRefs,inputValues,isConfirm}} />
                 {/* 提出ボタン */}
                 <BaseButton processing={processing} disabled={Object.keys(inputValues).length == 0}/>
+                <p>　</p>
              </>
             :
               <div className={`text-center base_frame base_backColor ${pageMinWidth} ${pageMaxWidth} mb-3`}><p>案件は届いておりません</p></div>

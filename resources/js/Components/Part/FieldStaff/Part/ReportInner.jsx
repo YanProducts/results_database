@@ -3,9 +3,11 @@ import BaseTable from "../../../Common/BaseTable";
 import TbodyInner from "./TbodyInner";
 import setTdWidthByProjectCounts from "../../../../Support/FieldStaff/setTdWidthByProjectCounts";
 import TrForSum from "./TrForSum";
+import IssuedAndReturns from "./IssueAndReturns";
 
 // 報告書テーブルの内部
-export default function ReportInner({pageMinWidth,pageMaxWidth,assignDataToStaff,selectedDate,onAssignedInputChange,inputRefs,inputValues,isConfirm}){
+export default function ReportInner({pageMinWidth,pageMaxWidth,assignDataToStaff,selectedDate,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,onAssignedInputChange,inputRefs,inputValues,isConfirm}){
+
 
     return(
          Object.entries(assignDataToStaff[selectedDate]).map(function(keyValueSets,index){
@@ -21,49 +23,29 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,assignDataToStaff
 
                 <BaseTable tableTheme={mainProjectName} width={"w-[97.5%]"} thSets={{"town":"町名","household":"世帯数",...projectSets,"mapNumber":"地図番号"}} thWidthSets={widthSets} maxWidth={pageMaxWidth} minWidth={pageMinWidth} allData={[]} mb={"mb-4"}>
 
-{/* 持ち出し */}
-<tr className={`border-black border-2 base_backColor`}>
-    <td className="bg-purple-100 border-x-2" colSpan={2}>持ち出し</td>
-    {Object.keys(projectSets).map((eachSet)=>
-    <td className="border-x-2"></td>
-    )}
-</tr>
-
-{/* 返却 */}
-<tr className={`border-black border-2 base_backColor`}>
-    <td className="bg-purple-100 border-x-2" colSpan={2}>返却</td>
-    {Object.keys(projectSets).map((eachSet)=>
-    <td className="border-x-2" ></td>
-    )}
-</tr>
-
-{/* 自分が配った枚数 */}
-<tr className={`border-black border-2 base_backColor`}>
-    <td className="bg-purple-100 border-x-2" colSpan={2}>自分が配った枚数</td>
-    {Object.keys(projectSets).map((eachSet)=>
-    <td className="border-x-2"></td>
-    )}
-</tr>
+        {/* 持ち出しと返却(確認用) */}
+        <IssuedAndReturns {...{projectSets,mainProjectName,onIssuedOrReturnedCountsChange,state:issuedCount,setState:setIssuedCount,jpnWord:"持ち出し"}}/>
+        <IssuedAndReturns {...{projectSets,mainProjectName,onIssuedOrReturnedCountsChange,state:returnedCount,setState:setReturnedCount,jpnWord:"返却"}}/>
 
 
+    {/* その日そのメイン案件におけるセットが「keyValueSets」で、それをmapごとにわけ、それを町目ごとに見ていく */}
 
+        {Object.entries(dataInEachMainProject).map(function([mapNumber,eachDataByMap],trIndex){
+        return(
+            Object.values(eachDataByMap).map((eachData,indexWithMaps)=>
+                // テーブルの中身
+                <TbodyInner key={`${trIndex}_${indexWithMaps}`} {...{mainProjectName,projectSets,eachData,mapNumber,trIndex,indexWithMaps,widthSets,onAssignedInputChange,inputRefs,inputValues,isConfirm}}/>
+            )
+        )
+        })
+    }
 
-                {/* その日そのメイン案件におけるセットが「keyValueSets」で、それをmapごとにわけ、それを町目ごとに見ていく */}
+    {/* 合計(町目ごと＆そのずれ) */}
+    <TrForSum {...{inputValues,mainProjectName,projectSets,widthSets,issuedCount,returnedCount}} />
 
-                 {Object.entries(dataInEachMainProject).map(function([mapNumber,eachDataByMap],trIndex){
-                    return(
-                        Object.values(eachDataByMap).map((eachData,indexWithMaps)=>
-                            // テーブルの中身
-                            <TbodyInner key={`${trIndex}_${indexWithMaps}`} {...{mainProjectName,projectSets,eachData,mapNumber,trIndex,indexWithMaps,widthSets,onAssignedInputChange,inputRefs,inputValues,isConfirm}}/>
-                      )
-                    )
-                 })
-                }
-                {/* 合計 */}
-                <TrForSum {...{inputValues,mainProjectName,projectSets,widthSets}} />
-                </BaseTable>
-                </React.Fragment>
-            )})
+    </BaseTable>
+    </React.Fragment>
+  )})
 
     )
 
