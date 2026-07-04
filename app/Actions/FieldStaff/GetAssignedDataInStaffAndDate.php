@@ -20,14 +20,13 @@ class GetAssignedDataInStaffAndDate{
         // N+1防止のため、SQLデータを先に取得
         [$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$existed_projects_sets,$existed_address_sets,$sub_plan_collections]=self::get_data_in_sql($staff_id,$date_sets);
 
-
         // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名がサブキー:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
         foreach(array_keys($date_sets) as $date){
             // phpはスコープ内宣言でOL
-            $return_sets[$date]=self::get_data_by_date($date,$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$sub_plan_collections,$existed_projects_sets,$existed_address_sets);
+            [$return_sets[$date],$from_simple_flag[$date]]=self::get_data_by_date($date,$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$sub_plan_collections,$existed_projects_sets,$existed_address_sets);
         }
 
-        return $return_sets ?? [];
+        return [$return_sets ?? [], $from_simple_flag ??[] ];
     }
 
     // N+1防止のために一括取得
@@ -38,7 +37,9 @@ class GetAssignedDataInStaffAndDate{
             ->get();
 
             // sqlに入っている、そのスタッフの、期間内を含む案件を取得(n+1防止に一括取得)。それをdateでまとめる
+            // ここにfromSimpleFlagも入ってる
             $data_in_staff_and_date=GetDateRangeQuery::get_date_range_query(DistributionAssignment::where("staff_id",$staff_id),$date_sets,"date")->get();
+
             // 上記に相当するplanの情報(世帯数や住所などに使う)
             // assignされた時点で、すでにメイン案件に絞られたものが送られているので、それに相当するものを取得
             $existed_plan_collections=$all_distribution_plans->whereIn("id",$data_in_staff_and_date->map(fn($each_data)=>$each_data->plan_id));
@@ -139,8 +140,9 @@ class GetAssignedDataInStaffAndDate{
     }
 
 
-    // 日毎の処理
+    // 日毎の処理 //すでに日は限定
     public static function get_data_by_date($date,$fetched_assigned_data,$all_distribution_plans,$existed_plan_collections,$sub_plan_collections,$existed_projects_sets,$existed_address_sets){
+
 
          // その日に配布もしくはその日が期限内のassignされたデータを取得
             $main_assigned_data_in_date=$fetched_assigned_data->filter(fn($each_data)=>
@@ -148,7 +150,7 @@ class GetAssignedDataInStaffAndDate{
             );
 
             if($main_assigned_data_in_date->isEmpty()){
-                return;
+                return [null,false];
             }
 
             // その日のメイン案件&same_project_flag&round_number&地図番号のIdセット(assignのid=>planのidの連想配列)、[プロジェクト名をキーにした、その日のplanのセット]の一覧
@@ -157,8 +159,11 @@ class GetAssignedDataInStaffAndDate{
             // サブ案件のセット。main案件のIdをキーに、idとproject_idを返す
             $sub_sets_in_the_day=$sub_plan_collections->whereIn("main_id",$main_plan_ids_in_the_day)->groupBy("main_id");
 
+            // その人がいく期間内の案件に1つでも「地図版」からきているものがあれば、報告書提出時の全町確認の処理は行わない
+            $from_simple_flag=$main_assigned_data_in_date->contains(fn($each_data)=>$each_data["from_simple_flag"]==true);
+
             // projectName~MapnNumberのそれぞれを入れ子のキーにしたセットの一覧を返す
-            return self::format_project_sets_key_by_project_for_view($main_plans_grouped_by_project_names,$all_distribution_plans,$main_plan_ids_in_the_day,$existed_address_sets,$sub_sets_in_the_day,$existed_projects_sets) ?? [];
+            return [self::format_project_sets_key_by_project_for_view($main_plans_grouped_by_project_names,$all_distribution_plans,$main_plan_ids_in_the_day,$existed_address_sets,$sub_sets_in_the_day,$existed_projects_sets,$from_simple_flag) ?? [],$from_simple_flag];
     }
 
 }

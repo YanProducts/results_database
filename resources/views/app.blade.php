@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         {{-- icon --}}
-      {{-- <link rel="icon" href="{{ asset('img/quiz.ico') }}"> --}}
+         <link rel="icon" type="image/png" href="{{ asset('img/database_icon.png') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

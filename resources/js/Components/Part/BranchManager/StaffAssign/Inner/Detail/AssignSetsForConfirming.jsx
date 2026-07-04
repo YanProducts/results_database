@@ -2,6 +2,7 @@ import BaseTable from "../../../../../Common/BaseTable";
 
 export default function AssignSetsForConfirming({assignPlanForConfirmView,pageMinWidth,pageMaxWidth,selectedDate}){
 
+
     // mapコメントに+か-がついているかどうかで表示の長さを変更
     const isMapModified=Object.values(assignPlanForConfirmView).some(projectsAndDataSets=>
         Object.values(projectsAndDataSets).filter(eachData=>(eachData.mapComment.includes("\+") || eachData.mapComment.includes("\-")) || eachData.mapComment.includes("期間外")).length>0
@@ -29,7 +30,6 @@ export default function AssignSetsForConfirming({assignPlanForConfirmView,pageMi
                     // スタッフが担当するメイン案件の数によって行の数が変更するためprojectNameでmap
                     projectsToStaff.map(function(projectName,innerIndex){
 
-
                         // 割り当てられていない案件は除外
                         const eachPlanByStaffInTheProject=eachPlanByStaff[1][projectName];
 
@@ -38,7 +38,6 @@ export default function AssignSetsForConfirming({assignPlanForConfirmView,pageMi
                             <tr className="border-black border-2" key={ index + "-" + innerIndex}>
                                 <>
                                     {/* スタッフ名 */}
-
                                     {innerIndex ==0 &&
                                         <td className={`border-black border-2 ${isMapModified ? "w-[20%]" :"w-[25%]"}`} rowSpan={projectsToStaff.length}>{staffName}</td>
                                     }

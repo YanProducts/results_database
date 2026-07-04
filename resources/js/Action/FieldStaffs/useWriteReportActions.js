@@ -1,7 +1,7 @@
 import React from "react";
 import { route } from "ziggy-js";
 
-export default function useWriteReportActions({inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post}){
+export default function useWriteReportActions({inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIsConfirm,setData,post}){
 
 
     // 日付が変更されたらpost用のデータにセット(他のデータは自動的に初期化)
@@ -64,15 +64,21 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
     }
 
     // 決定ボタンを押した際は確認ページを表示する
-    const onSubmitBtnClick=(e)=>{
+    const onSubmitBtnClick=(e,tableSets)=>{
             e.preventDefault();
-            // 投稿データは１：メインはassignIdで案件に関わらずいける。２：サブはassignIdに紐づいたplanIdからmainIdを検索可能
+
+            // mainだけ、subだけが記入されている空欄があれば間違いないかチェック
+
+
+
+            // 投稿データは１：メインはassignIdで案件に関わらずいける。２：サブはassignIdに紐づいたplanIdからmainIdを検索可能(その中で、そのプロジェクトidと合うものを選択。sameProjectFlagが違えばidは別。roundNumberは必ず1意に決まる)
             // そのため、[assignId:...,mainCount:...,subCounts:[projectId:...,subCount:...]の入れ子この配列にする
             const dataForForm=[];
             Object.entries(inputValues).forEach((eachInputValue,index)=>{
                 Object.entries(eachInputValue[1]).forEach(eachSets=>{
                     const eachMainId=eachSets[0];
                     const eachCount=eachSets[1];
+                    // メインはassignedIdで取得、サブはそのassignのplan_idのidをmain_idに持つproject_idで取得。
                     dataForForm.push({
                         "assignId":eachMainId,
                         "mainCount":eachCount.main ?? 0,
@@ -83,6 +89,7 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
                     })
                 })
             })
+
             setData({
                 "date":selectedDate,
                 "reportData":dataForForm
@@ -106,7 +113,7 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
         // 投稿データの初期化(inputデータは持っておく)
         setData();
         // UIを戻す
-        // setIsConfirm(false);
+        setIsConfirm(false);
     }
 
     return {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}

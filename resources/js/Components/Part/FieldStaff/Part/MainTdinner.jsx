@@ -1,6 +1,7 @@
-export default function MainTdInner({isConfirm,onAssignedInputChange,assignId,mainProjectName,trIndex,indexWithMaps,index,inputValues,inputRefs}){
+export default function MainTdInner({isConfirm,onAssignedInputChange,assignId,mainProjectName,trIndex,indexWithMaps,index,inputValues,inputRefs,processing,fromSimpleFlag}){
+
     return(
-        !isConfirm ?
+        (!isConfirm && !processing ) ?
         <input className="w-full text-right" onChange={(e)=>onAssignedInputChange({e,assignId,mainProjectName,trIndex,indexWithMaps,index})} value={inputValues?.[mainProjectName]?.[assignId]?.["main"] || ""}  ref={(el)=>
         {
             // 作成されていない時は作成
@@ -16,6 +17,10 @@ export default function MainTdInner({isConfirm,onAssignedInputChange,assignId,ma
             inputRefs.current[mainProjectName][trIndex][indexWithMaps][0]=el
         }}/>
         :
-       inputValues?.[mainProjectName]?.[assignId]?.["main"] || "未記入"
+    // 確認用(地図からのみ記入されている場合は全町確認は不要)
+    inputValues?.[mainProjectName]?.[assignId]?.["main"] || (!fromSimpleFlag ? "未記入" : "-")
+
+
+
     )
 }

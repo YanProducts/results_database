@@ -28,8 +28,7 @@ class WriteReportController extends Controller
         $date_sets=DateHelper::get_date_key_value_sets_for_view(Carbon::now()->format("Y-m-d"),Date::StartOffsetInReportPeriod,Date::EndOffsetInReportPeriod);
 
         // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名-sameproject-roundnumberからとった案件名がサブキー、さらにmapNumberをnキーにおいて、:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
-
-        $data_in_staff_and_date=GetAssignedDataInStaffAndDate::get_assigned_data($staff_id,$date_sets);
+        [$data_in_staff_and_date,$from_simple_flag]=GetAssignedDataInStaffAndDate::get_assigned_data($staff_id,$date_sets);
 
       return Inertia::render("FieldStaff/WriteReport",[
         "prefix"=>"field_staff",
@@ -39,7 +38,9 @@ class WriteReportController extends Controller
         "staff"=>FieldStaffList::where("id",$staff_id)->value("user_name"),
         "dateSets"=>$date_sets,
         // そのスタッフに割り当てられたデータ(期限内)
-        "assignDataToStaff"=>$data_in_staff_and_date
+        "assignDataToStaff"=>$data_in_staff_and_date,
+        // 少しでも地図のみから選択が入っていたらtrue
+        "fromSimpleFlag"=>$from_simple_flag
       ]);
 
     }
@@ -50,6 +51,8 @@ class WriteReportController extends Controller
         $date=$request->date;
         $report_data=$request->reportData;
         $staff_id=Auth::user()->authable_id;
+
+        dd("a");
 
         // 存在確認
         if(!empty($duplicated_sets=DataExistsCheck::data_exists_check($date,$staff_id))){

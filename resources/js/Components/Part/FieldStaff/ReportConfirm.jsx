@@ -3,20 +3,21 @@ import ReportInner from "./Part/ReportInner";
 import SubmitOrBackButtons from "../../Common/SubmitOrBackButtons";
 
 // 報告書の確認
-export default function ReportConfirm({what,type,pageMaxWidth,pageMinWidth,data,assignDataToStaff,selectedDate,inputRefs,inputValues,onAssignedInputChange,onConfirmOkClick,onConfirmCancelClick,errors,processing,isConfirm}){
+export default function ReportConfirm({what,type,pageMaxWidth,pageMinWidth,data,assignDataToStaff,selectedDate,issuedCount,returnedCount,inputRefs,inputValues,onAssignedInputChange,onConfirmOkClick,onConfirmCancelClick,tableSets,errors,processing,isConfirm,fromSimpleFlag}){
 
     return(
         <>
         <BasePageHeader {...{what,type,pageMaxWidth,pageMinWidth,subtitle:"以下でよろしいですか？"}}/>
 
         {/* /報告書テーブルの内部 */}
-        <ReportInner {...{pageMinWidth,pageMaxWidth,assignDataToStaff,selectedDate,onAssignedInputChange,inputRefs,inputValues,processing,isConfirm}} />
+        <ReportInner {...{pageMinWidth,pageMaxWidth,issuedCount,returnedCount,assignDataToStaff,selectedDate,onAssignedInputChange,inputRefs,inputValues,processing,tableSets,isConfirm,fromSimpleFlag}} />
 
         {/* 提出もしくはやり直す(フォーム挿入が遅れた時に対応) */}
         {data &&
-        <SubmitOrBackButtons minWidth={pageMinWidth} maxWidth={pageMaxWidth} processing={processing} errors={errors} onSubmitBtnClick={onConfirmOkClick} onCancelBtnClick=
-        {onConfirmCancelClick}/>
+        <SubmitOrBackButtons minWidth={pageMinWidth} maxWidth={pageMaxWidth} processing={processing} errors={errors} onSubmitBtnClick={onConfirmOkClick} onCancelBtnClick={onConfirmCancelClick}/>
         }
+
+        <p>　</p>
 
         </>
     )

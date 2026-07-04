@@ -2,7 +2,7 @@ import MainTdInner from "./MainTdinner";
 import SubTdInner from "./SubTdInner";
 
 // 報告書入力のtableの中身
-export default function TbodyInner({mainProjectName,projectSets,eachData,mapNumber,trIndex,indexWithMaps,widthSets,onAssignedInputChange,inputRefs,inputValues,isConfirm}){
+export default function TbodyInner({mainProjectName,projectSets,eachData,mapNumber,trIndex,indexWithMaps,widthSets,onAssignedInputChange,inputRefs,inputValues,isConfirm,processing,fromSimpleFlag}){
 
         const assignId=eachData.assign_id;
         return(
@@ -16,14 +16,14 @@ export default function TbodyInner({mainProjectName,projectSets,eachData,mapNumb
                         if(index==0){
                             return(
                                 <td key="main" className={`border-black border-x-2 ${widthSets[2]} ${(isConfirm && !inputValues?.[mainProjectName]?.[assignId]?.["main"]) && "ui_attention"}`}>
-                                    <MainTdInner {...{isConfirm,onAssignedInputChange,assignId,mainProjectName,trIndex,indexWithMaps,index,inputValues,inputRefs}} />
+                                    <MainTdInner {...{isConfirm,onAssignedInputChange,assignId,mainProjectName,trIndex,indexWithMaps,index,inputValues,inputRefs,processing,fromSimpleFlag}} />
                                 </td>
                        )}
                         // 併配セット
                         return(
                             eachData.sub_sets.map(subProjectIdInnAssignSets=>Number(subProjectIdInnAssignSets)).includes(subProjectId) ?
                             <td key={"sub" + index} className={`border-black border-x-2 ${widthSets[index+2]} ${(isConfirm && !inputValues?.[mainProjectName]?.[assignId]?.[subProjectId]) &&  "ui_attention"} `}>
-                             <SubTdInner {...{isConfirm,onAssignedInputChange,assignId,subProjectId,mainProjectName,trIndex,indexWithMaps,index,inputValues,inputRefs}}/>
+                             <SubTdInner {...{isConfirm,onAssignedInputChange,assignId,subProjectId,mainProjectName,trIndex,indexWithMaps,index,inputValues,inputRefs,processing,fromSimpleFlag}}/>
                             </td>
                         :
                         <td key={"sub" + index} className={`border-black border-x-2 ${widthSets[index+2]}`}>-</td>
