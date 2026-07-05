@@ -15,7 +15,7 @@ export default function SimpleAssingProjectToStaff({prefix,what,type,dateSets,da
   const {data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,choicedMap,setChoicedMap,staffInChoice,setStaffInChoice,popUpVisible,setPopUpVisible,choicedByProjects,setChoicedByProjects,pageMinWidth,pageMaxWidth}=useSimpleAssignProjectToStaffDefinitions();
 
   // 動き
-  const {onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onMapChoiceClose,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick,}=useSimpleAssignProjectToStaffActions({data,setData,post,clearErrors,staffs,isConfirm,setIsConfirm,selectedDate,setSelectedDate,choicedMap,setChoicedMap,choicedByProjects,setChoicedByProjects,planIdsAndMapsByMainProjects,staffInChoice,setStaffInChoice,setPopUpVisible});
+  const {onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onMapChoiceClose,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick,onMoveDetailPageClick}=useSimpleAssignProjectToStaffActions({data,setData,post,clearErrors,staffs,isConfirm,setIsConfirm,selectedDate,setSelectedDate,choicedMap,setChoicedMap,choicedByProjects,setChoicedByProjects,planIdsAndMapsByMainProjects,staffInChoice,setStaffInChoice,setPopUpVisible});
 
 
     return(
@@ -38,9 +38,8 @@ export default function SimpleAssingProjectToStaff({prefix,what,type,dateSets,da
             <div className="mt-4">
             <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.assign_staff`}  what="案件の編集(未)"/>
             </div>
-
             <div className="mt-4">
-            <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.assign_staff`}  what="詳細版"/>
+            <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.assign_staff`}  what="詳細版" needAlert={true} needAlertFunc={onMoveDetailPageClick}/>
             </div>
             <div className="mt-4">
             <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.logout`}  what="ログアウト"/>

@@ -1,19 +1,25 @@
 import React from "react";
 import { route } from "ziggy-js";
 
-export default function useWriteReportActions({inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIsConfirm,setData,post}){
+export default function useWriteReportActions({inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post}){
 
 
     // 日付が変更されたらpost用のデータにセット(他のデータは自動的に初期化)
+    //日付が初期化されたら関連するstateとformは全て戻す
     React.useEffect(()=>{
+        if(!selectedDate){
+            setIssuedCount(0);
+            setReturnedCount(0);
+            setInputValues({});
+            setData({})
+            return;
+        }
         setData({
             "date":selectedDate,
             "reportData":[]
         })
     },[selectedDate])
 
-
-    // formデータがセットされたらbuttonをアクティブにする
 
     // 日付の変更
     const onSelectedDateChange=(e)=>{
@@ -40,7 +46,7 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
 
 
     // 入力された部数が変化したとき
-    const onAssignedInputChange=({e,assignId,subProjectId=null,mainProjectName,trIndex,indexWithMaps,index})=>{
+    const onAssignedInputChange=({e,assignId,subProjectId=null,mainProjectName,trIndex,indexInMaps,index})=>{
         const target=e.currentTarget.value;
         if(target && !Number.isInteger(Number(target))){
             alert("数値以外は入力できません")
@@ -48,7 +54,7 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
         }
 
         // 変化したinput要素をfocus(indexは併配の数)
-        inputRefs.current[mainProjectName][trIndex][indexWithMaps][index]?.focus();
+        inputRefs.current[mainProjectName][trIndex][indexInMaps][index]?.focus();
 
         // input要素のvalueの更新
         setInputValues(prev=>({
@@ -62,6 +68,18 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
             }
         }));
     }
+
+
+    // 報告書の入力時にエンターボタンが押されたとき
+    // 後日、何かしら機能を入れる可能性あり
+    const onInputKeyDown=(e,trIndex,indexInMaps,index)=>{
+        // if(e.key=="Enter"){
+        //     // refを縦に移動
+
+        // }
+    }
+
+
 
     // 決定ボタンを押した際は確認ページを表示する
     const onSubmitBtnClick=(e,tableSets)=>{
@@ -97,6 +115,12 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
             setIsConfirm(true);
     }
 
+    // 日付選択からやり直す時
+    const onStartOverClick=()=>{
+        // まずは日付を初期化=その後に関連stateを初期化
+        setSelectedDate("");
+    }
+
     // 確認OKの時
     const onConfirmOkClick=()=>{
         // バリデーション対策にinputデータを初期化はしないでおく
@@ -108,7 +132,7 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
         setIsConfirm(false)
     }
 
-    // キャンセルの時
+    // 確認キャンセルの時
     const onConfirmCancelClick=()=>{
         // 投稿データの初期化(inputデータは持っておく)
         setData();
@@ -116,6 +140,6 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
         setIsConfirm(false);
     }
 
-    return {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}
+    return {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}
 
 }

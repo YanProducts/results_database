@@ -50,10 +50,25 @@ Route::prefix("field_staff")
                     // 報告書提出
                     Route::post("write_report","write_report_post")
                     ->name("write_report_post");
-                    // 提出した報告書の確認
-                    Route::get("confirm_reports","confirm_reports")
-                    ->name("confirm_reports");
+
                 });
+            Route::controller(WriteReportController::class)
+                ->group(function(){
+                    // 報告書確認/編集(日付リスト)
+                    Route::get("overview_reports","overview_reports")
+                    ->name("overview_reports");
+                    // 報告書の日付リスト→日付を指定して確認
+                    Route::get("show_detail_report/{date}","show_detail_report")
+                    ->name("show_detail_report");
+                    // 上記の日付で編集
+                    Route::get("edit_report/{date}","edit_report")
+                    ->name("edit_report_post");
+                    // 上記の日付で編集の投稿
+                    Route::post("edit_report","edit_report_post")
+                    ->name("edit_report_post");
+                });
+
+
 
             // ログアウト(そもそも認証されていないと無理)
             Route::get("logout",[AuthController::class,"logout"])

@@ -14,7 +14,7 @@ export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,
   const { data, setData, post, processing, errors,clearErrors, reset, assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,pageMinWidth,pageMaxWidth}=useAssignProjectToStaffDefinitions();
 
   // 動き
-  const {onSubmitBtnClick,onSelectedDateChange,onClickDateReset,onSelectedMainProjectChange,onChangeMapOrTown,handleAssignChangeInMaps,handleAssignChangeInTowns,onConfirmOkClick,onConfirmCancelClick,onDuplicatedOkClick}=useAssignProjectToStaffActions({data,post,clearErrors,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash});
+  const {onSubmitBtnClick,onSelectedDateChange,onClickDateReset,onSelectedMainProjectChange,onChangeMapOrTown,handleAssignChangeInMaps,handleAssignChangeInTowns,onConfirmOkClick,onConfirmCancelClick,onDuplicatedOkClick,onMoveSimplePageClick}=useAssignProjectToStaffActions({data,post,clearErrors,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash});
 
   return(
     <Layout title={`${what}-${type}`}>
@@ -36,10 +36,10 @@ export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,
     <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.assign_staff`}  what="案件の編集(未)"/>
     </div>
 
+    <div className="mt-4">
+        <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.simple_assign_staff`}  what="簡易版" needAlert={true} needAlertFunc=  {onMoveSimplePageClick}/>
+    </div>
 
-      <div className="mt-4">
-        <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.simple_assign_staff`}  what="簡易版"/>
-      </div>
       <div className="mt-4">
         <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.logout`}  what="ログアウト"/>
       </div>

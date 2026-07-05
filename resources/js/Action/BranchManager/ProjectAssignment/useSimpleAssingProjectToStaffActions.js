@@ -1,5 +1,6 @@
 import {route} from 'ziggy-js';
 import React from 'react';
+import { router } from '@inertiajs/react';
 import useHandleDataChange from './DataInput/useHandleDateChange';
 import popUpPositionSeeting from '../../../Support/Common/popUpPositionSetting';
 import SimpleFormatDataByProjects from './DataConfirm/SimpleFormatDataByProjects';
@@ -137,5 +138,15 @@ const onConfirmCancelClick=(e)=>{
     // post(route("branch_manager.store_including_duplicated_plans"));
  }
 
-  return{onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onMapChoiceClose,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick,}
+//  詳細版へのリンク
+const onMoveDetailPageClick=(routeName)=>{
+    if(!confirm("入力データは初期化されます\nよろしいですか？")){
+        return;
+    }
+    router.visit(route(routeName),{
+        preserveState:false
+    })
+}
+
+  return{onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onMapChoiceClose,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick,onMoveDetailPageClick}
 }

@@ -5,7 +5,7 @@ import TrForSum from "./TrForSum";
 import IssuedAndReturns from "./IssueAndReturns";
 
 // 報告書テーブルの内部
-export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,onAssignedInputChange,inputRefs,inputValues,tableSets,isConfirm,processing,fromSimpleFlag}){
+export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,tableSets,isConfirm,processing,fromSimpleFlag}){
 
     return(
          tableSets.map(function(eachTableSets,index){
@@ -28,9 +28,9 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,retur
 
                     {Object.entries(eachTableSets.dataInEachMainProject).map(function([mapNumber,eachDataByMap],trIndex){
                     return(
-                        Object.values(eachDataByMap).map((eachData,indexWithMaps)=>
+                        Object.values(eachDataByMap).map((eachData,indexInMaps)=>
                             // テーブルの中身
-                            <TbodyInner key={`${trIndex}_${indexWithMaps}`} {...{mainProjectName,projectSets,eachData,mapNumber,trIndex,indexWithMaps,widthSets,onAssignedInputChange,inputRefs,inputValues,isConfirm,fromSimpleFlag,processing}}/>
+                            <TbodyInner key={`${trIndex}_${indexInMaps}`} {...{mainProjectName,projectSets,eachData,mapNumber,trIndex,indexInMaps,widthSets,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,isConfirm,fromSimpleFlag,processing}}/>
                         )
                     )
                     })

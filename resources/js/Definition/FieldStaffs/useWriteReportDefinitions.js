@@ -12,8 +12,8 @@ export default function useWriteReportDefinitions(){
      //  報告書入力か確認か
      const [isConfirm,setIsConfirm]=React.useState(false);
 
-      // 表示する日付(選択中のY-m-d型の文字列を返す)
-      const [selectedDate,setSelectedDate]=React.useState("");
+    // 表示する日付(選択中のY-m-d型の文字列を返す)
+    const [selectedDate,setSelectedDate]=React.useState("");
 
     //   持ち出し部数(表示のみ)
     const [issuedCount,setIssuedCount]=React.useState(0)
@@ -22,7 +22,7 @@ export default function useWriteReportDefinitions(){
     const [returnedCount,setReturnedCount]=React.useState(0)
 
      // inputのvalue
-     const [inputValues, setInputValues]=React.useState([]);
+     const [inputValues, setInputValues]=React.useState({});
 
      //  inputのRef
       const inputRefs=React.useRef([]);
