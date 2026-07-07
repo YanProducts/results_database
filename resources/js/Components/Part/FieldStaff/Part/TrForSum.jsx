@@ -1,7 +1,11 @@
 import React from "react";
+import WriteReportContext from "../../../../Contexts/FieldStaffs/useWriteReportContexts";
 
 // 各案件の合計数
-export default function TrForSum({projectSets,isConfirm,sumSets}){
+export default function TrForSum({mainProjectName,projectSets,isConfirm,sumSets}){
+
+    // 最初に宣言すると、入れ子の最後まで使えるのがcontext(知ったのが途中からだったので、今から使用)
+    const {onSetOtherProjectToSameValueClick}=React.useContext(WriteReportContext)
 
     return(
         <React.Fragment>
@@ -35,6 +39,16 @@ export default function TrForSum({projectSets,isConfirm,sumSets}){
                )
             })}
         </tr>
+
+        <tr className={`border-black border-2 base_backColor`}>
+            <td className="bg-orange-300 border-x-2 border-black" colSpan={2}>同数セット</td>
+            {Object.keys(projectSets).map(function(projectId,index){
+                return(
+                <td key={index} className={`border-x-2 font-bold border-black py-2`}> <button className={`base_btn w-[80%] ${(sumSets?.[projectId]?.difference==0  && sumSets?.[projectId]?.textForDistributionCounts>0 )? "active_btn" : "non_active_btn"} text-sm` } onClick={(e)=>{onSetOtherProjectToSameValueClick(e,mainProjectName,projectId,index)}}>{index== 0 ? "併配" : "メイン\n"}同数</button></td>
+               )
+            })}
+        </tr>
+
         </React.Fragment>
         }
      </React.Fragment>

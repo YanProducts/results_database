@@ -1,7 +1,7 @@
 <?php
 
 // その日、そのスタッフのデータが概に存在するか
-namespace App\Actions\FieldStaff;
+namespace App\Actions\FieldStaff\WriteReport;
 
 use App\Support\Common\ModelHelpers\DistributionRecordHelper;
 use App\Support\Common\ModelHelpers\DistributionRecordHelpers;
@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class DataExistsCheck{
 
     // その日のそのスタッフのデータがすでに存在するか
+    // 基本的には前もって除去しているので存在しないが、戻るからの２重投稿のような場合を想定
     public static function data_exists_check($date,$staff_id){
         $duplicated_sets=DistributionRecordHelpers::data_in_the_date_and_staff($date,$staff_id);
 

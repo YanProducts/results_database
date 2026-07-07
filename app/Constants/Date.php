@@ -12,6 +12,10 @@ class Date{
     public const StartOffsetInReportPeriod=-2;
     public const EndOffsetInReportPeriod=5;
 
+    // スタッフが確認する報告書は何日前から何日後のものにするか
+    public const StartOffsetInConfirmReportPeriod=-30;
+    public const EndOffsetInConfirmReportPeriod=1;
+
     // 事務員が入力できる報告書は営業所に振られた最終配布日の何日後までOKか
     public const EndOffsetForClericalExport=-90;
 

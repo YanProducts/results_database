@@ -1,7 +1,7 @@
 <?php
 
 // 報告書で上がってきたデータをSQL登録する
-namespace App\Actions\FieldStaff;
+namespace App\Actions\FieldStaff\WriteReport;
 
 use App\Models\DistributionAssignment;
 use App\Support\Common\ModelHelpers\DistributionPlanHelpers;

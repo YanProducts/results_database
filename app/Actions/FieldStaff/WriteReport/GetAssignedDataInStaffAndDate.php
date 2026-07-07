@@ -1,11 +1,12 @@
 <?php
 // その日のそのスタッフにおける、割り当てられたデータ
-namespace App\Actions\FieldStaff;
+namespace App\Actions\FieldStaff\WriteReport;
+
 use App\Models\DistributionAssignment;
 use App\Models\DistributionPlan;
+use App\Models\DistributionRecord;
 use App\Models\FieldStaffList;
 use App\Support\Common\ModelHelpers\AddressHelpers;
-use App\Support\Common\ModelHelpers\DistributionPlanHelpers;
 use App\Support\Common\ModelHelpers\ProjectHelpers;
 use App\Support\FieldStaff\ChangeProjectNameForView;
 use App\Support\Common\GetDateRangeQuery;
@@ -18,27 +19,39 @@ class GetAssignedDataInStaffAndDate{
     public static function get_assigned_data($staff_id,$date_sets){
 
         // N+1防止のため、SQLデータを先に取得
-        [$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$existed_projects_sets,$existed_address_sets,$sub_plan_collections]=self::get_data_in_sql($staff_id,$date_sets);
+        [$submitted_dates,$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$existed_projects_sets,$existed_address_sets,$sub_plan_collections]=self::get_data_in_sql($staff_id,$date_sets);
 
         // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名がサブキー:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
         foreach(array_keys($date_sets) as $date){
+
+            // その日が配布済みに入っていたら報告リストには載せない
+            if($submitted_dates->contains($date)){
+                $return_sets[$date]=null;
+                $from_simple_flag[$date]=false;
+                continue;
+            }
+
             // phpはスコープ内宣言でOL
             [$return_sets[$date],$from_simple_flag[$date]]=self::get_data_by_date($date,$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$sub_plan_collections,$existed_projects_sets,$existed_address_sets);
         }
 
-        return [$return_sets ?? [], $from_simple_flag ??[] ];
+        return [$return_sets ?? [], $from_simple_flag ??[], $submitted_dates ];
     }
 
     // N+1防止のために一括取得
     public static function get_data_in_sql($staff_id,$date_sets){
 
+            // そのスタッフの、期間内を含む案件の、配布済のデータを含むdateの取得(planとassignのSQLデータは「期間」で取得しているため期間全取得、最後の配列変換の際に影響）
+            $submitted_dates=DistributionRecord::where("staff_id",$staff_id)->whereIn("distribution_date",array_keys($date_sets))->pluck("distribution_date")->unique()->values();
+
             // 期間内&営業所あてに割り当てられている全てのplan(併配リストを添付データに合わせるため担当外も必要)
             $all_distribution_plans=GetDateRangeQuery::get_date_range_query(DistributionPlan::select("id","project_id","same_project_flag","round_number","address_id","map_number","place_id","main_id")->where("place_id",FieldStaffList::where("id",Auth::user()->authable_id)->value("place_id")),$date_sets,"start_date")
             ->get();
 
-            // sqlに入っている、そのスタッフの、期間内を含む案件を取得(n+1防止に一括取得)。それをdateでまとめる
+            // sqlに入っている、そのスタッフの、期間内を含む案件を取得。それをdateでまとめる
             // ここにfromSimpleFlagも入ってる
             $data_in_staff_and_date=GetDateRangeQuery::get_date_range_query(DistributionAssignment::where("staff_id",$staff_id),$date_sets,"date")->get();
+
 
             // 上記に相当するplanの情報(世帯数や住所などに使う)
             // assignされた時点で、すでにメイン案件に絞られたものが送られているので、それに相当するものを取得
@@ -55,7 +68,8 @@ class GetAssignedDataInStaffAndDate{
             // その日に配布するわけではないが報告書に載る案件名も必要
             $existed_projects_sets=ProjectHelpers::get_project_names_with_another_project_flag_array_key_by_id(array_unique([...$existed_plan_collections->pluck("project_id"),...$sub_plan_collections->pluck("project_id")]));
 
-            return[$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$existed_projects_sets,$existed_address_sets,$sub_plan_collections];
+            return[$submitted_dates,
+            $data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$existed_projects_sets,$existed_address_sets,$sub_plan_collections];
     }
 
     // メイン案件のデータを返す(main_plan_collectionsはexisted_collectionsと同じ。assignの段階でメインに絞っているため)

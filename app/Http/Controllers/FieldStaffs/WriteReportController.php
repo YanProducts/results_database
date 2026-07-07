@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\FieldStaffs;
 
-use App\Actions\FieldStaff\DataExistsCheck;
-use App\Actions\FieldStaff\GetAssignedDataInStaffAndDate;
-use App\Actions\FieldStaff\StoreAfterDistribution;
+use App\Actions\FieldStaff\WriteReport\DataExistsCheck;
+use App\Actions\FieldStaff\WriteReport\GetAssignedDataInStaffAndDate;
+use App\Actions\FieldStaff\WriteReport\StoreAfterDistribution;
 use App\Constants\Date;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FieldStaff\WriteReportRequest;
@@ -28,7 +28,7 @@ class WriteReportController extends Controller
         $date_sets=DateHelper::get_date_key_value_sets_for_view(Carbon::now()->format("Y-m-d"),Date::StartOffsetInReportPeriod,Date::EndOffsetInReportPeriod);
 
         // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名-sameproject-roundnumberからとった案件名がサブキー、さらにmapNumberをnキーにおいて、:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
-        [$data_in_staff_and_date,$from_simple_flag]=GetAssignedDataInStaffAndDate::get_assigned_data($staff_id,$date_sets);
+        [$data_in_staff_and_date,$from_simple_flag,$submitted_dates]=GetAssignedDataInStaffAndDate::get_assigned_data($staff_id,$date_sets);
 
       return Inertia::render("FieldStaff/WriteReport",[
         "prefix"=>"field_staff",
@@ -40,7 +40,9 @@ class WriteReportController extends Controller
         // そのスタッフに割り当てられたデータ(期限内)
         "assignDataToStaff"=>$data_in_staff_and_date,
         // 少しでも地図のみから選択が入っていたらtrue
-        "fromSimpleFlag"=>$from_simple_flag
+        "fromSimpleFlag"=>$from_simple_flag,
+        // すでに提出データがある日のリスト
+        "submittedDates"=>$submitted_dates
       ]);
 
     }
@@ -52,8 +54,6 @@ class WriteReportController extends Controller
         $report_data=$request->reportData;
         $staff_id=Auth::user()->authable_id;
 
-        dd("a");
-
         // 存在確認
         if(!empty($duplicated_sets=DataExistsCheck::data_exists_check($date,$staff_id))){
             return back()->with($duplicated_sets);
@@ -62,7 +62,7 @@ class WriteReportController extends Controller
         // 投稿された値(dataとassignIdと、assignmentテーブルにis_mainがある場合は対応するprojectId)からプロジェクトIdと町目Idを取得し、それを保存する
         StoreAfterDistribution::store_report_data_procedure($date,$report_data,$staff_id);
 
-        return redirect()->route("view_information")->with(["information_message"=>"送信完了しました","linkRouteName"=>"field_staff.confirm_reports","linkPageInJpn"=>"確認ページ"]);
+        return redirect()->route("view_information")->with(["information_message"=>"送信完了しました","linkRouteName"=>"field_staff.overview_reports","linkPageInJpn"=>"確認ページ"]);
 
     }
 }

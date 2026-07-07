@@ -1,29 +1,32 @@
-import useWriteReportActions from "../../Action/FieldStaffs/useWriteReportActions";
-import useWriteReportDefinitions from "../../Definition/FieldStaffs/useWriteReportDefinitions";
+import useWriteReportActions from "../../Action/FieldStaff/useWriteReportActions";
+import useWriteReportDefinitions from "../../Definition/FieldStaff/useWriteReportDefinitions";
 import Layout from "../../Layout/Layout";
 import { RoleLayout } from "../../Layout/RoleLayout";
 import ReportDataInput from "../../Components/Part/FieldStaff/ReportDataInput";
 import ReportConfirm from "../../Components/Part/FieldStaff/ReportConfirm";
 import useWriteReportViewData from "../../Computed/FieldStaffs/useWriteReportViewData";
 import BaseLinkLine from "../../Components/Common/BaseLinkLine";
+import WriteReportContext from "../../Contexts/FieldStaffs/useWriteReportContexts";
 
-export default function WriteReport({what,type,prefix,staff,dateSets,assignDataToStaff,fromSimpleFlag}){
+export default function WriteReport({what,type,prefix,staff,dateSets,assignDataToStaff,fromSimpleFlag,submittedDates}){
 
     // assignDataToStaffキーのプロジェクト名はsameProjectFlagなども想定済みのもの
     const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,selectedDate,setSelectedDate,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,pageMinWidth,pageMaxWidth}=useWriteReportDefinitions();
 
-    const {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}=useWriteReportActions({inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post});
+    const {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onOtherProjectToSameValueClick,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}=useWriteReportActions({inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post});
 
     //テーブルのUIや変数などに必要な要素の取得(依存配列が変化しなければ再計算されない)
     const [tableSets,differenceExists]=useWriteReportViewData({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount});
 
     return(
+    <WriteReportContext.Provider value={{onOtherProjectToSameValueClick}}>
+
     <Layout title={`${what}-${type}`}>
      <RoleLayout prefix={prefix}>
 
         {/* 確認か入力か */}
         {!isConfirm ?
-        <ReportDataInput {...{what,type,pageMinWidth,pageMaxWidth,staff,selectedDate,onSelectedDateChange,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,
+        <ReportDataInput {...{what,type,pageMinWidth,pageMaxWidth,staff,selectedDate,onSelectedDateChange,submittedDates,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,
         dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,fromSimpleFlag}} />
         :
         <ReportConfirm {...{what,type,pageMaxWidth,pageMinWidth,data,assignDataToStaff,selectedDate,issuedCount,returnedCount,inputRefs,inputValues,onAssignedInputChange,onConfirmOkClick,onConfirmCancelClick,tableSets,errors,processing,isConfirm,fromSimpleFlag}}/>
@@ -38,5 +41,6 @@ export default function WriteReport({what,type,prefix,staff,dateSets,assignDataT
 
      </RoleLayout>
     </Layout>
+  </WriteReportContext.Provider>
     )
 }

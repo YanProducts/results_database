@@ -1,6 +1,6 @@
 import { Link } from "@inertiajs/react";
 import { route } from "ziggy-js";
-export default function BaseLinkLine({minWidth="min-w-75", maxWidth="max-w-250",routeName,what,needAlert=false,needAlertFunc=()=>{}}){
+export default function BaseLinkLine({minWidth="min-w-75", maxWidth="max-w-250",routeName,routeParams=undefined,what,needAlert=false,needAlertFunc=()=>{}}){
 
     return(
     <>
@@ -8,11 +8,10 @@ export default function BaseLinkLine({minWidth="min-w-75", maxWidth="max-w-250",
 
             {/* ダイレクトにリンクさせるか、確認表示からのlocation.hrefか */}
             {!needAlert ?
-            <Link className="cursor-pointer  text-blue-500 border-blue-500 border-b-2" href={route(`${routeName}`)}>こちら</Link>
+            <Link className="cursor-pointer  text-blue-500 border-blue-500 border-b-2" href={routeParams === undefined ? route(routeName) : route(routeName, routeParams)}>こちら</Link>
             :
             <span onClick={()=>needAlertFunc(routeName)}  className="cursor-pointer  text-blue-500 border-blue-500 border-b-2">こちら</span>
             }
-
             から</p></div>
     </>
     )

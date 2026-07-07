@@ -42,6 +42,11 @@ class AddressHelpers{
                         ])->exists();
     }
 
+    // idのセットに含まれる市の名前のみをidをキーにして返却（表においてわかりやすいように市の名前のみを返すことを想定）
+    public static function get_only_city_name_from_ids($ids){
+        return Address::whereIn("id",$ids)->pluck("city","id");
+    }
+
 
 
 }

@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FieldStaffs\ReportManagementController;
 use App\Http\Controllers\FieldStaffs\WriteReportController;
 
 
@@ -52,10 +53,10 @@ Route::prefix("field_staff")
                     ->name("write_report_post");
 
                 });
-            Route::controller(WriteReportController::class)
+            Route::controller(ReportManagementController::class)
                 ->group(function(){
-                    // 報告書確認/編集(日付リスト)
-                    Route::get("overview_reports","overview_reports")
+                    // 報告書確認/編集(日付リスト) //monthパラメータは何か月前か
+                    Route::get("overview_reports/{year?}/{month?}","overview_reports")
                     ->name("overview_reports");
                     // 報告書の日付リスト→日付を指定して確認
                     Route::get("show_detail_report/{date}","show_detail_report")

@@ -3,9 +3,10 @@ import SelectPartsForViewChange from "../../Common/SelectPartsForViewChange";
 import ReportInner from "./Part/ReportInner";
 import ViewValidationErrors from "../../Common/ViewValidationErrors";
 import CheckAndSubmits from "./Part/CheckAndSubmits";
+import BaseLinkLine from "../../Common/BaseLinkLine";
 
 // 報告書の記入
-export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,staff,selectedDate,onSelectedDateChange,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,fromSimpleFlag}){
+export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,staff,selectedDate,onSelectedDateChange,submittedDates,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,fromSimpleFlag}){
 
   return(
     <>
@@ -32,9 +33,14 @@ export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,sta
 
                 <p>　</p>
              </>
-            :
+            :(submittedDates.includes(selectedDate) ?
+               <div>
+                <p className={`base_frame base_backColor mt-2 ${pageMinWidth} ${pageMaxWidth} text-center font-bold text-red-600`}>すでにデータは投稿されております</p>
+                <BaseLinkLine routeName={`field_staff.show_detail_report`} minWidth={pageMinWidth} maxWidth={pageMaxWidth} routeParams={selectedDate} what="確認する場合"/>
+              </div>
+             :
               <div className={`text-center base_frame base_backColor ${pageMinWidth} ${pageMaxWidth} mb-3`}><p>案件は届いておりません</p></div>
-            )}
+            ))}
         </form>
      </>
   )

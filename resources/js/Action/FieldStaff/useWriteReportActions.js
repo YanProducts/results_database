@@ -79,6 +79,20 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
         // }
     }
 
+    // 他の案件も同じ値を挿入する時
+    const onOtherProjectToSameValueClick=(e,mainProjectName,projectId,index)=>{
+        // テーブルの要素
+        console.log(tableSets);
+        // メイン案件
+        console.log(mainProjectName);
+        // 現在入力中の案件(メイン案件の中のどれか)
+        console.log(projectId);
+        // 現在の案件がメインかどうかを見る
+        console.log(index);
+        // これが実際に反映させる数
+        console.log(inputValues);
+    }
+
 
 
     // 決定ボタンを押した際は確認ページを表示する
@@ -140,6 +154,6 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
         setIsConfirm(false);
     }
 
-    return {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}
+    return {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onOtherProjectToSameValueClick,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}
 
 }
