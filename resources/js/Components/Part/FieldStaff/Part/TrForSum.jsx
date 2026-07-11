@@ -44,7 +44,7 @@ export default function TrForSum({mainProjectName,projectSets,isConfirm,sumSets}
             <td className="bg-orange-300 border-x-2 border-black" colSpan={2}>同数セット</td>
             {Object.keys(projectSets).map(function(projectId,index){
                 return(
-                <td key={index} className={`border-x-2 font-bold border-black py-2`}> <button className={`base_btn w-[80%] ${(sumSets?.[projectId]?.difference==0  && sumSets?.[projectId]?.textForDistributionCounts>0 )? "active_btn" : "non_active_btn"} text-sm` } onClick={(e)=>{onSetOtherProjectToSameValueClick(e,mainProjectName,projectId,index)}}>{index== 0 ? "併配" : "メイン\n"}同数</button></td>
+                <td key={index} className={`border-x-2 font-bold border-black py-2`}> <span className={`base_btn w-[80%] ${(sumSets?.[projectId]?.difference==0  && sumSets?.[projectId]?.textForDistributionCounts>0 )? "active_btn" : "non_active_btn"} text-sm` } onClick={(e)=>{onSetOtherProjectToSameValueClick(e,mainProjectName,projectId,index)}}>{index== 0 ? "併配" : "メイン\n"}同数</span></td>
                )
             })}
         </tr>

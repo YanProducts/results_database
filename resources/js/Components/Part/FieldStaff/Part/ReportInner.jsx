@@ -7,12 +7,6 @@ import IssuedAndReturns from "./IssueAndReturns";
 // 報告書テーブルの内部
 export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,tableSets,isConfirm,processing,fromSimpleFlag}){
 
-
-
-    console.log(tableSets);
-
-
-
     return(
          tableSets.map(function(eachTableSets,index){
                 // プロジェクトの数に応じてthやtdの長さの変化

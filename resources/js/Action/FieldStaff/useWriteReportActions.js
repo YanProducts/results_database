@@ -1,7 +1,7 @@
 import React from "react";
 import { route } from "ziggy-js";
 
-export default function useWriteReportActions({inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post}){
+export default function useWriteReportActions({assignDataToStaff,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post}){
 
 
     // 日付が変更されたらpost用のデータにセット(他のデータは自動的に初期化)
@@ -80,17 +80,63 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
     }
 
     // 他の案件も同じ値を挿入する時
-    const onOtherProjectToSameValueClick=(e,mainProjectName,projectId,index)=>{
+    const onSetOtherProjectToSameValueClick=(e,mainProjectName,projectId,index)=>{
+        e.preventDefault()
         // テーブルの要素
-        console.log(tableSets);
+        // console.log(tableSets);
         // メイン案件
-        console.log(mainProjectName);
-        // 現在入力中の案件(メイン案件の中のどれか)
+        // console.log(mainProjectName);
+        // // 現在入力中の案件(メイン案件の中のどれか)
         console.log(projectId);
-        // 現在の案件がメインかどうかを見る
-        console.log(index);
-        // これが実際に反映させる数
-        console.log(inputValues);
+        // // 現在の案件がメインかどうかを見る
+        // console.log(index);
+        // // これが現在すでにデータにある数であり、今後反映させる数
+        // console.log(inputValues);
+        // 元々の渡されたプロジェクト
+        console.log(assignDataToStaff)
+
+        // 参照しないコピー
+        const inputMainProjectCopy=structuredClone(inputValues[mainProjectName])
+
+        // メイン案件の時
+        if(index==0){
+            // それぞれのmainProjectにおけるキーの取得(これはassignId、つまり割り当て後の案件のキー:mainのみ)
+            const mainKeys=Object.keys(inputMainProjectCopy);
+            mainKeys.forEach(function(mainKey){
+
+                // メイン案件が入力されているものの取得
+                if(inputMainProjectCopy?.[mainKey].main){
+
+                    console.log("その町目におけるassignID(inputされた値のキー)")
+                    console.log(mainKey)
+
+
+                    console.log("inputから取得されたメイン案件における、この町目IDにおける、メイン案件のデータ=つまり入力され、これからコピーされるべき数")
+                    console.log(inputMainProjectCopy?.[mainKey].main)
+
+                    // その日、そのスタッフ、そのメイン案件に割り当てられたデータ
+                    // キーにはmap番号が振られているので、データはvalueに入っている
+                    Object.values(assignDataToStaff[selectedDate][mainProjectName].each_data).forEach(function(eachAssignedData){
+                    console.log("Laravelから送られてきて、このスタッフ・この日・このメイン案件のデータ")
+                    console.log(eachAssignedData)
+
+                    // 今入力している町目のidにおける、Laravelから送られてきた値で参照される併配が記述された一式
+                    const matchdAssignData=eachAssignedData.find(eachTownData=>eachTownData?.assign_id==mainKey)
+                    console.log(matchdAssignData) //foreachされているので、それぞれに置いて出てくる
+                            // ここでinputValueに繋がる値を設定する
+
+                    })
+
+
+                    // const subId="そのメイン案件で空いている併配案件の取得";
+                    // inputMainProjectCopy[mainKey][subId]=inputMainProjectCopy[mainKey].main;
+
+                }
+            })
+
+        }
+
+
     }
 
 
@@ -154,6 +200,6 @@ export default function useWriteReportActions({inputValues,setInputValues,inputR
         setIsConfirm(false);
     }
 
-    return {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onOtherProjectToSameValueClick,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}
+    return {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}
 
 }
