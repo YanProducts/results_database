@@ -34,7 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
             // Assign時の重複確認のルートに重複確認テーブルがない
             "assignStaffDuplicatedCheck"=>App\Http\Middleware\Import\AssignStaffDuplicatedCheck::class,
             // 開発環境以外は通さない(SQL挿入など)
-            "onlyLocal"=>\App\Http\Middleware\AbortIfProductionMiddleware::class
+            "onlyLocal"=>\App\Http\Middleware\AbortIfProductionMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

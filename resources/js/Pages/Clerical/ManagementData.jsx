@@ -41,7 +41,7 @@ export default function ManagementData({prefix,what,type,projectsInSql,archiveCu
                <BaseButton minWidth={pageMinWidth} maxWidth={pageMaxWidth} processing={processing}/>
             </form>
 
-            <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth} what={`割り当て最終日が${archiveCutOffDate}より前ものは`}routeName="clerical.check_archives"/>
+            <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth} what={`割り当て最終日が${archiveCutOffDate}より前ものは`} routeName="clerical.management_report" routeParams={{end_offset:"-120"}}/>
             <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth} what={`入力を終えたデータの確認は`}routeName="clerical.check_archives"/>
 
             {/* リンク */}

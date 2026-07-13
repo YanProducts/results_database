@@ -4,6 +4,7 @@
 namespace App\Actions\Clerical;
 
 use App\Exceptions\BusinessException;
+use App\Support\Common\ModelHelpers\FieldStaffListHelpers;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -29,7 +30,6 @@ class FormatData{
                 "recorded_distribution_counts"=>$recorded_data["sum_distribution_counts"] ?? 0,
                 // 案件が入力が終了しているか
                 "is_complete"=>$project_data["is_complete"]
-
             ];
         }
         return $projects_in_sql;
@@ -41,8 +41,8 @@ class FormatData{
         $formatted_distribution_data=$distribution_record_sets->mapWithKeys(fn($each_set,$plan_id)=>
             [$plan_id=>[
             "distribution_counts"=>$each_set->pluck("distribution_count")->sum(),
-            "staff_ids"=>implode("、",$each_set->pluck("staff_id")->toArray()),
-            "distribution_dates"=>implode("、",$each_set->pluck("distribution_date")->toArray())
+            "staff_ids"=>implode("・",($each_set->pluck("staff_id")->unique())->map(fn($staff_id)=>FieldStaffListHelpers::get_real_staff_name($staff_id))->sort()->toArray()),
+            "distribution_dates"=>implode("・",($each_set->pluck("distribution_date")->sort()->unique())->map(fn($date)=>Carbon::parse($date)->format("n月j日"))->toArray())
             ]
         // 後にスプレッド展開するので配列に直す
         ])->toArray();

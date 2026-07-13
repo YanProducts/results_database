@@ -12,4 +12,11 @@ class FieldStaffListHelpers{
         return FieldStaffList::findOrFail($staff_id)->place_id;
     }
 
+    // ユーザーのスタッフ名を返す(登録されていなければ「No...」の形式)
+    public static function get_real_staff_name($staff_id){
+         $instance=FieldStaffList::findOrFail($staff_id);
+
+         return $instance->staff_name ?? $instance->user_name;
+    }
+
 }

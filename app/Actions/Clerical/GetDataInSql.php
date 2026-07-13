@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Log;
 class GetDataInSql{
 
     // 現在SQLにある案件-配布の集約的データsqlから取得
-    public static function get_aggregated_data_in_sql(){
+    public static function get_aggregated_data_in_sql($end_offset){
         // 案件リスト(締切後３ヶ月以内、締切日ごとに並べる)
-        $project_sets=Project::select("id","project_name","end_date","is_complete")->where("end_date",">", CarbonImmutable::now()->addDays(Date::EndOffsetForClericalExport))->get()->keyBy("id");
+        $project_sets=Project::select("id","project_name","end_date","is_complete")->where("end_date",">", CarbonImmutable::now()->addDays($end_offset ?? Date::EndOffsetForClericalExport))->get()->keyBy("id");
 
         //プロジェクトごとの営業所に振られた町目数
         $town_counts=DistributionPlan::select("project_id", DB::raw("count(*) as planned_town_counts"))->groupBy("project_id")->get()->keyBy("project_id");
@@ -29,7 +29,9 @@ class GetDataInSql{
         return [$project_sets,$town_counts,$recorded_counts];
     }
 
+
     // 現在、プランされている案件のうち、id(projectsテーブルの)にある案件の町目id,部数,スタッフ(複数人の場合あり)を返す
+    //csvエクスポート決定以降の処理
     public static function get_detailed_planned_data_by_project_ids($project_ids){
 
         // DistrbutionPlanから、そのプロジェクトに対応するplanのidを取得し、そのidと町目idを取得(未配布や0枚の可能性もあるので、Recordのみからは取得しない)

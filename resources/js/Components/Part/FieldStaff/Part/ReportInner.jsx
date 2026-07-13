@@ -25,7 +25,6 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,retur
 
 
                 {/* その日そのメイン案件におけるセットが「keyValueSets」で、それをmapごとにわけ、それを町目ごとに見ていく */}
-
                     {Object.entries(eachTableSets.dataInEachMainProject).map(function([mapNumber,eachDataByMap],trIndex){
                     return(
                         Object.values(eachDataByMap).map((eachData,indexInMaps)=>

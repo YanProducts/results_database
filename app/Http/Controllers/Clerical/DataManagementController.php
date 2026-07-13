@@ -20,10 +20,10 @@ use Inertia\Inertia;
 class DataManagementController extends Controller
 {
    // 入力担当が現時点で記録されているデータを確認、エクスポートか自分で記録追加かを決める
-    public function management_report(){
+    public function management_report($end_offset=null){
 
         // SQLからデータを取得
-        [$project_sets,$town_count_sets,$reported_count_sets]=GetDataInSql::get_aggregated_data_in_sql();
+        [$project_sets,$town_count_sets,$reported_count_sets]=GetDataInSql::get_aggregated_data_in_sql($end_offset);
 
         // データをUI用に変換
         $projects_in_sql=FormatData::data_change_for_management_page($project_sets,$town_count_sets,$reported_count_sets);
@@ -34,12 +34,13 @@ class DataManagementController extends Controller
         "what"=>"入力担当",
         "type"=>"案件データ一覧",
         "projectsInSql"=>$projects_in_sql,
-        "archiveCutOffDate"=>Carbon::now()->addDays((Date::EndOffsetForClericalExport)-1)->format("n月j月")
+        "archiveCutOffDate"=>Carbon::now()->addDays($end_offset ?? (Date::EndOffsetForClericalExport)-1)->format("n月j月")
         ]);
     }
 
     // 報告書CSV作成(Inertiaは)
     public function create_report_csv(CSVExportRequest $request){
+
         // CSV出力する案件の取得
         $project_ids=$request->idSets;
 

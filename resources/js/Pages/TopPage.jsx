@@ -3,7 +3,7 @@ import ThemeLists from "../Components/Part/topPage/ThemeLists";
 import BasePageHeader from "../Components/Common/BasePageHeader";
 
 // トップページ
-export default function TopPage({}){
+export default function TopPage(){
 
   return(
     <Layout title="トップ">

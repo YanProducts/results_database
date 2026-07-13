@@ -58,6 +58,9 @@ class StoreAfterDistribution{
                 "staff_id"=>$staff_id,
                 "created_at"=>$now, "updated_at"=>$now,
             ];
+
+            Log::info($report_data);
+
             // report_dataは必ず１以上の配列とバリデーション済
             foreach($report_data as $each_report_data){
                 // 投稿されたassignId
@@ -67,7 +70,8 @@ class StoreAfterDistribution{
                 // 対応するplan_idのデータ(そのstaffが対象かどうかはバリデーション済)=(すでにmain案件)
                 $insert_array[]=[
                     ...$base_insert_array,
-                    "distribution_count"=>$each_report_data["mainCount"],
+                    // 併配のみの場合は空欄になっているので「0」を記入
+                    "distribution_count"=>$each_report_data["mainCount"] ?? 0,
                     "address_id"=>$main_data_for_insert[$plan_id]["address_id"],
                     "project_id"=>$main_data_for_insert[$plan_id]["project_id"],
                     "remarks"=>"",
@@ -89,6 +93,11 @@ class StoreAfterDistribution{
 
                 // サブ案件のデータをメイン案件のプランidのキーに対して取得し、そのうちに投稿されたproject_idと同じものを取得(filterは単一ではないので0を返すことが必要)
                 $sub_plan_data=$sub_data_for_insert->get($plan_id)?->first(fn($sub_data)=>$sub_data->project_id==$sub_project_id) ?? throw new \App\Exceptions\BusinessException("メインに対応する併配案件データが見つかりません");
+
+                // 途中で消して空白になっている場合は次のループへ
+                if($reported_sub_data["subCount"]==""){
+                    continue;
+                }
 
                 // 対応するplan_idのデータ
                 $insert_array[]=[

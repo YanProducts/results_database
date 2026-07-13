@@ -19,6 +19,7 @@ export default function TbodyInner({mainProjectName,projectSets,eachData,mapNumb
                                     <MainTdInner {...{isConfirm,onAssignedInputChange,assignId,mainProjectName,trIndex,indexInMaps,index,inputValues,inputRefs,onInputKeyDown,processing,fromSimpleFlag}} />
                                 </td>
                        )}
+
                         // 併配セット
                         return(
                             eachData.sub_sets.map(subProjectIdInnAssignSets=>Number(subProjectIdInnAssignSets)).includes(subProjectId) ?

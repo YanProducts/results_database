@@ -2,8 +2,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Clerical\DataManagementController;
-use App\Http\Controllers\Clerical\ExportController;
 use App\Http\Controllers\Clerical\WriteReportController;
+use Inertia\Inertia;
 
 //webミドルウェアが適用される(CSRFTokenも適用)function郡(基本全て)
 Route::prefix("clerical")
@@ -32,14 +32,23 @@ Route::prefix("clerical")
             Route::post("pass_change","post_pass_change")
             ->name("pass_change_post");
         });
+
+        // トップページへ(報告書入力以外に発注書作成なども考える)
+        Route::get("top_page",function(){
+            return Inertia::render("Clerical/TopPage",[
+            "prefix"=>"clerical",
+            "what"=>"入力担当",
+            "type"=>"トップ",
+            ]);
+        })
+        ->name("top_page");
+
+
         // 入力を行うページへ(認証や違う認証の場合は現場用のログインページへ)
         Route::middleware(["redirectUnAuth","redirectUnMatchedRole:clerical"])
             ->group(function(){
                 Route::controller(WriteReportController::class)
                  ->group(function(){
-                        // // トップページへ(報告書入力以外に発注書作成なども考える)
-                        // Route::get("top_page","top_page")
-                        // ->name("top_page");
                         // 報告書編集(入力担当用)
                         Route::get("write_report/{edit_id}","write_report")
                         ->name("write_report");
@@ -50,21 +59,24 @@ Route::prefix("clerical")
                 Route::controller(DataManagementController::class)
                  ->group(function(){
                         // 入力担当が現時点で記録されているデータを確認、エクスポートか自分で記録追加かを決める
-                        Route::get("management_report","management_report")
+                        Route::get("management_report/{end_offset?}","management_report")
                         ->name("management_report");
+
                         // 報告書CSV作成(入力担当用)
                         Route::post("create_report_csv","create_report_csv")
                         ->name("create_report_csv");
+
                         // 上記のCSVダウンロード(入力担当用) *Inertiaの仕様上ルートを分けている
                         Route::get("download_report_csv","download_report_csv")
                         ->name("download_report_csv");
-                        // 以前の報告データのチェック
+
+                        // 完成した案件のデータのチェック
                         Route::get("check_archives","check_archives")
                         ->name("check_archives");
+
                         // 完成フラグの決定(fetch)
                         Route::post("toggle_complete","toggle_complete")
                         ->name("toggle_complete");
-
                     });
 
                 // 発注書作成系統
