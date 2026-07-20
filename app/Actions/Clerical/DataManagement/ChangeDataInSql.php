@@ -1,6 +1,6 @@
 <?php
-// 入力担当によるSQLデータの変更
-namespace App\Actions\Clerical;
+// 入力担当の報告書入力におけるSQLデータの変更
+namespace App\Actions\Clerical\DataManagement;
 
 use App\Models\Project;
 use Illuminate\Support\Facades\DB;

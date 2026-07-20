@@ -2,6 +2,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Clerical\DataManagementController;
+use App\Http\Controllers\Clerical\PurchaseOrderController;
 use App\Http\Controllers\Clerical\WriteReportController;
 use Inertia\Inertia;
 
@@ -80,7 +81,7 @@ Route::prefix("clerical")
                     });
 
                 // 発注書作成系統
-                 Route::controller(DataManagementController::class)
+                 Route::controller(PurchaseOrderController::class)
                  ->group(function(){
                         // 発注書のエクスポート確認
                         Route::get("export_purchase_order","export_purchase_order")

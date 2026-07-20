@@ -1,6 +1,6 @@
 <?php
-// CSVエクスポート時の流れ
-namespace App\Actions\Clerical;
+// 報告書CSVエクスポート時の流れ
+namespace App\Actions\Clerical\DataManagement;
 
 use App\Constants\Download;
 use App\Support\Common\CSVExporter;

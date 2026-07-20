@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\ProjectOperator;
+namespace App\Actions\ProjectOperator\Dispatch;
 
 // 案件割り当てページの表示に関する操作
 class DispatchFormData{

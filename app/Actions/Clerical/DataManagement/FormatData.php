@@ -1,7 +1,7 @@
 <?php
 
 // UI表示やその他の事情に合わせて、データを計算・整理して並び替える
-namespace App\Actions\Clerical;
+namespace App\Actions\Clerical\DataManagement;
 
 use App\Exceptions\BusinessException;
 use App\Support\Common\ModelHelpers\FieldStaffListHelpers;

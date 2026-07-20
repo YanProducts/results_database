@@ -16,8 +16,11 @@ class Date{
     public const StartOffsetInConfirmReportPeriod=-30;
     public const EndOffsetInConfirmReportPeriod=4;
 
-    // 事務員が入力できる報告書は営業所に振られた最終配布日の何日後までOKか
+    // 入力担当が入力できる報告書は営業所に振られた最終配布日の何日後までOKか
     public const EndOffsetForClericalExport=-90;
+
+    //発注書リストのデータリストの初期表示は何ヶ月前からのものにするか
+    public const PurchaseListDefaultMonthsBack=36;
 
 }
 

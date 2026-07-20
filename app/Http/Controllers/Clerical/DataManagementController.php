@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Clerical;
 
-use App\Actions\Clerical\ChangeDataInSql;
-use App\Actions\Clerical\CSVExportFlow;
-use App\Actions\Clerical\FormatData;
-use App\Actions\Clerical\GetDataInSql;
+use App\Actions\Clerical\DataManagement\ChangeDataInSql;
+use App\Actions\Clerical\DataManagement\CSVExportFlow;
+use App\Actions\Clerical\DataManagement\GetDataInSql;
+use App\Actions\Clerical\DataManagement\FormatData;
+
 use App\Constants\Date;
 use App\Constants\Download;
 use App\Exceptions\BusinessException;
@@ -51,6 +52,7 @@ class DataManagementController extends Controller
             // ひとまずは成功jsonを返す(Inertiaではレスポンスを期待され、「ファイルをダウンロード」という処理ができない)
             return response()->json(["is_create"=>true]);
         }catch(\Throwable $e){
+            Log::info($e->getMessage());
             // ファイル作成失敗の場合
             return response()->json(["is_create"=>false]);
         }
@@ -66,11 +68,6 @@ class DataManagementController extends Controller
         }else{
             return redirect()->back()->withErrors(["download"=>"ファイル作成ができておりません\n失敗が続く場合は作成者にご連絡ください"]);
         }
-    }
-
-    // 発注書エクスポート確認
-    public function export_purchase_order(){
-
     }
 
     // 案件の完成/編集可能の変換

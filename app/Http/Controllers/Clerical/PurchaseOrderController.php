@@ -2,14 +2,27 @@
 
 namespace App\Http\Controllers\Clerical;
 
+use App\Constants\Date;
 use App\Http\Controllers\Controller;
+use App\Support\Common\ModelHelpers\FieldStaffListHelpers;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 // 発注書作成のコントローラー
 class PurchaseOrderController extends Controller
 {
     //発注書のエクスポートする人と期間の設定する画面表示
     public function export_purchase_order(){
+
+        return Inertia::render("Clerical/PurchaseOrder",[
+        "prefix"=>"clerical",
+        "what"=>"入力担当",
+        "type"=>"発注書作成",
+        // スタッフの取得、営業所名ごとで括った入れ子の配列
+        "staffsGroupByPlaces"=>FieldStaffListHelpers::get_all_staffs_group_by_place_name(),
+        // 初期表示は何ヶ月前からか
+        "defaultStartDateForPurchaseLists"=>Date::PurchaseListDefaultMonthsBack
+        ]);
 
     }
 

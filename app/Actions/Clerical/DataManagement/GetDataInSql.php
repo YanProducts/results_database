@@ -1,5 +1,6 @@
 <?php
-namespace App\Actions\Clerical;
+namespace App\Actions\Clerical\DataManagement;
+// 入力担当の報告書入力におけるSQLデータの捕捉
 
 use App\Models\Project;
 use App\Models\DistributionPlan;

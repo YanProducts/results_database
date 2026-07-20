@@ -1,8 +1,8 @@
 // 入力系統のinput
-export default function DoubleSelectParts({name1,name2,value1,value2,onChange1,onChange2,prefix,keyValueSets1,keyValueSets2}){
+export default function DoubleSelectParts({name1,name2,value1,value2,onChange1,onChange2,prefix,keyValueSets1,keyValueSets2,prefixPercent="w-[20%]",needWhiteSpace=false}){
   return(
     <div className="flex items-center base_frame min-w-80 max-w-100 mx-auto my-3">
-      <span className="inline-block w-[20%]  text-right">{prefix}</span>
+      <span className={`inline-block text-right ${prefixPercent} ${needWhiteSpace && "whitespace-pre-wrap"}`}>{prefix}</span>
       <select className="inline-block w-[35%] bg-white border-black border rounded-sm" name={name1} value={value1} onChange={onChange1}>
         {/* 未登録の場合 */}
         {(!keyValueSets1 || Object.keys(keyValueSets1).length==0) ? <option disabled value="">登録されていません</option> :
