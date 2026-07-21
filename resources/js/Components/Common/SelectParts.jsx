@@ -1,14 +1,7 @@
 // 入力系統のinput(タイトルをつける)
 export default function SelectParts({name,value,onChange,prefix,prefixPercent="w-[30%]",selectPercent="w-[60%]",maxWidth="max-w-80", minWidth="min-w-72.5", prefixMinWidth="min-w-32", selectMinWidth="min-w-35",  keyValueSets,allowEmptyOption,withOpt=false,needWhiteSpace=false}){
 
-console.log(Object.entries(keyValueSets))
-Object.entries(keyValueSets).map(function(keyValueSet){
-    console.log(keyValueSet[0])
-    console.log(keyValueSet[1])
-    return [];
-})
-
-      return(
+    return(
     <div className={`flex items-center base_frame ${minWidth} ${maxWidth} mx-auto my-3`}>
       <span className={`inline-block ${prefixPercent} ${prefixMinWidth} text-right ${needWhiteSpace && "whitespace-pre-wrap"}`}>{prefix}</span>
       <select className={`inline-block ${selectPercent} ${selectMinWidth} bg-white border-black border rounded-b-sm`} name={name} value={value} onChange={onChange}>

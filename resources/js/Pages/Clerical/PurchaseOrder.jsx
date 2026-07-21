@@ -13,12 +13,15 @@ import usePurchaseOrderViewData from "../../Computed/Clerical/usePurchaseOrderVi
 export default function PurchaseOrder({prefix,what,type,staffsGroupByPlaces,defaultStartDateForPurchaseLists}){
 
     // 定義
-     const { data, setData, post, processing, errors,clearErrors,reset,limitMonth,setLimitMonth,limitYearLists,selectedStaff,setSelectedStaff,selectedStartMonth,setSelectedStartMonth,selectedEndMonth,setSelectedEndMonth,pageMinWidth,pageMaxWidth}=usePurchaseOrderDefinitions({defaultStartDateForPurchaseLists});
+     const { limitMonth,setLimitMonth,limitYearLists,selectedStaff,setSelectedStaff,selectedStartMonth,setSelectedStartMonth,selectedEndMonth,setSelectedEndMonth,processingRef,buttonOk,setButtonOk,pageMinWidth,pageMaxWidth}=usePurchaseOrderDefinitions({defaultStartDateForPurchaseLists});
+
+    // UIで使うメモ(actionでも「セットされたら」という条件があるので先に定義)
+    const monthSets=usePurchaseOrderViewData({limitMonth})
 
     // 動き
-    const {onStaffChange,onSelectedStartMonthChange,onSelectedEndMonthChange,onLimitMonthChange,onDecidePurchase}=usePurchaseOrderActions({post,data,setData,setSelectedStaff,selectedStartMonth,setSelectedStartMonth,selectedEndMonth,setSelectedEndMonth,limitMonth,setLimitMonth});
+    const {onStaffChange,onSelectedStartMonthChange,onSelectedEndMonthChange,onLimitMonthChange,onDecidePurchase}=usePurchaseOrderActions({selectedStaff,setSelectedStaff,selectedStartMonth,setSelectedStartMonth,selectedEndMonth,setSelectedEndMonth,limitMonth,setLimitMonth,setButtonOk,processingRef,monthSets});
 
-    const monthSets=usePurchaseOrderViewData({limitMonth})
+
 
     return(
         <Layout title={`${what}-${type}`}>
@@ -39,7 +42,7 @@ export default function PurchaseOrder({prefix,what,type,staffsGroupByPlaces,defa
             <SelectParts minWidth={pageMinWidth} maxWidth={pageMaxWidth} prefix={"選択範囲　"} prefixPercent={"w-[35%]"} selectPercent="w-[45%]" needWhiteSpace={true}  withOpt={false} allowEmptyOption={false} onChange={onLimitMonthChange} name={"limitMonth"} value={limitMonth/12} keyValueSets={limitYearLists} />
 
             {/* 提出ボタン */}
-            <BaseButton processing={processing} minWidth={pageMinWidth} maxWidth={pageMaxWidth}/>
+            <BaseButton processing={!buttonOk} minWidth={pageMinWidth} maxWidth={pageMaxWidth}/>
             </form>
 
             {/* リンク */}
