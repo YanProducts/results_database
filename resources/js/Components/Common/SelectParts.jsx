@@ -12,10 +12,11 @@ export default function SelectParts({name,value,onChange,prefix,prefixPercent="w
             {allowEmptyOption ? <option value="">登録しない</option> : <option disabled value="">選択してください</option> }
 
             {/* optgroupがあるかで分ける */}
+            {/* optgroupがあるものは入れ子のオブジェクトになっているのが前提 */}
             {withOpt ?
               Object.entries(keyValueSets).map(([key,valueSets],index)=>
                 <optgroup key={index} label={key}>
-                {Object.values(valueSets).map((valueSet)=><option key={valueSet.id} value={valueSet.id}>{valueSet.staff_name}</option>)}
+                {Object.entries(valueSets).map(([innerKey,innerValue])=><option key={innerKey} value={innerKey}>{innerValue}</option>)}
                 </optgroup>
               )
             :

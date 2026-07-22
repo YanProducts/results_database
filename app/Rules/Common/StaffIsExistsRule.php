@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Rules\BranchManager;
+namespace App\Rules\Common;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;

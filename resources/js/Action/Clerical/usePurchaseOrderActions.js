@@ -1,6 +1,7 @@
 import { route } from "ziggy-js";
 import axios from "axios";
 import React from "react";
+import handleAxiosError from "../../Support/Common/handleAxiosError";
 
 export default function usePurchaseOrderActions({selectedStaff,setSelectedStaff,selectedStartMonth,setSelectedStartMonth,selectedEndMonth,setSelectedEndMonth,limitMonth,setLimitMonth,processingRef,setButtonOk,monthSets}){
 
@@ -10,7 +11,6 @@ export default function usePurchaseOrderActions({selectedStaff,setSelectedStaff,
         if(!monthSets || Object.keys(monthSets)==0 || selectedStartMonth || selectedEndMonth){
             return
         }
-        console.log("a")
         setSelectedStartMonth(new Date(Object.keys(monthSets)[0]))
         setSelectedEndMonth(new Date(Object.keys(monthSets)[0]))
     },[monthSets])
@@ -18,8 +18,6 @@ export default function usePurchaseOrderActions({selectedStaff,setSelectedStaff,
 
     // 開始月<終了月にセット(開始月変化)
     React.useEffect(()=>{
-        console.log(selectedEndMonth)
-        console.log(selectedStartMonth)
         if(selectedEndMonth<selectedStartMonth){
             // 開始月に合わせる
             setSelectedEndMonth(selectedStartMonth)
@@ -82,8 +80,8 @@ export default function usePurchaseOrderActions({selectedStaff,setSelectedStaff,
             }
             alert("ダウンロードが完了しました。\nファイルを確認してください")
         }catch(e){
-            console.log(e.message)
-            alert("何らかのエラーが発生し、エクスポートができませんでした")
+            // axiosのエラー処理
+            handleAxiosError(e)
         }finally{
             // ロジックを可能にする
             processingRef.current=false;

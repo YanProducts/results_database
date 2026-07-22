@@ -22,7 +22,6 @@ export default function PurchaseOrder({prefix,what,type,staffsGroupByPlaces,defa
     const {onStaffChange,onSelectedStartMonthChange,onSelectedEndMonthChange,onLimitMonthChange,onDecidePurchase}=usePurchaseOrderActions({selectedStaff,setSelectedStaff,selectedStartMonth,setSelectedStartMonth,selectedEndMonth,setSelectedEndMonth,limitMonth,setLimitMonth,setButtonOk,processingRef,monthSets});
 
 
-
     return(
         <Layout title={`${what}-${type}`}>
           <RoleLayout prefix={prefix}>

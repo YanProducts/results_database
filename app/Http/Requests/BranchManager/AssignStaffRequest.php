@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\BranchManager\StaffIsWorkingRule;
 use App\Rules\BranchManager\PlanIdIsExistsRule;
 use App\Rules\BranchManager\PlanValidateForDateRule;
-use App\Rules\BranchManager\StaffIsExistsRule;
+use App\Rules\Common\StaffIsExistsRule;
 use Illuminate\Support\Facades\Log;
 
 class AssignStaffRequest extends FormRequest
