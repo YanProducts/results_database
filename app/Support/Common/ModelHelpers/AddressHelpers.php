@@ -47,6 +47,15 @@ class AddressHelpers{
         return Address::whereIn("id",$ids)->pluck("city","id");
     }
 
+    // 全住所を県=>市=>町の入れ子配列で返す
+    public static function get_all_address_lists(){
+        // 県でグループ分けしたリスト
+        $address_grouped_by_pref=Address::select("id","pref","city","town")->get()->groupBy("pref");
+        // 上記を市でグループ分けしたリスト
+        $address_grouped_by_city=$address_grouped_by_pref->map(fn($address_sets_in_each_pref)=>$address_sets_in_each_pref->groupBy("city"));
+        return [$address_grouped_by_city];
+    }
+
 
 
 }

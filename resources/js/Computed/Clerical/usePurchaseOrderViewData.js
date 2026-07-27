@@ -21,7 +21,7 @@ export default function usePurchaseOrderViewData({limitMonth}){
             monthSetsInMemo[monthByDateForm]=formatYearAndMonthForView(monthByDateForm);
             // 1か月たす
             monthByDateForm.setMonth(monthByDateForm.getMonth()+1)
-        }while(monthByDateForm<new Date())
+        }while(monthByDateForm<=new Date())
         return monthSetsInMemo;
     },[limitMonth]);
     return monthSets

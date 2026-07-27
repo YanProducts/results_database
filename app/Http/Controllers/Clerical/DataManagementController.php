@@ -13,7 +13,9 @@ use App\Exceptions\BusinessException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Clerical\CSVExportRequest;
 use App\Http\Requests\Clerical\ToggleCompleteRequest;
+use App\Support\Common\CSVExporter;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -60,12 +62,11 @@ class DataManagementController extends Controller
 
     //報告書CSVエクスポート
     public function download_report_csv(){
-
-        $file_path=storage_path(Download::ReportCSVFilePath);
-        if(file_exists($file_path)){
-            return response()->download($file_path,Download::ReportCSVFileName.Carbon::today()->toDateString())
-            ->deleteFileAfterSend(true);
-        }else{
+        try{
+            // ファイルの削除はこの内部で行なってくれる
+            // ダウンロードできたらattachmentのレスポンスなので見た目上は何も変えらない
+            return CSVExporter::download_csv_files(Download::ReportCSVFileName.Carbon::today()->toDateString(),storage_path(Download::ReportCSVFilePath."_".Auth::user()->id.".csv"));
+        }catch(\Throwable $e){
             return redirect()->back()->withErrors(["download"=>"ファイル作成ができておりません\n失敗が続く場合は作成者にご連絡ください"]);
         }
     }

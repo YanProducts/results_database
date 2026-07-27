@@ -4,6 +4,7 @@ namespace App\Actions\Clerical\DataManagement;
 
 use App\Constants\Download;
 use App\Support\Common\CSVExporter;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class CSVExportFlow{
@@ -18,7 +19,8 @@ class CSVExportFlow{
         $formatted_projects_and_records_data=FormatData::data_change_for_csv_report_data($plans_in_project_ids,$project_sets,$address_sets,$distribution_record_sets);
 
         // ファイルパスを取得し、csvファイルの作成
-        $filepath=storage_path(Download::ReportCSVFilePath);
+        // 他のユーザーも同時に作成していた時に備え、ログインユーザーもつける
+        $filepath=storage_path(Download::ReportCSVFilePath."_".Auth::user()->id.".csv");
         CSVExporter::create_csv_file($formatted_projects_and_records_data,$filepath,",");
     }
 

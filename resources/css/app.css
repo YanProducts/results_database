@@ -62,10 +62,10 @@
        @apply text-center cursor-pointer font-bold  text-blue-600 shadow-white w-auto max-w-[700px] mx-auto underline underline-offset-6 pb-1;
      }
      .active_btn{
-        @apply bg-gray-200 opacity-100 pointer-events-auto
+        @apply bg-gray-200 opacity-100 pointer-events-auto cursor-pointer
      }
      .non_active_btn{
-        @apply bg-gray-500 opacity-30 pointer-events-none
+        @apply bg-gray-500 opacity-30 pointer-events-none cursor-auto
      }
      .ui_attention{
         @apply bg-gray-300 text-red-600 font-bold

@@ -4,6 +4,10 @@ import { formatDateForServer, formatYearAndMonthForView } from "../../Support/Co
 
 export default function usePurchaseOrderDefinitions({defaultStartDateForPurchaseLists}){
 
+      // フォーム(errorsのみ手動挿入で使用)
+      const { data, setData, post, processing, errors,clearErrors, reset}=useForm();
+
+
     // 取得できるのは何ヶ月前からか(ユーザーが変更可能) //初期は-36
     const [limitMonth,setLimitMonth]=React.useState(defaultStartDateForPurchaseLists)
 
@@ -28,5 +32,5 @@ export default function usePurchaseOrderDefinitions({defaultStartDateForPurchase
     // ページの横幅
       const [pageMinWidth,pageMaxWidth]=["min-w-120","max-w-300"];
 
-      return {limitMonth,setLimitMonth,limitYearLists,selectedStaff,setSelectedStaff,selectedStartMonth,setSelectedStartMonth,selectedEndMonth,setSelectedEndMonth,processingRef,buttonOk,setButtonOk,pageMinWidth,pageMaxWidth};
+      return {errors,clearErrors,limitMonth,setLimitMonth,limitYearLists,selectedStaff,setSelectedStaff,selectedStartMonth,setSelectedStartMonth,selectedEndMonth,setSelectedEndMonth,processingRef,buttonOk,setButtonOk,pageMinWidth,pageMaxWidth};
 }

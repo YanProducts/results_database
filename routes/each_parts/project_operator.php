@@ -80,6 +80,7 @@ Route::prefix("project_operator")
                 ->name("logout");
           });
           // 案件のCrud操作を行うページへ(認証や違う認証の場合は案件担当用のログインページへ)
+          
     });
 
 

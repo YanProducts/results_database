@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Clerical;
 
+use App\Actions\Clerical\PurchaseOrder\CreatePurchaseCSVFlow;
 use App\Constants\Date;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Clerical\PurchaseOrderRequest;
 use App\Support\Common\ModelHelpers\FieldStaffListHelpers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 // 発注書作成のコントローラー
@@ -28,11 +30,22 @@ class PurchaseOrderController extends Controller
     }
 
     //発注書のエクスポート
-    public function export_purchase_order_post(PurchaseOrderRequest $request){
+    public function create_purchase_order_csv(PurchaseOrderRequest $request){
 
-        $is_create="";
+        // パラメータ取得
+        [$staff_id,$start_date,$end_date]=[$request->staffId,$request->startMonth,$request->endMonth];
 
-        return response()->json(["is_create"=>$is_create]);
+        // エクスポートまでの処理
+        $export_flow_result=CreatePurchaseCSVFlow::create_purchase_procedure($staff_id,$start_date,$end_date);
+
+        // エクスポートできたかの結果を返す(全て終了すればOK。そうでなければエラーの種類があるものはそのエラー、ない場合は予期せぬエラーを返す)
+        return response()->json(["ExportFlowResult"=>$export_flow_result]);
+    }
+
+    // 発注書の実際のダウンロード(成功：ダウンロードを返す。失敗：Inertiaのエラーを返す)
+    public function download_purchase_order(){
+        // 内部でreturnの処理は上記に合うように分岐
+        return CreatePurchaseCSVFlow::download_purchase_csv();
     }
 
 }

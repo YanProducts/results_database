@@ -11,4 +11,5 @@ class Project extends Model
     protected $fillable=[
         "created_by","start_date","end_date","project_name","another_project_flag","is_complete"
     ];
+
 }

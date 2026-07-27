@@ -1,9 +1,11 @@
 // 入力系統のinput
-export default function DoubleSelectParts({name1,name2,value1,value2,onChange1,onChange2,prefix,keyValueSets1,keyValueSets2,prefixPercent="w-[20%]",needWhiteSpace=false}){
+export default function DoubleSelectParts({name1,name2,value1,value2,onChange1,onChange2,prefix,keyValueSets1,keyValueSets2,prefixPercent="w-[20%]",needWhiteSpace=false,needSpan=true}){
   return(
     <div className="flex items-center base_frame min-w-80 max-w-100 mx-auto my-3">
+    {needSpan &&
       <span className={`inline-block text-right ${prefixPercent} ${needWhiteSpace && "whitespace-pre-wrap"}`}>{prefix}</span>
-      <select className="inline-block w-[35%] bg-white border-black border rounded-sm" name={name1} value={value1} onChange={onChange1}>
+    }
+      <select className={`inline-block ${needSpan ? "w-[35%]" : "w-[50%]"} bg-white border-black border rounded-sm`} name={name1} value={value1} onChange={onChange1}>
         {/* 未登録の場合 */}
         {(!keyValueSets1 || Object.keys(keyValueSets1).length==0) ? <option disabled value="">登録されていません</option> :
         <>
@@ -14,7 +16,7 @@ export default function DoubleSelectParts({name1,name2,value1,value2,onChange1,o
          }
       </select>
       <span className="inline-block w-[5%]  text-center">〜</span>
-      <select className="inline-block w-[35%] bg-white  border-black border rounded-sm" name={name2} value={value2} onChange={onChange2}>
+      <select className={`inline-block ${needSpan ? "w-[35%]" : "w-[50%]"} bg-white border-black border rounded-sm`}  name={name2} value={value2} onChange={onChange2}>
         {/* 未登録の場合 */}
         {(!keyValueSets2 || Object.keys(keyValueSets2).length==0) ? <option disabled value="">登録されていません</option> :
         <>

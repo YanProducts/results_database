@@ -1,6 +1,8 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BranchManager\AssignOverviewContorller;
+use App\Http\Controllers\BranchManager\DistributionReportController;
 use App\Http\Controllers\BranchManager\ProjectHandingController;
 use App\Http\Controllers\BranchManager\ProjectRecordController;
 use App\Http\Controllers\BranchManager\SimpleAssignMentController;
@@ -65,18 +67,69 @@ Route::prefix("branch_manager")
                  ->middleware(["assignStaffDuplicatedCheck"])
                  ->name("simple_store_including_duplicated_plans");
             });
-            // 案件を自分で登録する系統
+            // 振った案件の確認と修正
+            Route::controller(AssignOverviewContorller::class)
+            ->group(function(){
+                    // 現在の担当の確認
+                    Route::get("assign_overview","assign_overview")
+                    ->name("assign_overview");
+                    // 日の選択→編集
+                    Route::post("edit_assign","edit_assign")
+                    ->name("edit_assign");
+            });
+
+            // 報告書の修正や営業所担当側での記入
+            Route::controller(DistributionReportController::class)
+            ->group(function(){
+                // 報告書の代替記入
+                Route::get("choice_report_target","choice_report_target")
+                ->name("choice_report_target");
+                // 報告書の代替記入(人の決定→報告書表示画面へ)
+                Route::post("choice_report_target","choice_report_target_post")
+                ->name("choice_report_target_post");
+                // 報告書の代替記入(人の決定後、報告書表示画面=errorsで戻った時のことを考えInertiaではなく完全にredirectさせる)
+                //人の選択がない状態ではエラーにすること
+                Route::get("complete_report","complete_report")
+                ->name("complete_report");
+                // 報告書の代替記入(最終決定)
+                Route::post("complete_report","complete_report_post")
+                ->name("complete_report_post");
+                // 報告書の編集(選択)
+                Route::get("choice_edit_report_target","choice_edit_report_target")
+                ->name("choice_edit_report_target");
+                // 報告書の編集(決定して編集できる状態に)
+                Route::post("choicd_edit_report_target","choicd_edit_report_target")
+                ->name("choicd_edit_report_target");
+                // 上記にバリデーションで戻った時
+                Route::post("choicd_edit_report_target","choicd_edit_report_target")
+                ->name("choicd_edit_report_target");
+            });
+
+            // 案件を営業所側で登録する系統
             Route::controller(ProjectHandingController::class)
             ->group(function(){
             // その営業所における案件の登録
                 Route::get("handing_assignment","handing_assignment")
                 ->name("handing_assignment");
             });
+
+            // 町丁目データを見る
             Route::controller(ProjectRecordController::class)
             ->group(function(){
-            // 過去の配布データを確認する方法
+               // 過去の配布データを確認(町々目選択)
+                Route::get("confirm_project_record","confirm_project_record")
+                ->name("confirm_project_record");
+               // 過去の配布データの確認(町々目選択後)
+                Route::post("confirm_project_record","confirm_project_record_post")
+                ->name("confirm_project_record_post");
+
+                // その営業所特有の備考欄つけるか！？
+            
 
             });
+
+
+
          // トップページへ(担当の決定やデータチェックも含む)
          Route::get("top_page",function(){
             return Inertia::render("BranchManager/TopPage",[

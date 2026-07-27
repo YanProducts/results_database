@@ -71,5 +71,19 @@ class DateHelper{
         return $date_key_value_sets;
     }
 
+    // 指定の日付から、特定のstartの月の最初〜特定のendの月の最後を返す
+    public static function get_month_range($start_month_date,$end_month_date){
+
+
+        $start_date=Carbon::parse($start_month_date);
+        $end_date=Carbon::parse($end_month_date);
+
+        return [$start_date->startOfMonth(),$end_date->endOfMonth()];
+    }
+
+    // 日本語の「年」「月」の取得
+    public static function get_jpn_year_and_month($date){
+        return Carbon::parse($date)->format("y年n月");
+    }
 
 }

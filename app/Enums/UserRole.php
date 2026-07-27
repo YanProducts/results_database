@@ -38,7 +38,7 @@ enum UserRole : string{
             str_contains($curerent_route_name,self::FieldStaff->value)=>"field_staff.write_report",
             str_contains($curerent_route_name,self::Clerical->value)=>"clerical.top_page",
             str_contains($curerent_route_name,self::ProjectOperator->value)=>"project_operator.dispatch_project",
-            str_contains($curerent_route_name,self::BranchManager->value)=>"branch_manager.simple_assign_staff",
+            str_contains($curerent_route_name,self::BranchManager->value)=>"branch_manager.top_page",
         };
     }
 

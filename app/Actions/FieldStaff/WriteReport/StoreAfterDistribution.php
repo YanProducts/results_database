@@ -59,8 +59,6 @@ class StoreAfterDistribution{
                 "created_at"=>$now, "updated_at"=>$now,
             ];
 
-            Log::info($report_data);
-
             // report_dataは必ず１以上の配列とバリデーション済
             foreach($report_data as $each_report_data){
                 // 投稿されたassignId

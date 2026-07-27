@@ -4,6 +4,8 @@
 
 namespace App\Support\Common\ModelHelpers;
 use App\Models\FieldStaffList;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class FieldStaffListHelpers{
 
@@ -27,6 +29,11 @@ class FieldStaffListHelpers{
          $instance=FieldStaffList::findOrFail($staff_id);
 
          return $instance->staff_name ?? $instance->user_name;
+    }
+
+    // 特定営業所のスタッフの「スタッフ名→ないときはid」をidをキーにして返す
+    public static function get_all_names_of_staffs_in_the_place($place_id){
+        return FieldStaffList::select("id",DB::raw("COALESCE(staff_name,user_name) as staff_name"))->where("place_id",$place_id)->get();
     }
 
 }

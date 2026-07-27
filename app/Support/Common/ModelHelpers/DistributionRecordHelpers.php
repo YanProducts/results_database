@@ -12,9 +12,9 @@ class DistributionRecordHelpers{
 
     // そのスタッフの、該当期間におけるデータを返す(操作しやすいように期日ごとにgroupByは行わない)
     // date_setsはY-m-d=>日本語の配列なので、array_keysが必要
+    // !!!列挙型で言っているか要チェック
     public static function data_in_the_range_and_staff($date_sets,$staff){
         return DistributionRecord::where("staff_id",$staff)->whereIn("distribution_date",array_keys($date_sets))->get();
-
     }
 
 

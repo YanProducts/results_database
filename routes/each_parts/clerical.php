@@ -86,9 +86,12 @@ Route::prefix("clerical")
                         // 発注書のエクスポート確認
                         Route::get("export_purchase_order","export_purchase_order")
                         ->name("export_purchase_order");
-                        // 発注書のエクスポート
-                        Route::post("export_purchase_order","export_purchase_order_post")
-                        ->name("export_purchase_order_post");
+                        // 発注書のCSV作成
+                        Route::post("create_purchase_order_csv","create_purchase_order_csv")
+                        ->name("create_purchase_order_csv");
+                        // 発注書の実際のダウンロード
+                        Route::get("download_purchase_order","download_purchase_order")
+                        ->name("download_purchase_order");
                  });
 
                 // ログアウト(そもそも認証されていないと無理)

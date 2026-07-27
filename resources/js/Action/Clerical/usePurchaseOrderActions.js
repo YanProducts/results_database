@@ -1,9 +1,7 @@
-import { route } from "ziggy-js";
-import axios from "axios";
 import React from "react";
-import handleAxiosError from "../../Support/Common/handleAxiosError";
+import createAndDownloadCSV from "./PurchaseOrder/createAndDownloadCSV";
 
-export default function usePurchaseOrderActions({selectedStaff,setSelectedStaff,selectedStartMonth,setSelectedStartMonth,selectedEndMonth,setSelectedEndMonth,limitMonth,setLimitMonth,processingRef,setButtonOk,monthSets}){
+export default function usePurchaseOrderActions({errors,clearErrors,selectedStaff,setSelectedStaff,selectedStartMonth,setSelectedStartMonth,selectedEndMonth,setSelectedEndMonth,limitMonth,setLimitMonth,processingRef,setButtonOk,monthSets}){
 
     // １初回のmonthSetsがセットされた後、２Dateをselectしておらず、かつmonthSetsを先に変化させたとき
     // 上記の場合に、selectedDate系列の初期値を設定
@@ -32,6 +30,15 @@ export default function usePurchaseOrderActions({selectedStaff,setSelectedStaff,
         }
     },[selectedEndMonth])
 
+    // ダウンロードのエラーがセットされたら、3秒後にはエラーを消す
+    React.useEffect(()=>{
+       if (Object.keys(errors).length > 0) {
+            const clearErrorTimeout=setTimeout(()=>clearErrors(),3000)
+            return ()=>{clearTimeout(clearErrorTimeout)};
+        }
+        return ()=>{}
+    },[errors])
+
     // スタッフの変更
     const onStaffChange=(e)=>{
         const target=e.currentTarget;
@@ -58,36 +65,7 @@ export default function usePurchaseOrderActions({selectedStaff,setSelectedStaff,
 
     // 決定ボタン
     const onDecidePurchase=async(e)=>{
-        e.preventDefault();
-        // ロジック内部での二重投稿の制御
-        if (processingRef.current) return;
-          processingRef.current = true;
-
-        // レスポンス終了までボタンを押せないようにする(Inertiaではないのでprocessingは反映されない) (またRefだけだとUIを動的に変更しない)
-        setButtonOk(false)
-
-        // 非同期で送る
-        try{
-            // axiosで非同期投稿
-            const response=await axios.post(route("clerical.export_purchase_order_post"),{
-                "staffId":selectedStaff,
-                "startMonth":selectedStartMonth,
-                "endMonth":selectedEndMonth
-            })
-            // 返却されていないとき
-            if(!response.data.downloadOk){
-                throw new Error("サーバー処理時のエラーです")
-            }
-            alert("ダウンロードが完了しました。\nファイルを確認してください")
-        }catch(e){
-            // axiosのエラー処理
-            handleAxiosError(e)
-        }finally{
-            // ロジックを可能にする
-            processingRef.current=false;
-            // UIを動かせるようにする
-            setButtonOk(true)
-        }
+        createAndDownloadCSV({e,processingRef,setButtonOk,selectedStaff,selectedStartMonth,selectedEndMonth})
     }
 
     return {onStaffChange,onSelectedStartMonthChange,onSelectedEndMonthChange,onLimitMonthChange,onDecidePurchase}

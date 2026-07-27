@@ -13,10 +13,10 @@ export default function TopPage({prefix,what,type}){
 
         <BasePageHeader what={what} type={type} subtitle="何を行いますか"/>
 
-        <ThemeLists routeName="clerical.management_report" label="報告書データの操作/記入(入力担当)"/>
-        <ThemeLists routeName="clerical.export_purchase_order" label="発注書のエクスポート"/>
-        <ThemeLists routeName="clerical.export_purchase_order" label="担当の仕事の確認"/>
-        <ThemeLists routeName="clerical.export_purchase_order" label="完了後の報告書の確認"/>
+        <ThemeLists routeName={`${prefix}.management_report`} label="報告書データの操作/記入(入力担当)"/>
+        <ThemeLists routeName={`${prefix}.export_purchase_order`} label="発注書のエクスポート"/>
+        <ThemeLists routeName={`${prefix}.export_purchase_order`} label="過去の報告書の確認(未作成)"/>
+        <ThemeLists routeName={`${prefix}.export_purchase_order`} label="完了後の報告書の確認(未作成)"/>
 
         <p>　</p>
 
