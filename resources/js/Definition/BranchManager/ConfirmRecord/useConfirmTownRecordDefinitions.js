@@ -14,11 +14,11 @@ export default function useConfirmTownRecordDefinitions(){
       const [selectedStaffs,setSelectedStaffs]=React.useState([])
 
       // 期限のリスト(10年前)
-      const dateLists=Object.fromEntries(Array.from({length:10},(_,i)=>i).map(eachNumber=>([eachNumber,eachNumber + "年前"])));
+      const dateLists=Object.fromEntries(Array.from({length:10},(_,i)=>i).map(eachNumber=>([eachNumber+1,eachNumber+1 + "年前"])));
 
       // 期限の選択
-      const [selectedStartYear,setSelectedStartYear]=React.useState();
-      const [selectedEndYear,setSelectedEndYear]=React.useState();
+      const [selectedStartYear,setSelectedStartYear]=React.useState("all");
+      const [selectedEndYear,setSelectedEndYear]=React.useState(0);
 
 
       // townはどちらから取得するか
@@ -34,7 +34,7 @@ export default function useConfirmTownRecordDefinitions(){
      const [townDataByList,setTownDataByList]=React.useState();
 
     // ページの横幅
-    const [pageMinWidth,pageMaxWidth]=["min-w-120","max-w-300"];
+    const [pageMinWidth,pageMaxWidth]=["min-w-120","max-w-200"];
 
-    return  {data, setData, post, processing, errors,clearErrors, reset,selectedStaffs,setSelectedStaffs,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townDataByList,setTownDataByList,pageMinWidth,pageMaxWidth};
+    return  {data, setData, post, processing, errors,clearErrors, reset,selectedStaffs,setSelectedStaffs,dateLists,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townDataByList,setTownDataByList,pageMinWidth,pageMaxWidth};
 }

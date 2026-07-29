@@ -30,10 +30,7 @@ export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,
 
     {/* リンク */}
     <div className="mt-4">
-    <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.assign_staff`}  what="割当の確認(未)"/>
-
-
-    <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.assign_staff`}  what="案件の編集(未)"/>
+    <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.top_page`}  what="営業所担当のトップ"/>
 
     <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.simple_assign_staff`}  what="簡易版" needAlert={true} needAlertFunc=  {onMoveSimplePageClick}/>
 

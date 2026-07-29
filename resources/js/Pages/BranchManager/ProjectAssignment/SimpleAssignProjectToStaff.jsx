@@ -32,19 +32,12 @@ export default function SimpleAssingProjectToStaff({prefix,what,type,dateSets,da
 
 
             {/* リンク */}
-            <div className="mt-4">
-            <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.assign_staff`}  what="割当の確認(未)"/>
-            </div>
-            <div className="mt-4">
-            <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.assign_staff`}  what="案件の編集(未)"/>
-            </div>
-            <div className="mt-4">
+          <div className="mt-4">
+            <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.top_page`}  what="営業所担当のトップ"/>
             <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.assign_staff`}  what="詳細版" needAlert={true} needAlertFunc={onMoveDetailPageClick}/>
-            </div>
-            <div className="mt-4">
             <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.logout`}  what="ログアウト"/>
-            </div>
-            <p>　</p>
+          </div>
+          <p>　</p>
         </RoleLayout>
     </Layout>
     )

@@ -78,12 +78,17 @@ export default function useConfirmTownRecordActions({staffLists,setData,post,sel
     // 現在選択中の町の変更(selectの場合)
     const onTownChange=(e)=>{
         const target=e.currentTarget;
+        // 改行が入った時は、改行の数を調べる
+        if(e.key=="Enter"){
+
+        }
+
         setTownBySelect(target.value)
     }
 
     // 貼り付け版の値の変更
     const onAddressListsChange=(e)=>{
-        const target=e.currentTarget;
+        const target=e.currentTarget;        //
         // 入力値をセット
         setTownDataByList(target.value);
     }
