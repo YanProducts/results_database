@@ -1,5 +1,6 @@
 import React from "react";
 import createAndDownloadCSV from "./PurchaseOrder/createAndDownloadCSV";
+import adjustDateRange from "../../Support/Common/adjustDateRange";
 
 export default function usePurchaseOrderActions({errors,clearErrors,selectedStaff,setSelectedStaff,selectedStartMonth,setSelectedStartMonth,selectedEndMonth,setSelectedEndMonth,limitMonth,setLimitMonth,processingRef,setButtonOk,monthSets}){
 
@@ -15,20 +16,8 @@ export default function usePurchaseOrderActions({errors,clearErrors,selectedStaf
 
 
     // 開始月<終了月にセット(開始月変化)
-    React.useEffect(()=>{
-        if(selectedEndMonth<selectedStartMonth){
-            // 開始月に合わせる
-            setSelectedEndMonth(selectedStartMonth)
-        }
-    },[selectedStartMonth])
-
     // 開始月<終了月にセット(終了月変化)
-    React.useEffect(()=>{
-        if(selectedEndMonth<selectedStartMonth){
-            // 終了月に合わせる
-            setSelectedStartMonth(selectedEndMonth)
-        }
-    },[selectedEndMonth])
+    adjustDateRange({...{start:selectedStartMonth,end:selectedEndMonth,setStart:setSelectedStartMonth,setEnd:setSelectedEndMonth}})
 
     // ダウンロードのエラーがセットされたら、3秒後にはエラーを消す
     React.useEffect(()=>{

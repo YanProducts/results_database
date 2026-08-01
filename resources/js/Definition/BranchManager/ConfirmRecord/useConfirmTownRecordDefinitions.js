@@ -17,8 +17,8 @@ export default function useConfirmTownRecordDefinitions(){
       const dateLists=Object.fromEntries(Array.from({length:10},(_,i)=>i).map(eachNumber=>([eachNumber+1,eachNumber+1 + "年前"])));
 
       // 期限の選択
-      const [selectedStartYear,setSelectedStartYear]=React.useState("all");
-      const [selectedEndYear,setSelectedEndYear]=React.useState(0);
+      const [selectedStartYear,setSelectedStartYear]=React.useState(1);
+      const [selectedEndYear,setSelectedEndYear]=React.useState(-1);
 
 
       // townはどちらから取得するか

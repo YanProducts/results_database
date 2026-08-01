@@ -22,5 +22,8 @@ class Date{
     //発注書リストのデータリストの初期表示は何ヶ月前からのものにするか
     public const PurchaseListDefaultMonthsBack=36;
 
+    // 結果検索ができるのは何年前を限度に設定か(これ以上は無制限の年度取得)
+    public const ResultSerachBeforeYearLimit=10;
+
 }
 

@@ -5,7 +5,7 @@
 // contentsには「id」と「nameForUI」が両方セットされている必要あり
 export default function FlatToggleLists({contents,formLists,onToggleListsChange ,width="",pageMaxWidth="",pageMinWidth=""}){
     return(
-        <div className={`mt-2 px-5 py-1 text-center base_frame ${pageMinWidth} ${pageMaxWidth}`}>
+        <div className={`mt-2 py-1 text-center base_frame ${pageMinWidth} ${pageMaxWidth}`}>
             {Object.values(contents).map(function(content,index){
                 const id=content.id;
                 return(

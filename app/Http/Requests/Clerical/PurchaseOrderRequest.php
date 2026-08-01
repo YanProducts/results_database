@@ -29,7 +29,7 @@ class PurchaseOrderRequest extends FormRequest
             // 開始月
             "startMonth"=>["required","date"],
             // 終了月(開始月と同等より後であること)
-            "endMonth"=>["required","date",'after_or_equal:start_date']
+            "endMonth"=>["required","date",'after_or_equal:startMonth']
         ];
     }
     public function messages(): array

@@ -10,4 +10,7 @@ class Statistics{
     // 「〜丁目」「〜丁」で終了している市
     public const ChoEndCities=["堺市"];
 
+    // 住所ではないor人が住んでいない可能性の高いちめいリスト
+    public const INVALID_TOWN_REGEXP=["水面|河川|港湾|埠頭|空港|山林"];
+
 }

@@ -4,7 +4,6 @@ import Layout from "../../../Layout/Layout";
 import { RoleLayout } from "../../../Layout/RoleLayout";
 import BasePageHeader from "../../../Components/Common/BasePageHeader";
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
-import SelectParts from "../../../Components/Common/SelectParts";
 import DoubleSelectParts from "../../../Components/Common/DoubleSelectParts";
 import ViewValidationErrors from "../../../Components/Common/ViewValidationErrors";
 import BaseButton from "../../../Components/Common/BaseButton";
@@ -20,16 +19,17 @@ export default function ConfirmTownRecord({prefix,what,type,staffLists,allTownSe
     const {data, setData, post, processing, errors,clearErrors, reset,selectedStaffs,setSelectedStaffs,dateLists,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townDataByList,setTownDataByList,pageMinWidth,pageMaxWidth}=useConfirmTownRecordDefinitions();
 
     // 動き
-    const {onSelectedStaffsChange,onSelectedStartYearChange,onSelectedEndYearChange,onTwonChoiceModeChangeClick,onPrefChange,onCityChange,onTownChange,onAddressListsChange,onDecideSearhDataClick}=useConfirmTownRecordActions({staffLists,setData,post,selectedStaffs,setSelectedStaffs,setSelectedStartYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townDataByList,setTownDataByList});
-
-    // バリデーション(例：貼り付けた住所が指定の住所に入っていなかった時)
-    <ViewValidationErrors errors={errors} minWidth={pageMinWidth} maxWidth={pageMaxWidth} />
+    const {onSelectedStaffsChange,onSelectedStartYearChange,onSelectedEndYearChange,onTwonChoiceModeChangeClick,onPrefChange,onCityChange,onTownChange,onAddressListsChange,onDecideSearhDataClick}=useConfirmTownRecordActions({data,setData,post,selectedStaffs,setSelectedStaffs,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townDataByList,setTownDataByList});
 
     return(
         <Layout title={`${what}-${type}`}>
             <RoleLayout prefix={prefix}>
 
                     <BasePageHeader {...{what,type,pageMinWidth,pageMaxWidth,"subtitle":"スタッフと年月の選択"}}/>
+
+                    {/* バリデーション(例：貼り付けた住所が指定の住所に入っていなかった時) */}
+                    <ViewValidationErrors errors={errors} minWidth={pageMinWidth} maxWidth={pageMaxWidth} />
+
 
                     <form className={`base_frame base_backColor px-0 py-2 border-2 border-black rounded-sm mb-5 ${pageMaxWidth} ${pageMinWidth}`} onSubmit={onDecideSearhDataClick}>
 
@@ -40,7 +40,7 @@ export default function ConfirmTownRecord({prefix,what,type,staffLists,allTownSe
 
                     {/* 期限  無期限と現在を両端に含む */}
                      <UserChoisePart {...{pageMaxWidth,pageMinWidth,theme:"期間"}}>
-                        <DoubleSelectParts  name1="startYear" name2="endYear" value1={selectedStartYear} value2={selectedEndYear} onChange1={onSelectedStartYearChange} onChange2={onSelectedEndYearChange} prefix={"期間　"} keyValueSets1={{...dateLists,"all":"限度なし"}} keyValueSets2={{0:"現在",...dateLists}} prefixPercent="w-[35%]" needWhiteSpace={true} needSpan={false}/>
+                        <DoubleSelectParts  name1="startYear" name2="endYear" value1={selectedStartYear} value2={selectedEndYear} onChange1={onSelectedStartYearChange} onChange2={onSelectedEndYearChange} prefix={"期間　"} keyValueSets1={{...dateLists,11:"限度なし"}} keyValueSets2={{0:"現在",...dateLists}} prefixPercent="w-[35%]" needWhiteSpace={true} needSpan={false}/>
                     </UserChoisePart>
 
 

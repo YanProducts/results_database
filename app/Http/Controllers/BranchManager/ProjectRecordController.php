@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\BranchManager;
 
 use App\Actions\BranchManager\Confirm\GetSqlData;
+use App\Actions\BranchManager\Confirm\Params;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BranchManager\ProjectRecordRequest;
 use Illuminate\Http\Request;
@@ -31,6 +32,20 @@ class ProjectRecordController extends Controller
     // 何を確認するかの決定後の投稿
     public function confirm_project_record_post(ProjectRecordRequest $request){
 
+    // パラメータ捕捉しクラス挿入
+    $params=new Params(
+        staff_ids:$request->staffIds,
+        start_year:$request->startYear,
+        end_year:$request->endYear,
+        pattern:$request->pattern,
+        pref:$request->prefName,
+        city:$request->cityName,
+        address_id:$request->addressId,
+        address_names:$request->addressNames
+     );
+
+    //  sqlデータ取得
+    $sql_data=GetSqlData::get_filtered_sql_data($params);
     }
 
 }
