@@ -31,6 +31,12 @@ class FieldStaffListHelpers{
          return $instance->staff_name ?? $instance->user_name;
     }
 
+    // idで配列を取得した複数ユーザーのユーザー名を「id=>スタッフ名(orユーザー名)」の配列で返却(idの存在は確認済)
+    public static function get_staff_names_from_id_array($ids){
+        return FieldStaffList::whereIn("id",$ids)->selectRaw("coalesce(staff_name,user_name) as staff_name, id")->pluck("staff_name","id");
+    }
+
+
     // 特定営業所のスタッフの「スタッフ名→ないときはid」をidをキーにして返す
     public static function get_all_names_of_staffs_in_the_place($place_id){
         return FieldStaffList::select("id",DB::raw("COALESCE(staff_name,user_name) as staff_name"))->where("place_id",$place_id)->get();

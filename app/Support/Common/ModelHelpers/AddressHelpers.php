@@ -21,6 +21,11 @@ class AddressHelpers{
         return Address::select(DB::raw("CONCAT(city, town) as address_name"))->where("id",$address_id)->value("address_name") ?? null;
     }
 
+    // 市もしくは県から始まる住所の配列からid=>住所名の配列を返す
+    public static function get_id_name_sets_from_name_array($address_names){
+        Address::selectRaw("id,concat('city','town') as address_name,concat('pref','city','town') as full_address_name")->whereIn("address_name",$address_names)->orWhereIn("full_address_name",$address_names)->pluck("address_name","id");
+    }
+
     // 住所idに対する住所名をid=>名前の配列で一括取得(n+1防止)
     public static function get_city_and_town_arrays_key_by_id($ids){
         return
@@ -57,15 +62,27 @@ class AddressHelpers{
         })->get()->groupBy(["pref","city"]);
     }
 
-    // 県と市を設定し、そのすべての町の住所のidセットを返す
+    // 県と市の名前が存在するかを判断
+    public static function is_pref_and_city_sets_exists($pref,$city){
+        return Address::where("pref",$pref)->where("city",$city)->exists();
+    }
+
+
+    // 県と市を設定し、そのすべての町の住所の[id=>住所]セットを返す
     public static function get_all_town_data_in_the_city($pref,$city){
-        return Address::select("id")->where("pref",$pref)->where("city",$city)->get();
+        return Address::selectRaw("id,concat('city','town') as address_name")->where("pref",$pref)->where("city",$city)->pluck("address_name","id");
+    }
+
+    // 住所の配列のうち、存在しないものを返す
+    public static function get_not_exists_address_name_in_array($array){
+        return collect($array)->diff(Address::whereIn(DB::raw("concat(pref,city,town)",$array))->selectRaw("concat(pref,city,town) as address_name")->pluck("address_name"));
     }
 
     // 町目のリストから、idリストを返す(町目がない時のエラーは除去済の前提)
     public static function get_id_lists_from_town_names($address_names){
         return Address::select("id")->whereIn(DB::raw("concat(pref,city,town)"),$address_names)->get();
     }
+
 
 
 

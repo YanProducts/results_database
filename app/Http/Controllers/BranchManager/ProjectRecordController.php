@@ -4,6 +4,7 @@ namespace App\Http\Controllers\BranchManager;
 
 use App\Actions\BranchManager\Confirm\GetSqlData;
 use App\Actions\BranchManager\Confirm\Params;
+use App\Constants\Date;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BranchManager\ProjectRecordRequest;
 use Illuminate\Http\Request;
@@ -25,7 +26,8 @@ class ProjectRecordController extends Controller
                 "what"=>"営業所担当",
                 "type"=>"町丁目データの確認",
                 "staffLists"=>$staff_lists,
-                "allTownSets"=>$address_lists
+                "allTownSets"=>$address_lists,
+                "startOffset"=>Date::ResultSerachBeforeYearLimit
             ]);
     }
 
@@ -46,6 +48,20 @@ class ProjectRecordController extends Controller
 
     //  sqlデータ取得
     $sql_data=GetSqlData::get_filtered_sql_data($params);
-    }
+    // Log::info($sql_data);
 
+    // UI用の言葉に変換(連想配列で入れる)
+    ["staff_names"=>$staff_names,"date_range"=>$date_range]=$params->get_string_for_UI();
+
+    // allDataは[各町目id=>町目名、平均・最大・中央・具体的な数リスト]がスタッフごと、営業所ごと、全体で分かれて入っている
+    return Inertia::render("BranchManager/StoredDataCheck/ViewTownRecord",[
+            "prefix"=>"branch_manager",
+            "what"=>"営業所担当",
+            "type"=>"データ確認",
+            "searchStaffs"=>$staff_names,
+            "searchRange"=>$date_range,
+            "allData"=>$sql_data
+    ]);
+
+   }
 }

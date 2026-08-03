@@ -13,10 +13,10 @@ import AddressPartWhich from "../../../Components/Part/BranchManager/ConfirmReco
 
 
 // 町々目データの確認に向けた選択画面
-export default function ConfirmTownRecord({prefix,what,type,staffLists,allTownSets}){
+export default function ConfirmTownRecord({prefix,what,type,staffLists,allTownSets,startOffset}){
 
     // 定義
-    const {data, setData, post, processing, errors,clearErrors, reset,selectedStaffs,setSelectedStaffs,dateLists,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townDataByList,setTownDataByList,pageMinWidth,pageMaxWidth}=useConfirmTownRecordDefinitions();
+    const {data, setData, post, processing, errors,clearErrors, reset,selectedStaffs,setSelectedStaffs,dateLists,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townDataByList,setTownDataByList,pageMinWidth,pageMaxWidth}=useConfirmTownRecordDefinitions({startOffset});
 
     // 動き
     const {onSelectedStaffsChange,onSelectedStartYearChange,onSelectedEndYearChange,onTwonChoiceModeChangeClick,onPrefChange,onCityChange,onTownChange,onAddressListsChange,onDecideSearhDataClick}=useConfirmTownRecordActions({data,setData,post,selectedStaffs,setSelectedStaffs,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townDataByList,setTownDataByList});
@@ -40,7 +40,7 @@ export default function ConfirmTownRecord({prefix,what,type,staffLists,allTownSe
 
                     {/* 期限  無期限と現在を両端に含む */}
                      <UserChoisePart {...{pageMaxWidth,pageMinWidth,theme:"期間"}}>
-                        <DoubleSelectParts  name1="startYear" name2="endYear" value1={selectedStartYear} value2={selectedEndYear} onChange1={onSelectedStartYearChange} onChange2={onSelectedEndYearChange} prefix={"期間　"} keyValueSets1={{...dateLists,11:"限度なし"}} keyValueSets2={{0:"現在",...dateLists}} prefixPercent="w-[35%]" needWhiteSpace={true} needSpan={false}/>
+                        <DoubleSelectParts  name1="startYear" name2="endYear" value1={selectedStartYear} value2={selectedEndYear} onChange1={onSelectedStartYearChange} onChange2={onSelectedEndYearChange} prefix={"期間　"} keyValueSets1={{...dateLists,[Number(startOffset)+1]:"限度なし"}} keyValueSets2={{0:"現在",...dateLists}} prefixPercent="w-[35%]" needWhiteSpace={true} needSpan={false}/>
                     </UserChoisePart>
 
 

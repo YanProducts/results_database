@@ -1,8 +1,7 @@
 import SelectParts from "../Common/SelectParts"
 
 // 県→市→町目の住所の選択
-export default function AdreessSelects({allTownSets,onPrefChange,onCityChange,onTownChange,selectedPref,selectedCity,selectedTown,pageMaxWidth,pageMinWidth}){
-
+export default function AddressSelects({allTownSets,onPrefChange,onCityChange,onTownChange,selectedPref,selectedCity,selectedTown,pageMaxWidth,pageMinWidth}){
     return(
         <>
             {/* 県名(prefをtown検索の配列に使うためにkeyも日本語名) */}

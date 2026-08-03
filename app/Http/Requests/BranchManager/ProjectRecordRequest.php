@@ -2,8 +2,11 @@
 
 namespace App\Http\Requests\BranchManager;
 
+use App\Constants\Date;
 use App\Exceptions\BusinessException;
-use App\Rules\Common\AddressExistsRule;
+use App\Rules\Common\Address\AddressExistsRule;
+use App\Rules\Common\Address\AddressNameInArrayIsExistsRule;
+use App\Rules\Common\Address\PrefAndCitySetsExists;
 use App\Rules\Common\StaffIsExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
@@ -31,15 +34,17 @@ class ProjectRecordRequest extends FormRequest
         $rules_by_pattern=match($this->input("pattern")){
             // 入力がリスト形式のとき
            "list"=>[
-                "addressNames"=>["required","array"],
-                "addressNames.*"=>["required",]
+                // 配列の要素ごとに検証するバリデーションだとN+1になるので、元のパラメータから除去
+                "addressNames"=>["required","array",new AddressNameInArrayIsExistsRule],
+                "addressNames.*"=>["required"]
             ],
             // 入力が町ごとで、その町のすべてのとき
             "selectAll"=>[
-                // prefがsqlに存在するか
+                // prefの存在確認はcityに一任
                 "prefName"=>["required"],
-                // cityが存在するか/pref+cityがsqlに存在するか
-                "cityName"=>["required"]
+                // cityが存在するか
+                //pref+cityがsqlに存在するか
+                "cityName"=>["required",new PrefAndCitySetsExists(pref:$this->input("prefName"))]
             ],
             // 入力が町ごとで、１町ずつ検索するとき
             "selectOneTown"=>[
@@ -52,10 +57,10 @@ class ProjectRecordRequest extends FormRequest
         return [
             "staffIds"=>["present","array"],
             "staffIds.*"=>["integer",new StaffIsExistsRule],
-            "startYear"=>['required', 'integer', 'between:1,11'],
+            "startYear"=>['required', 'integer', 'between:1,'.Date::ResultSerachBeforeYearLimit+1],
             // 「終点が始点より後」だが、〜年前という渡し方のため「(数字が)startYearより小さい)」というルールに
             // lteはless than or equal
-            "endYear"=>['required', 'integer', 'between:-1,10','lte:startYear'],
+            "endYear"=>['required', 'integer', 'between:-1,'.Date::ResultSerachBeforeYearLimit,'lte:startYear'],
             ...$rules_by_pattern
         ];
     }

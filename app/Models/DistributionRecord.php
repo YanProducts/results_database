@@ -17,4 +17,9 @@ class DistributionRecord extends Model
     public function project(){
         return $this->belongsTo(Project::class,"project_id");
     }
+
+    // 上記と同じように、->distribution_planというメソッドで、planと結びつける
+    public function distribution_plan(){
+        return $this->belongsTo(DistributionPlan::class,"plan_id");
+    }
 }

@@ -133,7 +133,7 @@ export default function useConfirmTownRecordActions({data,setData,post,selectedS
                     "cityName":cityBySelect,
                 })
             }else{
-                setData({
+                 setData({
                     ...dataSets,
                     "pattern":"selectOneTown",
                     // idが挿入される

@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "@inertiajs/react";
 
 // 過去の町々目データの確認(町ごと)
-export default function useConfirmTownRecordDefinitions(){
+export default function useConfirmTownRecordDefinitions({startOffset}){
 
      // フォーム
       const { data, setData, post, processing, errors,clearErrors, reset}=useForm({
@@ -14,7 +14,7 @@ export default function useConfirmTownRecordDefinitions(){
       const [selectedStaffs,setSelectedStaffs]=React.useState([])
 
       // 期限のリスト(10年前)
-      const dateLists=Object.fromEntries(Array.from({length:10},(_,i)=>i).map(eachNumber=>([eachNumber+1,eachNumber+1 + "年前"])));
+      const dateLists=Object.fromEntries(Array.from({length:startOffset},(_,i)=>i).map(eachNumber=>([eachNumber+1,eachNumber+1 + "年前"])));
 
       // 期限の選択
       const [selectedStartYear,setSelectedStartYear]=React.useState(1);
@@ -26,9 +26,9 @@ export default function useConfirmTownRecordDefinitions(){
 
      // townを選択する場合
      // ~県...市まで選択。その後は「全域」もしくは「町丁目」
-     const [prefBySelect,setPrefBySelect]=React.useState();
-     const [cityBySelect,setCityBySelect]=React.useState();
-     const [townBySelect,setTownBySelect]=React.useState();
+     const [prefBySelect,setPrefBySelect]=React.useState("");
+     const [cityBySelect,setCityBySelect]=React.useState("");
+     const [townBySelect,setTownBySelect]=React.useState("");
 
      //  townを貼り付けセットから取得する場合
      const [townDataByList,setTownDataByList]=React.useState();

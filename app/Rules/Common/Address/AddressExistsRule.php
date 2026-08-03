@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Rules\Common;
+namespace App\Rules\Common\Address;
 
 use App\Models\Address;
 use Closure;

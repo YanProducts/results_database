@@ -1,4 +1,4 @@
-import AdreessSelects from "../../../Address/AdreessSelects";
+import AddressSelects from "../../../Address/AddressSelects";
 import BaseTextArea from "../../../Common/BaseTextArea";
 
 // 統計検索において住所選択をどちらから選ぶか&それぞれのコンポーネント
@@ -7,7 +7,7 @@ export default function AddressPartWhich({townChoiceMode,allTownSets,onPrefChang
       <>
         {townChoiceMode =="select" ?
         // 選ぶ形式
-            <AdreessSelects {...{allTownSets,onPrefChange,onCityChange,onTownChange,pageMaxWidth,pageMinWidth,selectedPref:prefBySelect,selectedCity:cityBySelect,selectedTown:townBySelect}}
+            <AddressSelects {...{allTownSets,onPrefChange,onCityChange,onTownChange,pageMaxWidth,pageMinWidth,selectedPref:prefBySelect,selectedCity:cityBySelect,selectedTown:townBySelect}}
             />
         :
         // 貼り付ける形式
