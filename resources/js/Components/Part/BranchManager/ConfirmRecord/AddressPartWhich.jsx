@@ -2,7 +2,7 @@ import AddressSelects from "../../../Address/AddressSelects";
 import BaseTextArea from "../../../Common/BaseTextArea";
 
 // 統計検索において住所選択をどちらから選ぶか&それぞれのコンポーネント
-export default function AddressPartWhich({townChoiceMode,allTownSets,onPrefChange,onCityChange,onTownChange,pageMaxWidth,pageMinWidth,prefBySelect,cityBySelect,townBySelect,onAddressListsChange,townDataByList,onTwonChoiceModeChangeClick,processing}){
+export default function AddressPartWhich({townChoiceMode,allTownSets,onPrefChange,onCityChange,onTownChange,pageMaxWidth,pageMinWidth,prefBySelect,cityBySelect,townBySelect,onAddressListsChange,townByList,onTwonChoiceModeChangeClick,processing}){
     return(
       <>
         {townChoiceMode =="select" ?
@@ -11,7 +11,7 @@ export default function AddressPartWhich({townChoiceMode,allTownSets,onPrefChang
             />
         :
         // 貼り付ける形式
-        <BaseTextArea {...{textName:"addressLists",changeFunc:onAddressListsChange,textData:townDataByList,pageMaxWidth,pageMinWidth,needTitle:true,textAreaTitle:"市区町村&町名を\nスペースなしに張り付けてください\n町目の区切れは改行です",placeholder:"例：○○市△△町１"}} />
+        <BaseTextArea {...{textName:"addressLists",changeFunc:onAddressListsChange,textData:townByList,pageMaxWidth,pageMinWidth,needTitle:true,textAreaTitle:"市区町村&町名をスペースなしに張り付けてください\n町目の区切れは改行です",placeholder:"例：○○市△△町１"}} />
         }
 
             {/* 町丁目の選び方の変更 */}

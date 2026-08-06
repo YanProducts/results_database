@@ -16,10 +16,10 @@ import AddressPartWhich from "../../../Components/Part/BranchManager/ConfirmReco
 export default function ConfirmTownRecord({prefix,what,type,staffLists,allTownSets,startOffset}){
 
     // 定義
-    const {data, setData, post, processing, errors,clearErrors, reset,selectedStaffs,setSelectedStaffs,dateLists,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townDataByList,setTownDataByList,pageMinWidth,pageMaxWidth}=useConfirmTownRecordDefinitions({startOffset});
+    const {data, setData, post, processing, errors,clearErrors, reset,selectedStaffs,setSelectedStaffs,dateLists,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townByList,setTownByList,pageMinWidth,pageMaxWidth}=useConfirmTownRecordDefinitions({startOffset});
 
     // 動き
-    const {onSelectedStaffsChange,onSelectedStartYearChange,onSelectedEndYearChange,onTwonChoiceModeChangeClick,onPrefChange,onCityChange,onTownChange,onAddressListsChange,onDecideSearhDataClick}=useConfirmTownRecordActions({data,setData,post,selectedStaffs,setSelectedStaffs,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townDataByList,setTownDataByList});
+    const {onSelectedStaffsChange,onSelectedStartYearChange,onSelectedEndYearChange,onTwonChoiceModeChangeClick,onPrefChange,onCityChange,onTownChange,onAddressListsChange,onDecideSearchDataClick}=useConfirmTownRecordActions({data,setData,post,selectedStaffs,setSelectedStaffs,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townByList,setTownByList});
 
     return(
         <Layout title={`${what}-${type}`}>
@@ -31,7 +31,7 @@ export default function ConfirmTownRecord({prefix,what,type,staffLists,allTownSe
                     <ViewValidationErrors errors={errors} minWidth={pageMinWidth} maxWidth={pageMaxWidth} />
 
 
-                    <form className={`base_frame base_backColor px-0 py-2 border-2 border-black rounded-sm mb-5 ${pageMaxWidth} ${pageMinWidth}`} onSubmit={onDecideSearhDataClick}>
+                    <form className={`base_frame base_backColor px-0 py-2 border-2 border-black rounded-sm mb-5 ${pageMaxWidth} ${pageMinWidth}`} onSubmit={onDecideSearchDataClick}>
 
                     {/* スタッフ(複数選択もOK、選択なしなら全員) */}
                     <UserChoisePart {...{pageMaxWidth,pageMinWidth,theme:"スタッフ",subtitile:"*選択しなくても全体平均や合計は出てきます"}}>
@@ -47,7 +47,7 @@ export default function ConfirmTownRecord({prefix,what,type,staffLists,allTownSe
                     {/* 町丁目選択(どちらで選ぶかで変更) */}
                     <UserChoisePart {...{pageMaxWidth,pageMinWidth,theme:"町丁目"}}>
                         {/* 住所検索をどちらから選ぶか&それぞれの具体的なコンポーネント */}
-                        <AddressPartWhich {...{townChoiceMode,allTownSets,onPrefChange,onCityChange,onTownChange,pageMaxWidth,pageMinWidth,prefBySelect,cityBySelect,townBySelect,onAddressListsChange,townDataByList,onTwonChoiceModeChangeClick,processing}} />
+                        <AddressPartWhich {...{townChoiceMode,allTownSets,onPrefChange,onCityChange,onTownChange,pageMaxWidth,pageMinWidth,prefBySelect,cityBySelect,townBySelect,onAddressListsChange,townByList,onTwonChoiceModeChangeClick,processing}} />
                     </UserChoisePart>
 
                     {/* 提出ボタン */}

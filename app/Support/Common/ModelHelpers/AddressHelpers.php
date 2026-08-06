@@ -75,7 +75,7 @@ class AddressHelpers{
 
     // 住所の配列のうち、存在しないものを返す
     public static function get_not_exists_address_name_in_array($array){
-        return collect($array)->diff(Address::whereIn(DB::raw("concat(pref,city,town)",$array))->selectRaw("concat(pref,city,town) as address_name")->pluck("address_name"));
+        return collect($array)->diff(Address::whereIn(DB::raw("concat(pref,city,town)"),$array)->selectRaw("concat(pref,city,town) as address_name")->pluck("address_name"));
     }
 
     // 町目のリストから、idリストを返す(町目がない時のエラーは除去済の前提)

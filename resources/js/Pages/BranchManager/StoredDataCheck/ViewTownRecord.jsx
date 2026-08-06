@@ -11,6 +11,8 @@ import getJpnWord from "../../../Support/Common/getJpnWord";
 // 町々目データの確認に向けた選択画面
 export default function ViewTownRecord({prefix,what,type,searchStaffs,searchRange,searchTowns,allData}){
 
+    console.log(allData)
+
     // allDataは[各町目データ=>平均・最大・中央・具体的な数リスト]がスタッフごと、営業所ごと、全体で分かれて入っている
 
     // 定義
@@ -27,7 +29,7 @@ export default function ViewTownRecord({prefix,what,type,searchStaffs,searchRang
 
                 {/* 結果 */}
                 {Object.entries(allData).map(([eachPattern,eachDataset],index)=>
-                    <BaseTable {...{tableTheme:getJpnWord(eachPattern),allData:eachDataset,thSets:{"address_name":"住所","average":"平均値","max":"最大値","center":"中央値","stddev":"標準偏差","all_past_data":"過去の全値"},minWidth:pageMinWidth,maxWidth:pageMaxWidth}}/>
+                    <BaseTable {...{tableTheme:getJpnWord(eachPattern),allData:Object.values(eachDataset),thSets:{"address_name":"住所","average":"平均値","max":"最大値","center":"中央値","stddev":"標準偏差","all_past_data":"過去の全値"},width:"w-[95%]",minWidth:pageMinWidth,maxWidth:pageMaxWidth,mb:"mb-2"}}/>
                 )}
 
 

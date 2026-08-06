@@ -31,10 +31,10 @@ export default function useConfirmTownRecordDefinitions({startOffset}){
      const [townBySelect,setTownBySelect]=React.useState("");
 
      //  townを貼り付けセットから取得する場合
-     const [townDataByList,setTownDataByList]=React.useState();
+     const [townByList,setTownByList]=React.useState();
 
     // ページの横幅
     const [pageMinWidth,pageMaxWidth]=["min-w-120","max-w-200"];
 
-    return  {data, setData, post, processing, errors,clearErrors, reset,selectedStaffs,setSelectedStaffs,dateLists,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townDataByList,setTownDataByList,pageMinWidth,pageMaxWidth};
+    return  {data, setData, post, processing, errors,clearErrors, reset,selectedStaffs,setSelectedStaffs,dateLists,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townByList,setTownByList,pageMinWidth,pageMaxWidth};
 }

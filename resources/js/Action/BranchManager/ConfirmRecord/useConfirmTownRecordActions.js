@@ -1,10 +1,10 @@
-import { data } from "autoprefixer";
 import { route } from "ziggy-js";
 import React from "react";
 import adjustDateRange from "../../../Support/Common/adjustDateRange";
+import validateAndFormSettingSearchData from "./ViewTownRecord/validateAndFormSettingSearchData";
 
 // 過去の町々目データの確認
-export default function useConfirmTownRecordActions({data,setData,post,selectedStaffs,setSelectedStaffs,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townDataByList,setTownDataByList}){
+export default function useConfirmTownRecordActions({data,setData,post,selectedStaffs,setSelectedStaffs,selectedStartYear,setSelectedStartYear,selectedEndYear,setSelectedEndYear,townChoiceMode,setTownChoiceMode,prefBySelect,setPrefBySelect,cityBySelect,setCityBySelect,townBySelect,setTownBySelect,townByList,setTownByList}){
 
     // dataに挿入されたら送信
     React.useEffect(()=>{
@@ -94,55 +94,17 @@ export default function useConfirmTownRecordActions({data,setData,post,selectedS
             }
         }
         // 入力値をセット
-        setTownDataByList(target.value);
+        setTownByList(target.value);
     }
 
 
     // 提出ボタンが押されたとき
-    const onDecideSearhDataClick=(e)=>{
+    const onDecideSearchDataClick=(e)=>{
         e.preventDefault();
-
-        // 住所が未記入のとき
-        if((townChoiceMode=="select" && (!prefBySelect || !cityBySelect)) || townChoiceMode=="list" && townBySelect.length==0){
-            alert("住所が選択されていません");
-            return;
-        }
-
-       const dataSets={
-            "staffIds":selectedStaffs,
-            "startYear":selectedStartYear,
-            "endYear":selectedEndYear
-        }
-
-        if(townChoiceMode=="list"){
-            // リスト一覧からの投稿
-            setData({
-                ...dataSets,
-                "pattern":"list",
-                "addressNames":townDataByList.split("\n")
-            })
-
-        }else{
-            // selectからの投稿
-            // 町目をすべて選択にするか否かで県と市も渡すかを変更
-            if(townBySelect==0){
-                setData({
-                    ...dataSets,
-                    "pattern":"selectAll",
-                    "prefName":prefBySelect,
-                    "cityName":cityBySelect,
-                })
-            }else{
-                 setData({
-                    ...dataSets,
-                    "pattern":"selectOneTown",
-                    // idが挿入される
-                    "addressId":townBySelect
-                })
-            }
-        }
+        // 検索で項目決定した時のバリデーション(UIでの)とフォームへのセット
+        validateAndFormSettingSearchData({townChoiceMode,prefBySelect,cityBySelect,townBySelect,townByList,selectedStaffs,selectedStartYear,selectedEndYear,setData})
     }
 
-    return {onSelectedStaffsChange,onSelectedStartYearChange,onSelectedEndYearChange,onTwonChoiceModeChangeClick,onPrefChange,onCityChange,onTownChange,onAddressListsChange,onDecideSearhDataClick}
+    return {onSelectedStaffsChange,onSelectedStartYearChange,onSelectedEndYearChange,onTwonChoiceModeChangeClick,onPrefChange,onCityChange,onTownChange,onAddressListsChange,onDecideSearchDataClick}
 
 }

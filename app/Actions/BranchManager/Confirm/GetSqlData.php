@@ -83,7 +83,7 @@ class GetSqlData{
                 "average"=>round($avg=$result_sets->avg(),1), //平均値
                 "max"=>$result_sets->max(), //最大値
                 "center"=>$result_sets->median(),//中央値
-                "stddev"=>sqrt(($result_sets->map(fn($result)=>($result-$avg)**2))->avg()), //標準偏差
+                "stddev"=>round(sqrt(($result_sets->map(fn($result)=>($result-$avg)**2))->avg()),2), //標準偏差
                 "all_past_data"=>$result_sets->implode(","), //すべての値の列挙
                 ];
         }));

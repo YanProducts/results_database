@@ -4,7 +4,7 @@ export default function useViewTownRecordDefinitions({serchStaffs}){
     const staffNameLists=(serchStaffs==null ||serchStaffs==undefined) ? [] : Object.values(serchStaffs);
 
     // ページの横幅
-    const [pageMinWidth,pageMaxWidth]=["min-w-120","max-w-200"];
+    const [pageMinWidth,pageMaxWidth]=["min-w-250","max-w-400"];
 
     return {staffNameLists,pageMinWidth,pageMaxWidth}
 }
