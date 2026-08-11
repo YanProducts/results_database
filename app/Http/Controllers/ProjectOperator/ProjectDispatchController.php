@@ -7,8 +7,11 @@ use App\Actions\ProjectOperator\Dispatch\CheckDispatch\Flow as CheckFlow;
 use App\Http\Controllers\Controller;
 use App\Support\Common\ModelHelpers\PlaceHelpers;
 use App\Actions\ProjectOperator\Dispatch\StoreDispatch;
+use App\Enums\UserRole;
+use App\Exceptions\BusinessException;
 use App\Http\Requests\ProjectOperator\ConfirmRequest;
 use App\Http\Requests\ProjectOperator\DispatchRequest;
+use App\Models\UserAuth;
 use App\Support\ProjectOperator\DispatchCSVProcessor;
 use App\Support\ProjectOperator\DispatchHelpers;
 use App\Utils\Session;
@@ -33,8 +36,14 @@ class ProjectDispatchController extends Controller
     // 営業所(外注含む)へ振る案件投稿→以前と同じものか確認
     public function dispatch_project_post(DispatchRequest $request){
 
-        // CSVからテーマ名=>["main"=>["projects"=>"","date_town_sets"=>"","sub"=>["ptojrct_name"と"date_town_sets"がいくつかの配列]]のデータ取得
-        $project_name_and_towns=DispatchCSVProcessor::get_data_in_files($request->fileSets);
+        try{
+            // CSVからテーマ名=>["main"=>["projects"=>"","date_town_sets"=>"","sub"=>["ptojrct_name"と"date_town_sets"がいくつかの配列]]のデータ取得
+            // この内部でインストールされたファイルの中身のエラーチェック
+            $project_name_and_towns=DispatchCSVProcessor::get_data_in_files($request->fileSets);
+        }catch(\Throwable $e){
+            Session::create_sessions(["error_message"=>$e instanceof BusinessException ? $e->getMessage() : "予期せぬエラーです","back_route"=>UserRole::top_page_route_name("project_operator")]);
+            return redirect()->route("view_error");
+        }
 
         //placeはすでにplaceがid
         $place_id=$request->place;

@@ -27,8 +27,8 @@ export default function useWriteReportDefinitions(){
      //  inputのRef
       const inputRefs=React.useRef([]);
 
-    // ページの横幅
-      const [pageMinWidth,pageMaxWidth]=["min-w-200","max-w-300"];
+      // ページの横幅
+    const [pageMinWidth,pageMaxWidth]=["min-w-100 mobile:min-w-250","max-w-300 mobile:max-w-400"];
 
       return {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,selectedDate,setSelectedDate,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,pageMinWidth,pageMaxWidth};
 }

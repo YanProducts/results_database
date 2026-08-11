@@ -24,7 +24,7 @@ class Params{
 
         return[
             "staff_names"=>FieldStaffListHelpers::get_staff_names_from_id_array($this->staff_ids),
-            "date_range"=>($this->start_year ==Date::ResultSerachBeforeYearLimit+1 ? "制限なし" : $this->start_year)."〜".($this->end_year==0 ? "現在" : $this->end_year)
+            "date_range"=>($this->start_year ==Date::ResultSerachBeforeYearLimit+1 ? "" :$this->start_year."年前")."〜".($this->end_year==-1 ? "現在" : $this->end_year."年前")
         ];
 
     }

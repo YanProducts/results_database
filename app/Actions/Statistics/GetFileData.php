@@ -78,7 +78,7 @@ class GetFileData{
       "hyosyo"=>$csv_parsed_cols[1],
       // 県
       "pref"=>$pref,
-      // 市 //normalizer...は「ガ」などの表記揺れを同じとみなす、mb_convert_kanaの"s"は全角スペースを半角に＆それをtrimする
+      // 市 //normalizer...は「ガ」などの表記揺れを同じとみなす、naの"s"は全角スペースを半角に＆それをtrimする
       "city"=>trim(mb_convert_kana(normalizer_normalize($csv_parsed_cols[2],\Normalizer::FORM_C),"s")),
       // 町目
       "town"=>trim(mb_convert_kana(normalizer_normalize($csv_parsed_cols[3],\Normalizer::FORM_C),"s")),

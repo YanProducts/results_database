@@ -9,6 +9,7 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
     --breakpoint-sm:300px;
     --breakpoint-md:450px;
+    --breakpoint-mobile:500px; /* スマホ */
     --breakpoint-lg:600px;
     --breakpoint-xl:1000px;
 }

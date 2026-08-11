@@ -35,15 +35,12 @@ class GetSqlData{
         // 条件に合う住所の[id=>住所]のリストを返す(住所名はviewで必要)
         $address_id_sets=self::get_filtered_address_data($params);
 
-
         // 条件１：配布期間、条件２：住所データにおける、条件３：メイン案件の全配布結果のクエリを取得（開始年度が無制限の場合は無制限）し、①スタッフ全員②その営業所のスタッフ③該当スタッフ(指定されていれば)の配布結果を返す
         $query_by_staff_pattern_collects=self::get_filtered_query_sets($params,$address_id_sets);
 
         // 取得したクエリからコレクションを取得
         // その際に、UI用に計算された値と住所の名前も挿入
         $data_by_staff_patterns=self::get_formatted_data_collection($query_by_staff_pattern_collects,$address_id_sets);
-
-        Log::info($data_by_staff_patterns);
 
         // スタッフのパターンにより3つの要素の配列に
         // それぞれの内部では住所のidをキーにとり、結果のデータ($result_sets)と住所の名前の配列
@@ -52,9 +49,10 @@ class GetSqlData{
 
     // 条件に合う住所のidと名前のセットを返す
     public static function get_filtered_address_data($params){
+
         return match($params->pattern){
-            "list"=>AddressHelpers::get_id_name_sets_from_name_array($params->address_name),
-            "selectAll"=>AddressHelpers::get_all_town_data_in_the_city($params->pref,$params->city),
+            "list"=>AddressHelpers::get_id_name_sets_from_name_array($params->address_names)->toArray(),
+            "selectAll"=>AddressHelpers::get_all_town_data_in_the_city($params->pref,$params->city)->toArray(),
             "selectOneTown"=>[$params->address_id=>AddressHelpers::get_city_and_town_from_id($params->address_id)],
             default=>throw new BusinessException("予期せぬパターンです")
         };
@@ -62,17 +60,18 @@ class GetSqlData{
 
     // 条件１：配布期間、条件２：住所データにおける、条件３：メイン案件の全配布結果のクエリを取得（開始年度が無制限の場合は無制限）し、①スタッフ全員②その営業所のスタッフ③該当スタッフ(指定されていれば)の配布結果を返す
     public static function get_filtered_query_sets($params,$address_id_sets){
+
         // 条件１：配布期間&住所データにおける、条件２：メイン案件の全配布結果のクエリを取得（開始年度が無制限の場合は無制限）
-        $range_query=DistributionRecordHelpers::get_query_of_all_records_by_year_range($start_year=$params->start_year,$params->end_year
-        ,$start_year==Date::ResultSerachBeforeYearLimit+1)->where("address_id",array_keys($address_id_sets))->whereHas("distribution_plan",function($query){$query->where("main_id",null);});
+        $range_query=DistributionRecordHelpers::get_query_of_all_records_by_year_range($start_year=$params->start_year,$params->end_year,$start_year==Date::ResultSerachBeforeYearLimit+1)->whereIn("address_id",array_keys($address_id_sets))->whereHas("distribution_plan",function($query){$query->where("main_id",null);});
 
         // 上記の住所id、特定配布期間における①スタッフ全員②その営業所のスタッフ③該当スタッフ(指定されていれば)の配布結果を返す
-        return collect([...(!empty($params->staff_ids) ? ["selected_staffs"=>clone $range_query->whereIn("staff_id",$params->staff_ids)] : []),
-        "all_staffs_in_the_places"=>self::get_all_data_from_query_in_place(clone $range_query),"all_staffs"=>clone $range_query]);
+        return collect([...(!empty($params->staff_ids) ? ["selected_staffs"=>(clone $range_query)->whereIn("staff_id",$params->staff_ids)] : []),
+        "all_staffs_in_the_places"=>self::get_all_data_from_query_in_place(clone $range_query),"all_staffs"=>(clone $range_query)]);
     }
 
     // フォーマットされたコレクションの取得
     public static function get_formatted_data_collection($query_by_staff_pattern_collects,$address_id_sets){
+
 
         return $query_by_staff_pattern_collects->map(fn($each_query)=>
         // 町目をキーに配布枚数を取得(後に列挙しながら集計する)

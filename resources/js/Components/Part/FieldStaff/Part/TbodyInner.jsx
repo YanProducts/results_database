@@ -7,7 +7,9 @@ export default function TbodyInner({mainProjectName,projectSets,eachData,mapNumb
         const assignId=eachData.assign_id;
         return(
                 <tr className={`border-black border-2 ${indexInMaps == 0 ? "border-t-3" : "border-t-2"} base_backColor`} key={trIndex}>
+
                     <td className={`border-black border-x-2 ${widthSets[0]} `}>{eachData.address_name}</td>
+
                     <td className={`border-black border-x-2 bg-yellow-300 ${widthSets[1]}`}>{eachData.household}</td>
                     {/* 案件ごとの配布数 案件数によって数を変化 */}
                     {Object.keys(projectSets).map(function(eachSet,index){

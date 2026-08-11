@@ -54,7 +54,6 @@ class DispatchCSVProcessor{
                     $second_row_count=count($row);
 
                 }else{
-
                     // 各データを入れる（この内部でエラーチェック）
                     $return_sets=self::get_each_town_data($second_row_count,$row_num,$row,$main_project_name,$return_sets,$return_sets_key);
 

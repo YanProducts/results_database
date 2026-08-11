@@ -92,7 +92,7 @@ class DispatchCSVValidation{
         }
 
         // 住所に存在
-        if(!AddressHelpers::is_address_exists($converted_row3,$converted_row4)){
+        if(!AddressHelpers::is_address_exists($converted_row3,$converted_row4) && !AddressHelpers::get_address_when_town_with_space($converted_row3,$converted_row4,false)){
             throw new BusinessException("メイン案件名が".$main_project_name."のファイルの".$row_num."行目の\n".$converted_row3.$converted_row4."という町目が町目データにありません");
         }
 

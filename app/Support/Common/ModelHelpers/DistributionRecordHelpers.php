@@ -33,7 +33,7 @@ class DistributionRecordHelpers{
             $end_date=Carbon::now()->subYear($end_year_range);
             return DistributionRecord::whereBetween("distribution_date",[$start_date,$end_date]);
         }else{
-            return DistributionRecord::whereBetween("distribution_date","<",Carbon::now()->subYear($end_year_range));
+            return DistributionRecord::where("distribution_date","<",Carbon::now()->subYear($end_year_range));
         }
     }
 

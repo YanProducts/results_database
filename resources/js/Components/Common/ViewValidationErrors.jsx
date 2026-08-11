@@ -10,7 +10,7 @@ export default function ViewValidationErrors({errors,mt="",minWidth="",maxWidth=
     const uniqueErrorSet=[...new Set(Object.values(errors).map((error,index)=>error))];
 
   return(
-    <div className={`mb-6 ${mt} ${minWidth} ${maxWidth}`}>
+    <div className={`base_frame mb-6 ${mt} ${minWidth} ${maxWidth}`}>
         {uniqueErrorSet.map((eachError,index)=>
             <div className="base_error whitespace-pre-line" key={index}><p>{eachError}</p></div>
         )}

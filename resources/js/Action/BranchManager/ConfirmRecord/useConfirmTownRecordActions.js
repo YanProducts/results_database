@@ -73,7 +73,7 @@ export default function useConfirmTownRecordActions({data,setData,post,selectedS
     // 現在選択中の市の変更(selectの場合)
     const onCityChange=(e)=>{
         const target=e.currentTarget;
-        setTownBySelect("all");
+        setTownBySelect(0);
         setCityBySelect(target.value)
     }
     // 現在選択中の町の変更(selectの場合)

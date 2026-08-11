@@ -140,9 +140,11 @@ class StoreDispatch{
 
     // project_name_and_townsは[テーマ名]=> ["main"=>["project_names"=>"","date_town_sets"=>"","sub"=>["ptojrct_name"と"date_town_sets"がいくつかの配列]]のデータ取得
 
-
             foreach($date_town_sets as $each_sets){
+
+                // 住所検索
                 $address_id=AddressHelpers::get_id_from_city_and_town($each_sets["city"],$each_sets["town"]);
+
                 $project_id=ProjectHelpers::get_latest_project_id_from_name($project_name);
 
                 $distribution_plans=new DistributionPlan();

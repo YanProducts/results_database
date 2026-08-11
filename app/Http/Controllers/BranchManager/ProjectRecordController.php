@@ -48,7 +48,6 @@ class ProjectRecordController extends Controller
 
     //  sqlデータ取得
     $sql_data=GetSqlData::get_filtered_sql_data($params);
-    // Log::info($sql_data);
 
     // UI用の言葉に変換(連想配列で入れる)
     ["staff_names"=>$staff_names,"date_range"=>$date_range]=$params->get_string_for_UI();
