@@ -5,7 +5,7 @@ import getSumSetsInTable from "./getSumSetsInTable";
 // テーブルごとにStateの変数やUIで最終的に使う要素の取得
 // mapを何度も回さないために先に取得
 
-export default function getTableSetsByMainProjects({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount}){
+export default function getTableSetsByMainProjects({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount,isBigMedia}){
 
         if(!selectedDate || !assignDataToStaff[selectedDate]){
             return [];
@@ -18,7 +18,7 @@ export default function getTableSetsByMainProjects({assignDataToStaff,selectedDa
 
                 return {
                         // プロジェクトの数に応じてthやtdの長さの変化
-                        "widthSets":setTdWidthByProjectCounts(Object.keys(keyValueSets[1]["project_set"]).length),
+                        "widthSets":setTdWidthByProjectCounts(Object.keys(keyValueSets[1]["project_set"]).length,isBigMedia),
                         "mainProjectName":mainProjectName,
                         "projectSets":projectSets,
                         "dataInEachMainProject":keyValueSets[1]["each_data"],

@@ -5,13 +5,13 @@ import WriteReportContext from "../../../../Contexts/FieldStaffs/useWriteReportC
 export default function TrForSum({mainProjectName,projectSets,isConfirm,sumSets}){
 
     // 最初に宣言すると、入れ子の最後まで使えるのがcontext(知ったのが途中からだったので、今から使用)
-    const {onSetOtherProjectToSameValueClick}=React.useContext(WriteReportContext)
+    const {onSetOtherProjectToSameValueClick,isBigMedia}=React.useContext(WriteReportContext)
 
     return(
         <React.Fragment>
 
          <tr className="border-black border-2 base_backColor">
-            <td className="border-black border-2 bg-sky-200 font-bold" colSpan={2}>{`合計${isConfirm ? "" :"：町目ごと"}`}</td>
+            <td className="border-black border-2 bg-sky-200 font-bold" colSpan={2}>{`合計${(isConfirm || !isBigMedia) ? "" :"：町目ごと"}`}</td>
             {/* それぞれの案件の合計数 */}
              {Object.keys(projectSets).map((projectId,index)=>
                 <td key={index} className={`border-black border-x-2`}>{sumSets[projectId]?.sumByTowns || "-"}</td>
@@ -21,7 +21,7 @@ export default function TrForSum({mainProjectName,projectSets,isConfirm,sumSets}
        {!isConfirm &&
        <React.Fragment>
         <tr className={`border-black border-2 base_backColor`}>
-            <td className="bg-orange-300 border-x-2 border-black" colSpan={2}>合計：持ち出し-返却</td>
+            <td className="bg-orange-300 border-x-2 border-black" colSpan={2}>{isBigMedia && "合計："}持ち出し-返却</td>
              {Object.keys(projectSets).map(function(projectId,index){
             const sumByCounts=sumSets[projectId]?.sumByCounts || null;
                 return(

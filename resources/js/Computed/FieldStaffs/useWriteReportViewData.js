@@ -4,7 +4,7 @@
 import React from "react";
 import getTableSetsByMainProjects from "../../Support/FieldStaff/getTableSetsByMainProjetcs";
 // このファイルはスタッフの報告書作成における表示データの取得
-export default function useWriteReportViewData({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount}){
+export default function useWriteReportViewData({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount,isBigMedia}){
 
 
        const tableSets=React.useMemo(()=>{
@@ -12,8 +12,8 @@ export default function useWriteReportViewData({assignDataToStaff,selectedDate,i
             return [];
         }
 
-        return getTableSetsByMainProjects({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount})},
-        [assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount]);
+        return getTableSetsByMainProjects({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount,isBigMedia})},
+        [assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount,isBigMedia]);
 
         // オブジェクトが入れ子になっている配列の中のsumSet(合計セット)に「持ち出し-返却」と「町目ごとの数の合計数」が全てあっているかの確認(間違いがないかの確認)
         // 1つでもずれがあればtrueを返す

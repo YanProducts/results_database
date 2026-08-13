@@ -3,7 +3,7 @@ import { route } from "ziggy-js";
 import applyOtherProjectToSameValueClick from "./Part/applyOtherProjectToSameValueClick";
 import confirmMainOrSubOnlyInput from "./Part/confirmMainOrSubOnlyInput";
 
-export default function useWriteReportActions({assignDataToStaff,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post}){
+export default function useWriteReportActions({assignDataToStaff,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,isBigMedia,setIsBigMedia}){
 
 
     // 日付が変更されたらpost用のデータにセット(他のデータは自動的に初期化)
@@ -21,6 +21,19 @@ export default function useWriteReportActions({assignDataToStaff,inputValues,set
             "reportData":[]
         })
     },[selectedDate])
+
+
+    // 大きなデバイスかどうか
+    React.useEffect(()=>{
+        // windowは分割点に差し掛かっているかのみ取得
+        const bigJudge=window.matchMedia("(min-width:500px)")
+        const mediaChange=()=>{
+            setIsBigMedia(bigJudge?.matches || false)
+        }
+        // そのmediaが変化した場合に変化
+        bigJudge.addEventListener("change",mediaChange)
+        return ()=>{bigJudge.removeEventListener("change",mediaChange)};
+    },[]);
 
 
     // 日付の変更

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 //UserRoleのEnumから実際に使用する部分を取得する
 class UserRoleResolver{
 
-    // ページのprefixとタイトルを返す
+    //ルートのroleの英語名と日本語名を返す
     public static function get_page_name_sets($route_name){
 
         //全般データなら、whole_dataを返す
@@ -41,8 +41,6 @@ class UserRoleResolver{
         ];
 
     }
-
-
 
     // どのauthページかを返す(abortつき)
     public static function get_auth_page_type($request){

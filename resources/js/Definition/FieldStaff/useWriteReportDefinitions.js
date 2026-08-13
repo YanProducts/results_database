@@ -25,10 +25,13 @@ export default function useWriteReportDefinitions(){
      const [inputValues, setInputValues]=React.useState({});
 
      //  inputのRef
-      const inputRefs=React.useRef([]);
+    const inputRefs=React.useRef([]);
 
       // ページの横幅
-    const [pageMinWidth,pageMaxWidth]=["min-w-100 mobile:min-w-250","max-w-300 mobile:max-w-400"];
+    const [pageMinWidth,pageMaxWidth]=["min-w-90 mobile:min-w-250","max-w-300 mobile:max-w-400"];
 
-      return {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,selectedDate,setSelectedDate,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,pageMinWidth,pageMaxWidth};
+    // モバイルが大きい時と小さい時で表示を買える
+    const [isBigMedia,setIsBigMedia]=React.useState(window.matchMedia("(min-width:500px)").matches);
+
+      return {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,selectedDate,setSelectedDate,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia};
 }

@@ -2,11 +2,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BranchManager\AssignOverviewContorller;
-use App\Http\Controllers\BranchManager\DistributionReportController;
+use App\Http\Controllers\BranchManager\ReportManagementController;
 use App\Http\Controllers\BranchManager\ProjectHandingController;
 use App\Http\Controllers\BranchManager\ProjectRecordController;
 use App\Http\Controllers\BranchManager\SimpleAssignMentController;
 use App\Http\Controllers\BranchManager\StaffAssignmentController;
+use App\Http\Controllers\FieldStaffs\ReportManagementController as ReportManagementFromFieldStaff;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -79,14 +80,40 @@ Route::prefix("branch_manager")
             });
 
             // 報告書の修正や営業所担当側での記入
-            Route::controller(DistributionReportController::class)
+            Route::controller(ReportManagementController::class)
             ->group(function(){
-                // 報告書の代替記入
+
+                // 報告書の確認or代替記入(スタッフから)
                 Route::get("choice_report_target","choice_report_target")
                 ->name("choice_report_target");
-                // 報告書の代替記入(人の決定→報告書表示画面へ)
+
+                 // 報告書の確認or代替記入(人の決定→日付表示画面へ)
                 Route::post("choice_report_target","choice_report_target_post")
                 ->name("choice_report_target_post");
+
+
+                // 報告書の確認or代替記入する日付の決定→確認
+                Route::post("decide_date_for_report_choice","decide_date_for_report_choice_post")
+                ->name("decide_date_for_report_choice_post");
+                // 上記がバリデーションで返った時
+                Route::get("decide_date_for_report_choice","decide_date_for_report_choice_post")
+                ->name("decide_date_for_report_choice");
+
+
+
+
+                // 報告書の確認or代替記入(日付から)
+                Route::get("choice_report_date_target","choice_report_date_target")
+                ->name("choice_report_date_target");
+                // 報告書の確認or代替記入(日付決定の投稿)
+                Route::post("choice_report_date_target","choice_report_date_target_post")
+                ->name("choice_report_date_target_post");
+                // 報告書の確認or代替記入(日付決定後、スタッフの選択の決定)
+                Route::post("decide_staff_for_report_choice","decide_staff_for_report_choice_post")
+                ->name("decide_date_for_report_choice_post");
+
+
+
                 // 報告書の代替記入(人の決定後、報告書表示画面=errorsで戻った時のことを考えInertiaではなく完全にredirectさせる)
                 //人の選択がない状態ではエラーにすること
                 Route::get("complete_report","complete_report")
@@ -98,11 +125,18 @@ Route::prefix("branch_manager")
                 Route::get("choice_edit_report_target","choice_edit_report_target")
                 ->name("choice_edit_report_target");
                 // 報告書の編集(決定して編集できる状態に)
-                Route::post("choicd_edit_report_target","choicd_edit_report_target")
-                ->name("choicd_edit_report_target");
+                Route::post("choice_edit_report_target","choice_edit_report_target_post")
+                ->name("choice_edit_report_target_post");
                 // 上記にバリデーションで戻った時
-                Route::post("choicd_edit_report_target","choicd_edit_report_target")
-                ->name("choicd_edit_report_target");
+                Route::get("choice_edit_report_target","choice_edit_report_target")
+                ->name("choice_edit_report_target");
+            });
+
+            // 報告書の確認or代替記入(日付画面表示へ)
+            // スタッフのコントローラーを使うので別途定義
+            Route::controller(ReportManagementFromFieldStaff::class)->group(function(){
+                    Route::get("overview_reports/{year?}/{month?}","overview_reports")
+                    ->name("overview_reports");
             });
 
             // 案件を営業所側で登録する系統
@@ -124,7 +158,7 @@ Route::prefix("branch_manager")
                 ->name("confirm_project_record_post");
 
                 // その営業所特有の備考欄つけるか！？
-            
+
 
             });
 

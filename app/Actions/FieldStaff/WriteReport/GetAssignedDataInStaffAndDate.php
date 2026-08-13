@@ -128,34 +128,28 @@ class GetAssignedDataInStaffAndDate{
 
                         foreach($main_project_data_sets_with_map_number as $map_number=>$main_project_data_sets_by_map_number){
 
-
-                        // この内部の[$address_id]["address_name"]に住所が入っている
-                        // 現状は市の名前,町の名前
-                        // これを町の名前(重なっていたら市の名前を\n以降に記入)に変更
-
-
-                        // まずは内部の重複チェック
-
-                        // でも上記のexisted_address_setsじゃメイン案件で絞れてない？？？
-
                         // 町名が重複している町目
-                        $duplicate_town_names=($town_name_sets_in_the_mein_project=(collect($existed_address_sets)->pluck("town")))->diff($town_name_sets_in_the_mein_project);
-
+                        $duplicate_town_names=(collect($existed_address_sets)->pluck("town"))->duplicates();
 
                             // 必要な世帯数データを抽出する(集合や戸建など)
                             foreach($main_project_data_sets_by_map_number as $main_project_data){
                                 $main_plan_id=$main_project_data->id; //そのmainplanのId(複数回使用するので取得)
                                 $address_id=$main_project_data->address_id; //住所Id(複数回取得するので先に取得)
+                                //その町目のデータ
+                                $town_data_in_id=$existed_address_sets[$address_id];
+
                                 $return_sets_by_date[$main_project_key_name_for_view]["each_data"][$map_number][]=[
                                     // その日その人に振られたprojectIdは一意に決まり、すでに日と人とではfilterにかけられているので、plan_idからassign_idは取得可能
                                     "assign_id"=>$main_plan_ids_in_the_day->search($main_plan_id),
                                     //  住所のid
                                     "address_id"=>$address_id,
-                                    //  住所の名前(町名が基本、重なっていたら(\n)をとる)
-                                    "address_name"=>$duplicate_town_names->contains($town_name=$existed_address_sets[$address_id]["town"], $duplicate_town_names) ? $town_name."\n(".$existed_address_sets[$address_id]["city"].")" : $town_name,
+                                    //  モバイル用の住所の名前(町名が基本、重なっていたら(\n市名))
+                                    "address_name"=>$duplicate_town_names->contains($town_name=$town_data_in_id["town"]) ? $town_name."\n(".$town_data_in_id["city"].")" : $town_name,
+                                    // 横幅が長い用の住所の名前
+                                    "address_name_when_big_media"=>$town_data_in_id["city"].$town_data_in_id["town"],
 
                                     // 世帯数(後日、場合わけ必要)
-                                    "household"=>$existed_address_sets[$address_id]["household"],
+                                    "household"=>$town_data_in_id["household"],
                                     // 併配がある案件のセット
                                     "sub_sets"=>isset($sub_sets_in_the_day[$main_plan_id]) ? array_column($sub_sets_in_the_day[$main_plan_id]->toArray(),"project_id") : [],
                                 ];

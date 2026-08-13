@@ -16,13 +16,6 @@ export default function confirmMainOrSubOnlyInput({assignDataToStaff,selectedDat
             // 割り振られたデータの案件ごと&内部で地図ごとの情報セットから、その町目のIdと同じものを取得
             let matchedAssignedTown=""
 
-
-                        console.log(townId) //その街でinputされたId
-            console.log(eachInputDataByTown) //その街でinputされたデータ
-            console.log(assignedDataInTheMainProject)
-
-
-
            for (const assignedDataByMap of Object.values(assignedDataInTheMainProject)){
                     // 対象の町がmapに存在すれ、matchされた街のデータが返る
                     matchedAssignedTown=Object.values(assignedDataByMap).find(function(assignedDataByTown){

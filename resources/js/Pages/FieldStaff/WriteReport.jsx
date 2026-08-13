@@ -11,15 +11,15 @@ import WriteReportContext from "../../Contexts/FieldStaffs/useWriteReportContext
 export default function WriteReport({what,type,prefix,staff,dateSets,assignDataToStaff,fromSimpleFlag,submittedDates}){
 
     // assignDataToStaffキーのプロジェクト名はsameProjectFlagなども想定済みのもの
-    const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,selectedDate,setSelectedDate,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,pageMinWidth,pageMaxWidth}=useWriteReportDefinitions();
+    const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,selectedDate,setSelectedDate,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia}=useWriteReportDefinitions();
 
-    const {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}=useWriteReportActions({assignDataToStaff,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post});
+    const {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}=useWriteReportActions({assignDataToStaff,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,isBigMedia,setIsBigMedia});
 
     //テーブルのUIや変数などに必要な要素の取得(依存配列が変化しなければ再計算されない)
-    const [tableSets,differenceExists]=useWriteReportViewData({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount});
+    const [tableSets,differenceExists]=useWriteReportViewData({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount,isBigMedia});
 
     return(
-    <WriteReportContext.Provider value={{onSetOtherProjectToSameValueClick}}>
+    <WriteReportContext.Provider value={{onSetOtherProjectToSameValueClick,isBigMedia}}>
 
     <Layout title={`${what}-${type}`}>
      <RoleLayout prefix={prefix}>
@@ -27,7 +27,7 @@ export default function WriteReport({what,type,prefix,staff,dateSets,assignDataT
         {/* 確認か入力か */}
         {!isConfirm ?
         <ReportDataInput {...{what,type,pageMinWidth,pageMaxWidth,staff,selectedDate,onSelectedDateChange,submittedDates,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,
-        dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,fromSimpleFlag}} />
+        dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,fromSimpleFlag,}} />
         :
         <ReportConfirm {...{what,type,pageMaxWidth,pageMinWidth,data,assignDataToStaff,selectedDate,issuedCount,returnedCount,inputRefs,inputValues,onAssignedInputChange,onConfirmOkClick,onConfirmCancelClick,tableSets,errors,processing,isConfirm,fromSimpleFlag}}/>
         }

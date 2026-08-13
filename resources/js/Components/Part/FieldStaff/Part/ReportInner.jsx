@@ -3,9 +3,12 @@ import BaseTable from "../../../Common/BaseTable";
 import TbodyInner from "./TbodyInner";
 import TrForSum from "./TrForSum";
 import IssuedAndReturns from "./IssueAndReturns";
+import WriteReportContext from "../../../../Contexts/FieldStaffs/useWriteReportContexts";
 
 // 報告書テーブルの内部
 export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,tableSets,isConfirm,processing,fromSimpleFlag}){
+
+    const {isBigMedia}=React.useContext(WriteReportContext);
 
     return(
          tableSets.map(function(eachTableSets,index){
@@ -17,7 +20,7 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,retur
                 return(
                 <React.Fragment key={index}>
 
-                <BaseTable tableTheme={mainProjectName} width={"w-[97.5%]"} thSets={{"town":"町名","household":"世帯数",...projectSets,"mapNumber":"地図番号"}} thWidthSets={widthSets} maxWidth={pageMaxWidth} minWidth={pageMinWidth} allData={[]} mb={"mb-4"}>
+                <BaseTable tableTheme={mainProjectName} width={"w-[97.5%]"} thSets={{"town":"町名","household":"世帯数",...projectSets,"mapNumber":(isBigMedia ? "地図" : "") + "番号"}} thWidthSets={widthSets} maxWidth={pageMaxWidth} minWidth={pageMinWidth} allData={[]} mb={"mb-4"}>
 
                     {/* 持ち出しと返却(確認用) */}
                     <IssuedAndReturns {...{projectSets,mainProjectName,onIssuedOrReturnedCountsChange,state:issuedCount,setState:setIssuedCount,isConfirm,processing,jpnWord:"持ち出し"}}/>

@@ -17,7 +17,7 @@ export default function BasePageHeader({what,type,subtitle="", pageMinWidth="min
 
         {/* サブタイトルは含まれる時のみ */}
         {subtitle &&
-        <div className={`base_frame base_backColor text-center ${pageMinWidth} ${pageMaxWidth}`}><h2 className={`base_h text-2xl ${mb} ${pageMinWidth} ${pageMaxWidth}`}>{subtitle}</h2></div>
+        <div className={`base_frame base_backColor text-center ${pageMinWidth} ${pageMaxWidth}`}><h2 className={`base_h text-2xl whitespace-pre-wrap ${mb} ${pageMinWidth} ${pageMaxWidth}`}>{subtitle}</h2></div>
         }
      </>
     );

@@ -21,7 +21,7 @@ class UserAuth extends Authenticatable
         return $this->morphTo();
     }
 
-    // roleというカラムを仮作成し、それをrole()というメソッドで呼び出せるようにする
+    // roleという属性を仮作成し、それをrole()というメソッドで呼び出せるようにする
     public function getRoleAttribute(){
 
             // Enumの配列を取得

@@ -1,4 +1,3 @@
-import React from "react";
 import BaseTable from "../../Common/BaseTable";
 import { route } from "ziggy-js";
 import { Link } from "@inertiajs/react";

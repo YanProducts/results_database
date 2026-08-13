@@ -41,7 +41,7 @@ class AddressHelpers{
 
     // 住所idに対する住所名と世帯数のセットをid=>[町名(重なれば市の名前も最終的に取得),世帯数セット]の配列で一括取得(n+1防止)
     public static function get_address_name_and_household_set_arrays_key_by_id($ids){
-      return Address::whereIn("id",$ids)->select("id","city","town","household","apartment","detached","establishment")->get()->keyBy("id")->toArray();
+        return Address::whereIn("id",$ids)->select("id","city","town","household","apartment","detached","establishment")->get()->keyBy("id")->toArray();
     }
 
     // 住所が存在するか
