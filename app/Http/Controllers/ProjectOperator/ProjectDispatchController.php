@@ -54,8 +54,6 @@ class ProjectDispatchController extends Controller
         if(!empty($same_projects_data) || !empty($same_towns_data)){
 
 
-Log::info("重複");dd(1);
-
             // フラッシュセッションだとバリデーション時のエラー捕捉がやりにくい
             Session::create_sessions([
                 "same_projects_data"=>$same_projects_data,
@@ -67,11 +65,6 @@ Log::info("重複");dd(1);
                 "same_towns_data"=>session($same_towns_data)
             ]);
         }
-
-            Log::info($project_name_and_towns);
-            dd("ここはControllers/ProjectOperator/ProjectDispatchController.php");
-
-
 
         // 既存のものと案件名が重ならないか期間的に同じと思われる場合には登録(request->placeは既にid名)
         StoreDispatch::store_projects_data($project_name_and_towns,$place_id);

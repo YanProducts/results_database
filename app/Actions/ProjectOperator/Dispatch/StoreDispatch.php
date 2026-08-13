@@ -12,7 +12,9 @@ use App\Support\Common\ModelHelpers\ProjectHelpers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProjectImport;
+use App\Models\ProjectPlannedCount;
 use App\Support\ProjectOperator\DispatchHelpers;
+use App\Utils\DateHelper;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
@@ -21,8 +23,9 @@ class StoreDispatch{
 
 
     // 重ならないと決まった時のprojectとDistributionPlanのsql挿入(日付と名前)
-    public static function store_projects_data($project_name_and_towns,$place){
-        DB::transaction(function()use($project_name_and_towns,$place){
+    public static function store_projects_data($project_name_and_towns,$place_id){
+        DB::transaction(function()use($project_name_and_towns,$place_id){
+
             // projectsテーブルに挿入
             self::upsert_projects_table($project_name_and_towns);
 
@@ -32,13 +35,28 @@ class StoreDispatch{
 
                 // メイン案件
                 $main_sets=$each_project["main"];
-                $main_project_name=$main_sets["project_name"];
-                self::insert_distribution_plans_table($main_sets["date_town_sets"],$main_sets["project_name"],$place,true,null);
+                // メイン案件の案件Id
+                $main_project_id=ProjectHelpers::get_latest_project_id_from_name($main_sets["project_name"]);
+
+                // 最も早い開始日と最も遅い終了日の取得(subはmainに連動する)
+                [$earliest_start_date,$latest_end_date]=[min(array_column($main_sets["date_town_sets"],"start_date")),max(array_column($main_sets["date_town_sets"],"end_date"))];
+
+
+                // メインの町丁目セット
+                self::insert_distribution_plans_table($main_sets["date_town_sets"],$main_project_id,$place_id,true,null);
+
+                // メインの設定合計(最後に挿入されたidを返す)
+                $main_id=self::insert_total_data($main_project_id,$main_sets["total_count"],$place_id,$earliest_start_date,$latest_end_date,false,null);
 
                 // サブ案件
                 $sub_sets=$each_project["sub"];
                 foreach($sub_sets as $each_sets){
-                    self::insert_distribution_plans_table($each_sets["date_town_sets"],$each_sets["project_name"],$place,false,$main_project_name);
+                    // プロジェクトのid(必然的に最も新しいプロジェクトidが取得される)
+                    $sub_project_id=ProjectHelpers::get_latest_project_id_from_name($each_sets["project_name"]);
+                    // 町丁目ごとの配布テーブル
+                    self::insert_distribution_plans_table($each_sets["date_town_sets"],$sub_project_id,$place_id,false,$main_project_id);
+                    // 設定合計
+                    self::insert_total_data($sub_project_id,$each_sets["total_count"],$place_id,$earliest_start_date,$latest_end_date,false,$main_id);
                 }
             }
         });
@@ -132,7 +150,7 @@ class StoreDispatch{
 
 
     // 重ならないと決定したあとで、配布予定の案件や町目などを入れていく
-    public static function insert_distribution_plans_table($date_town_sets,$project_name,$place_id,$is_main,$main_project_name){
+    public static function insert_distribution_plans_table($date_town_sets,$project_id,$place_id,$is_main,$main_project_id){
 
     // project_name_and_townsは[テーマ名]=> ["main"=>["project_names"=>"","date_town_sets"=>"","sub"=>["ptojrct_name"と"date_town_sets"がいくつかの配列]]のデータ取得
 
@@ -140,8 +158,6 @@ class StoreDispatch{
 
                 // 住所検索
                 $address_id=AddressHelpers::get_id_from_city_and_town($each_sets["city"],$each_sets["town"]);
-
-                $project_id=ProjectHelpers::get_latest_project_id_from_name($project_name);
 
                 $distribution_plans=new DistributionPlan();
                 // 誰が登録したか
@@ -164,7 +180,7 @@ class StoreDispatch{
                 if(!$is_main){
                     $distribution_plans->main_id=DistributionPlan::where([
                         // このメインプロジェクト、住所、営業所でmain_idがnullのものがメイン案件(念のため同案件フラグNo.まで同じの同じ案件同じ町目が何回も行った場合に備えてround_numberも設定)
-                        ["project_id","=",ProjectHelpers::get_latest_project_id_from_name($main_project_name)],
+                        ["project_id","=",$main_project_id],
                         ["main_id","=",null],
                         //round_number
 
@@ -236,6 +252,26 @@ class StoreDispatch{
             }
             $plan->save();
         }
+    }
+
+    // 合計部数の挿入(トランザクション内部には既にいる)
+    public static function insert_total_data($project_id,$total_count,$place_id,$earliest_start_date,$latest_end_date,$need_main_id,$main_project_id){
+        $project_planned_count=new ProjectPlannedCount();
+        $project_planned_count->project_id=$project_id; //案件Id
+        $project_planned_count->place_id=$place_id; //営業所Id
+        $project_planned_count->start_date=$earliest_start_date; // 開始日
+        $project_planned_count->end_date=$latest_end_date; // 終了日
+
+        // すでに同じ案件が挿入され、かつmain案件が別のときは、同案件フラグを足す
+        // $project_planned_count->round_number=""
+
+        $project_planned_count->counts=$total_count; //合計部数
+        if(!$need_main_id){
+            $project_planned_count->main_id=$main_project_id;//対応するメイン案件(メイン案件のときはnull)
+        }
+
+        $project_planned_count->save();
+        return $project_planned_count->id;
     }
 
 

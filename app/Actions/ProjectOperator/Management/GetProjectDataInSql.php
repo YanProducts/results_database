@@ -6,6 +6,7 @@ use App\Models\DistributionPlan;
 use App\Models\DistributionRecord;
 use App\Models\Place;
 use App\Models\Project;
+use App\Models\ProjectPlannedCount;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -21,14 +22,17 @@ class GetProjectDataInSql{
         $assined_data=DistributionPlan::select("id","project_id")->get();
         // 配布済みデータの捕捉
         $finished_data=DistributionRecord::select("id","project_id","distribution_count")->get();
+        //設定部数リスト
+        $total_count_lists=ProjectPlannedCount::select("id","project_id","counts")->get();
 
         //Projectデータのidに対応する割り当て済みの町目数/配布済みの町目数/配布総定数、配布部数を取得し、Projectデータから直接とった値と連動
-        return $data_in_project_table->map(function($each_project_data)use($assined_data,$finished_data){
+        return $data_in_project_table->map(function($each_project_data)use($assined_data,$finished_data,$total_count_lists){
 
             return
             [...$each_project_data->toArray(),"town_count"=>$assined_data->where("project_id",$each_project_data["id"])->count(),
             "finished_town_count"=>$finished_data->where("project_id",$each_project_data["id"])->count(),
-            "distribution_plan_count"=>0,
+            // round_number別に取得ではなく合計取得(日毎取得は別途取得)
+            "distribution_plan_count"=>$total_count_lists->where("project_id",$each_project_data["id"])->pluck("counts")->sum(),
             "finished_distribution_count"=>$finished_data->where("project_id",$each_project_data["id"])->pluck("distribution_count")->sum()
             ];
         })->toArray();
