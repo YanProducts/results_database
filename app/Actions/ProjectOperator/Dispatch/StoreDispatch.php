@@ -8,7 +8,6 @@ use App\Models\DistributionPlanImport;
 use App\Models\DistributionRecord;
 use App\Models\Project;
 use App\Support\Common\ModelHelpers\AddressHelpers;
-use App\Support\Common\ModelHelpers\DistributionPlanHelpers;
 use App\Support\Common\ModelHelpers\ProjectHelpers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -34,14 +33,11 @@ class StoreDispatch{
                 // メイン案件
                 $main_sets=$each_project["main"];
                 $main_project_name=$main_sets["project_name"];
-
                 self::insert_distribution_plans_table($main_sets["date_town_sets"],$main_sets["project_name"],$place,true,null);
 
                 // サブ案件
                 $sub_sets=$each_project["sub"];
-
                 foreach($sub_sets as $each_sets){
-
                     self::insert_distribution_plans_table($each_sets["date_town_sets"],$each_sets["project_name"],$place,false,$main_project_name);
                 }
             }

@@ -16,7 +16,6 @@ class DispatchCSVProcessor{
         foreach($files as $file){
 
             // ファイルのの内容を見る(fgetsCSVが自動的に1行ずつ見てくれる)
-
             // BOMを削除したポインタを返す
             $tmp_handler=FileHelper::get_non_BOM_pointer($file);
 
@@ -32,7 +31,6 @@ class DispatchCSVProcessor{
 
         // データがタイトル行までしか存在しないときを弾く
         DispatchCSVValidation::is_csv_contents_exists($row_num);
-
 
         //PHPのforeachはスコープを作らないのでこれでOK
         return $return_sets;
@@ -53,8 +51,11 @@ class DispatchCSVProcessor{
                     // 2行目の列の数
                     $second_row_count=count($row);
 
+                }else if(DispatchHelpers::convert_sjis_to_utf8($row[0])=="合計配布部数"){
+                    // 最終行の時
+                    $return_sets[$return_sets_key]=self::get_total_counts($row,$return_sets[$return_sets_key]);
                 }else{
-                    // 各データを入れる（この内部でエラーチェック）
+                    // それ以外は各町目のデータを入れる（この内部でエラーチェック）
                     $return_sets=self::get_each_town_data($second_row_count,$row_num,$row,$main_project_name,$return_sets,$return_sets_key);
 
                 }
@@ -140,6 +141,15 @@ class DispatchCSVProcessor{
                 }
 
         return $return_sets;
+    }
+
+    public static function get_total_counts($row,$return_sets_with_key){
+        $return_sets_with_key["main"]["total_count"]=DispatchHelpers::convert_sjis_to_utf8($row[1]);
+        for($column=2;$column<count($return_sets_with_key["sub"])+2;$column++){
+            $return_sets_with_key["sub"][$column-2]["total_count"]=DispatchHelpers::convert_sjis_to_utf8($row[$column]);
+        }
+
+        return $return_sets_with_key;
     }
 
 }
