@@ -35,11 +35,14 @@ class Read{
     }
 
     // 1つ1つ見ていったファイルから、重複しているもののセットを捕捉
+    // それを問答無用で同じ案件とみなすか(1ヶ月以内)、他の案件の可能性ありと見なすか
     public static function add_duplicated_projects_sets($project_name,$date_town_sets,$duplicate_sets){
 
-            // その案件の最新の同案件フラグナンバーの取得
+            // その案件の最新の同案件フラグナンバーのprojectのidの取得(今回が初めての場合はnullで返る)
             $latest_another_project_flag_id=ProjectHelpers::get_latest_project_id_from_name($project_name);
 
+            // 上記がnullで返っていない=１度は同じprojectを行ったことがある場合
+            // 無条件で同じものと見なすか(前回から1ヶ月以内なら同じ案件とみなす)、importに入れて更新確認するかの確認(前回から1ヶ月以上なら、違う案件の可能性ありとみなす)
             if($latest_another_project_flag_id!=null && ProjectHelpers::need_user_confirm($latest_another_project_flag_id,$date_town_sets)){
                 // 違うプロジェクトの可能性を踏まえて挿入
                 // データ挿入は別途、表示用にプロジェクト名のみ入れる

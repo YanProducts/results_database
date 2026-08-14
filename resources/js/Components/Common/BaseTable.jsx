@@ -10,16 +10,14 @@ export default function BaseTable({tableTheme,allData,thSets,width="w-[80%]",thW
         <table className={`table-fixed ${width} ${minWidth} ${maxWidth} ${mb} mx-auto base_backColor border-black border-2 border-collapse`}>
             <thead className="font-bold  text-center">
                 <tr className="border-black border-2">
+
                     {/* thSetsの値を展開 */}
-                    {Object.values(thSets).map((thName,index)=>
-
-
+                    {Object.entries(thSets).map(([thKey,thName],index)=>
                         // thWidthSetsの要素が12以上の場合はstyleに直接挿入
-
                         <th className={`border-black border-2 whitespace-pre-wrap ${(thWidthSets.length>0 && thWidthSets.length<12) ? thWidthSets[index] : ""} ${needSort ? "cursor-pointer" : ""}`}
                         style={thWidthSets.length>=12 ? { width:thWidthSets[index]} :{}}
                         // クリックイベントは通常は何も生じない
-                        onClick={(e)=>{sortClick(e,thName)}}  key={index}>{thName}</th>
+                        onClick={(e)=>{sortClick(e,thKey)}} key={index}>{thName}</th>
                     )}
                 </tr>
             </thead>

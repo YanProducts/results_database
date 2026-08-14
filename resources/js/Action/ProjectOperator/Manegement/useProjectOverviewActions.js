@@ -1,7 +1,7 @@
 import React from "react";
 import popUpPositionSeeting from "../../../Support/Common/popUpPositionSetting";
 import sortData from "../../../Support/Common/sortData";
-export default function useProjectOverviewActions({projectData,overViewItems,setSortItemIsVisible,selectedSort,setSelectedSort,prioritySort,setPrioritySort,selectedAscOrDes,setSelectedAscOrDes,ascOrDes,setAscOrDes,columnForHiddenLists,setHiddenListsVisible,setColumnForHiddenLists,setAllHiddenLists,setShowFullData}){
+export default function useProjectOverviewActions({projectData,overViewItems,setSortItemIsVisible,selectedSort,setSelectedSort,prioritySort,setPrioritySort,selectedAscOrDes,setSelectedAscOrDes,ascOrDes,setAscOrDes,columnForHiddenLists,setHiddenListsVisible,setColumnForHiddenLists,allHiddenLists,setAllHiddenLists}){
 
     // sort項目の決定
     // useMemoは状態変数が変わるごとにレンダリング1回で変数を定義し直す(effectで更新してからstate更新なら2回になる)
@@ -56,32 +56,30 @@ export default function useProjectOverviewActions({projectData,overViewItems,set
 
     // 何を表示させないかリストを表示
     // 共通tableの使用上、キーを日本語名で定義
-    const onHiddenChangeClick=(e,thName)=>{
+    const onHiddenChangeClick=(e,thKey)=>{
         // 座標の変化(js)
         popUpPositionSeeting(e,"popUpHiddenLists",10,5);
 
         // stateを変化させて表示させる
-        setColumnForHiddenLists(thName);
+        setColumnForHiddenLists(thKey);
     };
 
     // 実際にsortが変更したとき
-    const onHiddenListsChange=(e,column)=>{
-        setAllHiddenLists(prev=>({
-            ...prev,
-            [column]:[
-                ...prev[column],
-                [e.targetElement.value]
-            ]
-        }))
-
-        //値を〜以上で区切る時
-        alert("並び替えは未作成です")
-
+    const onHiddenListsChange=(e,column,value)=>{
+            setAllHiddenLists(prev=>({
+                ...prev,
+                // その値がリストに入っているかで分岐
+                [column]:(!allHiddenLists[column].includes(value) ? [...prev[column],value]:prev[column].filter(prevColumn=>prevColumn!=value))
+            }))
     }
 
     // 全表示のチェック
     const onShowFullDataChange=(e,columnForHiddenLists)=>{
-        setShowFullData(prev=>[...prev,columnForHiddenLists])
+        // 対象のカラムからhidden要素をなくす
+        setAllHiddenLists(prev=>({
+            ...prev,
+            [columnForHiddenLists]:[]
+        }))
     }
 
     // ボタンを閉じた時

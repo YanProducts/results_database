@@ -6,7 +6,7 @@ export default function ChoiceSort({maxWidth="",minWidth="",overViewItems,priori
         <>
         {/* 確認部分 */}
             <div className={`base_frame ${minWidth} ${maxWidth} base_backColor flex text-left pl-3 mb-2`}>
-            <p className="font-bold">現在の並び：{overViewItems[prioritySort]}で{getJpnWord(ascOrDes)}</p><span className={`font-bold ml-3 px-2 inline-block underline-offset-2 ${columnForHiddenLists ? "opacity-30" : "cursor-pointer opacity-100"} bg-orange-100 border border-b`} onClick={columnForHiddenLists ? ()=>{} :(e)=>onSortChangeClick(e)}>変更</span>
+            <p className="font-bold">現在の並び順：{overViewItems[prioritySort] ? (overViewItems[prioritySort] + "で" +getJpnWord(ascOrDes)) : "未設定"}</p><span className={`font-bold ml-3 px-2 inline-block underline-offset-2 ${columnForHiddenLists ? "opacity-30" : "cursor-pointer opacity-100"} bg-orange-100 border border-b`} onClick={columnForHiddenLists ? ()=>{} :(e)=>onSortChangeClick(e)}>変更</span>
             </div>
         {/* 変更部分 */}
             <div id="popUpSortLists" className={`${sortItemIsVisible ? "block":"hidden"} absolute bg-green-300 border border-black rounded-sm z-10`}>

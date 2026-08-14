@@ -15,8 +15,7 @@ class ProjectManagementController extends Controller
 
     // "案件名","開始日","終了日","割当済町目数","配布済町目数","設定部数","現在配布部数",を、それぞれ配列で取得(営業所などはさらに内部でどの町を誰に振ったか等で分ける)
      $project_data=GetProjectDataInSql::get_all_data_in_sql();
-
-
+     
       return Inertia::render("ProjectOperator/ProjectManagement/ProjectOverview",[
         "type"=>"案件の確認(割当済町目締切：1か月以内)",
         "projectData"=>$project_data

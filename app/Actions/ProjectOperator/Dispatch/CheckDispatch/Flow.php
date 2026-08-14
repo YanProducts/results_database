@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class Flow{
+    
     // ファイルが読み込まれてから最初の重複チェック
     public static function check_flow($project_name_and_towns,$place_id){
 

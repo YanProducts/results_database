@@ -2,8 +2,16 @@
 import { route } from "ziggy-js"
 import { Link } from "@inertiajs/react"
 import { formatDateForView } from "../../../../Support/Common/formatDateForView";
+import shouldHideByFilter from "../../../../Support/ProjectOperator/Filter/shouldHideByFilter";
 
-export default function TrInnerInOverView({projectSets}){
+export default function TrInnerInOverView({projectSets,allHiddenLists}){
+
+    // projectSetsのそれぞれの要素が、allHiddenListsに含まれていないかのチェック
+    if(!shouldHideByFilter({projectSets,allHiddenLists})){
+        return null;
+    }
+
+
     return(
             <tr className="border border-black text-center" key={projectSets["project_id"]+"_"+projectSets["another_project_flag"]}>
                 {/* 案件名(同案件フラグは期間場合によっては案件自体も違うため違う案件とみなす) */}

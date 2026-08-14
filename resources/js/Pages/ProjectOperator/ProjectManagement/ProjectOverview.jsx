@@ -14,10 +14,10 @@ import ChoiceSort from "../../../Components/Part/ProjectOperator/ProjectManageme
 export default function ProjectOverview({prefix,what,type,projectData}){
 
     // 定義
-    const {data, setData, post, processing, errors,clearErrors, reset,overViewItems, selectedSort,setSelectedSort,prioritySort,setPrioritySort,selectedAscOrDes,setSelectedAscOrDes,ascOrDes,setAscOrDes,sortItemIsVisible,setSortItemIsVisible,columnForHiddenLists,setColumnForHiddenLists,hiddenListVisible,setHiddenListsVisible,hiddenPatterns,allHiddenLists,setAllHiddenLists,showFullData,setShowFullData,pageMinWidth,pageMaxWidth}=useProjectOverviewDefinitions();
+    const {data, setData, post, processing, errors,clearErrors, reset,overViewItems, selectedSort,setSelectedSort,prioritySort,setPrioritySort,selectedAscOrDes,setSelectedAscOrDes,ascOrDes,setAscOrDes,sortItemIsVisible,setSortItemIsVisible,columnForHiddenLists,setColumnForHiddenLists,hiddenListVisible,setHiddenListsVisible,hiddenPatterns,allHiddenLists,setAllHiddenLists,pageMinWidth,pageMaxWidth}=useProjectOverviewDefinitions();
 
     // 動きの定義
-    const {sortedProjectData,onSortChangeClick,onSortChangeClose,onAscOrDesClick,onSortKindChange,onSortChangeDecide,onHiddenChangeClick,onHiddenListsChange,onShowFullDataChange,onEachHiddenCloseClick}=useProjectOverviewActions({projectData,overViewItems,setSortItemIsVisible,selectedSort,setSelectedSort,prioritySort,setPrioritySort,selectedAscOrDes,setSelectedAscOrDes,ascOrDes,setAscOrDes,columnForHiddenLists,setHiddenListsVisible,setColumnForHiddenLists,setAllHiddenLists,setShowFullData});
+    const {sortedProjectData,onSortChangeClick,onSortChangeClose,onAscOrDesClick,onSortKindChange,onSortChangeDecide,onHiddenChangeClick,onHiddenListsChange,onShowFullDataChange,onEachHiddenCloseClick}=useProjectOverviewActions({projectData,overViewItems,setSortItemIsVisible,selectedSort,setSelectedSort,prioritySort,setPrioritySort,selectedAscOrDes,setSelectedAscOrDes,ascOrDes,setAscOrDes,columnForHiddenLists,setHiddenListsVisible,setColumnForHiddenLists,allHiddenLists,setAllHiddenLists});
 
 
     return(
@@ -34,11 +34,11 @@ export default function ProjectOverview({prefix,what,type,projectData}){
             onSortChangeDecide,sortItemIsVisible,columnForHiddenLists}} />
 
             {/* データの一覧 */}
-           <BaseTable tableTheme="案件データ一覧" thSets={Object.fromEntries([...Object.values(overViewItems),"編集"].map(title=>[title,title]))} maxWidth={pageMaxWidth} minWidth={pageMinWidth} mb={"mb-3"}
+           <BaseTable tableTheme="案件データ一覧" thSets={Object.fromEntries([...Object.entries(overViewItems),["edit","編集"]].map(([value,title])=>[value,title]))} maxWidth={pageMaxWidth} minWidth={pageMinWidth} mb={"mb-3"}
            needSort={true} sortClick={onHiddenChangeClick}>
             {sortedProjectData.map(function(projectSets,index){
             //  trの中身
-             return <TrInnerInOverVIew key={index} {...{projectSets}} />
+             return <TrInnerInOverVIew key={index} {...{projectSets,allHiddenLists}} />
             })}
             </BaseTable>
 
@@ -53,7 +53,7 @@ export default function ProjectOverview({prefix,what,type,projectData}){
 
             {/* 何を表示する/しないかのリスト */}
             <HiddenList {...{columnForHiddenLists,onHiddenListsChange,hiddenListVisible,
-            hiddenPatterns,allHiddenLists,showFullData,onShowFullDataChange,onEachHiddenCloseClick}}/>
+            hiddenPatterns,allHiddenLists,onShowFullDataChange,onEachHiddenCloseClick}}/>
 
             </RoleLayout>
         </Layout>
