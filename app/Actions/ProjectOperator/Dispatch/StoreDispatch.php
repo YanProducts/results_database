@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProjectImport;
 use App\Models\ProjectPlannedCount;
+use App\Models\ProjectPlannedCountImport;
 use App\Support\ProjectOperator\DispatchHelpers;
 use App\Utils\DateHelper;
 use Illuminate\Support\Arr;
@@ -88,7 +89,6 @@ class StoreDispatch{
                 "project_name" => $project_name,
                 "another_project_flag" => ProjectHelpers::get_latest_another_project_flag($project_name),//存在しないものは-0で返る(新規作成ではゼロ) //ここでは変更しない
                 "created_by"=>Auth::user()->id,
-
                 // 投稿されたファイルと既存データの早い方をstart_dateに
                 "start_date"=>DispatchHelpers::get_earliest_start_date($project_name,$date_town_sets),
 
@@ -115,9 +115,8 @@ class StoreDispatch{
 
         $user_id=Auth::user()->id;
 
-       // ログインユーザーによって候補に挿入されているデータ
+        // ログインユーザーによって候補に挿入されているデータ
         $project_imports=ProjectImport::where("created_by",$user_id)->get();
-
 
         // 新案件で渡されてきたリストのプロジェクト
         $new_projects_lists=$project_imports->filter(fn($import)=>in_array($import->project_id,$new_projects));
@@ -130,7 +129,6 @@ class StoreDispatch{
 
         // アップザート
         self::project_upsert_query($upsert_imports_array);
-
     }
 
 
@@ -201,9 +199,12 @@ class StoreDispatch{
         $import_data=DistributionPlanImport::where("created_by",Auth::user()->id)->get();
 
         foreach($import_data as $each_import){
+            // 複数回使うもの
             $address_id=$each_import->address_id;
             $place_id=$each_import->place_id;
+
             $plan=new DistributionPlan();
+            // 該当重複しているデータに関わらず変わらない部分
             $plan->place_id=$place_id;
             $plan->start_date=$each_import->start_date;
             $plan->end_date=$each_import->end_date;
@@ -211,7 +212,11 @@ class StoreDispatch{
             $plan->created_by=$each_import->created_by;
             $plan->map_number=$each_import->map_number;
 
-            //セットになっているメイン案件の同町目のセットが保存されるidを返す。メインプロジェクトの名前を取得し、その名前における最新同案件ナンバーのProjectにおけるIdを取得し、住所と営業所が同じDistributionPlanのidを取得(メイン案件の場合はnull)
+            //セットになっているメイン案件の同町目のセットが保存されるidを返す。(メイン案件の場合はnull)
+            // projectは重複に関わらず既に更新済。
+
+            // projectが内容によって新しいものと古いものが合わさっていないか？
+
             $main_id=DistributionPlanImport::where("id",$each_import->main_id)->value("project_name");
             if(!$main_id==null){
                 $plan->main_id=DistributionPlan::where("project_id",ProjectHelpers::get_latest_project_id_from_name($main_id))->where("address_id",$address_id)->where("place_id",$place_id)->value("id") ?? throw new BusinessException("予期せぬエラーです");
@@ -219,37 +224,33 @@ class StoreDispatch{
 
             $plan->remark_from_operator="";
 
-            // 初登校データのとき(すでにplan側にtransaction内部で保存されている)
+            // 初投稿データのとき(すでにplan側にtransaction内部で保存されている)
             // project_idを更新しないとき＝これまでと重複の場合
             if($each_import->project_id==null || !in_array($each_import->project_id,$new_projects)){
 
                 // プロジェクトは変更なしの時はプロジェクトのidをそのまま挿入
-                // これまでと重複ではなく全く新しい案件の場合は新たに作られたidを取得
+                // これまでと重複ではなく全く新しい案件の場合は新たに作られたidを取得（既に作成済）
                 $plan->project_id=$each_import->project_id ?? ProjectHelpers::get_latest_project_id_from_name($each_import->project_name);
 
-                // importのditribution_plan_idもしくはdistribution_record_idが記入されているとき、つまり同じプロジェクトの同じ住所を、複数の営業所もしくは回数に分けているとき
-                if(!empty($each_import->distribution_plan_exists) || !empty($each_import->distribution_record_exists)){
-                    // same_project_flagを更新(recordのみに入っているものは、0にならずに1になる)
-                    // そのプロジェクトと町丁目におけるrecordとplanの数を取得
-                    // この部分、本来はN+1検索になっているので、データ増えた時に要注意!!!
-                    // planに入っている個数
-                    $plan_counts=DistributionPlan::where("project_id",$each_import->project_id)->where("address_id",$each_import->address_id)->count();
-                    // recordに入っている個数(都度更新されるので0か1)
-                    $record_counts=DistributionRecord::where("project_id",$each_import->project_id)->where("address_id",$each_import->address_id)->exists();
-                    // 同町目ナンバーを記載
-                    $plan->same_project_flag=$plan_counts+$record_counts;
-                }
             }else{
-                // 新しい案件に更新するとき(トランザクション内部でも更新が反映)
+                // 新しい案件に更新するとき(トランザクション内部でも更新が反映しているためproject_idは変わっている)
                 // projectsテーブルのprojectIdにおける最新の同案件ナンバーのidを取得
-                if(empty($new_project_id= ProjectHelpers::get_latest_project_id_from_name(ProjectHelpers::get_project_name_from_id($each_import->project_id)))){
+                if(empty($new_project_id= ProjectHelpers::get_latest_project_id_from_name(ProjectHelpers::get_project_name_from_id($each_import->project_id)))){ //これ更新に関わらず上の条件と同じでは？
                     throw new BusinessException("予期せぬエラーが発生しました\n最初からやり直してください");
                 };
                 $plan->project_id=$new_project_id;
-                // デフォルトで０だが念の為
-                $plan->same_project_flag=0;
-
             }
+
+            // projectとplaceと住所が同じものの同案件ナンバーの最大値を取得
+            // 案件に更新しない重複案件は、「同町目フラグナンバー」を1つ追加する
+            $max_same_project_flag = DistributionPlan::where("project_id", $plan->project_id)->where("address_id", $address_id)->where("place_id", $place_id)->max("same_project_flag");
+
+            // まだ登録されていない案件は何もしない、登録済の案件は同案件No.を1つたす
+            if($max_same_project_flag !== null){
+                // 同町目ナンバーを記載
+                $plan->same_project_flag=$max_same_project_flag+1;
+            }
+
             $plan->save();
         }
     }
@@ -272,6 +273,33 @@ class StoreDispatch{
 
         $project_planned_count->save();
         return $project_planned_count->id;
+    }
+
+    // 合計テーブルに記入
+    public static function update_total_data_from_import(){
+        // 一時保存合計テーブルにおけるユーザーのものの取得
+        $imports=ProjectPlannedCountImport::where("created_by",Auth::user()->id)->get();
+         // main_id検索用
+         $id_by_imports_id=[];
+        // n+1になるが、随時round_numberを更新する必要があるため、1つずつ行う
+        foreach($imports as $import){
+            $project_id=ProjectHelpers::get_latest_project_id_from_name($import->project_name);//案件id(新案件の場合は既に更新済)
+            $place_id=$import->place_id;//営業所id
+            $max_round_number=ProjectPlannedCount::where("project_id",$project_id)->where("place_id",$place_id)->max("round_number"); //最新のround_number
+
+            $planned_count_data=new ProjectPlannedCount();
+            $planned_count_data->place_id=$place_id; //営業所
+            $planned_count_data->start_date=$import->start_date; //開始日
+            $planned_count_data->end_date=$import->end_date; //終了日
+            $planned_count_data->project_id=$project_id;//案件id(最新のもの)
+            $planned_count_data->counts=$import->total_count;//合計
+            $planned_count_data->main_id=!empty($import->main_id) && $id_by_imports_id[$import->main_id];//メイン案件id(nullの場合もあり)
+            $max_round_number!==null && $planned_count_data->round_number=$max_round_number+1;//初期設定0なので、emptyではなくnullで捕捉
+
+            $planned_count_data->save();
+            // main_id検索用
+            $id_by_imports_id[$import->id]=$planned_count_data->id;
+        }
     }
 
 

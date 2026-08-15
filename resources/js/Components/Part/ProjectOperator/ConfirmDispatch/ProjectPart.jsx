@@ -1,8 +1,9 @@
 import ToggleLists from "../../../Common/ToggleLists"
-export default function ProjectPart({sameProjectsData,onProjectsCheckClick,data}){
+export default function ProjectPart({sameProjectsData,onProjectsCheckClick,data,pageMaxWidth,pageMinWidth}){
 
     return(
-        <div className={`base_backColor base_frame border-2 border-black  text-left mt-5 mb-10 p-2 min-w-140`}>
+        <div className={`base_backColor base_frame border-2 border-black  text-left mt-5 mb-10 p-2 ${pageMaxWidth} ${pageMinWidth}`}>
+
         <h2 className="base_h">１：案件データの重複</h2>
         {(sameProjectsData && Object.keys(sameProjectsData).length>0)?
         <>

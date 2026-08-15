@@ -6,6 +6,34 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DistributionRecordHelpers{
+
+    //  すでにデータが存在しているかの確認(町目重複の可能性)
+    public static function data_is_exists($project_id,$address_id){
+        return
+            DistributionRecord::where([
+                ["project_id",$project_id],
+                ["address_id",$address_id]
+            ])->exists();
+    }
+
+
+        // プロジェクトと住所のidから、結果テーブルのidを返す
+        public static function get_id_from_project_and_address($project_id,$address_id){
+            return
+                DistributionRecord::where([
+                    ["project_id",$project_id],
+                    ["address_id",$address_id]
+                ])->value("id");
+        }
+
+
+        // 複数の住所と案件のIDから、その案件において既に計画済みの町目idを返す
+        public static function get_address_ids_in_the_projects_in_sql($project_id,$address_ids){
+            return DistributionRecord::whereIn("address_id",$address_ids)->where("project_id",$project_id)->pluck("address_id");
+        }
+
+
+
     // その日、そのスタッフのデータを返す
     public static function data_in_the_date_and_staff($date,$staff){
         return DistributionRecord::where("staff_id",$staff)->where("distribution_date",$date)->get();

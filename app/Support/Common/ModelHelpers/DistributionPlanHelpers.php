@@ -20,7 +20,12 @@ class DistributionPlanHelpers{
             ])->exists();
     }
 
-    // プロジェクトと住所のidから、テーブルのidを返す
+    // 複数の住所と案件のIDから、その案件において既に計画済みの町目idを返す
+    public static function get_address_ids_in_the_projects_in_sql($project_id,$address_ids){
+        return DistributionPlan::whereIn("address_id",$address_ids)->where("project_id",$project_id)->pluck("address_id");
+    }
+
+    // プロジェクトと住所のidから、プランのテーブルのidを返す
     public static function get_id_from_project_and_address($project_id,$address_id){
         return
             DistributionPlan::where([

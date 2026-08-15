@@ -5,15 +5,18 @@ namespace App\Actions\ProjectOperator\Dispatch\CheckDispatch;
 use App\Exceptions\BusinessException;
 use App\Models\DistributionPlanImport;
 use App\Models\ProjectImport;
+use App\Models\ProjectPlannedCount;
+use App\Models\ProjectPlannedCountImport;
 use App\Support\Common\ModelHelpers\AddressHelpers;
 use App\Support\Common\ModelHelpers\DistributionPlanHelpers;
+use App\Support\Common\ModelHelpers\DistributionRecordHelpers;
 use App\Support\Common\ModelHelpers\ProjectHelpers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class Create{
     // 一時保存テーブルに格納(案件)
-    public static function store_project_imports($project_name_and_towns,$same_projects_data,$place_id){
+    public static function store_project_imports($project_name_and_towns,$same_projects_data,$auth_id){
         // 誰からの登録か(これが残っている状態で次回のdispatchはできないようにする)
         $auth_id=Auth::user()->id;
         // project_name_and_townsは[テーマ名]=> ["main"=>["project_names"=>"","date_town_sets"=>"","sub"=>["ptojrct_name"と"date_town_sets"がいくつかの配列]]のデータ取得
@@ -63,8 +66,7 @@ class Create{
 
 
     // 一時保存テーブルに格納(案件)
-    public static function store_plan_imports($project_name_and_towns,$same_town_data,$place_id){
-        $auth_id=Auth::user()->id;
+    public static function store_plan_imports($project_name_and_towns,$same_town_data,$place_id,$auth_id){
         // project_name_and_townsは[テーマ名]=> ["main"=>["project_names"=>"","date_town_sets"=>"","sub"=>["ptojrct_name"と"date_town_sets"がいくつかの配列]]のデータ取得
     foreach($project_name_and_towns as $each_project){
         $main_sets=$each_project["main"];
@@ -86,6 +88,7 @@ class Create{
         }
         }
     }
+
     // 実際に重複がある場合の町目データセーブ
     public static function sql_procedure_in_plan_imports($main_project_name,$project_name,$each_set,$address_id,$place_id,$auth_id,$same_town_data,$is_main){
                 $import=new DistributionPlanImport();
@@ -105,8 +108,8 @@ class Create{
                     $project_id=ProjectHelpers::get_latest_project_id_from_name($project_name);
                     $import->project_id=$project_id;
                     $import->distribution_plan_exists=DistributionPlanHelpers::data_is_exists($project_id,$address_id);
-                    $import->distribution_record_exists=DistributionPlanHelpers::data_is_exists($project_id,$address_id);
-;                }
+                    $import->distribution_record_exists=DistributionRecordHelpers::data_is_exists($project_id,$address_id);
+                }
                 // 営業所
                 $import->place_id=$place_id;
                 // 開始日
@@ -132,4 +135,43 @@ class Create{
 
                 $import->save();
     }
+
+    // 設定テーブル
+    // 案件、営業所、開始と終了、合計
+    public static function store_total_imports($project_name_and_towns,$place_id,$auth_id){
+
+        // それぞれの案件を見ていく
+        foreach($project_name_and_towns as $each_project){
+            $main_id=self::sql_procedure_in_total_imports($auth_id,$place_id,$each_project["main"],false,"");
+
+            // 重複がある場合のサブ案件の全体データの登録
+            foreach($each_project["sub"] as $each_sub){
+                self::sql_procedure_in_total_imports($auth_id,$place_id,$each_sub,true,$main_id);
+            }
+        }
+    }
+
+    // 設定部数の重複時のインポート
+    public static function sql_procedure_in_total_imports($auth_id,$place_id,$sets,$need_main,$main_id){
+
+            $date_town_sets=$sets["date_town_sets"];
+
+            $import=new ProjectPlannedCountImport();
+            // projectは名前を挿入し、新しくなっているかを確認し、後ほどidを挿入する
+            $import->project_name=$sets["project_name"];
+            // 誰からの登録か(これが残っている状態で次回のdispatchはできないようにする)
+            $import->created_by=$auth_id;
+            $import->place_id=$place_id; //営業所
+            if($need_main){
+                $import->main_id=$main_id;
+            } //メイン案件
+            // 期限
+            $import->start_date=min(array_column($date_town_sets,"start_date"));
+            $import->end_date=max(array_column($date_town_sets,"end_date"));
+            $import->total_count=$sets["total_count"];
+            $import->save();
+
+            return $import->id;
+    }
+
 }

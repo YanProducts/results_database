@@ -105,7 +105,9 @@ class AddressHelpers{
 
     // 町目のリストから、idリストを返す(町目がない時のエラーは除去済の前提)
     public static function get_id_lists_from_town_names($address_names){
-        return Address::select("id")->whereIn(DB::raw("concat(pref,city,town)"),$address_names)->get();
+        return Address::select("id")->whereIn(DB::raw("concat(pref,city,town)"),$address_names)
+        ->orWhereIn(DB::raw("concat(city,town)"),$address_names)
+        ->get();
     }
 
 

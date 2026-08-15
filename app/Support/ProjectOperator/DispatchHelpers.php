@@ -64,7 +64,7 @@ class DispatchHelpers{
 
     // confirm時に必要な一式がない時はエラーページへ
     public static function check_confirm_data_exisits(){
-        if(empty(session("same_projects_data")) && empty(session("same_towns_data"))|| !ProjectImport::where("created_by",Auth::user()->id)->exists() || !DistributionPlanImport::where("created_by",Auth::user()->id)->exists()){
+        if(empty(session("same_projects_data")) && empty(session("same_towns_data")) && empty(session("same_towns_data_in_files"))|| !ProjectImport::where("created_by",Auth::user()->id)->exists() || !DistributionPlanImport::where("created_by",Auth::user()->id)->exists()){
             throw new BusinessException("再度ファイル取得してください","project_operator.dispatch_project",true);
         }
     }

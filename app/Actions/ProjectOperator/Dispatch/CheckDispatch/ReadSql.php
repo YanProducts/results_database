@@ -6,11 +6,12 @@ namespace App\Actions\ProjectOperator\Dispatch\CheckDispatch;
 use App\Exceptions\BusinessException;
 use App\Support\Common\ModelHelpers\AddressHelpers;
 use App\Support\Common\ModelHelpers\DistributionPlanHelpers;
+use App\Support\Common\ModelHelpers\DistributionRecordHelpers;
 use App\Support\Common\ModelHelpers\ProjectHelpers;
 use Illuminate\Support\Facades\Log;
 
 
-class Read{
+class ReadSql{
     // 案件が以前と同じものが存在するかの確認
     public static function check_same_project_data($project_name_and_towns){
         // 返却用
@@ -81,22 +82,18 @@ class Read{
 
         // 同じ案件名における最新の案件のid
         $project_id=ProjectHelpers::get_latest_project_id_from_name($project_name);
-            // 計画中のものor結果に同案件＆同町目が存在するか
-            // 存在確認は前段階で行っている
-            foreach($date_town_sets as $date_town_set){
-            $address_id=AddressHelpers::get_id_from_city_and_town($date_town_set["city"],$date_town_set["town"]);
-
-            if(DistributionPlanHelpers::data_is_exists($project_id,$address_id) || DistributionPlanHelpers::data_is_exists($project_id,$address_id)){
-                $duplicate_sets[]=[
-                    // UIの表示用(orojectIdは打ち消し線に使用)
-                    // 全部一括でOKかやり直すか
+        // 上記の案件の市と町のセットの住所id
+        $address_ids=AddressHelpers::get_id_lists_from_town_names(collect($date_town_sets)->map(fn($date_town_set)=>$date_town_set["city"].$date_town_set["town"]));
+        // 重複の配列(重複している住所IDを取得し、そこから住所の名前の配列を取得。最後にそれをUI用に直す)
+        // 予定と結果のどちらかに
+        $duplicates_sets[]=collect(AddressHelpers::get_city_and_town_arrays_key_by_id(
+        collect(...DistributionPlanHelpers::get_address_ids_in_the_projects_in_sql($project_id,$address_ids),...DistributionRecordHelpers::get_address_ids_in_the_projects_in_sql($project_id,$address_ids))->unique()))->map(fn($each_duplicated_town_name)=>[
                     "projectId"=>$project_id,
                     "projectName"=>$project_name,
-                    "address"=>$date_town_set["city"].$date_town_set["town"],
-                ];
-             }
-            }
-        // 同案件可能性の町目が2つあるものを返す
+                    "address"=>$each_duplicated_town_name,
+        ]);
+
+        // 過去のものと同案件可能性の町目があるものを返す
         return $duplicate_sets;
     }
 

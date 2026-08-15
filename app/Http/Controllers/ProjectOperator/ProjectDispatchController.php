@@ -48,19 +48,21 @@ class ProjectDispatchController extends Controller
         //placeはすでにplaceがid
         $place_id=$request->place;
 
-        //重複チェックの一連の流れを行い、重複データを変換(この過程でsqlデータを初期化する)
-        [$same_projects_data,$same_towns_data]=CheckFlow::check_flow($project_name_and_towns,$place_id);
+        //重複チェックの一連の流れを行い、重複データを変換(この過程でsqlデータを初期化する,合計テーブルも入れる)
+        [$same_projects_data,$same_towns_data,$same_towns_data_in_files]=CheckFlow::check_flow($project_name_and_towns,$place_id);
 
-        if(!empty($same_projects_data) || !empty($same_towns_data)){
+        if(!empty($same_projects_data) || !empty($same_towns_data) || !empty($same_towns_data_in_files)){
             // フラッシュセッションだとバリデーション時のエラー捕捉がやりにくい
             Session::create_sessions([
                 "same_projects_data"=>$same_projects_data,
-                "same_towns_data"=>$same_towns_data
+                "same_towns_data"=>$same_towns_data,
+                "same_towns_data_in_files"=>$same_towns_data_in_files
             ]);
             // 既存のものと重複可能性がある場合は確認ページへ
             return redirect()->route("project_operator.confirm_dispatch",[
                 "same_projects_data"=>session($same_projects_data),
-                "same_towns_data"=>session($same_towns_data)
+                "same_towns_data"=>session($same_towns_data),
+                "same_towns_data_in_files"=>session($same_towns_data_in_files),
             ]);
         }
 
@@ -82,9 +84,14 @@ class ProjectDispatchController extends Controller
             "type"=>"割り当ての重複確認",
             "prefix"=>"project_operator",
             "sameProjectsData"=>session("same_projects_data"),
-            "sameTownsData"=>session("same_towns_data")
+            "sameTownsData"=>session("same_towns_data"),
+            "sameTownsDataInFiles"=>session("same_towns_data_in_files"),
         ]);
     }
+
+
+
+
 
     // 重複可能性がある案件をどうするかの確認からの決定
     public function confirm_dispatch_post(ConfirmRequest $request){

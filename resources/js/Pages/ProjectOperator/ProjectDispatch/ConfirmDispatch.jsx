@@ -9,7 +9,7 @@ import ProjectPart from "../../../Components/Part/ProjectOperator/ConfirmDispatc
 import TownPart from "../../../Components/Part/ProjectOperator/ConfirmDispatch/TownPart";
 
 // 重複可能性のある案件をどうするかの確認
-export default function ConfirmDispatch({what,type,prefix,sameProjectsData,sameTownsData}){
+export default function ConfirmDispatch({what,type,prefix,sameProjectsData,sameTownsData,sameTownsDataInFiles}){
 
   // 定義(フォームなど)
   const { data, setData, post, processing, errors, reset,pageMinWidth,pageMaxWidth}=useConfirmDispatchDefinitions();
@@ -30,10 +30,13 @@ export default function ConfirmDispatch({what,type,prefix,sameProjectsData,sameT
     <div className={`base_frame ${pageMinWidth} ${pageMaxWidth} bg-gray-300 pt-3 pb-1 border-2 border-black rounded-sm mb-5`}>
 
      {/* 案件の操作(新案件or既存案件) */}
-     <ProjectPart sameProjectsData={sameProjectsData} onProjectsCheckClick={onProjectsCheckClick} data={data}/>
+     <ProjectPart sameProjectsData={sameProjectsData} onProjectsCheckClick={onProjectsCheckClick} data={data} {...{pageMaxWidth,pageMinWidth}}/>
 
     {/* 町目の確認 */}
-     <TownPart sameTownsData={sameTownsData} data={data}/>
+     <TownPart {...{sameTownsData,data,pageMaxWidth,pageMinWidth,isFile:false}}/>
+
+    {/* 投稿したファイル同士での重複確認 */}
+     <TownPart {...{sameTownsData:sameTownsDataInFiles,data,pageMaxWidth,pageMinWidth,isFile:true}}/>
 
     </div>
 
