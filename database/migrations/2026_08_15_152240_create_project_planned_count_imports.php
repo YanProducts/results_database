@@ -23,8 +23,6 @@ return new class extends Migration
             // startとendはその案件の、それぞれ最も古い日時と新しい日時。
             $table->date("start_date");
             $table->date("end_date");
-
-
         });
     }
 

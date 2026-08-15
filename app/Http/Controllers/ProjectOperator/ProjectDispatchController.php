@@ -51,6 +51,7 @@ class ProjectDispatchController extends Controller
         //重複チェックの一連の流れを行い、重複データを変換(この過程でsqlデータを初期化する,合計テーブルも入れる)
         [$same_projects_data,$same_towns_data,$same_towns_data_in_files]=CheckFlow::check_flow($project_name_and_towns,$place_id);
 
+
         if(!empty($same_projects_data) || !empty($same_towns_data) || !empty($same_towns_data_in_files)){
             // フラッシュセッションだとバリデーション時のエラー捕捉がやりにくい
             Session::create_sessions([

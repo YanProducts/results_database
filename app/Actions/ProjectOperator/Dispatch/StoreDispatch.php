@@ -292,8 +292,8 @@ class StoreDispatch{
             $planned_count_data->start_date=$import->start_date; //開始日
             $planned_count_data->end_date=$import->end_date; //終了日
             $planned_count_data->project_id=$project_id;//案件id(最新のもの)
-            $planned_count_data->counts=$import->total_count;//合計
-            $planned_count_data->main_id=!empty($import->main_id) && $id_by_imports_id[$import->main_id];//メイン案件id(nullの場合もあり)
+            $planned_count_data->counts=$import->counts;//合計
+            !empty($import->main_id) && $planned_count_data->main_id= $id_by_imports_id[$import->main_id];//メイン案件id(nullの場合もあり)
             $max_round_number!==null && $planned_count_data->round_number=$max_round_number+1;//初期設定0なので、emptyではなくnullで捕捉
 
             $planned_count_data->save();

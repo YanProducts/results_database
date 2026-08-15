@@ -30,7 +30,6 @@ class ReadSql{
                }
             }
         }
-
         // 同案件可能性があるものを返す
         return $duplicate_sets;
     }
@@ -78,6 +77,7 @@ class ReadSql{
     }
 
     // 町名の重複を追加(表示のみに使用かつ完全OKか完全アウトのどちらかのため、最低限の情報だけでOK)
+    // 同じ営業所に限らず重なっていたら同じかは尋ねる
     public static function add_duplicated_town_sets($project_name,$date_town_sets,$duplicate_sets){
 
         // 同じ案件名における最新の案件のid

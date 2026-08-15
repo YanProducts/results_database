@@ -43,7 +43,6 @@ class Flow{
             CheckCreate::store_plan_imports($project_name_and_towns,$same_towns_data,$place_id,$auth_id);
             // 結果テーブルに保存
             CheckCreate::store_total_imports($project_name_and_towns,$place_id,$auth_id);
-
         }
 
         return [$same_projects_data,$same_towns_data,$same_towns_data_in_files];

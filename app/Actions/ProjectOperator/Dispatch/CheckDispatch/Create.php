@@ -168,7 +168,7 @@ class Create{
             // 期限
             $import->start_date=min(array_column($date_town_sets,"start_date"));
             $import->end_date=max(array_column($date_town_sets,"end_date"));
-            $import->total_count=$sets["total_count"];
+            $import->counts=$sets["total_count"];
             $import->save();
 
             return $import->id;
