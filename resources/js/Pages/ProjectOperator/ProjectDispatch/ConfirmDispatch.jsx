@@ -17,7 +17,6 @@ export default function ConfirmDispatch({what,type,prefix,sameProjectsData,sameT
   // 動き
   const {onProjectsCheckClick,onSubmitBtnClick,onCancelBtnClick}=useComfirmDispatchActions(post,data,setData);
 
-
   return(
     <Layout title={`${what}-${type}`}>
         <RoleLayout prefix={prefix}>
@@ -33,7 +32,7 @@ export default function ConfirmDispatch({what,type,prefix,sameProjectsData,sameT
      <ProjectPart sameProjectsData={sameProjectsData} onProjectsCheckClick={onProjectsCheckClick} data={data} {...{pageMaxWidth,pageMinWidth}}/>
 
     {/* 町目の確認 */}
-     <TownPart {...{sameTownsData,data,pageMaxWidth,pageMinWidth,isFile:false}}/>
+     <TownPart {...{sameTownsData:sameTownsData.flat(),data,pageMaxWidth,pageMinWidth,isFile:false}}/>
 
     {/* 投稿したファイル同士での重複確認 */}
      <TownPart {...{sameTownsData:sameTownsDataInFiles,data,pageMaxWidth,pageMinWidth,isFile:true}}/>

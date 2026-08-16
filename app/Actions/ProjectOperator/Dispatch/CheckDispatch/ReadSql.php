@@ -64,6 +64,7 @@ class ReadSql{
             $main_sets=$each_project["main"]; $sub_sets=$each_project["sub"];
             // メイン案件が重複している場合はリスト追加
             $duplicate_sets=self::add_duplicated_town_sets($main_sets["project_name"],$main_sets["date_town_sets"],$duplicate_sets);
+
             // サブ案件名が重複している場合はリスト追加
             // 存在確認は前段階で行っている
             foreach($sub_sets as $each_sub){
@@ -73,7 +74,6 @@ class ReadSql{
 
         // 同案件可能性の町目が2つあるものを返す
         return $duplicate_sets;
-
     }
 
     // 町名の重複を追加(表示のみに使用かつ完全OKか完全アウトのどちらかのため、最低限の情報だけでOK)
@@ -84,14 +84,14 @@ class ReadSql{
         $project_id=ProjectHelpers::get_latest_project_id_from_name($project_name);
         // 上記の案件の市と町のセットの住所id
         $address_ids=AddressHelpers::get_id_lists_from_town_names(collect($date_town_sets)->map(fn($date_town_set)=>$date_town_set["city"].$date_town_set["town"]));
+
         // 重複の配列(重複している住所IDを取得し、そこから住所の名前の配列を取得。最後にそれをUI用に直す)
         // 予定と結果のどちらかに
-        $duplicates_sets[]=collect(AddressHelpers::get_city_and_town_arrays_key_by_id(
-        collect(...DistributionPlanHelpers::get_address_ids_in_the_projects_in_sql($project_id,$address_ids),...DistributionRecordHelpers::get_address_ids_in_the_projects_in_sql($project_id,$address_ids))->unique()))->map(fn($each_duplicated_town_name)=>[
+        $duplicate_sets=[...$duplicate_sets,...collect(AddressHelpers::get_city_and_town_arrays_key_by_id(collect([...DistributionPlanHelpers::get_address_ids_in_the_projects_in_sql($project_id,$address_ids),...DistributionRecordHelpers::get_address_ids_in_the_projects_in_sql($project_id,$address_ids)])->unique()))->map(fn($each_duplicated_town_name)=>[
                     "projectId"=>$project_id,
                     "projectName"=>$project_name,
                     "address"=>$each_duplicated_town_name,
-        ]);
+        ])->values()];
 
         // 過去のものと同案件可能性の町目があるものを返す
         return $duplicate_sets;

@@ -4,6 +4,10 @@ namespace App\Constants;
 // 日付に関する定数
 
 class Date{
+
+    // 何ヶ月前から案件一覧を見せるか
+    public const ProjectOverviewStartDateOffsetMonth=1;
+
     // スタッフに割り当てを行うページで今日の何日後までの割り当てをできるようにするか
     public const StartOffsetInStaffAssignMent=0;
     public const EndOffsetInStaffAssignMent=7;

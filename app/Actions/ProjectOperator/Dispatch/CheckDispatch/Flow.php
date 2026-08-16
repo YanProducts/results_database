@@ -28,7 +28,6 @@ class Flow{
         // 同じ案件候補で同じ町目が既に登録されているものを返す(分けていく場合はエラーではないので確認へ)
         $same_towns_data=CheckRead::check_same_town_data($project_name_and_towns);
 
-
         // 同じ投稿の内部で同じ町目が重なっているものはないか(同じ投稿で同じ案件は確実に1ヶ月以内のため同じと認識)
         $same_towns_data_in_files=ReadFiles::check_same_projects_and_towns_in_files($project_name_and_towns);
 

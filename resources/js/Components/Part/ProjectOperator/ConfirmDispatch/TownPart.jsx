@@ -1,4 +1,5 @@
 export default function TownPart({sameTownsData,data,pageMinWidth,pageMaxWidth,isFile}){
+
     return(
     <div className={`base_backColor base_frame border-2 border-black  text-left mt-5 mb-10 p-2 ${pageMaxWidth} ${pageMinWidth}`}>
         <h2 className="base_h mb-1">{!isFile ? "２：町目データの重複" : "３：ファイル内での重複" }</h2>
