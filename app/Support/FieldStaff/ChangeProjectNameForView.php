@@ -6,23 +6,19 @@ namespace App\Support\FieldStaff;
 use App\Exceptions\BusinessException;
 
 class ChangeProjectNameForView{
-    public static function get_project_name_for_view($main_project_name,$same_project_index,$same_project_length,$round_index,$round_length){
-
-        // same_project_flagによる表示わけ
-        $key_name_with_same_project_flag=match(true){
-            $same_project_length==1=>$main_project_name,
-            $same_project_length==2=>match(true){
-                                    $same_project_index==1=>$main_project_name."：旧案件",
-                                    $same_project_index==2=>$main_project_name."：新案件",
-                                    $same_project_index>3=>throw new BusinessException("same_project_index is unExpected"),
-                                },
-            $same_project_length>2=>$main_project_name."：".$same_project_index."番目に古い案件"
-        };
+    public static function get_project_name_for_view($main_project_name,$round_index,$round_length){
 
         // round_numberによる表示わけ
-        return match(true){
-                  $round_length==1=>$key_name_with_same_project_flag,
-                  $round_length>1=>$key_name_with_same_project_flag."：".$round_index,
+        return
+            match(true){
+            $round_length==1=>$main_project_name,
+            $round_length==2=>match(true){
+                                    $round_index==1=>$main_project_name."：旧案件",
+                                    $round_index==2=>$main_project_name."：新案件",
+                                    $round_index>3=>throw new BusinessException("round_index is unExpected"),
+                                },
+            $round_length>2=>$main_project_name."：".$round_index."番目に古い案件"
         };
+
     }
 }

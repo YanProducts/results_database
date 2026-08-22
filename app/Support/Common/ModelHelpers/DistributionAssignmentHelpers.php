@@ -6,6 +6,11 @@ namespace App\Support\Common\ModelHelpers;
 use App\Models\DistributionAssignment;
 
 class DistributionAssignmentHelpers{
+    // 該当スタッフ、該当日における割当済みの案件
+
+
+
+
 
     // 複数の該当スタッフにおけるassignはされたがsubmitされていないデータ(提出された日はすでに取得済み)
     public static function get_not_submitted_data_from_plural_staff_ids($staff_ids,$submitted_data_in_the_staffs_and_dates){

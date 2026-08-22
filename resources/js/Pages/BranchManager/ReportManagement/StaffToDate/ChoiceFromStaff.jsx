@@ -23,7 +23,7 @@ export default function ChoiceFromStaff({what,type,prefix,staffs}){
                 <BasePageHeader {...{what,type,pageMinWidth,pageMaxWidth,"subtitle":"スタッフを選択してください"}}/>
                 {/* バリデーションエラー */}
                 <ViewValidationErrors errors={errors} />
-                <form onSubmit={onSubmitBtnClick} className={`${pageMaxWidth} ${pageMinWidth} base_backColor`}>
+                <form onSubmit={onSubmitBtnClick} className={`base_frame ${pageMaxWidth} ${pageMinWidth} base_backColor`}>
                  <p>　</p>
                  <ToggleLists contents={staffs} formLists={selectedStaffs} onToggleListsChange={onStaffListsChange} onlyClick={true} />
                  <p>　</p>

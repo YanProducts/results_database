@@ -95,7 +95,9 @@ Route::prefix("branch_manager")
                 // 報告書の確認or代替記入する日付の決定→確認
                 Route::post("decide_date_for_report_choice","decide_date_for_report_choice_post")
                 ->name("decide_date_for_report_choice_post");
-                // 上記がバリデーションで返った時
+
+
+                // 上記投稿時にバリデーションで返った時(あってる！？？？)
                 Route::get("decide_date_for_report_choice","decide_date_for_report_choice_post")
                 ->name("decide_date_for_report_choice");
 

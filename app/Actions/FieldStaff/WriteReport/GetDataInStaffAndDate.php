@@ -10,47 +10,55 @@ use App\Support\Common\ModelHelpers\AddressHelpers;
 use App\Support\Common\ModelHelpers\ProjectHelpers;
 use App\Support\FieldStaff\ChangeProjectNameForView;
 use App\Support\Common\GetDateRangeQuery;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class GetAssignedDataInStaffAndDate{
+class GetDataInStaffAndDate{
 
     // データの取得
-    public static function get_assigned_data($staff_id,$date_sets){
+    public static function get_assigned_or_recorded_data($staff_id,$date_sets,$from_branch_manager=false,$is_record=false){
 
         // N+1防止のため、SQLデータを先に取得
-        [$submitted_dates,$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$existed_projects_sets,$existed_address_sets,$sub_plan_collections]=self::get_data_in_sql($staff_id,$date_sets);
+        [$submitted_dates,$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$existed_projects_sets,$existed_address_sets,$sub_plan_collections]=self::get_data_in_sql($staff_id,$date_sets,$from_branch_manager,$is_record);
+
+        Log::info($date_sets);
 
         // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名がサブキー:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
         foreach(array_keys($date_sets) as $date){
 
-            // その日が配布済みに入っていたら報告リストには載せない
-            if($submitted_dates->contains($date)){
-                $return_sets[$date]=null;
+            // その日が配布済みに入っていたら報告リストには載せない(営業所側の場合は入れる)
+            if(!empty($submitted_dates) && $submitted_dates->contains($date)){
+               $return_sets[$date]=null;
                 $from_simple_flag[$date]=false;
                 continue;
             }
 
-            // phpはスコープ内宣言でOL
-            [$return_sets[$date],$from_simple_flag[$date]]=self::get_data_by_date($date,$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$sub_plan_collections,$existed_projects_sets,$existed_address_sets);
+            // phpはスコープ内宣言でOK
+            // 結果と予定で仕分ける
+            [$return_sets[$date],$from_simple_flag[$date]]=self::get_data_by_date($date,$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$sub_plan_collections,$existed_projects_sets,$existed_address_sets,$is_record);
         }
 
+
+        Log::info($return_sets ?? "");
+
+        // 営業所からの場合など編集の場合はsubmitted_dateは空、結果の場合はfrom_simple_flagは空
         return [$return_sets ?? [], $from_simple_flag ??[], $submitted_dates ];
     }
 
-    // N+1防止のために一括取得
-    public static function get_data_in_sql($staff_id,$date_sets){
+    // N+1防止のために一括取得(営業所長からの場合もあり、結果取得の場合も基本の構造は同じ)
+    public static function get_data_in_sql($staff_id,$date_sets,$from_branch_manager=false,$is_record=false){
 
             // そのスタッフの、期間内を含む案件の、配布済のデータを含むdateの取得(planとassignのSQLデータは「期間」で取得しているため期間全取得、最後の配列変換の際に影響）
-            $submitted_dates=DistributionRecord::where("staff_id",$staff_id)->whereIn("distribution_date",array_keys($date_sets))->pluck("distribution_date")->unique()->values();
+            // 編集の場合は実行されない(配布データがあるかどうかに関わらず予定は取得する必要があるため：結果テーブルだと行っていないor書き忘れの町目のデータがないため)
+            $submitted_dates=!$from_branch_manager ?DistributionRecord::where("staff_id",$staff_id)->whereIn("distribution_date",array_keys($date_sets))->pluck("distribution_date")->unique()->values() : "";
 
             // 期間内&営業所あてに割り当てられている全てのplan(併配リストを添付データに合わせるため担当外も必要)
-            $all_distribution_plans=GetDateRangeQuery::get_date_range_query(DistributionPlan::select("id","project_id","same_project_flag","round_number","address_id","map_number","place_id","main_id")->where("place_id",FieldStaffList::where("id",Auth::user()->authable_id)->value("place_id")),$date_sets,"start_date")
+            $all_distribution_plans=GetDateRangeQuery::get_date_range_query(DistributionPlan::select("id","project_id","same_project_flag","round_number","address_id","map_number","place_id","main_id")->where("place_id",FieldStaffList::where("id",$staff_id)->value("place_id")),$date_sets,"start_date")
             ->get();
 
             // sqlに入っている、そのスタッフの、期間内を含む案件を取得。それをdateでまとめる
             // ここにfromSimpleFlagも入ってる
-            $data_in_staff_and_date=GetDateRangeQuery::get_date_range_query(DistributionAssignment::where("staff_id",$staff_id),$date_sets,"date")->get();
+            // 結果の編集に使用する場合はrecordから取得
+            $data_in_staff_and_date=!$is_record ? GetDateRangeQuery::get_date_range_query(DistributionAssignment::where("staff_id",$staff_id),$date_sets,"date")->get() : GetDateRangeQuery::get_date_range_query(DistributionRecord::where("staff_id",$staff_id),$date_sets,"distribution_record")->get();
 
 
             // 上記に相当するplanの情報(世帯数や住所などに使う)
@@ -73,22 +81,22 @@ class GetAssignedDataInStaffAndDate{
     }
 
     // メイン案件のデータを返す(main_plan_collectionsはexisted_collectionsと同じ。assignの段階でメインに絞っているため)
-    public static function get_main_projects_data_in_the_day($main_assigned_data_in_date,$main_plan_collections){
+    public static function get_main_projects_data_in_the_day($main_data_in_date,$main_plan_collections){
             // その日の「assignのid=>planのid」と対応した連想配列を取得(値だけみたらmain_plan_ids)。条件としてmain案件のもののみを取得する
-            $main_plan_ids=collect($main_assigned_data_in_date->mapWithKeys(fn($each_data)=>[$each_data->id=>$each_data->plan_id]))->filter(fn($each_plan_id,$each_assign_id)=>$main_plan_collections->where("id",$each_plan_id)->isNotEmpty());
+            $main_plan_ids=collect($main_data_in_date->mapWithKeys(fn($each_data)=>[$each_data->id=>$each_data->plan_id]))->filter(fn($each_plan_id,$each_assign_id)=>$main_plan_collections->where("id",$each_plan_id)->isNotEmpty());
 
             // その日のplan
             $plan_collections=$main_plan_collections->whereIn("id",$main_plan_ids);
 
             // メイン案件のIdセットと、メイン案件のIdセットをId名=>そのセットの入れ子配列を返す（同じ案件名があった時のため、same_project_flag,round_nameも条件につけ,表示用にmap_numberもつける）
-            return[$main_plan_ids,$plan_collections->groupBy(["project_id","same_project_flag","round_number","map_number"])];
+            return[$main_plan_ids,$plan_collections->groupBy(["project_id","round_number","map_number"])];
     }
 
     // サブ案件も含めたプロジェクトのセット(キーがid&idの数字=>値がプロジェクトのID)
     // mapでは配布外でも対応した報告書(mapになくとも全体表にあることが必要なため、案件に合わせる)
-    public static function get_project_names_in_the_report($all_distribution_plans,$main_project_id,$same_project_flag,$round_number,$existed_projects_sets,$main_project_name){
+    public static function get_project_names_in_the_report($all_distribution_plans,$main_project_id,$round_number,$existed_projects_sets,$main_project_name){
 
-            $all_id_lists_in_the_main_projects=$all_distribution_plans->where("project_id",$main_project_id)->where("same_project_flag",$same_project_flag)->where("round_number",$round_number)->where("main_id",null)->pluck("id");
+            $all_id_lists_in_the_main_projects=$all_distribution_plans->where("project_id",$main_project_id)->where("round_number",$round_number)->where("main_id",null)->pluck("id");
 
             $all_sub_lists_in_the_projects=$all_distribution_plans->whereIn("main_id",$all_id_lists_in_the_main_projects)->pluck("project_id")->unique()->mapWithKeys(fn($each_project_id)=>["id".$each_project_id=>$existed_projects_sets[$each_project_id]]);
 
@@ -101,30 +109,24 @@ class GetAssignedDataInStaffAndDate{
     // 案件セットが得られた後で、それを表示用に並べ替える
     public static function format_project_sets_key_by_project_for_view($main_plans_grouped_by_project_names,$all_distribution_plans,$main_plan_ids_in_the_day,$existed_address_sets,$sub_sets_in_the_day,$existed_projects_sets){
 
-       foreach($main_plans_grouped_by_project_names as $main_project_id=>$main_project_data_sets_with_same_project_flag){
+       foreach($main_plans_grouped_by_project_names as $main_project_id=>$main_project_data_sets_with_round_number){
 
                 // メイン案件はidで仕分けされているので、その案件名を返す
                 $main_project_name=ProjectHelpers::get_project_name_from_id($main_project_id);
 
-                // same_project_nameはSQLの番号ではなく今回のインデックスで表示
-                $same_project_index=1;
-                foreach($main_project_data_sets_with_same_project_flag as $same_project_flag=>$main_project_data_sets_with_round_number){
-                    // その案件の新旧具合はいくつあるか？(same_project_flagの長さ)
-                    $same_project_length=count($main_project_data_sets_with_same_project_flag);
                     // round_numberはSQLの番号ではなく今回のインデックスで表示
                     $round_index=1;
                     foreach($main_project_data_sets_with_round_number as $round_number=>$main_project_data_sets_with_map_number){
                         // そのメイン案件の同時期のもので、今回営業所にきたメイン案件あるか(round_numberの長さ)
                         $round_length=count($main_project_data_sets_with_round_number);
                         // ここのmain_projectは表示用なので変えてもOKかも？round_numberなどと連動して
-                        $main_project_key_name_for_view=ChangeProjectNameForView::get_project_name_for_view($main_project_name,$same_project_index,$same_project_length,$round_index,$round_length);
+                        $main_project_key_name_for_view=ChangeProjectNameForView::get_project_name_for_view($main_project_name,$round_index,$round_length);
                        // round_indexを1つたす
                         $round_index++;
 
-
                         // サブ案件も含めたプロジェクトのセット(キーがid&idの数字=>値がプロジェクトのID)
                         // mapでは配布外でも対応した報告書(mapになくとも全体表にあることが必要なため、案件に合わせる)
-                         $return_sets_by_date[$main_project_key_name_for_view]["project_set"]=self::get_project_names_in_the_report($all_distribution_plans,$main_project_id,$same_project_flag,$round_number,$existed_projects_sets,$main_project_name);
+                         $return_sets_by_date[$main_project_key_name_for_view]["project_set"]=self::get_project_names_in_the_report($all_distribution_plans,$main_project_id,$round_number,$existed_projects_sets,$main_project_name);
 
                         foreach($main_project_data_sets_with_map_number as $map_number=>$main_project_data_sets_by_map_number){
 
@@ -155,8 +157,6 @@ class GetAssignedDataInStaffAndDate{
                                 ];
                             } //map_numberごと
                         }//round_numberごと
-                      $same_project_index++;
-                    }//same_projectごと
                 }
             }
             return $return_sets_by_date ?? [];
@@ -164,26 +164,27 @@ class GetAssignedDataInStaffAndDate{
 
 
     // 日毎の処理 //すでに日は限定
-    public static function get_data_by_date($date,$fetched_assigned_data,$all_distribution_plans,$existed_plan_collections,$sub_plan_collections,$existed_projects_sets,$existed_address_sets){
+    public static function get_data_by_date($date,$fetched_data,$all_distribution_plans,$existed_plan_collections,$sub_plan_collections,$existed_projects_sets,$existed_address_sets,$is_record){
 
+            // 割り当てされた予定の場合はその日に配布もしくはその日が期限内のassignされたデータを取得
+            // 結果の場合は配布日は選択時点で1日に限定
+            $main_data_in_date=!$is_record ? $fetched_data->filter(fn($each_data)=>
+                $each_data->date==$date || ($each_data->end_data && ($each_data->end_date>=$date || $each_data->date < $date))) : $fetched_data;
 
-         // その日に配布もしくはその日が期限内のassignされたデータを取得
-            $main_assigned_data_in_date=$fetched_assigned_data->filter(fn($each_data)=>
-                $each_data->date==$date || ($each_data->end_data && ($each_data->end_date>=$date || $each_data->date < $date) )
-            );
-
-            if($main_assigned_data_in_date->isEmpty()){
+            if($main_data_in_date->isEmpty()){
                 return [null,false];
             }
 
             // その日のメイン案件&same_project_flag&round_number&地図番号のIdセット(assignのid=>planのidの連想配列)、[プロジェクト名をキーにした、その日のplanのセット]の一覧
-            [$main_plan_ids_in_the_day,$main_plans_grouped_by_project_names]=self::get_main_projects_data_in_the_day($main_assigned_data_in_date,$existed_plan_collections);
+            [$main_plan_ids_in_the_day,$main_plans_grouped_by_project_names]=self::get_main_projects_data_in_the_day($main_data_in_date,$existed_plan_collections);
 
             // サブ案件のセット。main案件のIdをキーに、idとproject_idを返す
             $sub_sets_in_the_day=$sub_plan_collections->whereIn("main_id",$main_plan_ids_in_the_day)->groupBy("main_id");
 
+
+            // ここは日毎に行うのが理想！！！！
             // その人がいく期間内の案件に1つでも「地図版」からきているものがあれば、報告書提出時の全町確認の処理は行わない
-            $from_simple_flag=$main_assigned_data_in_date->contains(fn($each_data)=>$each_data["from_simple_flag"]==true);
+            $from_simple_flag=!$is_record ? $main_data_in_date->contains(fn($each_data)=>$each_data["from_simple_flag"]==true) : null;
 
             // projectName~MapnNumberのそれぞれを入れ子のキーにしたセットの一覧を返す
             return [self::format_project_sets_key_by_project_for_view($main_plans_grouped_by_project_names,$all_distribution_plans,$main_plan_ids_in_the_day,$existed_address_sets,$sub_sets_in_the_day,$existed_projects_sets,$from_simple_flag) ?? [],$from_simple_flag];

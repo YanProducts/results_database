@@ -11,7 +11,7 @@ export default function ReportOverview({prefix,what,type,userName,allData}){
     // assignDataToStaffキーのプロジェクト名はsameProjectFlagなども想定済みのもの
     const {data,setData,post,processing, errors,clearErrors, reset, selectedDate,setSelectedDate, pageMinWidth,pageMaxWidth}=useReportOverviewDefinition();
 
-    const {}=useReportOverviewAction({});
+    const {onDecideReport}=useReportOverviewAction({});
 
     return(
     <Layout title={`${what}-${type}`}>
@@ -20,7 +20,7 @@ export default function ReportOverview({prefix,what,type,userName,allData}){
     {/* タイトル */}
     <BasePageHeader what={what} type={type} minWidth={pageMinWidth} maxWidth={pageMaxWidth}  needUserName={true} userName={userName} />
 
-     <OverviewTable {...{allData,pageMaxWidth,pageMinWidth}} />
+     <OverviewTable {...{allData,pageMaxWidth,pageMinWidth,onDecideReport}} />
 
     {/* リンク */}
       <div className="mt-1">

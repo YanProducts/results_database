@@ -13,7 +13,7 @@ export default function useProjectCheckByDayDefinitions({projectData}){
         "start_date":"開始日",
         "place_name":"営業所",
         "main_project_name":"案件名",
-        "round_number":"回数",
+        "counts":"設定",
         "sub_project_lists":"併配",
         "city_name_lists":"エリア",
         "end_date":"終了日",
@@ -24,14 +24,14 @@ export default function useProjectCheckByDayDefinitions({projectData}){
         "w-[10%]",
         "w-[10%]",
         "w-[10%]",
-        "w-[5%]",
-        "w-[25%]",
-        "w-[25%]",
+        "w-[10%]",
+        "w-[23%]",
+        "w-[22%]",
         "w-[10%]",
         "w-[5%]"
     ];
 
-        // 平坦化したデータ
+    // 平坦化したデータ
     const flattedData=projectDataFlatter(projectData);
 
     // ページの横幅

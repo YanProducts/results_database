@@ -52,6 +52,13 @@ class ReportManagementController extends Controller
         ]);
     }
 
+    // 報告書確認において、スタッフの決定後、日付が決定したとき
+    public function decide_date_for_report_choice(){
+
+    }
+
+
+
 
     // 指定日の報告書の確認や編集に向かう画面
     public function show_detail_report(Request $date){

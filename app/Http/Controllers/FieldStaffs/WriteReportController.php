@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\FieldStaffs;
 
 use App\Actions\FieldStaff\WriteReport\DataExistsCheck;
-use App\Actions\FieldStaff\WriteReport\GetAssignedDataInStaffAndDate;
+use App\Actions\FieldStaff\WriteReport\GetDataInStaffAndDate;
 use App\Actions\FieldStaff\WriteReport\StoreAfterDistribution;
 use App\Constants\Date;
 use App\Http\Controllers\Controller;
@@ -28,15 +28,11 @@ class WriteReportController extends Controller
         $date_sets=DateHelper::get_date_key_value_sets_for_view(Carbon::now()->format("Y-m-d"),Date::StartOffsetInReportPeriod,Date::EndOffsetInReportPeriod);
 
 
-
-
-
-
         // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名-sameproject-roundnumberからとった案件名がサブキー、さらにmapNumberをnキーにおいて、:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
 
         // address_nameは報告書記入の際のスマホの横幅を考慮し、基本的には町名のみで行い、重なった場合のみ町名\n(市名)で行う
 
-        [$data_in_staff_and_date,$from_simple_flag,$submitted_dates]=GetAssignedDataInStaffAndDate::get_assigned_data($staff_id,$date_sets);
+        [$data_in_staff_and_date,$from_simple_flag,$submitted_dates]=GetDataInStaffAndDate::get_assigned_or_recorded_data($staff_id,$date_sets);
 
 
 

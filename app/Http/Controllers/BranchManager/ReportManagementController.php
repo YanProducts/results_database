@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\BranchManager;
 
+use App\Actions\BranchManager\Report\GetDataInStaffAndDate;
 use App\Actions\BranchManager\Report\GetOverviewByDay;
 use App\Constants\Date;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BranchManager\ChoiceFromStaffRequest;
+use App\Http\Requests\BranchManager\ReportChoiceDecideRequest;
 use App\Models\BranchManagerList;
 use App\Models\FieldStaffList;
 use App\Models\UserAuth;
@@ -61,6 +63,28 @@ class ReportManagementController extends Controller
 
     }
 
+
+    // 報告書確認において、スタッフの決定後、日付が決定したとき
+    public function decide_date_for_report_choice_post(ReportChoiceDecideRequest $request){
+        // パラメータの取得
+        [$date,$staff]=[$request->date,$request->staffId];
+
+        // スタッフがその日に割り当てられた&配布したデータの取得
+        // recordだけだと記入し忘れorしていない町目が拾われないため必ず必要
+        [$assigns_with_records]=GetDataInStaffAndDate::get_assigned_and_recorderd_data($date,$staff);
+
+
+        dd("Inertia直前！");
+
+        return Inertia::render("",[
+            "assigns"=>$assigns_with_records,
+        ]);
+
+    }
+
+
+
+
     // 報告書の確認or代替記入(日付から)
     public function choice_report_date_target()
     {
@@ -75,7 +99,7 @@ class ReportManagementController extends Controller
     }
 
    // 報告書の確認or代替記入(日付決定後、スタッフの選択)
-    public function decide_staff_for_report_choice_post()
+    public function decide_staff_for_report_choice_post(ReportChoiceDecideRequest $request)
     {
         //
     }

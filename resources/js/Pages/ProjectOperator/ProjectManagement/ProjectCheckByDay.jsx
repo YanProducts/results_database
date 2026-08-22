@@ -6,7 +6,6 @@ import ViewValidationErrors from "../../../Components/Common/ViewValidationError
 import BaseTable from "../../../Components/Common/BaseTable";
 import useProjectCheckByDayDefinitions from "../../../Definition/ProjectOperator/Management/useProjectCheckByDayDefinitions";
 import useProjectCheckByDayActions from "../../../Action/ProjectOperator/Manegement/useProjectCheckByDayActions";
-import ChoiceSort from "../../../Components/Part/ProjectOperator/ProjectManagement/ChoiceSort";
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
 import TrInnerCheckedByDay from "../../../Components/Part/ProjectOperator/ProjectManagement/TrInnerInCheckByDay";
 

@@ -7,7 +7,7 @@ export default function TrInnerCheckedByDay({flattedData}){
                 <td className="border-2 border-black">{eachData.startDate}</td>
                 <td className="border-2 border-black">{eachData.placeName}</td>
                 <td className="border-2 border-black">{eachData.mainProjectName}</td>
-                <td className="border-2 border-black w-[5%]">{eachData.roundNumber}</td>
+                <td className="border-2 border-black w-[5%]">{eachData.counts}</td>
                 <td className="border-2 border-black w-[15%]">{eachData.subLists}</td>
                 <td className="border-2 border-black w-[15%]">{eachData.cityLists}</td>
                 <td className="border-2 border-black">{eachData.endDate}</td>

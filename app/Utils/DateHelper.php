@@ -56,6 +56,15 @@ class DateHelper{
         ];
     }
 
+    // 単数のY-m-dの日付をY-m-d=>日本語の配列に変換
+    public static function change_key_value_set($base_Ymd_date){
+
+        $carbon_date=Carbon::parse($base_Ymd_date);
+
+        return [$base_Ymd_date=>$carbon_date->format("n月j日")];
+    }
+
+
     // 期間内の日付におけるキー(Y-m-d)と値(n月j日)の配列を返す(selectBoxなどで使う想定)
     public static function get_date_key_value_sets_for_view($base_Ymd_date,$start_offset,$end_offset){
 
