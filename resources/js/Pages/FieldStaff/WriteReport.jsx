@@ -4,7 +4,7 @@ import Layout from "../../Layout/Layout";
 import { RoleLayout } from "../../Layout/RoleLayout";
 import ReportDataInput from "../../Components/Part/FieldStaff/ReportDataInput";
 import ReportConfirm from "../../Components/Part/FieldStaff/ReportConfirm";
-import useWriteReportViewData from "../../Computed/FieldStaffs/useWriteReportViewData";
+import useWriteOrEditReportViewData from "../../Computed/Common/useWriteOrEditReportViewData";
 import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 import WriteReportContext from "../../Contexts/FieldStaffs/useWriteReportContexts";
 
@@ -16,7 +16,7 @@ export default function WriteReport({what,type,prefix,staff,dateSets,assignDataT
     const {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}=useWriteReportActions({assignDataToStaff,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,isBigMedia,setIsBigMedia});
 
     //テーブルのUIや変数などに必要な要素の取得(依存配列が変化しなければ再計算されない)
-    const [tableSets,differenceExists]=useWriteReportViewData({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount,isBigMedia});
+    const [tableSets,differenceExists]=useWriteOrEditReportViewData({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount,isBigMedia});
 
     return(
     <WriteReportContext.Provider value={{onSetOtherProjectToSameValueClick,isBigMedia}}>

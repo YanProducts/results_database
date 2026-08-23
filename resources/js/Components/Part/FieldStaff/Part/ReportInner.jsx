@@ -1,12 +1,12 @@
 import React from "react";
 import BaseTable from "../../../Common/BaseTable";
-import TbodyInner from "./TbodyInner";
+import TrInner from "./TrInner";
 import TrForSum from "./TrForSum";
 import IssuedAndReturns from "./IssueAndReturns";
 import WriteReportContext from "../../../../Contexts/FieldStaffs/useWriteReportContexts";
 
 // 報告書テーブルの内部
-export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,tableSets,isConfirm,processing,fromSimpleFlag}){
+export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,tableSets,isConfirm,processing,fromSimpleFlag,changedData}){
 
     const {isBigMedia}=React.useContext(WriteReportContext);
 
@@ -32,7 +32,7 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,retur
                     return(
                         Object.values(eachDataByMap).map((eachData,indexInMaps)=>
                             // テーブルの中身
-                            <TbodyInner key={`${trIndex}_${indexInMaps}`} {...{mainProjectName,projectSets,eachData,mapNumber,trIndex,indexInMaps,widthSets,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,isConfirm,fromSimpleFlag,processing}}/>
+                            <TrInner key={`${trIndex}_${indexInMaps}`} {...{mainProjectName,projectSets,eachData,mapNumber,trIndex,indexInMaps,widthSets,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,isConfirm,fromSimpleFlag,processing,changedData}}/>
                         )
                     )
                     })

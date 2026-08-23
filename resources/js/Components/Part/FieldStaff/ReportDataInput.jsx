@@ -6,7 +6,7 @@ import CheckAndSubmits from "./Part/CheckAndSubmits";
 import BaseLinkLine from "../../Common/BaseLinkLine";
 
 // 報告書の記入
-export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,staff,selectedDate,onSelectedDateChange,submittedDates,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,fromSimpleFlag}){
+export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,staff,selectedDate,onSelectedDateChange,submittedDates=[],issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,changedData=null,fromSimpleFlag}){
 
   return(
     <>
@@ -26,7 +26,7 @@ export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,sta
             {selectedDate &&  (assignDataToStaff[selectedDate] ?
             //
              <>
-                <ReportInner {...{pageMinWidth,pageMaxWidth,issuedCount,returnedCount,setIssuedCount,setReturnedCount,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,inputRefs,inputValues,tableSets,processing,isConfirm,fromSimpleFlag}} />
+                <ReportInner {...{pageMinWidth,pageMaxWidth,issuedCount,returnedCount,setIssuedCount,setReturnedCount,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,inputRefs,inputValues,tableSets,processing,isConfirm,fromSimpleFlag,changedData}} />
 
                 {/* ズレの確認&問題ない時は送信 */}
                 <CheckAndSubmits {...{differenceExists,processing,inputValues,pageMaxWidth,pageMinWidth,onSubmitBtnClick,onStartOverClick,tableSets}} />

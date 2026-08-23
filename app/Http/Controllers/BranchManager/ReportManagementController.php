@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\BranchManager;
 
-use App\Actions\BranchManager\Report\GetDataInStaffAndDate;
+use App\Actions\Shared\GetDataInStaffAndDate;
 use App\Actions\BranchManager\Report\GetOverviewByDay;
 use App\Constants\Date;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BranchManager\ChoiceFromStaffRequest;
 use App\Http\Requests\BranchManager\ReportChoiceDecideRequest;
 use App\Models\BranchManagerList;
-use App\Models\FieldStaffList;
-use App\Models\UserAuth;
+use App\Support\Common\ModelHelpers\DistributionRecordHelpers;
 use App\Support\Common\ModelHelpers\BranchManagerListHelpers;
 use App\Support\Common\ModelHelpers\FieldStaffListHelpers;
 use App\Utils\DateHelper;
@@ -69,15 +68,13 @@ class ReportManagementController extends Controller
         // パラメータの取得
         [$date,$staff]=[$request->date,$request->staffId];
 
-        // スタッフがその日に割り当てられた&配布したデータの取得
-        // recordだけだと記入し忘れorしていない町目が拾われないため必ず必要
-        [$assigns_with_records]=GetDataInStaffAndDate::get_assigned_and_recorderd_data($date,$staff);
-
-
-        dd("Inertia直前！");
-
-        return Inertia::render("",[
-            "assigns"=>$assigns_with_records,
+        // そのスタッフに割り当てられた案件と、それに即した結果データを返す
+        return Inertia::render("BranchManager/ReportManagement/EditReport",[
+            "what"=>"営業所担当",
+            "type"=>"報告書編集",
+            "staff"=>$staff,
+            "dateSet"=>$date_set=DateHelper::change_key_value_set($date),
+            "assignWithRecords"=>GetDataInStaffAndDate::get_assigned_data($staff,$date_set,true,DistributionRecordHelpers::data_in_the_date_and_staff($date,$staff))[0],
         ]);
 
     }
@@ -112,16 +109,6 @@ class ReportManagementController extends Controller
         // スタッフリストの選択
 
         return Inertia::render("");
-    }
-
-
-
-
-
-    // 報告書の代替記入
-    public function complete_report()
-    {
-        //
     }
 
 

@@ -4,7 +4,7 @@
 import React from "react";
 import getTableSetsByMainProjects from "../../Support/FieldStaff/getTableSetsByMainProjetcs";
 // このファイルはスタッフの報告書作成における表示データの取得
-export default function useWriteReportViewData({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount,isBigMedia}){
+export default function useWriteOrEditReportViewData({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount,isBigMedia,isEdit=false}){
 
 
        const tableSets=React.useMemo(()=>{

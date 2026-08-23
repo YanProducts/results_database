@@ -1,9 +1,15 @@
-export default function MainTdInner({isConfirm,onAssignedInputChange,assignId,mainProjectName,trIndex,indexInMaps,index,inputValues,inputRefs,onInputKeyDown,processing,fromSimpleFlag}){
+import React from "react";
+import WriteReportContext from "../../../../Contexts/FieldStaffs/useWriteReportContexts"
+
+export default function MainTdInner({isConfirm,onAssignedInputChange,assignId,mainProjectName,trIndex,indexInMaps,index,inputValues,inputRefs,onInputKeyDown,processing,fromSimpleFlag,changedData}){
+
+    // 編集かどうかとLaravelから送信のデータ(結果のデフォルト表示に使用)//この時点では日付のデータに変換されている
+    const {isEdit=false,assignWithRecords={}}=React.useContext(WriteReportContext);
 
     // keyDownイベントは現時点では実装されていない。後日、意見を考えて実装検討
     return(
         (!isConfirm && !processing ) ?
-        <input className="w-full text-right" onChange={(e)=>onAssignedInputChange({e,assignId,mainProjectName,trIndex,indexInMaps,index})} onKeyDown={(e)=>onInputKeyDown(e,mainProjectName,trIndex,indexInMaps,index)} value={inputValues?.[mainProjectName]?.[assignId]?.["main"] || ""}  ref={(el)=>
+        <input className={`w-full text-right ${(isEdit && changedData?.[mainProjectName]?.[assignId]?.["main"] )? "border-2 border-sky-300" : ""}`} onChange={(e)=>onAssignedInputChange({e,assignId,mainProjectName,trIndex,indexInMaps,index})} onKeyDown={(e)=>onInputKeyDown(e,mainProjectName,trIndex,indexInMaps,index)} value={inputValues?.[mainProjectName]?.[assignId]?.["main"] || ""}  ref={(el)=>
         {
             // 作成されていない時は作成
             if (!inputRefs.current[mainProjectName]) {

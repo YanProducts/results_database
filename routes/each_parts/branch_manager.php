@@ -115,23 +115,14 @@ Route::prefix("branch_manager")
                 ->name("decide_date_for_report_choice_post");
 
 
-
-                // 報告書の代替記入(人の決定後、報告書表示画面=errorsで戻った時のことを考えInertiaではなく完全にredirectさせる)
-                //人の選択がない状態ではエラーにすること
-                Route::get("complete_report","complete_report")
-                ->name("complete_report");
                 // 報告書の代替記入(最終決定)
                 Route::post("complete_report","complete_report_post")
                 ->name("complete_report_post");
-                // 報告書の編集(選択)
-                Route::get("choice_edit_report_target","choice_edit_report_target")
-                ->name("choice_edit_report_target");
-                // 報告書の編集(決定して編集できる状態に)
-                Route::post("choice_edit_report_target","choice_edit_report_target_post")
-                ->name("choice_edit_report_target_post");
-                // 上記にバリデーションで戻った時
-                Route::get("choice_edit_report_target","choice_edit_report_target")
-                ->name("choice_edit_report_target");
+
+                // 報告書の代替記入(上記でバリデーションが変更したとき)
+                Route::get("complete_report","complete_report")
+                ->name("complete_report_post");
+
             });
 
             // 報告書の確認or代替記入(日付画面表示へ)

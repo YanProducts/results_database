@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\FieldStaffs;
 
 use App\Actions\FieldStaff\WriteReport\DataExistsCheck;
-use App\Actions\FieldStaff\WriteReport\GetDataInStaffAndDate;
+use App\Actions\Shared\GetDataInStaffAndDate;
 use App\Actions\FieldStaff\WriteReport\StoreAfterDistribution;
 use App\Constants\Date;
 use App\Http\Controllers\Controller;
@@ -32,7 +32,7 @@ class WriteReportController extends Controller
 
         // address_nameは報告書記入の際のスマホの横幅を考慮し、基本的には町名のみで行い、重なった場合のみ町名\n(市名)で行う
 
-        [$data_in_staff_and_date,$from_simple_flag,$submitted_dates]=GetDataInStaffAndDate::get_assigned_or_recorded_data($staff_id,$date_sets);
+        [$data_in_staff_and_date,$from_simple_flag,$submitted_dates]=GetDataInStaffAndDate::get_assigned_data($staff_id,$date_sets);
 
 
 
