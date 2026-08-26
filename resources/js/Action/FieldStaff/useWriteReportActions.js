@@ -1,6 +1,6 @@
 import React from "react";
 import { route } from "ziggy-js";
-import applyOtherProjectToSameValueClick from "./Part/applyOtherProjectToSameValueClick";
+import applyOtherProjectToSameValueClick from "../Share/applyOtherProjectToSameValueClick";
 import confirmMainOrSubOnlyInput from "./Part/confirmMainOrSubOnlyInput";
 
 export default function useWriteReportActions({assignDataToStaff,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,isBigMedia,setIsBigMedia}){

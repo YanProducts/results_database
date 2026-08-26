@@ -1,7 +1,9 @@
 import React from "react";
+import applyOtherProjectToSameValueClick from "../../Share/applyOtherProjectToSameValueClick";
+import useTargetChangeHandler from "./Part/useTargetChangeHandler";
 
 // 報告書編集の動き
-export default function useEditReportActions({assignWithRecords,inputValues,setInputValues,inputRefs,setChangedData,setIsConfirm,data,setData,post,setIsBigMedia}){
+export default function useEditReportActions({date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIsConfirm,data,setData,post,setIsBigMedia}){
 
 
     // 大きなデバイスかどうか
@@ -16,7 +18,7 @@ export default function useEditReportActions({assignWithRecords,inputValues,setI
         return ()=>{bigJudge.removeEventListener("change",mediaChange)};
     },[]);
 
-    
+
     // 持ち出し&返却のまとめ //mapNumberは必要ない
     const onIssuedOrReturnedCountsChange=(e,mainProjectName,eachProjectName,setState)=>{
 
@@ -46,18 +48,9 @@ export default function useEditReportActions({assignWithRecords,inputValues,setI
         // 変化したinput要素をfocus(indexは併配の数)
         inputRefs.current[mainProjectName][trIndex][indexInMaps][index]?.focus();
 
-        // 変化した値に枠線を記入するための操作
-        setChangedData(prev=>({
-            ...prev,
-            [mainProjectName]:{
-                ...(prev?.[mainProjectName] || {}),
-                [assignId]:[
-                    ...(prev?.[mainProjectName] || {}),
-                    (subProjectId ?? "main")
-                ]
-            }
-    }));
-
+        // 変化した値にcssを記入するための操作
+        // すでに存在している場合には二重にstateが動くのを防ぐために除外
+        useTargetChangeHandler({changedData,setChangedData,mainProjectName,assignId,subProjectId});
 
         // input要素のvalueの更新
         // 変化したところのみしか変わらないようにする
@@ -87,7 +80,7 @@ export default function useEditReportActions({assignWithRecords,inputValues,setI
     const onSetOtherProjectToSameValueClick=(e,mainProjectName,projectId,index)=>{
         e.preventDefault()
         // 外注定義
-        applyOtherProjectToSameValueClick({mainProjectName,projectId,index,inputValues,setInputValues,assignWithRecords,selectedDate})
+        applyOtherProjectToSameValueClick({mainProjectName,projectId,index,inputValues,setInputValues,assignDataToStaff:assignWithRecords,selectedDate:date,isEdit:true})
     }
 
 

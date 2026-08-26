@@ -1,5 +1,5 @@
 // 他の案件も同じ値を記入する時
-export default function applyOtherProjectToSameValueClick({mainProjectName,projectId,index,inputValues,setInputValues,assignDataToStaff,selectedDate}){
+export default function applyOtherProjectToSameValueClick({mainProjectName,projectId,index,inputValues,setInputValues,assignDataToStaff,selectedDate,isEdit=false}){
 
         // 参照しないコピー
         let inputMainProjectCopy=structuredClone(inputValues[mainProjectName])
@@ -21,18 +21,31 @@ export default function applyOtherProjectToSameValueClick({mainProjectName,proje
                             return;
                         }
 
+                        // 併配のidセットは編集か初回かで分ける
+                        const sub_sets=isEdit ?  Object.keys(matchedAssignData.sub_sets): matchedAssignData.sub_sets
+                        console.log(sub_sets)
+
                         // そのsubsetsのidに含まれる併配にinputValuesのmainの値のコピー
-                        matchedAssignData.sub_sets.forEach(function(eachSubId){
+                        sub_sets.forEach(function(eachSubId){
                                 inputMainProjectCopy[mainKey]={
                                         ...inputDataInTheTown,
                                         // main案件が記入されていない併配案件は0にする
                                         [eachSubId]:inputDataInTheTown?.main || 0
                                     }
                           })
+
+                    // changeのフラグを変化させる
+
+
+
+
                     }else{
                         // 併配→メインを設定
                         // 現在操作中の併配案件名をID案件名で取得しているのがprojectId
                         inputMainProjectCopy[mainKey].main=inputMainProjectCopy[mainKey]?.[projectId.substring(2)] ?? 0
+                    // changeのフラグを変化させる
+
+
                     }
                   })
             })

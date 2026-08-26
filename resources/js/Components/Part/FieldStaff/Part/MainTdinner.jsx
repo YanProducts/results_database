@@ -9,7 +9,7 @@ export default function MainTdInner({isConfirm,onAssignedInputChange,assignId,ma
     // keyDownイベントは現時点では実装されていない。後日、意見を考えて実装検討
     return(
         (!isConfirm && !processing ) ?
-        <input className={`w-full text-right ${(isEdit && changedData?.[mainProjectName]?.[assignId]?.["main"] )? "border-2 border-sky-300" : ""}`} onChange={(e)=>onAssignedInputChange({e,assignId,mainProjectName,trIndex,indexInMaps,index})} onKeyDown={(e)=>onInputKeyDown(e,mainProjectName,trIndex,indexInMaps,index)} value={inputValues?.[mainProjectName]?.[assignId]?.["main"] || ""}  ref={(el)=>
+        <input className={`w-full text-right ${(isEdit && changedData?.[mainProjectName]?.[assignId]?.includes("main") )? "bg-lime-300 border-green-300 border-2 font-extrabold text-green-950" : ""}`} onChange={(e)=>onAssignedInputChange({e,assignId,mainProjectName,trIndex,indexInMaps,index})} onKeyDown={(e)=>onInputKeyDown(e,mainProjectName,trIndex,indexInMaps,index)} value={inputValues?.[mainProjectName]?.[assignId]?.["main"] || ""}  ref={(el)=>
         {
             // 作成されていない時は作成
             if (!inputRefs.current[mainProjectName]) {

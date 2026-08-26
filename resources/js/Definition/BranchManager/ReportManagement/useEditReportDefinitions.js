@@ -28,11 +28,12 @@ export default function useEditReportDefinitions({assignWithRecords,staff,dateSe
      // inputのvalue
      const [inputValues, setInputValues]=React.useState(getDefaultValueForEditReport({assignWithRecords,date}));
 
+
      //  inputのRef
     const inputRefs=React.useRef([]);
 
     // 何かしらの変化が生じた部位(Tailwindで枠線を色を変え太くする)
-    const [changedData,setChangedData]=React.useState([]);
+    const [changedData,setChangedData]=React.useState({});
 
       // ページの横幅
     const [pageMinWidth,pageMaxWidth]=["min-w-90 mobile:min-w-250","max-w-300 mobile:max-w-400"];
