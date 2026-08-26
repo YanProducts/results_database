@@ -4,7 +4,7 @@ import Layout from "../../Layout/Layout";
 import { RoleLayout } from "../../Layout/RoleLayout";
 import ReportDataInput from "../../Components/Part/FieldStaff/ReportDataInput";
 import ReportConfirm from "../../Components/Part/FieldStaff/ReportConfirm";
-import useWriteOrEditReportViewData from "../../Computed/Common/useWriteOrEditReportViewData";
+import useWriteOrEditReportViewData from "../../Computed/Share/useWriteOrEditReportViewData";
 import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 import WriteReportContext from "../../Contexts/FieldStaffs/useWriteReportContexts";
 

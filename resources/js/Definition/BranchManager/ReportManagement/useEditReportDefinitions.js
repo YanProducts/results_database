@@ -1,8 +1,9 @@
 import React from "react";
 import { useForm } from "@inertiajs/react";
+import getDefaultValueForEditReport from "../../../Support/Share/getDefaultValueForEditReport";
 
 // 報告書編集の定義(fieldStaffと重なる部分も多いが、違う部分もあるので、ひとまず別途定義)
-export default function useEditReportDefinitions({staff,dateSet}){
+export default function useEditReportDefinitions({assignWithRecords,staff,dateSet}){
 
  // Y-m-dの日付(dateSetsより。何度も使うので前もって呼び出す)
   const date=Object.keys(dateSet)[0];
@@ -25,7 +26,7 @@ export default function useEditReportDefinitions({staff,dateSet}){
     const [returnedCount,setReturnedCount]=React.useState(0)
 
      // inputのvalue
-     const [inputValues, setInputValues]=React.useState({});
+     const [inputValues, setInputValues]=React.useState(getDefaultValueForEditReport({assignWithRecords,date}));
 
      //  inputのRef
     const inputRefs=React.useRef([]);

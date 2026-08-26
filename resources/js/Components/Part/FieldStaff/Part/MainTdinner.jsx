@@ -4,7 +4,7 @@ import WriteReportContext from "../../../../Contexts/FieldStaffs/useWriteReportC
 export default function MainTdInner({isConfirm,onAssignedInputChange,assignId,mainProjectName,trIndex,indexInMaps,index,inputValues,inputRefs,onInputKeyDown,processing,fromSimpleFlag,changedData}){
 
     // 編集かどうかとLaravelから送信のデータ(結果のデフォルト表示に使用)//この時点では日付のデータに変換されている
-    const {isEdit=false,assignWithRecords={}}=React.useContext(WriteReportContext);
+    const {isEdit=false}=React.useContext(WriteReportContext);
 
     // keyDownイベントは現時点では実装されていない。後日、意見を考えて実装検討
     return(

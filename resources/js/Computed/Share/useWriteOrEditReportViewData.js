@@ -1,9 +1,9 @@
 // Computed層はstateから得られた変数を表示用データに返還する層
 // その過程で必要とする変数が変更されなければ変更しないので、useMemoを使用することが多い
+// このファイルはスタッフの報告書作成における表示データの取得(営業所担当と現場担当で共有)
 
 import React from "react";
 import getTableSetsByMainProjects from "../../Support/FieldStaff/getTableSetsByMainProjetcs";
-// このファイルはスタッフの報告書作成における表示データの取得
 export default function useWriteOrEditReportViewData({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount,isBigMedia,isEdit=false}){
 
 

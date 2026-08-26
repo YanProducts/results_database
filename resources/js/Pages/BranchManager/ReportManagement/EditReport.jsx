@@ -5,7 +5,7 @@ import { RoleLayout } from "../../../Layout/RoleLayout";
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
 import ReportDataInput from "../../../Components/Part/FieldStaff/ReportDataInput"; //field_staffで使用している報告書記入のサンプル
 import ReportConfirm from "../../../Components/Part/FieldStaff/ReportConfirm"; //field_staffで使用している報告書の確認
-import useWriteOrEditReportViewData from "../../../Computed/Common/useWriteOrEditReportViewData"; //field_staffと共同で使用している
+import useWriteOrEditReportViewData from "../../../Computed/Share/useWriteOrEditReportViewData"; //field_staffと共同で使用している
 import WriteReportContext from "../../../Contexts/FieldStaffs/useWriteReportContexts";//field_staffで使用しているcontext
 import useEditReportDefinitions from "../../../Definition/BranchManager/ReportManagement/useEditReportDefinitions";
 import useEditReportActions from "../../../Action/BranchManager/ReportManagement/useEditReportActions";
@@ -13,7 +13,7 @@ import useEditReportActions from "../../../Action/BranchManager/ReportManagement
 export default function EditReport({what,type,prefix,staff,dateSet,assignWithRecords}){
 
     // assignWithRecordsキーのプロジェクト名はsameProjectFlagなども想定済みのもの
-    const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,changedData,setChangedData,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia,date}=useEditReportDefinitions({staff,dateSet});
+    const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,changedData,setChangedData,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia,date}=useEditReportDefinitions({staff,dateSet,assignWithRecords});
 
     const {onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}=useEditReportActions({assignWithRecords,inputValues,setInputValues,inputRefs,setChangedData,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,isBigMedia,setIsBigMedia});
 
@@ -21,7 +21,7 @@ export default function EditReport({what,type,prefix,staff,dateSet,assignWithRec
     const [tableSets,differenceExists]=useWriteOrEditReportViewData({assignDataToStaff:assignWithRecords,selectedDate:date,inputValues,issuedCount,returnedCount,isBigMedia});
 
     return(
-    <WriteReportContext.Provider value={{onSetOtherProjectToSameValueClick,isBigMedia,isEdit:true,assignWithRecords:assignWithRecords[date]}}>
+    <WriteReportContext.Provider value={{onSetOtherProjectToSameValueClick,isBigMedia,isEdit:true}}>
 
     <Layout title={`${what}-${type}`}>
      <RoleLayout prefix={prefix}>

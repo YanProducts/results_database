@@ -17,13 +17,6 @@ export default function useEditReportActions({assignWithRecords,inputValues,setI
     },[]);
 
     
-    // 報告書に初期値の挿入(すでに投稿されているデータ)
-    React.useEffect(()=>{
-
-
-    },[assignWithRecords])//初回のみ
-
-
     // 持ち出し&返却のまとめ //mapNumberは必要ない
     const onIssuedOrReturnedCountsChange=(e,mainProjectName,eachProjectName,setState)=>{
 
