@@ -1,6 +1,7 @@
 import React from "react";
 import applyOtherProjectToSameValueClick from "../../Share/applyOtherProjectToSameValueClick";
 import useTargetChangeHandler from "./Part/useTargetChangeHandler";
+import confirmMainOrSubOnlyInput from "../../FieldStaff/Part/confirmMainOrSubOnlyInput";
 
 // 報告書編集の動き
 export default function useEditReportActions({date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIsConfirm,data,setData,post,setIsBigMedia}){
@@ -80,7 +81,7 @@ export default function useEditReportActions({date,assignWithRecords,inputValues
     const onSetOtherProjectToSameValueClick=(e,mainProjectName,projectId,index)=>{
         e.preventDefault()
         // 外注定義
-        applyOtherProjectToSameValueClick({mainProjectName,projectId,index,inputValues,setInputValues,assignDataToStaff:assignWithRecords,selectedDate:date,isEdit:true})
+        applyOtherProjectToSameValueClick({mainProjectName,projectId,index,inputValues,setInputValues,assignDataToStaff:assignWithRecords,selectedDate:date,isEdit:true,changedData,setChangedData})
     }
 
 
@@ -89,29 +90,52 @@ export default function useEditReportActions({date,assignWithRecords,inputValues
             e.preventDefault();
 
             // mainだけ、subだけが記入されている空欄があれば間違いないかチェック
-            if(!confirmMainOrSubOnlyInput({assignWithRecords,date,inputValues})){
+            if(!confirmMainOrSubOnlyInput({assignDataToStaff:assignWithRecords,selectedDate:date,inputValues,isEdit:true})){
                 return;
             }
 
-
-            // 投稿データは１：メインはassignIdで案件に関わらずいける。２：サブはassignIdに紐づいたplanIdからmainIdを検索可能(その中で、そのプロジェクトidと合うものを選択。sameProjectFlagが違えばidは別。roundNumberは必ず1意に決まる)
+            // 投稿データは１：メインはassignIdで案件に関わらずいける。２：サブはassignIdに紐づいたplanIdからmainIdを検索可能(その現場、そのスタッフにaasignされたIdは一意に決まる。データがる場合(2日トータル)はLaravelで更新。roundNumberが違ってもプロジェクトId同じ)
             // そのため、[assignId:...,mainCount:...,subCounts:[projectId:...,subCount:...]の入れ子この配列にする
             const dataForForm=[];
             Object.entries(inputValues).forEach((eachInputValue,index)=>{
-                Object.entries(eachInputValue[1]).forEach(eachSets=>{
-                    const eachMainId=eachSets[0];
+
+                for (const eachSets of Object.entries(eachInputValue[1])){
+                    const eachMainId=eachSets[0]; //assignId
                     const eachCount=eachSets[1];
+
+                    // 入っていないものはデータにpushしない
+                    if(!changedData?.[eachInputValue[0]]?.[eachMainId]){
+                        continue;
+                    }
+
+                    console.log(changedData?.[eachInputValue[0]]?.[eachMainId]);
+                    console.log((changedData?.[eachInputValue[0]]?.[eachMainId]).includes("main"))
+
+                    // mainProjectNameは取得せずともassignIdで投稿時には紐付け可能
                     // メインはassignedIdで取得、サブはそのassignのplan_idのidをmain_idに持つproject_idで取得。
                     dataForForm.push({
                         "assignId":eachMainId,
-                        "mainCount":eachCount.main ?? 0,
+                        // メイン案件が更新されていない場合は投稿しない
+                        ...((changedData?.[eachInputValue[0]]?.[eachMainId]).includes("main") ? {"mainCount":eachCount.main ?? 0} : {}),
+
+
+
+                        // そもそもidCountSetsが取れてない！
+
+
+
+                        // それぞれのサブ案件が更新されていない場合は投稿しない
                         "subData":
                             Object.entries(eachCount).map((IdCountSets)=>
-                              IdCountSets[0] !=="main" ? {"projectId":IdCountSets[0],"subCount":IdCountSets[1]} : null
-                            ).filter(obj=>obj!=null)
+                              (IdCountSets[0] !=="main" && changedData?.[eachInputValue[0]]?.[eachMainId].includes(IdCountSets[0])) ? {"projectId":IdCountSets[0],"subCount":IdCountSets[1]} : null
+                            )
+                            // .filter(obj=>obj!=null) //データなしに変更は0で送信される
                     })
-                })
+                }
             })
+            console.log(dataForForm)
+
+        return;
 
             setData({
                 ...data,

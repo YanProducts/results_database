@@ -13,7 +13,7 @@ class Date{
     public const EndOffsetInStaffAssignMent=7;
 
     // スタッフが投稿する報告書は何日前から何日後のものにするか
-    public const StartOffsetInReportPeriod=-15;
+    public const StartOffsetInReportPeriod=-35;
     public const EndOffsetInReportPeriod=5;
 
     // スタッフが確認する報告書は何日前から何日後のものにするか
