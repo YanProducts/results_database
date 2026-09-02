@@ -4,6 +4,8 @@ import getDefaultValueForEditReport from "../../../Support/Share/getDefaultValue
 
 // 報告書編集の定義(fieldStaffと重なる部分も多いが、違う部分もあるので、ひとまず別途定義)
 export default function useEditReportDefinitions({assignWithRecords,staff,dateSet}){
+    console.log("スタッフの形式")
+    console.log(staff)
 
  // Y-m-dの日付(dateSetsより。何度も使うので前もって呼び出す)
   const date=Object.keys(dateSet)[0];

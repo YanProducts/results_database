@@ -2,6 +2,7 @@ import React from "react";
 import applyOtherProjectToSameValueClick from "../../Share/applyOtherProjectToSameValueClick";
 import useTargetChangeHandler from "./Part/useTargetChangeHandler";
 import confirmMainOrSubOnlyInput from "../../FieldStaff/Part/confirmMainOrSubOnlyInput";
+import { router } from "@inertiajs/react";
 
 // 報告書編集の動き
 export default function useEditReportActions({date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIsConfirm,data,setData,post,setIsBigMedia}){
@@ -67,6 +68,11 @@ export default function useEditReportActions({date,assignWithRecords,inputValues
         }));
     }
 
+    // もう１度日付選択から戻るとき
+    const onStartOverClick=()=>{
+        router.visit(route("branch_manager.choice_report_target"));
+    }
+
 
     // 報告書の入力時にエンターボタンが押されたとき
     // 後日、何かしら機能を入れる可能性あり
@@ -101,15 +107,14 @@ export default function useEditReportActions({date,assignWithRecords,inputValues
 
                 for (const eachSets of Object.entries(eachInputValue[1])){
                     const eachMainId=eachSets[0]; //assignId
-                    const eachCount=eachSets[1];
+                    const eachCount=eachSets[1]; //それぞれの町目の配布数のデータ
 
-                    // 入っていないものはデータにpushしない
+                    // そのメイン案件自体が変化していないものはデータにpushしない
                     if(!changedData?.[eachInputValue[0]]?.[eachMainId]){
                         continue;
                     }
 
-                    console.log(changedData?.[eachInputValue[0]]?.[eachMainId]);
-                    console.log((changedData?.[eachInputValue[0]]?.[eachMainId]).includes("main"))
+                    const {main,...subSets}=eachCount;
 
                     // mainProjectNameは取得せずともassignIdで投稿時には紐付け可能
                     // メインはassignedIdで取得、サブはそのassignのplan_idのidをmain_idに持つproject_idで取得。
@@ -117,25 +122,14 @@ export default function useEditReportActions({date,assignWithRecords,inputValues
                         "assignId":eachMainId,
                         // メイン案件が更新されていない場合は投稿しない
                         ...((changedData?.[eachInputValue[0]]?.[eachMainId]).includes("main") ? {"mainCount":eachCount.main ?? 0} : {}),
-
-
-
-                        // そもそもidCountSetsが取れてない！
-
-
-
                         // それぞれのサブ案件が更新されていない場合は投稿しない
                         "subData":
-                            Object.entries(eachCount).map((IdCountSets)=>
-                              (IdCountSets[0] !=="main" && changedData?.[eachInputValue[0]]?.[eachMainId].includes(IdCountSets[0])) ? {"projectId":IdCountSets[0],"subCount":IdCountSets[1]} : null
-                            )
-                            // .filter(obj=>obj!=null) //データなしに変更は0で送信される
+                            Object.entries(subSets).map((IdCountSets)=>
+                              (changedData?.[eachInputValue[0]]?.[eachMainId]).map(n=>Number(n)).includes(Number(IdCountSets[0])) ? {"projectId":IdCountSets[0],"subCount":IdCountSets[1]} : null
+                            ).filter(obj=>obj!=null) //併配が記入されていない場合(メインや他の併配物のみ記入)はnullで除去
                     })
                 }
             })
-            console.log(dataForForm)
-
-        return;
 
             setData({
                 ...data,
@@ -164,5 +158,5 @@ export default function useEditReportActions({date,assignWithRecords,inputValues
         setIsConfirm(false);
     }
 
-    return {onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}
+    return {onIssuedOrReturnedCountsChange,onAssignedInputChange,onStartOverClick,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}
 }

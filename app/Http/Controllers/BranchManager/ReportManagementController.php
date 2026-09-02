@@ -7,6 +7,7 @@ use App\Actions\BranchManager\Report\GetOverviewByDay;
 use App\Constants\Date;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BranchManager\ChoiceFromStaffRequest;
+use App\Http\Requests\BranchManager\CompleteEditReportRequest;
 use App\Http\Requests\BranchManager\ReportChoiceDecideRequest;
 use App\Models\BranchManagerList;
 use App\Support\Common\ModelHelpers\DistributionRecordHelpers;
@@ -113,7 +114,7 @@ class ReportManagementController extends Controller
 
 
     // 報告書の代替記入(最終決定)
-    public function complete_report_post(Request $request)
+    public function complete_report_post(CompleteEditReportRequest $request)
     {
         //
     }

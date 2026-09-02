@@ -20,10 +20,6 @@ export default function confirmMainOrSubOnlyInput({assignDataToStaff,selectedDat
            ).filter(([eachTownId,eachData])=>(typeof(eachData)=="object" && Object.keys(eachData).length>0))
         ):inputByMainProjectName
 
-        console.log(inputByMainProjectName)
-        console.log(filteredInputByMainProjectName)
-
-
         //案件ごとの入力された値
         Object.entries(filteredInputByMainProjectName).forEach(function([townId,eachInputDataByTown]){
 

@@ -15,7 +15,7 @@ export default function EditReport({what,type,prefix,staff,dateSet,assignWithRec
     // assignWithRecordsキーのプロジェクト名はsameProjectFlagなども想定済みのもの
     const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,changedData,setChangedData,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia,date}=useEditReportDefinitions({staff,dateSet,assignWithRecords});
 
-    const {onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}=useEditReportActions({date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,isBigMedia,setIsBigMedia});
+    const {onIssuedOrReturnedCountsChange,onAssignedInputChange,onStartOverClick,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}=useEditReportActions({date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,isBigMedia,setIsBigMedia});
 
     //テーブルのUIや変数などに必要な要素の取得(依存配列が変化しなければ再計算されない)
     const [tableSets,differenceExists]=useWriteOrEditReportViewData({assignDataToStaff:assignWithRecords,selectedDate:date,inputValues,issuedCount,returnedCount,isBigMedia});
@@ -28,10 +28,11 @@ export default function EditReport({what,type,prefix,staff,dateSet,assignWithRec
 
         {/* 確認か入力か */}
         {!isConfirm ?
-        <ReportDataInput {...{what,type,pageMinWidth,pageMaxWidth,staff,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,
-        dateSet,assignDataToStaff:assignWithRecords,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,differenceExists,errors,processing,isConfirm,changedData,fromSimpleFlag:false,selectedDate:date,onSelectedDateChange:()=>{},onStartOverClick:()=>{}}} />
+        <ReportDataInput {...{what,type,pageMinWidth,pageMaxWidth,staff:"No"+staff,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,
+        dateSet,assignDataToStaff:assignWithRecords,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,differenceExists,errors,processing,isConfirm,changedData,fromSimpleFlag:true,selectedDate:date,onSelectedDateChange:()=>{},onStartOverClick}} />
         :
-        <ReportConfirm {...{what,type,pageMaxWidth,pageMinWidth,data,assignWithRecords,issuedCount,returnedCount,inputRefs,inputValues,onAssignedInputChange,onConfirmOkClick,onConfirmCancelClick,tableSets,errors,processing,isConfirm,fromSimpleFlag}}/>
+        <ReportConfirm {...{what,type,pageMaxWidth,pageMinWidth,data,assignWithRecords,issuedCount,returnedCount,inputRefs,inputValues,onAssignedInputChange,onConfirmOkClick,onConfirmCancelClick,tableSets,errors,processing,isConfirm,fromSimpleFlag:true}}/>
+        //簡易表示型でなければ提出時に項目確認が増えるが、編集では様々なパターンに対応すべきなのでそれで良い
         }
     {/* リンク */}
       <div className="mt-1">
