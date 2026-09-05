@@ -37,7 +37,7 @@ class FieldStaffListHelpers{
     }
 
 
-    // 特定営業所のスタッフの「スタッフ名→ないときはid」をidをキーにして返す
+    // 特定営業所のスタッフの「スタッフ名→ないときはid」で返す
     public static function get_all_names_of_staffs_in_the_place($place_id){
         return FieldStaffList::select("id",DB::raw("COALESCE(staff_name,user_name) as staff_name"))->where("place_id",$place_id)->get();
     }

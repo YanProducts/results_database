@@ -9,7 +9,7 @@ class Date{
     public const ProjectOverviewStartDateOffsetMonth=1;
 
     // スタッフに割り当てを行うページで今日の何日後までの割り当てをできるようにするか
-    public const StartOffsetIpnStaffAssignMent=0;
+    public const StartOffsetInStaffAssignMent=0;
     public const EndOffsetInStaffAssignMent=7;
 
     // スタッフが投稿する報告書は何日前から何日後のものにするか
@@ -17,7 +17,7 @@ class Date{
     public const EndOffsetInReportPeriod=5;
 
     // スタッフが確認する報告書は何日前から何日後のものにするか
-    public const StartOffsetInConfirmReportPeriod=-21;
+    public const StartOffsetInConfirmReportPeriod=-30;
     public const EndOffsetInConfirmReportPeriod=2;
 
     // 営業所長が確認する報告書は何日前から何日後のものにするか(もっと前からも選ぶことは可能にする)

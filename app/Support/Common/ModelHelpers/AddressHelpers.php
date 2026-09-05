@@ -49,8 +49,6 @@ class AddressHelpers{
         return Address::where(["city"=>$city,"town"=>$town])->exists();
     }
 
-
-
     // 中小路 中小路3パターンの「空白を含む町」の時、どちらかもしくは両方がSQLに存在するか？
     public static function get_address_when_town_with_space($city,$town,$need_id=false){
         // 全角スペースを半角スペースに統一

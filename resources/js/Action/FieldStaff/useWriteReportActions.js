@@ -3,7 +3,7 @@ import { route } from "ziggy-js";
 import applyOtherProjectToSameValueClick from "../Share/applyOtherProjectToSameValueClick";
 import confirmMainOrSubOnlyInput from "./Part/confirmMainOrSubOnlyInput";
 
-export default function useWriteReportActions({assignDataToStaff,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,isBigMedia,setIsBigMedia}){
+export default function useWriteReportActions({assignDataToStaff,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,isBigMedia,setIsBigMedia,clearErrors}){
 
 
     // 日付が変更されたらpost用のデータにセット(他のデータは自動的に初期化)
@@ -137,6 +137,8 @@ export default function useWriteReportActions({assignDataToStaff,inputValues,set
                 "reportData":dataForForm
             });
             setIsConfirm(true);
+            clearErrors();
+
     }
 
     // 日付選択からやり直す時

@@ -16,7 +16,6 @@ export default function ReportConfirm({what,type,pageMaxWidth,pageMinWidth,data,
         {data &&
         <SubmitOrBackButtons minWidth={pageMinWidth} maxWidth={pageMaxWidth} processing={processing} errors={errors} onSubmitBtnClick={onConfirmOkClick} onCancelBtnClick={onConfirmCancelClick}/>
         }
-
         <p>　</p>
 
         </>

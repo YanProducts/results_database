@@ -13,7 +13,7 @@ use App\Support\Common\ModelHelpers\ProjectHelpers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class GetOverviewByDay{
+class GetOverviewByDayInStaffToDate{
 
     // 複数スタッフ/日程の範囲に割り当てられた全データの概要
     //スタッフid=>[スタッフ名とデータ=>日付=>dateInViewとdata=>[all_main_project_names,]で返す

@@ -74,5 +74,14 @@ class DistributionPlanHelpers{
          return DistributionPlan::select("id as plan_id","main_id","address_id","project_id")->WhereIn("main_id",$main_plan_ids)->get()->groupBy("main_id");
     }
 
+    //該当営業所の該当期間に計画されている案件の住所idを日毎に返す($date_setsはY-m-dの配列)
+    public static function get_address_ids_in_place_and_date_sets($place_id,$date_sets){
+
+        $latest_date=max($date_sets);
+        $earliest_date=min($date_sets);
+
+        return DistributionPlan::select("start_date","end_date","address_id")->where("start_date","<=",$latest_date)->where("end_date",">=",$earliest_date)->where("place_id",$place_id);
+    }
+
 
 }

@@ -4,6 +4,7 @@ namespace App\Support\Common\ModelHelpers;
 use App\Models\DistributionRecord;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DistributionRecordHelpers{
 
@@ -43,12 +44,14 @@ class DistributionRecordHelpers{
     // そのスタッフの、該当期間におけるデータを返す(操作しやすいように期日ごとにgroupByは行わない)
     // date_setsはY-m-d=>日本語の配列なので、array_keysが必要
     public static function data_in_the_range_and_staff($date_sets,$staff){
+
         return DistributionRecord::where("staff_id",$staff)->whereIn("distribution_date",array_keys($date_sets))->get();
     }
 
     // 何人かのスタッフにおける、該当期間におけるデータを返す(操作しやすいように期日ごとにgroupByは行わない)
     // date_setsはY-m-d=>日本語の配列なので、array_keysが必要
     public static function data_in_the_range_and_staffs($date_sets,$staff_ids){
+
         return DistributionRecord::whereIn("staff_id",$staff_ids)->whereIn("distribution_date",array_keys($date_sets))->get();
     }
 

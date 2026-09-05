@@ -86,22 +86,16 @@ Route::prefix("branch_manager")
                 // 報告書の確認or代替記入(スタッフから)
                 Route::get("choice_report_target","choice_report_target")
                 ->name("choice_report_target");
-
                  // 報告書の確認or代替記入(人の決定→日付表示画面へ)
                 Route::post("choice_report_target","choice_report_target_post")
                 ->name("choice_report_target_post");
-
-
-                // 報告書の確認or代替記入する日付の決定→確認
+                // 報告書の確認or代替記入する日付の決定→確認(バリデーション返しに備え、１度return redirctで遷移する)
                 Route::post("decide_date_for_report_choice","decide_date_for_report_choice_post")
                 ->name("decide_date_for_report_choice_post");
 
-
-                // 上記投稿時にバリデーションで返った時(あってる！？？？)
-                Route::get("decide_date_for_report_choice","decide_date_for_report_choice_post")
-                ->name("decide_date_for_report_choice");
-
-
+                // 報告書編集本番画面
+                Route::get("edit_report_view","edit_report_view")
+                ->name("edit_report_view");
 
 
                 // 報告書の確認or代替記入(日付から)
@@ -121,7 +115,7 @@ Route::prefix("branch_manager")
 
                 // 報告書の代替記入(上記でバリデーションが変更したとき)
                 Route::get("complete_report","complete_report")
-                ->name("complete_report_post");
+                ->name("complete_report_back");
 
             });
 

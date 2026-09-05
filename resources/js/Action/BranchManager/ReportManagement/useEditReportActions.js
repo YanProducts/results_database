@@ -5,7 +5,7 @@ import confirmMainOrSubOnlyInput from "../../FieldStaff/Part/confirmMainOrSubOnl
 import { router } from "@inertiajs/react";
 
 // 報告書編集の動き
-export default function useEditReportActions({date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIsConfirm,data,setData,post,setIsBigMedia}){
+export default function useEditReportActions({date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIsConfirm,data,setData,post,setIsBigMedia,clearErrors}){
 
 
     // 大きなデバイスかどうか
@@ -136,15 +136,15 @@ export default function useEditReportActions({date,assignWithRecords,inputValues
                 "reportData":dataForForm
             });
             setIsConfirm(true);
+            clearErrors();
     }
 
 
     // 確認OKの時
     const onConfirmOkClick=()=>{
         // バリデーション対策にinputデータを初期化はしないでおく
-
         // ポスト(代替記入、編集とも同じ)
-        post(route("branch_manager.complete_report"));
+        post(route("branch_manager.complete_report_post"));
 
         // バリデーション失敗した時に備えてconfirmはチェンジ
         setIsConfirm(false)

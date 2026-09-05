@@ -15,7 +15,7 @@ export default function EditReport({what,type,prefix,staff,dateSet,assignWithRec
     // assignWithRecordsキーのプロジェクト名はsameProjectFlagなども想定済みのもの
     const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,changedData,setChangedData,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia,date}=useEditReportDefinitions({staff,dateSet,assignWithRecords});
 
-    const {onIssuedOrReturnedCountsChange,onAssignedInputChange,onStartOverClick,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}=useEditReportActions({date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,isBigMedia,setIsBigMedia});
+    const {onIssuedOrReturnedCountsChange,onAssignedInputChange,onStartOverClick,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}=useEditReportActions({date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIssuedCount,setReturnedCount,setIsConfirm,data,setData,post,isBigMedia,setIsBigMedia,clearErrors});
 
     //テーブルのUIや変数などに必要な要素の取得(依存配列が変化しなければ再計算されない)
     const [tableSets,differenceExists]=useWriteOrEditReportViewData({assignDataToStaff:assignWithRecords,selectedDate:date,inputValues,issuedCount,returnedCount,isBigMedia});

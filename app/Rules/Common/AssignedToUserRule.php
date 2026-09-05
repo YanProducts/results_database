@@ -1,15 +1,19 @@
 <?php
 
-namespace App\Rules\FieldStaff;
+namespace App\Rules\Common;
 
 use App\Models\DistributionAssignment;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Auth;
 
-class AssignedToAuthUserRule implements ValidationRule
+class AssignedToUserRule implements ValidationRule
 {
     // 報告書のassignIdはユーザーに割り当てられているか
+    public function __construct(public int $staff_id)
+    {
+    }
+
     /**
      * Run the validation rule.
      *
@@ -17,8 +21,7 @@ class AssignedToAuthUserRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-
-        if(DistributionAssignment::where("id",$value)->value("staff_id")!==Auth::user()->authable_id){
+        if(DistributionAssignment::where("id",$value)->value("staff_id")!==$this->staff_id){
             $fail("担当外の町目が含まれます");
         }
     }

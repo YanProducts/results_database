@@ -39,7 +39,7 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,retur
                 }
 
                 {/* 合計(町目ごと＆そのずれ) */}
-                <TrForSum {...{mainProjectName,projectSets,isConfirm,sumSets:eachTableSets.sumSets}} />
+                <TrForSum {...{mainProjectName,projectSets,isConfirm,sumSets:eachTableSets.sumSets,changedData}} />
 
                 </BaseTable>
     </React.Fragment>

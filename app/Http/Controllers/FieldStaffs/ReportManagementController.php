@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers\FieldStaffs;
 
-use App\Actions\BranchManager\Report\GetOverviewByDay;
+use App\Actions\BranchManager\Report\GetOverviewByDayInStaffToDate;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Constants\Date;
-use App\Exceptions\BusinessException;
-use App\Models\BranchManagerList;
 use App\Models\FieldStaffList;
-use App\Support\Auth\UserRoleResolver;
-use App\Support\Common\ModelHelpers\BranchManagerListHelpers;
 use App\Utils\DateHelper;
 use App\Utils\Session;
 use Carbon\Carbon;
@@ -34,12 +30,10 @@ class ReportManagementController extends Controller
         DateHelper::get_date_key_value_sets_for_view(Carbon::now()->format("Y-m-d"),Date::StartOffsetInConfirmReportPeriod,Date::EndOffsetInConfirmReportPeriod)
         :[]; //後で設定
 
-
         // そのスタッフに割り当てられた全データの概要(dateで設定された範囲内)
         // 日付→[配布済の有無・メイン案件名セット・主な市町村セット]
         // この部分はBranchManagerよりもらってくる。roleによって取得するデータの変化
-        $all_data=GetOverviewByDay::get_overview_data($auth->authable_id,$date_sets);
-
+        $all_data=GetOverviewByDayInStaffToDate::get_overview_data($auth->authable_id,$date_sets);
 
         // モデルクラスの取得
         return Inertia::render("FieldStaff/ReportManagement/ReportOverview",[

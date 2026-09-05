@@ -2,9 +2,12 @@
 
 namespace App\Http\Requests\BranchManager;
 
+use App\Rules\Common\StaffIsExistsRule;
+use App\Rules\Common\AssignExistsRule;
+use App\Rules\Common\AssignedToUserRule;
 use App\Support\Common\ValidationHelpers\ReportValidationRules;
 use Illuminate\Foundation\Http\FormRequest;
-use Override;
+use Illuminate\Support\Facades\Log;
 
 // 報告書完成した際におけるバリデーション
 class CompleteEditReportRequest extends FormRequest
@@ -25,19 +28,18 @@ class CompleteEditReportRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
-            "date"=>["requred","date",],
-            // 4などidの形式
-            "staff"=>[],
-            ...ReportValidationRules::rules()
 
+        return [
+            // 4などidの形式
+            "staff"=>["required","integer",new StaffIsExistsRule],
+            // 「営業所担当、編集」の条件で共通関数で検証
+            ...ReportValidationRules::rules($this->input("staff"),true)
         ];
     }
 
     public function messages()
     {
         return [
-
             ...ReportValidationRules::messages()
         ];
     }

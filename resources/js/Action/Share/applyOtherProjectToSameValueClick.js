@@ -14,11 +14,14 @@ export default function applyOtherProjectToSameValueClick({mainProjectName,proje
             newChangedData= structuredClone(changedData[mainProjectName])
         }
 
+        console.log(isEdit)
+        console.log(inputMainProjectCopy)
+        console.log(mainProjectName)
+        console.log(changedData) //まだない
+
         // それぞれのmainProjectにおけるキーの取得(これはassignId、つまり割り当て後の案件のキー:mainのみ)
         const mainKeys=Object.keys(inputMainProjectCopy);
         mainKeys.forEach(function(mainKey){
-
-
             // その市における情報セット（すでにない場合のみ初期化）
             const inputDataInTheTown=inputMainProjectCopy?.[mainKey] ?? {} ;
             // 変化したかの探知(すでにない場合のみ初期化)
@@ -59,7 +62,8 @@ export default function applyOtherProjectToSameValueClick({mainProjectName,proje
                     }else{
                         // 併配→メインを設定
                         // 現在操作中の併配案件名をID案件名で取得しているのがprojectId
-                        inputMainProjectCopy[mainKey].main=inputMainProjectCopy[mainKey]?.[projectId.substring(2)] ?? 0
+                        // 該当の併配案件があるものはその案件の数を記入、ないものは今の値のまま。前もって何もセットされていなければ０
+                        inputMainProjectCopy[mainKey].main=inputMainProjectCopy[mainKey]?.[projectId.substring(2)] ?? (inputMainProjectCopy[mainKey].main ?? 0)
                         // changeのフラグを変化させる
                         // かなり冗長になるため一括でやるべき！！！！
                         if(isEdit){
