@@ -74,4 +74,10 @@ class DistributionRecordHelpers{
         }
     }
 
+    // 何人かのスタッフにおける、該当日(1日)におけるデータの、スタッフidとaddressidをスタッフidでgroupByして返す
+     public static function get_recorded_staffs_in_the_date_and_staffs($date,$staff_ids){
+
+        return DistributionRecord::select("staff_id")->whereIn("staff_id",$staff_ids)->where("distribution_date",$date)->pluck("staff_id");
+    }
+
 }

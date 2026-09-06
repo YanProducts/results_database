@@ -3,9 +3,9 @@ import { RoleLayout } from "../../../../Layout/RoleLayout";
 import BasePageHeader from "../../../../Components/Common/BasePageHeader";
 import BaseLinkLine from "../../../../Components/Common/BaseLinkLine";
 import useDecideDateDefinitions from "../../../../Definition/BranchManager/ReportManagement/StaffToDate/useDecideDateDefinitions";
-import useDecideDateActions from "../../../../Action/BranchManager/ReportManagement/StaffToDate/useDecideDateActions";
 import OverviewTable from "../../../../Components/Part/FieldStaff/OverviewTable";
 import ViewValidationErrors from "../../../../Components/Common/ViewValidationErrors";
+import useDecideDateActions from "../../../../Action/BranchManager/ReportManagement/StaffToDate/useDecideDateActions";
 
 // 複数日の報告書の一覧
 export default function ReportOverview({prefix,what,type,userName,allData}){

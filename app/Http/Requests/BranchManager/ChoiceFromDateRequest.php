@@ -3,12 +3,12 @@
 namespace App\Http\Requests\BranchManager;
 
 use App\Rules\Common\ReportDateRule;
-use App\Rules\Common\StaffIsExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-// 編集する報告書の決定
-class ReportChoiceDecideRequest extends FormRequest
+class ChoiceFromDateRequest extends FormRequest
 {
+    // 報告書の編集を日付側から行うバリデーション
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -25,17 +25,13 @@ class ReportChoiceDecideRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "date"=>["required","date_format:Y-m-d",new ReportDateRule(true)],
-            "staffId"=>["required","integer",new StaffIsExistsRule]
+         "date"=>["required","date_format:Y-m-d",new ReportDateRule(true)],
         ];
     }
-    public function messages(): array
-    {
-        return [
+    public function messages(){
+        return[
             "date.required"=>"日付が取得できません",
             "date.date_format"=>"日付の形式の異常です",
-            "staffId.required"=>"スタッフ取得時のエラーです",
-            "staffId.integer"=>"スタッフの形式の異常です",
         ];
     }
 }

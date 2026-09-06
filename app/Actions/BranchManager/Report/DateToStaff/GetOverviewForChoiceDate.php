@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Actions\BranchManager\Report;
+namespace App\Actions\BranchManager\Report\DateToStaff;
 
 use App\Constants\Date;
-use App\Models\BranchManagerList;
 use App\Support\Common\ModelHelpers\AddressHelpers;
 use App\Support\Common\ModelHelpers\BranchManagerListHelpers;
 use App\Support\Common\ModelHelpers\DistributionAssignmentHelpers;
@@ -11,11 +10,10 @@ use App\Support\Common\ModelHelpers\DistributionPlanHelpers;
 use App\Support\Common\ModelHelpers\DistributionRecordHelpers;
 use App\Support\Common\ModelHelpers\FieldStaffListHelpers;
 use App\Utils\DateHelper;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-// 日付からスタッフを選ぶ場合のリスト
-class GetOverviewByDayInDateToStaff{
+// 日付からスタッフを選ぶ場合の第一段階の日付選びのリスト
+class GetOverviewForChoiceDate{
 
     // 該当日におけるスタッフの報告データや予定データが存在するか
     public static function get_staff_status_and_city_names_in_each_day(){
@@ -33,7 +31,7 @@ class GetOverviewByDayInDateToStaff{
 
     public static function get_sql_data($date_sets){
 
-        // 全スタッフ(id=>スタッフ名)
+        // 営業所の全スタッフ(id=>スタッフ名)
         $all_staff_lists=FieldStaffListHelpers::get_all_names_of_staffs_in_the_place($place_id=BranchManagerListHelpers::get_login_user_place_id());
 
         // 上記のスタッフ、時期における結果
@@ -70,5 +68,7 @@ class GetOverviewByDayInDateToStaff{
             "city_names"=>($date_addrss_sets->where("start_date","<=",$each_date)->where("end_date",">=",$each_date)->pluck("address_id"))->map(fn($each_address_id_in_the_day)=>$city_names_key_by_id[$each_address_id_in_the_day])->unique()->values(),
         ]]));
     }
+
+
 
 }

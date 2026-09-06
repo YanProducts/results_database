@@ -7,6 +7,7 @@ import useChoiceFromDateActions from "../../../../Action/BranchManager/ReportMan
 import useChoiceFromDateDefinitions from "../../../../Definition/BranchManager/ReportManagement/DateToStaff/useChoiceFromDateDefinitions";
 import BaseTable from "../../../../Components/Common/BaseTable";
 import BaseLinkLine from "../../../../Components/Common/BaseLinkLine";
+import { formatDateForView } from "../../../../Support/Common/formatDateForView";
 
 export default function ChoiceFromDate({what,type,prefix,dateStaffCalendar}){
 
@@ -22,11 +23,11 @@ export default function ChoiceFromDate({what,type,prefix,dateStaffCalendar}){
                 <ViewValidationErrors errors={errors} />
 
                 {/* dateStaffCalendarには日付=>[cityLists=>その時に行った市の名前(検索しやすいように市で取得)、complete=>[id=>名前],only_plan=>[id=>名前],only_report[id=>名前]]で取得 */}
-                <BaseTable {...{tableTheme:"日毎の報告書提出状況",allData:dateStaffCalendar,minWidth:pageMinWidth,maxWidth:pageMaxWidth,thSets:{"date":"日付","complete":"記入済","onlyAssign":"未記入","cityLists":"エリア(市)"},thWidthSets:["w-[25%]","w-[25%]","w-[25%]","2-25%"]}}>
+                <BaseTable {...{tableTheme:"日毎の報告書提出状況",minWidth:pageMinWidth,maxWidth:pageMaxWidth,thSets:{"date":"日付","complete":"記入済","onlyAssign":"未記入","cityLists":"エリア(市)"},thWidthSets:["w-[25%]","w-[25%]","w-[25%]","w-[25%]"]}}>
                     {Object.entries(dateStaffCalendar).map(([date,eachData],index)=>
-                        <tr key={index} value={date} onClick={onDateClick} className="cursor-pointer hover:bg-amber-200" >
+                        <tr key={index} onClick={()=>onDateClick(date)} className="cursor-pointer hover:bg-amber-200" >
                             {/* Y-m-dに表示側で直す */}
-                            <td className="border-black border-2">{date}</td>
+                            <td className="border-black border-2">{formatDateForView(date)}</td>
                             <td className="border-black border-2">{eachData.recorded.join("、")}</td>
                             <td className="border-black border-2">{eachData.only_assigned.join("、")}</td>
                             <td className="border-black border-2">{eachData.city_names.join("、")}</td>

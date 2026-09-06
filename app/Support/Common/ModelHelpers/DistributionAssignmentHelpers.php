@@ -14,6 +14,16 @@ class DistributionAssignmentHelpers{
 
 
 
+    // その日の複数スタッフに割り当てられている案件を[スタッフid=>planidセット]で変換
+    public static function get_staff_and_plan_ids_in_the_date($date,$staff_ids){
+
+        return (DistributionAssignment::select("staff_id","plan_id")->whereIn("staff_id",$staff_ids)
+        ->where(function($outer_query)use($date){
+        $outer_query->where(function($query)use($date){$query->where("date","<=",$date)->where("end_date",">=",$date);})
+        ->orWhere(function($query)use($date){$query->where("date",$date)->whereNull("end_date");});
+        })
+        ->get()->groupBy("staff_id"))->mapWithKeys(fn($each_data,$staff_id)=>[$staff_id=>$each_data->pluck("plan_id")]);
+    }
 
     // 複数の該当スタッフにおけるassignはされたがsubmitされていないデータ(提出された日はすでに取得済み) date_setsを指定すると「指定された期間」のものになる。
     public static function get_not_submitted_data_from_plural_staff_ids($staff_ids,$submitted_data_in_the_staffs_and_dates,$date_sets=null){

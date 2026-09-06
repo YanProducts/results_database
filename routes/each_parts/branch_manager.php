@@ -89,9 +89,10 @@ Route::prefix("branch_manager")
                  // 報告書の確認or代替記入(人の決定→日付表示画面へ)
                 Route::post("choice_report_target","choice_report_target_post")
                 ->name("choice_report_target_post");
+
                 // 報告書の確認or代替記入する日付の決定→確認(バリデーション返しに備え、１度return redirctで遷移する)
-                Route::post("decide_date_for_report_choice","decide_date_for_report_choice_post")
-                ->name("decide_date_for_report_choice_post");
+                Route::post("decide_all_for_report_choice","decide_all_for_report_choice_post")
+                ->name("decide_all_for_report_choice_post");
 
                 // 報告書編集本番画面
                 Route::get("edit_report_view","edit_report_view")
@@ -104,9 +105,9 @@ Route::prefix("branch_manager")
                 // 報告書の確認or代替記入(日付決定の投稿)
                 Route::post("choice_report_date_target","choice_report_date_target_post")
                 ->name("choice_report_date_target_post");
+
                 // 報告書の確認or代替記入(日付決定後、スタッフの選択の決定)
-                Route::post("decide_staff_for_report_choice","decide_staff_for_report_choice_post")
-                ->name("decide_date_for_report_choice_post");
+                // これはスタッフからのものと同じ
 
 
                 // 報告書の代替記入(最終決定)

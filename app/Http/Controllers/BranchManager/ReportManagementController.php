@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\BranchManager;
 
-use App\Actions\BranchManager\Report\GetOverviewByDayInDateToStaff;
+use App\Actions\BranchManager\Report\DateToStaff\GetOverviewForChoiceDate;
+use App\Actions\BranchManager\Report\DateToStaff\GetOverviewForChoiceStaff;
 use App\Actions\Shared\GetDataInStaffAndDate;
 use App\Actions\BranchManager\Report\GetOverviewByDayInStaffToDate;
 use App\Actions\BranchManager\Report\StoreEditedReports;
 use App\Constants\Date;
 use App\Exceptions\BusinessException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BranchManager\ChoiceFromDateRequest;
 use App\Http\Requests\BranchManager\ChoiceFromStaffRequest;
 use App\Http\Requests\BranchManager\CompleteEditReportRequest;
 use App\Http\Requests\BranchManager\ReportChoiceDecideRequest;
@@ -72,7 +74,7 @@ class ReportManagementController extends Controller
     }
 
     // 報告書確認において、スタッフの決定後、日付が決定したとき
-    public function decide_date_for_report_choice_post(ReportChoiceDecideRequest $request){
+    public function decide_all_for_report_choice_post(ReportChoiceDecideRequest $request){
         // パラメータの取得
         [$date,$staff]=[$request->date,$request->staffId];
 
@@ -108,9 +110,7 @@ class ReportManagementController extends Controller
             Session::delete_sessions(["staff_for_edit_report","date_for_edit_report"]);
 
             // 日付=>[cityLists=>その時に行った市の名前(検索しやすいように市で取得)、complete=>[id=>名前],only_plan=>[id=>名前],only_report[id=>名前]]で取得
-            $date_staff_calendar=GetOverviewByDayInDateToStaff::get_staff_status_and_city_names_in_each_day();
-
-            Log::info($date_staff_calendar->toArray());
+            $date_staff_calendar=GetOverviewForChoiceDate::get_staff_status_and_city_names_in_each_day();
 
             return Inertia::render("BranchManager/ReportManagement/DateToStaff/ChoiceFromDate",[
             "what"=>"営業所担当",
@@ -121,13 +121,19 @@ class ReportManagementController extends Controller
 
 
     // 報告書の確認or代替記入(日付決定の投稿)
-    public function choice_report_date_target_post(Request $request)
+    public function choice_report_date_target_post(ChoiceFromDateRequest $request)
     {
-        dd(1);
-        
-        // スタッフリストの選択
+        $date=$request->date;
 
-        return Inertia::render("");
+        // その日付に来ているスタッフを[id,staff_name,status=報告書提出状況、towns=スタッフが行く町目いくつか、projects=スタッフに割り当てられたメイン案件]で選択
+        $staffs_informations_in_the_date=GetOverviewForChoiceStaff::get_staffs_information_in_the_day($date);
+
+        return Inertia::render("BranchManager/ReportManagement/DateToStaff/DecideStaff",[
+            "what"=>"営業所担当",
+            "type"=>"報告書確認",
+            "date"=>$request->date,
+            "staffsInformationsInTheDate"=>$staffs_informations_in_the_date->toArray()
+        ]);
     }
 
 

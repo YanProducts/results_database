@@ -13,10 +13,9 @@ export default function useChoiceFromDateActions({data,setData,post}){
 
 
     // 日付の決定
-    const onDateClick=(e)=>{
-        const target=e.currentTarget;
+    const onDateClick=(date)=>{
         setData({
-            "date":target.value
+            "date":date
         })
     }
 
