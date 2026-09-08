@@ -14,7 +14,7 @@ export default function useDecideStaffActions({date,data,setData,post}){
 
 
     // 日付の決定
-    const onDecideReport=(e)=>{
+    const onDecideReport=(staffId)=>{
         setData({
             date:date,
             staffId:staffId

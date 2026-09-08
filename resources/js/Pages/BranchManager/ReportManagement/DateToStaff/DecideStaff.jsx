@@ -17,6 +17,7 @@ export default function DecideDate({what,type,prefix,date,staffsInformationsInTh
 
     const {onDecideReport}=useDecideStaffActions({date,data,setData,post});
 
+
     return(
         <Layout title={`${what}-${type}`}>
             <RoleLayout prefix={prefix}>
@@ -28,15 +29,18 @@ export default function DecideDate({what,type,prefix,date,staffsInformationsInTh
                  <p>　</p>
                  <BaseTable {...{tableTheme:formatDateForView(date),minWidth:pageMinWidth,maxWidth:pageMaxWidth,thSets:{
                  "staff":"スタッフ","projects":"案件","towns":"エリア","status":"提出状況"},thWidthSets:["w-[25%]","w-[30%]","w-[35%]","w-[10%]"]}}>
-                    {Object.values(staffsInformationsInTheDate).map((eachStaffData,index)=>
-                        <tr key={index} value={eachStaffData.id} onClick={onDecideReport} className="cursor-pointer hover:bg-amber-200" >
+                    {Object.values(staffsInformationsInTheDate).map(function(eachStaffData,index){
+                        const isDataExists=(eachStaffData.projects).length>0;
+                        return(
+                        <tr key={index}  onClick={isDataExists ? ()=>onDecideReport(eachStaffData.staffId) : ()=>{}} className={`${isDataExists && "cursor-pointer hover:bg-amber-200"}`} >
                             <td className="border-black border-2">{eachStaffData.staff_name}</td>
                              {/* 住所と案件の例は最初のみ表示 */}
                              <td className="border-black border-2">{eachStaffData.projects.length>30 ? eachStaffData.projects.substring(0,30) + "..." : eachStaffData.projects}</td>
-                             <td className="border-black border-2">{eachStaffData.towns.length>30 ? eachStaffData.towns.substring(0,30) + "..." : eachStaffData.projects}</td>
+                             <td className="border-black border-2 text-left">{eachStaffData.towns.length>30 ? eachStaffData.towns.substring(0,30) + "..." : eachStaffData.towns}</td>
                              <td className="border-black border-2">{eachStaffData.status}</td>
                         </tr>
-                    )}
+                        )
+                        })}
                  </BaseTable>
                  <p>　</p>
                 </div>

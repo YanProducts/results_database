@@ -48,23 +48,26 @@ class GetOverviewForChoiceStaff{
     // その日付に来ているスタッフのデータを[id,staff_name,status=報告書提出状況、towns=スタッフが行く町目いくつか、projects=スタッフに割り当てられたメイン案件]で並び替え
     public static function get_sorted_data($all_staff_lists,$assigned_data,$main_assigned_plans_data,$address_sets,$project_sets,$recorded_staffs){
 
-    Log::info("assignされたデータ");
-    Log::info($assigned_data);
+    // Log::info("assignされたデータ(スタッフid=>planIds)");
+    // Log::info($assigned_data);
 
-    Log::info("assignされているメイン案件");
-    Log::info($main_assigned_plans_data);
+    // Log::info("assignされているメイン案件(planID=>pルオジェクトと住所のid)");
+    // Log::info($main_assigned_plans_data);
+
 
         // all_staffsはid=>スタッフの名前
        return
-        $all_staff_lists->map(function($staff_data,$staff_id)use($assigned_data,$main_assigned_plans_data,$address_sets,$project_sets,$recorded_staffs){
+        $all_staff_lists->map(function($staff_data)use($assigned_data,$main_assigned_plans_data,$address_sets,$project_sets,$recorded_staffs){
+
 
             // それぞれのスタッフに割り当てられたデータのプランidの取得
-            $plan_ids_in_the_date_and_staff=$assigned_data[$staff_id] ?? collect();
+            $plan_ids_in_the_date_and_staff=$assigned_data[$staff_id=$staff_data->id] ?? collect();
 
             // 上記プランidを元に、住所と案件の配列の取得
             $address_name_lists=[];
             $project_name_lists=[];
             foreach($plan_ids_in_the_date_and_staff as $plan_id){
+
                 // 重複していないものを格納(4併配など、町目も重複する可能性自体は存在)
                 !in_array($address_name=$address_sets[$main_assigned_plans_data[$plan_id]->address_id],$address_name_lists) && $address_name_lists[]=$address_name;
 
@@ -74,11 +77,11 @@ class GetOverviewForChoiceStaff{
 
         return
             [
-            "id"=>$staff_id,
+            "staffId"=>$staff_id,
             "staff_name"=>$staff_data["staff_name"],
             "projects"=>implode("、",$project_name_lists), //割り当てられた案件
             "towns"=>implode("、",$address_name_lists), //割り当てられた町名
-            "status"=>$recorded_staffs->contains($project_sets) ? "済" : "未", //報告書提出状況
+            "status"=>$recorded_staffs->contains($staff_data["id"]) ? "済" : "未", //報告書提出状況
             ];
         });
 
