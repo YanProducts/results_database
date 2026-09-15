@@ -11,9 +11,9 @@ export default function TableByProjectsForConfirm({selectedDate,pageMaxWidth,pag
                     Object.entries(valueInRoundNumber).map(([mapNumber,staffsHavingMapNumber],mapNumberIndex)=>
                         // 案件ごとに列を並べる
                         <tr className="border-2 border-black" key={`${projectNameIndex}_${roundNumberIndex}_${mapNumberIndex}`}>
-                            <td className="border border-black border-2">{simpleGetProjectNameForView({valueInProjectName,projectName,roundNumberIndex})}</td>
-                            <td className="border border-black border-2">{mapNumber}</td>
-                            <td className="border border-black">{staffsHavingMapNumber.join("、")}</td>
+                            <td className=" border-black border">{simpleGetProjectNameForView({valueInProjectName,projectName,roundNumberIndex})}</td>
+                            <td className="border-black border">{mapNumber}</td>
+                            <td className="border2 border-black">{staffsHavingMapNumber.join("、")}</td>
                         </tr>
                     )))
               }

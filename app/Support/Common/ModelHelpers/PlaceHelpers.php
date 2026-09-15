@@ -13,4 +13,9 @@ class PlaceHelpers{
     public static function get_id_from_place_name($place_name){
         return PlaceModel::where("place_name",$place_name)->value("id") ??  throw new \Error("営業所のidが取得できません");
     }
+
+    // 営業所名のidのコレクションから、それに応じたplaceの名前を返す
+    public static function get_place_name_from_ids($place_ids){
+        return PlaceModel::whereIn("id",$place_ids)->pluck("place_name","id");
+    }
 }

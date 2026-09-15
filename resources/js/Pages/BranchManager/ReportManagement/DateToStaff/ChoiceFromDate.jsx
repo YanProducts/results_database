@@ -25,7 +25,6 @@ export default function ChoiceFromDate({what,type,prefix,dateStaffCalendar}){
                 {/* dateStaffCalendarには日付=>[cityLists=>その時に行った市の名前(検索しやすいように市で取得)、complete=>[id=>名前],only_plan=>[id=>名前],only_report[id=>名前]]で取得 */}
                 <BaseTable {...{tableTheme:"日毎の報告書提出状況",minWidth:pageMinWidth,maxWidth:pageMaxWidth,thSets:{"date":"日付","complete":"記入済","onlyAssign":"未記入","cityLists":"エリア(市)"},thWidthSets:["w-[25%]","w-[25%]","w-[25%]","w-[25%]"]}}>
                     {Object.entries(dateStaffCalendar).map(function([date,eachData],index){
-                        console.log(eachData.city_names)
                         const isDataExists=((eachData.recorded).length>0 || (eachData.only_assigned).length>0);
                         return(
                             <tr key={index} onClick={isDataExists ? ()=>onDateClick(date) : ()=>{}} className={`${isDataExists && "cursor-pointer hover:bg-amber-200"}`} >

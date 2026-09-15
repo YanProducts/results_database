@@ -7,6 +7,7 @@ namespace App\Support\Common\ModelHelpers;
 use App\Exceptions\BusinessException;
 use App\Models\DistributionPlan;
 use App\Support\Common\ModelHelpers\AddressHelpers;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 //
@@ -81,6 +82,11 @@ class DistributionPlanHelpers{
         $earliest_date=min($date_sets);
 
         return DistributionPlan::select("start_date","end_date","address_id")->where("start_date","<=",$latest_date)->where("end_date",">=",$earliest_date)->where("place_id",$place_id);
+    }
+
+    // 渡されたprojectのidを持つ、planId、営業所、addressIdを返す
+    public static function get_planned_data_by_the_project_id($project_id){
+        return DistributionPlan::select(DB::raw("id as plan_id"),"place_id","address_id")->where("project_id",$project_id)->get();
     }
 
 

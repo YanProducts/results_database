@@ -15,4 +15,9 @@ class ProjectPlannedCountHelpers{
         // この時点ではgropuByしない。formatは別途行う
         return  ProjectPlannedCount::select("id","start_date","place_id","project_id","round_number","end_date","main_id","counts")->where("start_date",">",$start_date)->get();
     }
+
+    // そのプロジェクトidにおける合計想定部数の算出
+    public static function  get_total_planned_counts_by_the_project($project_id){
+       return ProjectPlannedCount::where("project_id",$project_id)->pluck("counts")->sum();
+    }
 }

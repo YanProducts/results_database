@@ -54,7 +54,7 @@ Route::prefix("clerical")
                         Route::get("write_report/{edit_id}","write_report")
                         ->name("write_report");
                         // 報告書提出(入力担当用)
-                        Route::post("write_report","post_write_report")
+                        Route::post("write_report","write_report_post")
                         ->name("write_report_post");
                   });
                 Route::controller(DataManagementController::class)

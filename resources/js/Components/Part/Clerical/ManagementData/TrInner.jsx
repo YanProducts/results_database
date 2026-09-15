@@ -4,7 +4,7 @@ import { Link } from "@inertiajs/react"
 // 入力担当の案件確認におけるtr要素の中身
 export default function TrInner({projectId,projectData,projectName,index,CSVOutputSets,onExportCheckChange,onCompleteCheckClick,isComplete}){
     return(
-            <tr className="border border-black text-center" key={projectId}>
+            <tr className={`${isComplete[projectName]?.completeFlag ? "bg-gray-400" : "bg-amber-100"} border border-black text-center`} key={projectId}>
                 <td className="border border-black">{projectName}</td>
                 <td className="border border-black">{projectData.end_date}</td>
                 <td className="border border-black">{projectData.planned_town_counts}</td>
