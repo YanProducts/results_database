@@ -26,6 +26,11 @@ class DistributionPlanHelpers{
         return DistributionPlan::whereIn("address_id",$address_ids)->where("project_id",$project_id)->pluck("address_id");
     }
 
+    // planのidの配列から、それに応じたaddressのidを返す
+    public static function get_address_ids_key_by_plan_ids($plan_ids){
+        return DistributionPlan::whereIn("id",$plan_ids)->pluck("address_id","id");
+    }
+
     // プロジェクトと住所のidから、プランのテーブルのidを返す
     public static function get_id_from_project_and_address($project_id,$address_id){
         return
@@ -87,6 +92,11 @@ class DistributionPlanHelpers{
     // 渡されたprojectのidを持つ、planId、営業所、addressIdを返す
     public static function get_planned_data_by_the_project_id($project_id){
         return DistributionPlan::select(DB::raw("id as plan_id"),"place_id","address_id")->where("project_id",$project_id)->get();
+    }
+
+    // そのplanのidは、指定された案件idを持つか
+    public static function check_project_id_by_plan_id($project_id,$plan_id){
+        return DistributionPlan::find($plan_id)->project_id==$project_id;
     }
 
 

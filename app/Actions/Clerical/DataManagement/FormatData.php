@@ -19,7 +19,8 @@ class FormatData{
             // 配布済みのデータ(ない場合はnull)
             $recorded_data=$recorded_counts[$project_id] ?? null;
 
-            $projects_in_sql[$project_id]=[
+            $projects_in_sql[]=[
+                "project_id"=>$project_id,
                 "project_name"=>$project_data["project_name"],
                 "end_date"=>Carbon::parse($project_data["end_date"])->format("n月j日"),
                 // 割り当てで振られた町目数
@@ -32,7 +33,9 @@ class FormatData{
                 "is_complete"=>$project_data["is_complete"]
             ];
         }
-        return $projects_in_sql;
+
+        // 完了フラグでsortしたものを返す
+        return (collect($projects_in_sql)->sortBy("is_complete"))->values()->toArray();
     }
 
     //CSV出力用の改変

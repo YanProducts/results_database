@@ -16,7 +16,7 @@ export default function TrInner({projectId,projectData,projectName,index,CSVOutp
                 {/* 案件完成フラグボタン */}
                 <td className="border border-black"><div className="base_btn_div"><button className="bg-gray-200 border border-black cursor-pointer rounded-sm p-1 my-1" onClick={(e)=>{onCompleteCheckClick(e,projectName,projectId)}}>{isComplete[projectName]?.completeFlag ? "再編集" : "終了"}</button></div></td>
 
-                <td className="border border-black"><Link className="cursor-pointer  text-blue-500 border-blue-500 border-b-2" href={route(`clerical.write_report`,{"edit_id":projectId})}><span>編集</span></Link></td>
+                <td className="border border-black">{!isComplete[projectName]?.completeFlag ? <Link className="cursor-pointer  text-blue-500 border-blue-500 border-b-2" href={route(`clerical.write_report`,{"edit_id":projectId})}><span>編集</span></Link> : "-" }</td>
 
             </tr>
     )

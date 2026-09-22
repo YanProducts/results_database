@@ -48,15 +48,6 @@ Route::prefix("clerical")
         // 入力を行うページへ(認証や違う認証の場合は現場用のログインページへ)
         Route::middleware(["redirectUnAuth","redirectUnMatchedRole:clerical"])
             ->group(function(){
-                Route::controller(WriteReportController::class)
-                 ->group(function(){
-                        // 報告書編集(入力担当用)
-                        Route::get("write_report/{edit_id}","write_report")
-                        ->name("write_report");
-                        // 報告書提出(入力担当用)
-                        Route::post("write_report","write_report_post")
-                        ->name("write_report_post");
-                  });
                 Route::controller(DataManagementController::class)
                  ->group(function(){
                         // 入力担当が現時点で記録されているデータを確認、エクスポートか自分で記録追加かを決める
@@ -79,6 +70,16 @@ Route::prefix("clerical")
                         Route::post("toggle_complete","toggle_complete")
                         ->name("toggle_complete");
                     });
+
+                Route::controller(WriteReportController::class)
+                 ->group(function(){
+                        // 報告書編集(入力担当用)
+                        Route::get("write_report/{edit_id}","write_report")
+                        ->name("write_report");
+                        // 報告書提出(入力担当用)
+                        Route::post("write_report","write_report_post")
+                        ->name("write_report_post");
+                  });
 
                 // 発注書作成系統
                  Route::controller(PurchaseOrderController::class)

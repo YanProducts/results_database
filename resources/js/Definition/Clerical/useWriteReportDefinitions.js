@@ -7,8 +7,8 @@ export default function useWriteReportDefinitions({projectId,reportDataInTheProj
      // フォーム
      const { data, setData, post, processing, errors,clearErrors, reset}=useForm({
         "projectId":projectId,
-        // 編集したplanIdのみ変化して格納される
-        "reportData":[]
+        // 編集したplanIdのみ変化して、元のデータとの差分が格納される
+        "changedDifference":[]
      });
 
 
@@ -22,6 +22,11 @@ export default function useWriteReportDefinitions({projectId,reportDataInTheProj
     //  変化したplanId(表示&最終投稿計算時にここからmap)...色を変える
     const [changedId,setChangedId]=React.useState([]);
 
+    // 注意書きの消去
+    const [firstAttention,setFirstAttention]=React.useState(true);
+
+    // バリデーションを表示させるか
+    const [validationHidden,setValidationHidden]=React.useState(false); //初期は表示させる(hiddenにさせない)
 
      //  確認か否か
      const [isConfirm,setIsConfirm]=React.useState(false);
@@ -29,5 +34,5 @@ export default function useWriteReportDefinitions({projectId,reportDataInTheProj
      // ページの横幅
       const [pageMinWidth,pageMaxWidth]=["min-w-250","max-w-350"];
 
-      return {data, setData, post, processing, errors,clearErrors, reset,dataInReport,setDataInReport,changedId,setChangedId,isConfirm,setIsConfirm,pageMinWidth,pageMaxWidth}
+      return {data, setData, post, processing, errors,clearErrors, reset,dataInReport,setDataInReport,changedId,setChangedId,firstAttention,setFirstAttention,validationHidden,setValidationHidden,isConfirm,setIsConfirm,pageMinWidth,pageMaxWidth}
 }

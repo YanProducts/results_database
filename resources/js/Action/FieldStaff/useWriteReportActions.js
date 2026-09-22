@@ -46,7 +46,7 @@ export default function useWriteReportActions({assignDataToStaff,inputValues,set
     const onIssuedOrReturnedCountsChange=(e,mainProjectName,eachProjectName,setState)=>{
 
         const targetValue=e.target.value;
-        if(targetValue && !Number.isInteger(Number(targetValue))){
+        if (targetValue && !/^\d+$/.test(targetValue)){
             alert("数値以外は入力できません")
             return;
         }
@@ -63,7 +63,7 @@ export default function useWriteReportActions({assignDataToStaff,inputValues,set
     // 入力された部数が変化したとき
     const onAssignedInputChange=({e,assignId,subProjectId=null,mainProjectName,trIndex,indexInMaps,index})=>{
         const target=e.currentTarget.value;
-        if(target && !Number.isInteger(Number(target))){
+        if (target && !/^\d+$/.test(target)){
             alert("数値以外は入力できません")
             return;
         }

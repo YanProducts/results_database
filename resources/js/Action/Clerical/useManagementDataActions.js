@@ -1,4 +1,3 @@
-import { route } from "ziggy-js";
 import React from "react";
 import { createAndDownloadCSV } from "./ManagementData/createAndDownloadCSV";
 import { useIsCompleteCheckClick } from "./ManagementData/useIsCompleteCheckClick";
@@ -8,12 +7,12 @@ export default function useManagementDataActions({post,data,setData,CSVOutputSet
     React.useEffect(()=>{
         // CSVエクスポートするかの初期状態
         // キーに案件名、valueに{id:とisExport:}が入ったオブジェクト
-        const outPutSets=Object.fromEntries(Object.entries(projectsInSql).map((projectKeyValues)=>([projectKeyValues[1].project_name,{"id":projectKeyValues[0],"isExport":false}])))
+        const outPutSets=Object.fromEntries(Object.values(projectsInSql).map((projectValues)=>([projectValues.project_name,{"id":projectValues.project_id,"isExport":false}])))
         setCSVOutputSets(outPutSets)
 
         // 案件の入力が完成しているかのフラグ
         // キーに案件名、valueに{id:とcompleteFlag:}が入ったオブジェクト
-        const completeSets=Object.fromEntries(Object.entries(projectsInSql).map((projectKeyValues)=>[projectKeyValues[1].project_name,{"id":projectKeyValues[0],"completeFlag":projectKeyValues[1].is_complete}]));
+        const completeSets=Object.fromEntries(Object.values(projectsInSql).map((projectValues)=>[projectValues.project_name,{"id":projectValues.project_id,"completeFlag":projectValues.is_complete}]));
         setIsComplete(completeSets);
     },[])
 
@@ -35,7 +34,9 @@ export default function useManagementDataActions({post,data,setData,CSVOutputSet
     }
 
     // 完成フラグのチェンジ(決定ボタンで投稿)
-    const onCompleteCheckClick=(e,projectName,projectId)=>{useIsCompleteCheckClick(e,projectName,projectId,setIsComplete)}
+    const onCompleteCheckClick=(e,projectName,projectId)=>{
+        useIsCompleteCheckClick(e,projectName,projectId,setIsComplete)
+    }
 
 
     // 報告書CSVエクスポートがクリック=データ変換=dataに挿入=>useEffect作動

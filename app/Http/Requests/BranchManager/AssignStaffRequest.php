@@ -6,7 +6,7 @@ namespace App\Http\Requests\BranchManager;
 use App\Rules\BranchManager\AssignDateRule;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\BranchManager\StaffIsWorkingRule;
-use App\Rules\BranchManager\PlanIdIsExistsRule;
+use App\Rules\Common\PlanIdIsExistsRule;
 use App\Rules\BranchManager\PlanValidateForDateRule;
 use App\Rules\Common\StaffIsExistsRule;
 use Illuminate\Support\Facades\Log;

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Clerical;
 
+use App\Actions\Clerical\DataManagement\WriteReport\ChangeDistributionDataByProject;
 use App\Actions\Clerical\DataManagement\WriteReport\GetDistributionDataInTheProjects;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Clerical\WriteReportRequest;
 use App\Support\Common\ModelHelpers\ProjectHelpers;
 use App\Support\Common\ModelHelpers\ProjectPlannedCountHelpers;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 
@@ -18,7 +21,6 @@ class WriteReportController extends Controller
         // planId=>[町目、営業所、[現在部数、スタッフ、日付]]
         $report_data_in_the_project=GetDistributionDataInTheProjects::get_data_for_editting_report_by_the_project($edit_id);
 
-
         // このルートはgetで来ているので、そのままInertia::renderで大丈夫
         return Inertia::render("Clerical/WriteReport",[
                 "type"=>"報告書記入",
@@ -30,7 +32,15 @@ class WriteReportController extends Controller
     }
 
     // 報告書入力ページにpostする
-    public function write_report_port(){
+    public function write_report_post(WriteReportRequest $request){
+
+        // データの登録
+        // 投稿データはprojectIdとchangedDifference(planIdとcountDifference)
+        ChangeDistributionDataByProject::change_data_procedure($request->projectId,$request->changedDifference);
+
+
+        return redirect()->route("view_information")->with(["information_message"=>"送信完了しました","linkRouteName"=>"clerical.management_report"]);
+
 
     }
 }

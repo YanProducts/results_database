@@ -31,7 +31,8 @@ class DataManagementController extends Controller
         // データをUI用に変換
         $projects_in_sql=FormatData::data_change_for_management_page($project_sets,$town_count_sets,$reported_count_sets);
 
-        // 案件の確認(プロジェクトId=>プロジェクト名/締切日/営業所に振られた町目数/記入された町目数/全員の配 布数)
+
+        // 案件の確認(キーはつけない（is_compeleteで並び替えるため） プロジェクトId/プロジェクト名/締切日/営業所に振られた町目数/記入された町目数/全員の配 布数)
         return Inertia::render("Clerical/ManagementData",[
         "prefix"=>"clerical",
         "what"=>"入力担当",

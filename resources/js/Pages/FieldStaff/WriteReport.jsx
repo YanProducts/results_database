@@ -27,7 +27,7 @@ export default function WriteReport({what,type,prefix,staff,dateSets,assignDataT
         {/* 確認か入力か */}
         {!isConfirm ?
         <ReportDataInput {...{what,type,pageMinWidth,pageMaxWidth,staff,selectedDate,onSelectedDateChange,submittedDates,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,
-        dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,fromSimpleFlag,}} />
+        dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,fromSimpleFlag}} />
         :
         <ReportConfirm {...{what,type,pageMaxWidth,pageMinWidth,data,assignDataToStaff,selectedDate,issuedCount,returnedCount,inputRefs,inputValues,onAssignedInputChange,onConfirmOkClick,onConfirmCancelClick,tableSets,errors,processing,isConfirm,fromSimpleFlag}}/>
         }

@@ -7,6 +7,7 @@ use App\Support\Common\ModelHelpers\DistributionPlanHelpers;
 use App\Support\Common\ModelHelpers\DistributionRecordHelpers;
 use App\Support\Common\ModelHelpers\FieldStaffListHelpers;
 use App\Support\Common\ModelHelpers\PlaceHelpers;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 // そのプロジェクトに対する配布データの取得
@@ -44,11 +45,11 @@ class GetDistributionDataInTheProjects{
 
     // データの並び替え
     public static function get_sorted_date($planned_data_sets,$address_household_sets,$place_sets,$recorded_sets,$staff_name_sets){
+
         // plan_id=>町名、営業所名、[スタッフ、日付、配布数]
-        return
-        $planned_data_sets->mapWithKeys(function($each_plan_data)use($place_sets,$address_household_sets,$recorded_sets,$staff_name_sets){
+        $filtered_data=$planned_data_sets->mapWithKeys(function($each_plan_data)use($place_sets,$address_household_sets,$recorded_sets,$staff_name_sets){
             $plan_id=$each_plan_data->plan_id;
-            $records_by_plan_id=$recorded_sets[$plan_id];
+            $records_by_plan_id=$recorded_sets[$plan_id] ?? collect(); //plan_id(つまり、この案件における町目)における現在配布後のデータセット
             $address_set_key_by_id=$address_household_sets[$each_plan_data->address_id];
 
             // records_by_plan_idの中に、配列でスタッフ、日付、部数などが入ってる
@@ -57,10 +58,60 @@ class GetDistributionDataInTheProjects{
                 "house_hold"=>$address_set_key_by_id["household"], //世帯数
                 "place_name"=>$place_sets[$each_plan_data->place_id], //営業所名
                 "total_counts"=>$records_by_plan_id->pluck("distribution_count")->sum(), //現在配布部数
-                "detail_data"=>$records_by_plan_id->map(fn($each_record)=>
-                "スタッフ:".$staff_name_sets[$each_record["staff_id"]]."、日付:".$each_record["distribution_date"]."、部数:".$each_record["distribution_count"]
-                )->implode("\n") //スタッフ・日付・部数のセット(複数人の場合は複数行で文字列として繋げる)
+                "detail_data"=>self:: get_detail_data($records_by_plan_id,$staff_name_sets)
             ]];
         });
+
+
+        // 町目が同じplan_idは異なるものも1つにまとめる（1つの町目を2つの案件で分割して行ったとき）
+        // 表示用なので、plan_idは最も小さいものに合わせる。detail_dataは合わせる
+        // 最終的にこのデータを返す
+        return self::aggregated_by_town($filtered_data);;
+
+
     }
+
+    // その町目における詳細データの取得
+    // 調整データは合計でまとめる
+    public static function get_detail_data($records_by_plan_id,$staff_name_sets){
+
+        // 調整データの分のみ取り出し、合計を求める
+        $unknown_data_sum=($records_by_plan_id->filter(fn($each_record_for_unknown)=>empty($each_record_for_unknown["staff_id"])))->pluck("distribution_count")->sum();
+
+        // スタッフidが存在する時は、それぞれのデータを出す
+        $staff_data_lists=($records_by_plan_id->filter(fn($each_record_for_staff_data)=>!empty($each_record_for_staff_data["staff_id"])))->map(fn($each_record_by_staff)=>
+            "スタッフ：".$staff_name_sets[$each_record_by_staff["staff_id"]]."、日付：".Carbon::parse($each_record_by_staff["distribution_date"])->format("n月j日")."、部数：".$each_record_by_staff["distribution_count"]
+            //スタッフ・日付・部数のセット(複数人の場合は複数行で文字列として繋げる)
+        );
+
+        return (!empty($unknown_data_sum) ? $staff_data_lists->push("入力担当記入部数：".$unknown_data_sum):$staff_data_lists)->implode("\n");
+    }
+
+    // 同じ町目を1つにまとめる(例：大きな町を案件担当が初期の状態で2つ分割して行ったとき)
+    // 表示用なのでplan_idは最後のものだけでOK(編集した入力担当記入部数を、次回編集時に最後に表示させるため)
+    public static function aggregated_by_town($base_filtered_data){
+
+        // 一時的にtown_nameをキーにとった構造に変化(要素の数はtown_nameを元にしたものに変わる)
+        // それをmapWithkeysでplan_idをキーにしたものに変える
+        return $base_filtered_data
+            ->groupBy('town_name',preserveKeys: true)
+            ->mapWithKeys(function ($plan_data_with_the_town, $town_name) {
+
+            // 最後のplan_idをキーに、まとめた値を格納して返す plan_idが重複なしと重なることはありえない(町目が一意のため)
+            $plan_id = $plan_data_with_the_town->keys()->last();
+
+            return [
+                $plan_id => [
+                    'town_name' => $town_name,
+                    'house_hold' => $plan_data_with_the_town->last()['house_hold'],//必ず同じ
+                    'place_name' => $plan_data_with_the_town->pluck('place_name')->unique()->sort()->implode('・'), // 営業所名の文章(同じ営業所は1つにまとめる)
+                    'total_counts' => $plan_data_with_the_town->sum('total_counts'),
+                    'detail_data' => $plan_data_with_the_town->pluck('detail_data')->implode("\n"),//uniqueになることは営業所が違うスタッフ名が偶然いて日付と部数も同じ時に存在だが、可能性が極小なことと、それをまとめても合計が合わなくなるため、そのまま別のケースとして保存,
+                ]
+            ];
+        });
+
+    }
+
+
 }
