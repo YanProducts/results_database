@@ -58,7 +58,7 @@ class Overview{
     public static function get_user_key_name(){
         return[
             "user_name"=>"ユーザー名",
-            "role"=>"職種",
+            // "role"=>"職種", //タイトルで見られるようにする
             "status"=>"本登録",
             "place_name"=>"営業所名",
             "staff_name"=>"スタッフ名"

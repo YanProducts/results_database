@@ -51,6 +51,13 @@ Route::prefix("whole_data")
                     // スタッフ/事務担当/営業所/営業担当/案件担当の登録(決定)
                     Route::post("provision","provision_post")
                     ->name("provision_post");
+
+                    // 編集ユーザーの決定
+                    Route::post("decide_edit_user/{role}/{id}","decide_edit_user")
+                    ->name("decide_edit_user");
+
+
+
                     // ユーザーの編集(一覧ページより進む)
                     Route::post("update_user","update_user")
                     ->name("update_user");
@@ -69,6 +76,11 @@ Route::prefix("whole_data")
                     // 営業所の登録投稿
                     Route::post("register_places","register_places_post")
                     ->name("register_places_post");
+
+                    // 編集営業所の決定
+                    Route::get("decide_edit_place/{id}","decide_edit_place")
+                    ->name("decide_edit_place");
+
 
                     // 営業所の編集(一覧ページより進む)
                     Route::post("update_place","update_place")

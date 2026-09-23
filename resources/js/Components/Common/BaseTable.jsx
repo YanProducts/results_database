@@ -1,5 +1,5 @@
 // 基準となるテーブルのJSX
-export default function BaseTable({tableTheme,allData,thSets,width="w-[80%]",thWidthSets=[], minWidth="min-w-150", maxWidth="max-w-600",mb="", needSort=false, sortClick=()=>{} ,children}){
+export default function BaseTable({tableTheme,allData,thSets,width="w-[80%]",thWidthSets=[], minWidth="min-w-150", maxWidth="max-w-600",mb="", needSort=false, sortClick=()=>{},needEdit=false, editFunc=()=>{} ,editFuncParam=undefined,editFuncKey=undefined,children}){
 
     // dataにはオブジェクトをラップした配列
     // thSetsにはdataの各オブジェクトのキーをキーに持ち値を日本語とする、各列のタイトルが格納
@@ -26,10 +26,10 @@ export default function BaseTable({tableTheme,allData,thSets,width="w-[80%]",thW
                 // コンポーネントtbodyInnerがなければ
                 children ??
                 allData.map((eachData,trIndex)=>
-                    <tr key={trIndex}>
+                    <tr key={trIndex} onClick={()=>editFunc({paramForType:editFuncParam,paramByEachData:eachData[editFuncKey]})} className={`${needEdit && "cursor-pointer"}`}>
                     {/* thSetsのキーを取得し、そのキーとするオブジェクトをeachDataが含んでいたら値を返却 */}
                     {Object.keys(thSets).map((dataKey,trIndex)=>
-                        <td  className="border-black border-2" key={trIndex}>{eachData[dataKey] ?? "-"}</td>
+                        <td  className={`border-black border-2`} key={trIndex}>{eachData[dataKey] ?? "-"}</td>
                     )}
                     </tr>
                 )}

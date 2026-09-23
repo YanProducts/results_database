@@ -7,7 +7,11 @@ export default function getJpnWord(eng){
         // 主に配布データ検索
         "selected_staffs":"該当スタッフ",
         "all_staffs_in_the_places":"営業所全スタッフ",
-        "all_staffs":"全スタッフ"
+        "all_staffs":"全スタッフ",
+        "project_operator":"案件担当",
+        "branch_manager":"営業所担当",
+        "field_staff":"現場担当",
+        "clerical":"入力担当",
     };
     return convertionArray[eng] ?? eng
 }

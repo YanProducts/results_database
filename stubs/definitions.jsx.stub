@@ -1,0 +1,15 @@
+import { useForm } from "@inertiajs/react";
+import React from "react";
+
+export default function use{{PageName}}Definitions({}) {
+      // フォーム
+      const { data, setData, post, processing, errors,clearErrors, reset}=useForm();
+
+       // バリデーションを表示させるか
+      const [validationHidden,setValidationHidden]=React.useState(false); //初期は表示させる(hiddenにさせない)
+
+      // ページの横幅
+      const [pageMinWidth,pageMaxWidth]=["min-w-120","max-w-300"];
+
+    return {data, setData, post, processing, errors,clearErrors, reset,validationHidden,setValidationHidden,pageMinWidth,pageMaxWidth};
+}

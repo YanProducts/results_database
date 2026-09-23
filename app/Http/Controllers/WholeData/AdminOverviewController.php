@@ -13,6 +13,11 @@ class AdminOverviewController extends Controller
 {
     //現在の登録状況のチェック(whatにはuserやplaceなどが入り、何もない場合は全て見せる)
     public static function admin_overview($type){
+
+        // 以前の編集sessionの削除
+        
+
+
         // データの取得
         [$user_data_sets,$place_data_sets]=Overview::get_data_in_sql($type);
 

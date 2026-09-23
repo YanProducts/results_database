@@ -66,9 +66,15 @@ class AuthController extends Controller
             if(str_contains($route,"whole_data")){
                 // 全般管理(試みがない場合は確認ページへ)
                 $whole_data_top="whole_data.admin_overview/all";
+                // 前に行こうとしていたページがある場合
                 if($intended){
                   return redirect()->intended($whole_data_top);
                 }
+                // トップページへ
+                return redirect()->route("whole_data.admin_overview",[
+                    "type"=>"all"
+                ]);
+
             }else{
                 // roleがある場合はauthがない状態で保存されたページへ
                 $role_top_page=RedirectTopPage::redirect_top_page($route);

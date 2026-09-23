@@ -4,6 +4,7 @@ import Layout from "../../Layout/Layout";
 import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 import BaseTable from "../../Components/Common/BaseTable";
 import { RoleLayout } from "../../Layout/RoleLayout";
+import UserTableLists from "../../Components/Part/WholeData/Overview/UserTableLists";
 
 // 全体統括者が、個々のユーザーを登録していくページ
 export default function AdminOverview({what,type,prefix,userDataSets,userKeyInJpn,placeDataSets,placeKeyInJpn}){
@@ -12,7 +13,9 @@ export default function AdminOverview({what,type,prefix,userDataSets,userKeyInJp
   const { data, setData, post, processing, errors, reset}=useAdminOverviewDefinitions();
 
   // 動き
-  const {onUserChange,onRoleChange,onPlaceChange,onSubmitBtnClick}=useAdminOverviewActions(setData,post);
+  const {onChangeUserDecideClick,onChangePlaceDecideClick}=useAdminOverviewActions(data,setData,post);
+
+
 
   return(
     <Layout title={`${what}-${type}`}>
@@ -22,15 +25,13 @@ export default function AdminOverview({what,type,prefix,userDataSets,userKeyInJp
 
         {/* ユーザーのテーブル */}
         {type!=="営業所" &&
-        <div className="mt-10">
-          <BaseTable tableTheme="ユーザー" allData={userDataSets} thSets={userKeyInJpn}/>
-        </div>
+            <UserTableLists {...{userDataSets,userKeyInJpn,onChangeUserDecideClick}}/>
         }
 
         {/* 営業所のテーブル */}
         {type!=="ユーザー" &&
         <div className="mt-10">
-          <BaseTable tableTheme="営業所" allData={placeDataSets} thSets={placeKeyInJpn}/>
+          <BaseTable tableTheme="営業所" allData={placeDataSets} thSets={placeKeyInJpn} editFunc={onChangePlaceDecideClick} editFuncParam={"place"} editFuncKey={"id"}/>
         </div>
         }
 
@@ -40,6 +41,7 @@ export default function AdminOverview({what,type,prefix,userDataSets,userKeyInJp
         <BaseLinkLine routeName="whole_data.provision"  what="ユーザーの事前登録"/>
         <BaseLinkLine routeName={`${prefix}.logout`} what="ログアウト"/>
       </div>
+      <p>　</p>
      </RoleLayout>
     </Layout>
   )

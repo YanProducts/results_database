@@ -37,4 +37,11 @@ class Provision{
         });
 
     }
+
+    // 編集ユーザーの情報を取得
+    public static function get_user_information_for_edit(){
+
+    }
+
+
 }

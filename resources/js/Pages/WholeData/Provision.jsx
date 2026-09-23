@@ -54,6 +54,7 @@ export default function Provision({roleSets,placeSets,nonPlaceAlert,prefix,what,
     {/* リンク */}
       <div className="mt-4">
         <BaseLinkLine routeName="whole_data.register_places"  what="営業所の登録"/>
+        <BaseLinkLine routeName="whole_data.admin_overview"  routeParams={{"type":"all"}} what="全体の確認"/>
         <BaseLinkLine routeName="whole_data.logout"  what="ログアウト"/>
       </div>
     </RoleLayout>

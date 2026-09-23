@@ -44,12 +44,14 @@ class Login{
 
     // 全般管理者のログイン操作
     private static function whole_data_login($user_name,$password){
+
         // モデルの取得
         $whole_data=new WholeData();
         $user_instance=$whole_data->where("user_name",$user_name)->first();
 
         // ログイン検証
         if($user_instance && Hash::check($password,$user_instance->password)){
+
             // ログインsession作成(再生はコントローラーで行う)
             WholeDataAuthSessionHandler::create_login_session($user_instance->id);
             return true;

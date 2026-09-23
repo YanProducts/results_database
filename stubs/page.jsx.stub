@@ -1,0 +1,38 @@
+import Layout from "{{BasePath}}Layout/Layout";
+import { RoleLayout } from "{{BasePath}}Layout/RoleLayout";
+import BaseLinkLine from "{{BasePath}}Components/Common/BaseLinkLine";
+import use{{PageName}}Definitions from "{{BasePath}}Definition/{{Directories}}/use{{PageName}}Definitions";
+import use{{PageName}}Actions from "{{BasePath}}Action/{{Directories}}/use{{PageName}}Actions";
+
+export default function {{PageName}}({ prefix, what, type }) {
+
+    // 定義セット
+    const {data, setData, post, processing, errors,clearErrors, reset,validationHidden,setValidationHidden,pageMinWidth,pageMaxWidth} = use{{PageName}}Definitions({});
+
+    // 動き
+    const {} = use{{PageName}}Actions({data,setData,post,errors,setValidationHidden});
+
+    return (
+        <Layout title={`${what}-${type}`}>
+            <RoleLayout prefix={prefix}>
+
+                {/* ページ内容 */}
+
+
+                {/* リンク */}
+                <div className="mt-1">
+                    <BaseLinkLine
+                        routeName={`${prefix}.top_page`}
+                        what="トップ"
+                    />
+                    <BaseLinkLine
+                        routeName={`${prefix}.logout`}
+                        what="ログアウト"
+                    />
+                </div>
+
+                <p>　</p>
+            </RoleLayout>
+        </Layout>
+    );
+}
