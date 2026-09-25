@@ -8,10 +8,10 @@ import getJpnWord from "../../Support/Common/getJpnWord";
 export default function EditUser({ prefix, what, type, userInformation, placeLists}) {
 
     // 定義セット
-    const {data, setData, post, processing, errors,clearErrors, reset,validationHidden,setValidationHidden,selectedPlaceName,setSelectedPlaceName,staffName,setStaffName,isReset,setIsReset,isInWorkChange,setIsInWorkChange,pageMinWidth,pageMaxWidth} = useEditUserDefinitions({});
+    const {data, setData, post, processing, errors,clearErrors, reset,validationHidden,setValidationHidden,selectedPlaceId,setSelectedPlaceId,staffName,setStaffName,isReset,setIsReset,isInWorkChange,setIsInWorkChange,pageMinWidth,pageMaxWidth} = useEditUserDefinitions({});
 
     // 動き
-    const {onPlaceNameChange,onStaffNameChange,onIsResetChange,onIsInWorkChange,onSubmitBtnClick} = useEditUserActions({setData,post,setValidationHidden,setSelectedPlaceName,setStaffName,isReset,setIsReset,isInWorkChange,setIsInWorkChange,userInformation});
+    const {onPlaceNameChange,onStaffNameChange,onIsResetChange,onIsInWorkChange,onSubmitBtnClick} = useEditUserActions({setData,post,setValidationHidden,selectedPlaceId,setSelectedPlaceId,setStaffName,isReset,setIsReset,isInWorkChange,setIsInWorkChange,userInformation});
 
     return (
         <Layout title={`${what}-${type}`}>
@@ -29,7 +29,7 @@ export default function EditUser({ prefix, what, type, userInformation, placeLis
                     <div className={`base_frame ${pageMinWidth} ${pageMaxWidth}`}>
                         <div className="w-full flex border-2 border-black text-center">
                             <div>所属営業所</div>
-                            <select onChange={onPlaceNameChange} value={selectedPlaceName}>
+                            <select onChange={onPlaceNameChange} value={selectedPlaceId}>
                                 {Object.entries(placeLists).map(([placeId,placeName],index)=>
                                   <option key={placeId} value={placeId}>{placeName}</option>
                                 )}

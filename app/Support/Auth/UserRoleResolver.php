@@ -105,9 +105,7 @@ class UserRoleResolver{
     }
 
     // そのidのユーザーの情報を返す(role自体が違えばBusinessException,idのmodelが存在しなければModelNotFoundException)
-    public static function get_user_information($role,$id){
-        // その職種のEnumインスタンスを取得し、そのモデルの名前を取得
-        $model_name=UserRole::tryFrom($role)?->get_model_name();
+    public static function get_user_information($model_name,$id){
         // そのモデルにidが存在するかを返す(主キーが存在するかがwhereKey)
         return $model_name ? $model_name::findOrFail($id) : throw new BusinessException("職種データ取得時のエラーです");
     }

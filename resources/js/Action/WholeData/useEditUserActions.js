@@ -1,16 +1,17 @@
-import React from "react";
+import React, { use } from "react";
 import { route } from "ziggy-js";
 import disappearValidation from "../../Support/Common/disappearValidation";
 import isSubmitDataEqualToDefaults from "../../Support/Common/isSubmitDataEqualToDefaults";
+import formatStateData from "./EditUser/formatStateData";
 
-export default function useEditUserActions({setData,post,setValidationHidden,setSelectedPlaceName,setStaffName,isReset,setIsReset,isInWorkChange,setIsInWorkChange,userInformation}) {
+export default function useEditUserActions({setData,post,setValidationHidden,selectedPlaceId,setSelectedPlaceId,staffName,setStaffName,isReset,setIsReset,isInWorkChange,setIsInWorkChange,userInformation}) {
 
     // データが入ったらform投稿
     React.useEffect(()=>{
         if(!data.changedData || Object.keys(data.changedData).length==0){
             return;
         }
-        post(route("whole_data."))
+        post(route("whole_data.update_user"))
     },[data])
 
     // エラーの削除(内部でuseEffect使用)
@@ -19,7 +20,7 @@ export default function useEditUserActions({setData,post,setValidationHidden,set
     // 営業所名変更
     const onPlaceNameChange=(e)=>{
         const targetValue=e.target.value;
-        setSelectedPlaceName(targetValue)
+        setSelectedPlaceId(targetValue)
     }
 
     // スタッフ名変更
@@ -40,17 +41,15 @@ export default function useEditUserActions({setData,post,setValidationHidden,set
 
     // 提出
     const onSubmitBtnClick=()=>{
+
         // 以前と同じものをチェック
-        const changedData=isSubmitDataEqualToDefaults({defaultData:userInformation,dataInState:{
-            //stateの値を渡す
-
-
-        }})
+        // formatStateDataはstateのフォーマットを比較用に変更
+        const changedData=isSubmitDataEqualToDefaults({defaultData:userInformation,dataInState:formatStateData({isInWorkChange,staffName,selectedPlaceId,isReset,userInformation})})
 
         // 変化のあったものをformに格納
         setData(prev=>({
             ...prev,
-            changedData //変化がなければ何も記入されない
+            changedData //変化がなければ何も記入されないので、useEffectは1つ目の条件分岐でreturnされる(アラートはisSubmitData...のメソッドの内部)
         }))
     }
 

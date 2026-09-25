@@ -53,14 +53,13 @@ Route::prefix("whole_data")
                     ->name("provision_post");
 
                     // 編集ユーザーの決定
-                    Route::post("decide_edit_user/{role}/{id}","decide_edit_user")
+                    Route::get("decide_edit_user/{role}/{id}","decide_edit_user")
                     ->name("decide_edit_user");
-
-
 
                     // ユーザーの編集(一覧ページより進む)
                     Route::post("update_user","update_user")
                     ->name("update_user");
+
                     // ユーザーの削除(一覧ページより進む)
                     Route::post("delete_user","delete_user")
                     ->name("delete_user");

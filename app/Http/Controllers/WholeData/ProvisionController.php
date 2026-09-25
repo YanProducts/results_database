@@ -60,4 +60,9 @@ class ProvisionController extends Controller
         ]);
     }
 
+    // 編集ユーザーの決定
+    public function update_user(){
+        
+    }
+
 }
