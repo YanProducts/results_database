@@ -1,7 +1,7 @@
 import React from "react";
 import { route } from "ziggy-js"
 import putDefaultValueInReportData from "./WriteReport/putDefaultValueInReportData";
-import disappearValidation from "../../Support/Common/disappearValidation";
+import useDisappearValidation from "../Share/useDisappearValidation";
 
 export default function useWriteReportActions({firstAttention,setFirstAttention,validationHidden,setValidationHidden,errors,isConfirm,setIsConfirm,data,setData,post,dataInReport,setDataInReport,changedId,setChangedId,reportDataInTheProject}){
 
@@ -15,7 +15,7 @@ export default function useWriteReportActions({firstAttention,setFirstAttention,
     },[])
 
     // エラーの削除(内部でuseEffect使用)
-    disappearValidation({errors,setValidationHidden})
+    useDisappearValidation({errors,setValidationHidden})
 
     // 確認ボタンが押されたら、dataに格納
     React.useEffect(()=>{

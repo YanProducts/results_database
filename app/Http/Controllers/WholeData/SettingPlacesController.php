@@ -33,7 +33,8 @@ class SettingPlacesController extends Controller
         // 表示
         return Inertia::render("WholeData/EditPlace",[
             "type"=>"営業所の編集",
-            "id"=>$id
+            "id"=>$id,
+            "place_information"=>Place::findOrFail($id) //現在の営業所の情報(名前・稼働状況・色) //findはモデルインスタンスを返すがreactでの受け取り方はコレクションと同じ
         ]);
     }
 

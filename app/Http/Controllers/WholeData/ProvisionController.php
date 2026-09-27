@@ -8,12 +8,13 @@ use App\Actions\WholeData\Provision;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WholeData\ProvisionRequest;
-
+use App\Http\Requests\WholeData\UpdateUserRequest;
 use Inertia\Inertia;
 use App\Support\Auth\UserRoleResolver;
 use App\Support\Common\ModelHelpers\PlaceHelpers;
 use App\Support\WholeData\DecideEditItemValidation;
 use App\Utils\Session;
+use Illuminate\Support\Facades\Log;
 
 // wholeDataから各ユーザーの名前を登録していくコントローラー(パスワード等は別途Authで格納)
 class ProvisionController extends Controller
@@ -45,6 +46,7 @@ class ProvisionController extends Controller
 
     // 編集ユーザーの決定
     public function decide_edit_user($role,$id){
+
         //  roleとidの例外除去
         if($messages=DecideEditItemValidation::decide_change_user_validation($role,$id)) {
             return redirect()
@@ -61,8 +63,13 @@ class ProvisionController extends Controller
     }
 
     // 編集ユーザーの決定
-    public function update_user(){
-        
+    public function update_user(UpdateUserRequest $request){
+
+        // SQL登録(エラーが生じれば内部でエラーが投げられる=Inertiaで補足)
+        EditUser::change_user_data($request->validated());
+
+        // トップへ
+        return redirect()->route("view_information")->with(["information_message"=>"編集完了しました","linkRouteName"=>"whole_data.provision","linkPageInJpn"=>"トップ"]);
     }
 
 }

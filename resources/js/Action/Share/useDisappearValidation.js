@@ -2,7 +2,7 @@ import React from "react";
 
 // バリデーションエラーを消す
 // useEffectを使用しているので、コンポーネントの最初で使用すること
-export default function disappearValidation({errors,setValidationHidden}){
+export default function useDisappearValidation({errors,setValidationHidden}){
     React.useEffect(()=>{
         if(!errors || Object.keys(errors).length==0){
             return;

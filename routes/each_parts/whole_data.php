@@ -56,14 +56,9 @@ Route::prefix("whole_data")
                     Route::get("decide_edit_user/{role}/{id}","decide_edit_user")
                     ->name("decide_edit_user");
 
-                    // ユーザーの編集(一覧ページより進む)
+                    // ユーザーの編集(削除は「退職or休職」扱いでデータは残す)
                     Route::post("update_user","update_user")
                     ->name("update_user");
-
-                    // ユーザーの削除(一覧ページより進む)
-                    Route::post("delete_user","delete_user")
-                    ->name("delete_user");
-
                 });
                 // 営業所登録変更系統
                 Route::controller(SettingPlacesController::class)

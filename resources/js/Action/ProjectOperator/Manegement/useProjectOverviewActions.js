@@ -1,12 +1,17 @@
 import React from "react";
 import popUpPositionSeeting from "../../../Support/Common/popUpPositionSetting";
-import sortData from "../../../Support/Common/sortData";
+import sortDataByMultipleKeys from "../../../Support/Common/sortDataByMultipleKeys";
 export default function useProjectOverviewActions({projectData,overViewItems,setSortItemIsVisible,selectedSort,setSelectedSort,prioritySort,setPrioritySort,selectedAscOrDes,setSelectedAscOrDes,ascOrDes,setAscOrDes,columnForHiddenLists,setHiddenListsVisible,setColumnForHiddenLists,allHiddenLists,setAllHiddenLists}){
 
     // sort項目の決定
     // useMemoは状態変数が変わるごとにレンダリング1回で変数を定義し直す(effectで更新してからstate更新なら2回になる)
     const sortedProjectData=React.useMemo(()=>{
-        return sortData({...{prioritySort,ascOrDes,projectData},objForDataCheck:overViewItems,sourceData:projectData});
+
+        // 共通関数が複数項目のソートのため、上記を[{priority:,ascOrDes:}}]という、1要素の配列に直す
+        const prioritySets=[{"priority":prioritySort,ascOrDes}];
+
+        return sortDataByMultipleKeys({prioritySets,objForDataCheck:overViewItems,sourceData:projectData});
+
     },[projectData,prioritySort,ascOrDes])
 
     // どの値の行を表示しないかの設定

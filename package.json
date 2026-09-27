@@ -5,7 +5,7 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "make:page": "node page-autogenerate-rules/make-page.mjs"
+        "make:page": "node scripts/make-page.mjs"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

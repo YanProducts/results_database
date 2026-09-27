@@ -23,6 +23,7 @@ class Overview{
         }
         return [$user_data_sets ?? [], $place_data_sets ?? []];
     }
+
     // 事前登録されたユーザーのデータを取得
     private static function get_all_users(){
         return array_reduce(UserRole::cases(),function($carry,$role_enum_instance){
@@ -38,9 +39,11 @@ class Overview{
 
             // 外側のコレクションのキーではなく、内側のモデルインスタンスを配列化したもののキーを変更していくのでmapで良い。
             $all_user_data_with_role=$all_user_data_in_role->map(fn($each_user)=>[...$each_user->toArray(),
+            // is_active_in_jpnは稼働状況の日本語表記に変更
+            "is_active_in_jpn"=>$each_user["is_active"] ? ($role_name=="field_staff" ? "稼働" : "在職") : ($role_name=="field_staff" ? "非稼働" : "旧退職"),
             // placeIdからplace_nameを取得する
             "place_name"=>OverViewHelpers::get_place_name_from_id($each_user["place_id"] ?? ""),
-            // 現在のstatusを加える
+            // 現在の登録状況(Authテーブルに存在するか＝パスワードをセットしているか)を加える。
             "status"=>OverViewHelpers::get_register_status($each_user->id,$model_name) ? "済" : "未",
             // roleを加える
             "role"=>$role_name]);
@@ -51,7 +54,7 @@ class Overview{
 
     // 登録された場所の情報を取得
     private static function get_all_places(){
-        return (Place::select("id","place_name","red","green","blue")->get())->map(fn($each_data)=>[...$each_data->toArray(),"branch_manager_lists"=>OverViewHelpers::get_branch_manager_lists($each_data["id"])]);
+        return (Place::select("id","is_active","place_name","red","green","blue")->get())->map(fn($each_data)=>[...$each_data->toArray(),"branch_manager_lists"=>OverViewHelpers::get_branch_manager_lists($each_data["id"]),"is_active_in_jpn"=>$each_data->is_active ? "稼働中" : "非稼働"]);
     }
 
     // userのキーを日本語名で返却(テーブル用)
@@ -60,6 +63,7 @@ class Overview{
             "user_name"=>"ユーザー名",
             // "role"=>"職種", //タイトルで見られるようにする
             "status"=>"本登録",
+            "is_active_in_jpn"=>"稼働状況",
             "place_name"=>"営業所名",
             "staff_name"=>"スタッフ名"
         ];
@@ -68,6 +72,7 @@ class Overview{
      public static function get_place_key_name(){
         return[
             "place_name"=>"営業所名",
+            "is_active_in_jpn"=>"稼働状況",
             "branch_manager_lists"=>"担当者リスト"
         ];
     }

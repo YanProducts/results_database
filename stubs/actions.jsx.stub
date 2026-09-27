@@ -1,11 +1,15 @@
 import React from "react";
 import { route } from "ziggy-js";
-import disappearValidation from "{{BasePath}}Support/Common/disappearValidation";
+import useDisappearValidation from "{{BasePath}}"Share/useDisappearValidation";
+import useClearErrors from "{{BasePath}}"Share/useClearErrors";
 
-export default function use{{PageName}}Actions({data,setData,post,errors,setValidationHidden}) {
+export default function use{{PageName}}Actions({data,setData,post,errors,clearErrors,setValidationHidden}) {
 
-    // エラーの削除(内部でuseEffect使用)
-    disappearValidation({errors,setValidationHidden})
+    //エラー自体の削除
+    useClearErrors({errors,clearErrors})
+
+    //エラーのviewの削除(内部でuseEffect使用) //Errors自体は保護
+    //useDisappearValidation({errors,setValidationHidden})
 
     return {};
 }

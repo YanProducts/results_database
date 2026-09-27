@@ -10,7 +10,7 @@ export default function {{PageName}}({ prefix, what, type }) {
     const {data, setData, post, processing, errors,clearErrors, reset,validationHidden,setValidationHidden,pageMinWidth,pageMaxWidth} = use{{PageName}}Definitions({});
 
     // 動き
-    const {} = use{{PageName}}Actions({data,setData,post,errors,setValidationHidden});
+    const {} = use{{PageName}}Actions({data,setData,post,errors,clearErrors,setValidationHidden});
 
     return (
         <Layout title={`${what}-${type}`}>

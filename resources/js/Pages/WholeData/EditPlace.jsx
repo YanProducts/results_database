@@ -4,13 +4,13 @@ import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 import useEditPlaceDefinitions from "../../Definition/WholeData/useEditPlaceDefinitions";
 import useEditPlaceActions from "../../Action/WholeData/useEditPlaceActions";
 
-export default function EditPlace({ prefix, what, type }) {
+export default function EditPlace({ prefix, what, type,placeInformation }) {
 
     // 定義セット
-    const {} = useEditPlaceDefinitions({});
+    const {data, setData, post, processing, errors,clearErrors, reset,validationHidden,setValidationHidden,placeName,setPlaceName,isInWorkChange,setIsInWorkChange,pageMinWidth,pageMaxWidth} = useEditPlaceDefinitions({placeInformation});
 
     // 動き
-    const {} = useEditPlaceActions({});
+    const {onPlaceNameChange,onIsActiveChange,onSubmitBtnClick,onCancelBtnClick} = useEditPlaceActions({placeInformation,setPlaceName,isActive,setIsActive});
 
     return (
         <Layout title={`${what}-${type}`}>
@@ -18,6 +18,9 @@ export default function EditPlace({ prefix, what, type }) {
 
                 {/* ページ内容 */}
 
+
+               {/* バリデーションエラー */}
+                <ViewValidationErrors errors={errors} minWidth={pageMinWidth} maxWidth={pageMaxWidth} validationHidden={validationHidden}/>
 
                 {/* リンク */}
                 <div className="mt-1">

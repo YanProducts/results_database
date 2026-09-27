@@ -20,7 +20,7 @@ class DecideEditItemValidation{
             $messages["role"]="職種が存在しません";
             }
 
-        if(UserRoleResolver::check_id_exisits($role,$id)){
+        if(!UserRoleResolver::check_id_exisits($role,$id)){
             $messages["id"]="該当ユーザーが見当たりませんでした";
         }
         return $messages;

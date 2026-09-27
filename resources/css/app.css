@@ -14,6 +14,11 @@
     --breakpoint-xl:1000px;
 }
 
+.border-b-solid{
+     border-bottom-style: solid;
+}
+
+
 /* 自作コンポーネントを自作コンポーネントで再利用したい場合はutility */
 @utility base_frame {
     @apply w-4/5 min-w-75 max-w-250 mx-auto;
@@ -21,6 +26,23 @@
 @utility base_backColor{
       @apply bg-white/80;
 }
+
+/* 下線をダッシュにする(この内部で使うため、utilityで定義) */
+@utility border-b-dashed {
+    /*  */
+    border-bottom-style: dashed;
+}
+
+
+
+     /* divでタイトルとinputやselectなどで横２列・縦に内容を表したい時の最初の行(EditUSerのみの可能性) */
+
+     /* divでタイトルとinputやselectなどで横２列・縦に内容を表したい時の最後の行(EditUSerのみの可能性) */
+
+
+
+
+
 
 /* 自作コンポーネント */
 @layer components {
@@ -71,4 +93,18 @@
      .ui_attention{
         @apply bg-gray-300 text-red-600 font-bold
      }
+
+     /* divでタイトルとinputやselectなどで横２列・縦に内容を表したい時の基本行(EditUSerのみの可能性) */
+     .each_form_div_sets{
+        @apply base_backColor w-full flex items-center text-xl border-x-2 border-b border-b-dashed  border-black text-center h-12 leading-12
+     }
+     /* 上記のdivのセットにおけるタイトル */
+     .each_form_div_item_title{
+        @apply text-center border-r border-black w-[50%]
+     }
+     /* 上記のdivのセットにおけるフォーム */
+     .each_form_div_item_form{
+      @apply h-full flex items-center w-[50%]
+     }
+
   }

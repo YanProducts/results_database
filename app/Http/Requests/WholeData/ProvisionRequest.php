@@ -9,6 +9,8 @@ use App\Rules\WholeData\UserNameNotExistsRule;
 use App\Rules\WholeData\UserNameRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
+
 class ProvisionRequest extends FormRequest
 {
     /**
@@ -28,7 +30,7 @@ class ProvisionRequest extends FormRequest
      */
     public function rules(): array
     {
-        
+
         // 分岐や引数のためのroleの取得(後に文字列取得があるので、何もない場合はnullではなく空文字で取得)。roleのバリデーションによる比較は、別途行われる
         $role=$this->input("role") ?? "";
 
@@ -47,8 +49,14 @@ class ProvisionRequest extends FormRequest
        // スタッフ名
        // 現場作業員のみ。入力必須ではないが入力するなら全角の文字のみ)
         if($role=="field_staff"){
-            // 現場作業員のみスタッフ名が必要（空文字許容）
-            $rules["staffName"]=[new StaffNameRule];
+            // 現場作業員のみスタッフ名が必要（空文字許容=空なら空文字）
+            $rules["staffName"]=[
+                new StaffNameRule,
+                // 空文字ではない場合、同じ営業所でこのスタッフ名は1つとする(Rule::whenはif文で外に出しても良い)
+                Rule::when($this->input("staff_name")!=="",Rule::unique("field_staff_lists","staff_name")->where(fn($query)=>
+                    $query->where("place_id",$this->input("place_id"))
+                ))
+                ];
         }else{
         // それ以外だと、スタッフ名は入力に関わらずスルーされる
         }
@@ -75,7 +83,9 @@ class ProvisionRequest extends FormRequest
             "userName.min"=>"ユーザー名は２文字以上必要です",
             "userName.max"=>"ユーザー名は５０文字以内にしてください",
             // 営業所名
-            "place.required"=>"営業所は入力必須です"
+            "place.required"=>"営業所は入力必須です",
+            // スタッフ名
+            "staff_name.unique"=>"同じ営業所に同名のスタッフが存在します"
         ];
     }
 }
