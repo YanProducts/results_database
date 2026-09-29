@@ -80,9 +80,6 @@ Route::prefix("whole_data")
                     Route::post("update_place","update_place")
                     ->name("update_place");
 
-                    // 営業所の削除(一覧ページより進む)
-                    Route::post("delete_place","delete_place")
-                    ->name("delete_place");
                 });
                 Route::controller(AdminOverviewController::class)
                 ->group(function(){

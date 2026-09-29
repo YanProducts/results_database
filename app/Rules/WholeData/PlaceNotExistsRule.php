@@ -9,6 +9,7 @@ use App\Models\Place;
 class PlaceNotExistsRule implements ValidationRule
 {
     //営業所作成の時に、その営業所が登録されている名前と同じだったらアウト
+    // 名前でチェック
 
     /**
      * Run the validation rule.

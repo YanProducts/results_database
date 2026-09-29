@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\WholeData;
 
+use App\Actions\WholeData\Edit\EditPlace;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use App\Actions\WholeData\Places;
 use App\Http\Requests\WholeData\RegisterPlacesRequest;
+use App\Http\Requests\WholeData\UpdatePlaceRequest;
 use App\Models\Place;
 
 class SettingPlacesController extends Controller
@@ -34,8 +36,18 @@ class SettingPlacesController extends Controller
         return Inertia::render("WholeData/EditPlace",[
             "type"=>"営業所の編集",
             "id"=>$id,
-            "place_information"=>Place::findOrFail($id) //現在の営業所の情報(名前・稼働状況・色) //findはモデルインスタンスを返すがreactでの受け取り方はコレクションと同じ
+            "placeInformation"=>Place::findOrFail($id) //現在の営業所の情報(名前・稼働状況・色) //findはモデルインスタンスを返すがreactでの受け取り方はコレクションと同じ
         ]);
+    }
+
+    // 営業所の編集
+    public function update_place(UpdatePlaceRequest $request){
+        // 更新
+        //パラメータ自体が変わるためrequestで渡す
+        EditPlace::update_place_sql($request);
+
+        // 完了画面へ
+        return redirect()->route("view_information")->with(["information_message"=>"編集完了しました","linkRouteName"=>"whole_data.provision","linkPageInJpn"=>"トップ"]);
     }
 
 }

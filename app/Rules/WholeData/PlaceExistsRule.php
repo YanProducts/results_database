@@ -8,6 +8,7 @@ use App\Models\Place;
 use Illuminate\Support\Facades\Log;
 
 // 営業所がSQLに存在するかのルール(スタッフ登録の際に使用)
+// idでチェック
 class PlaceExistsRule implements ValidationRule
 {
     /**

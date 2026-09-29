@@ -3,8 +3,13 @@ import { RoleLayout } from "{{BasePath}}Layout/RoleLayout";
 import BaseLinkLine from "{{BasePath}}Components/Common/BaseLinkLine";
 import use{{PageName}}Definitions from "{{BasePath}}Definition/{{Directories}}/use{{PageName}}Definitions";
 import use{{PageName}}Actions from "{{BasePath}}Action/{{Directories}}/use{{PageName}}Actions";
+import check{{PageName}}Props from "{{BasePath}}Support/ConfirmProps/{{Directories}}/check{{PageName}}Props";
+
 
 export default function {{PageName}}({ prefix, what, type }) {
+
+    // propsの確認
+    check{{pageName}}Props({})
 
     // 定義セット
     const {data, setData, post, processing, errors,clearErrors, reset,validationHidden,setValidationHidden,pageMinWidth,pageMaxWidth} = use{{PageName}}Definitions({});

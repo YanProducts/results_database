@@ -68,7 +68,7 @@ class ProvisionController extends Controller
         // SQL登録(エラーが生じれば内部でエラーが投げられる=Inertiaで補足)
         EditUser::change_user_data($request->validated());
 
-        // トップへ
+        // 完了画面へ
         return redirect()->route("view_information")->with(["information_message"=>"編集完了しました","linkRouteName"=>"whole_data.provision","linkPageInJpn"=>"トップ"]);
     }
 

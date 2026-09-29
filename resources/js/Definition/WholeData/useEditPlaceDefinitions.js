@@ -14,6 +14,11 @@ export default function useEditPlaceDefinitions({placeInformation}) {
     // 稼働/非稼働
     const [isInWorkChange,setIsInWorkChange]=React.useState(placeInformation.is_active);
 
+    // 色
+    const [colors,setColors]=React.useState({
+        red:placeInformation.red,green:placeInformation.green,blue:placeInformation.blue
+    })
+
     // バリデーションを表示させるか
     const [validationHidden,setValidationHidden]=React.useState(false); //初期は表示させる(hiddenにさせない)
 
@@ -21,6 +26,6 @@ export default function useEditPlaceDefinitions({placeInformation}) {
     const [pageMinWidth,pageMaxWidth]=["min-w-120","max-w-300"];
 
 
-    return {data, setData, post, processing, errors,clearErrors, reset,validationHidden,setValidationHidden,placeName,setPlaceName,isInWorkChange,setIsInWorkChange,pageMinWidth,pageMaxWidth};
+    return {data, setData, post, processing, errors,clearErrors, reset,validationHidden,setValidationHidden,placeName,setPlaceName,colors,setColors,isInWorkChange,setIsInWorkChange,pageMinWidth,pageMaxWidth};
 
 }

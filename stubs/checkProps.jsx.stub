@@ -1,0 +1,8 @@
+import { router } from "@inertiajs/react";
+//営業所の変種の際のpropsの確認
+export default function check{{pageName}}Props({placeInformation}){
+    if("conditionを入力"){
+        // エラーページに飛ばす
+        router.get(route("error"))
+    }
+}
