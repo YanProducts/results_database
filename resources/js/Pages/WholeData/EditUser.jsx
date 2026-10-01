@@ -13,7 +13,7 @@ export default function EditUser({ prefix, what, type, userInformation, placeLis
     const {data, setData, post, processing, errors,clearErrors, reset,validationHidden,setValidationHidden,selectedPlaceId,setSelectedPlaceId,staffName,setStaffName,isReset,setIsReset,isInWorkChange,setIsInWorkChange,pageMinWidth,pageMaxWidth} = useEditUserDefinitions({userInformation});
 
     // 動き
-    const {onPlaceNameChange,onStaffNameChange,onIsResetChange,onIsInWorkChange,onSubmitBtnClick,onCancelBtnClick} = useEditUserActions({data,setData,errors,clearErrors,post,setValidationHidden,selectedPlaceId,selectedPlaceId,setSelectedPlaceId,staffName,setStaffName,isReset,setIsReset,isInWorkChange,setIsInWorkChange,userInformation});
+    const {onPlaceNameChange,onStaffNameChange,onIsResetChange,onIsInWorkChange,onSubmitBtnClick,onCancelBtnClick} = useEditUserActions({data,setData,errors,clearErrors,post,setValidationHidden,selectedPlaceId,setSelectedPlaceId,staffName,setStaffName,isReset,setIsReset,isInWorkChange,setIsInWorkChange,userInformation});
 
     const role=userInformation.role
 
