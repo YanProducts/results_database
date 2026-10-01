@@ -5,10 +5,17 @@ namespace App\Support\Common\ModelHelpers;
 use App\Models\Place as PlaceModel;
 
 class PlaceHelpers{
+
     // id=>営業所名の配列で取り出し
     public static function get_registered_places(){
       return PlaceModel::pluck('place_name', 'id');
     }
+
+    // id=>営業所名の配列で取り出し
+    public static function get_active_places(){
+      return PlaceModel::where("is_active",true)->pluck('place_name', 'id');
+    }
+
     // 営業所名からIdを取得する
     public static function get_id_from_place_name($place_name){
         return PlaceModel::where("place_name",$place_name)->value("id") ??  throw new \Error("営業所のidが取得できません");

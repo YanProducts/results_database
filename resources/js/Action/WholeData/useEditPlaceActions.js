@@ -3,8 +3,9 @@ import { router } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import useClearErrors from "../Share/useClearErrors";
 import formatStateData from "./EditPlace/formatStateData";
+import isSubmitDataEqualToDefaults from "../../Support/Common/isSubmitDataEqualToDefaults";
 
-export default function useEditPlaceActions({data,setData,errors,clearErrors,placeInformation,placeName,setPlaceName,isInWorkChange,setIsInWorkChange,colors,setColors}) {
+export default function useEditPlaceActions({data,setData,post,errors,clearErrors,placeInformation,placeName,setPlaceName,isInWorkChange,setIsInWorkChange,colors,setColors}) {
 
     // データが入ったらform投稿
     React.useEffect(()=>{

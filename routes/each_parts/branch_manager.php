@@ -130,10 +130,24 @@ Route::prefix("branch_manager")
             // 案件を営業所側で登録する系統
             Route::controller(ProjectHandingController::class)
             ->group(function(){
-            // その営業所における案件の登録
+               // その営業所における案件の登録(案件担当のページを採用)
                 Route::get("handing_assignment","handing_assignment")
                 ->name("handing_assignment");
+
+                // その営業所における案件の登録のpost
+                Route::post("handing_assignment","handing_assignment_post")
+                ->name("handing_assignment_post");
+
+                // 重複可能性のある案件の確認
+                //   Route::get("confirm_dispatch","confirm_dispatch")
+                //   ->name("confirm_dispatch");
+
+                //   // 重複可能性のある案件をどうするか決定した時の処理
+                //   Route::post("confirm_dispatch","confirm_dispatch_post")
+                //   ->name("confirm_dispatch_post");
             });
+
+
 
             // 町丁目データを見る
             Route::controller(ProjectRecordController::class)

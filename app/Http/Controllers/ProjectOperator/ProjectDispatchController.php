@@ -28,7 +28,7 @@ class ProjectDispatchController extends Controller
 
         return Inertia::render("ProjectOperator/ProjectDispatch/SendProjectToBranch",[
             // 営業所リスト
-            "placeSets"=>PlaceHelpers::get_registered_places(),
+            "placeSets"=>PlaceHelpers::get_active_places(),
             "type"=>"案件→営業所"
         ]);
     }

@@ -1,4 +1,5 @@
 import React from "react";
+import { useForm } from "@inertiajs/react";
 
 // 営業所の編集における定義
 export default function useEditPlaceDefinitions({placeInformation}) {
@@ -11,8 +12,8 @@ export default function useEditPlaceDefinitions({placeInformation}) {
     //営業所の名前
     const [placeName,setPlaceName]=React.useState(placeInformation.place_name);
 
-    // 稼働/非稼働
-    const [isInWorkChange,setIsInWorkChange]=React.useState(placeInformation.is_active);
+    // 稼働/非稼働(変更したらtrue)
+    const [isInWorkChange,setIsInWorkChange]=React.useState(false);
 
     // 色
     const [colors,setColors]=React.useState({

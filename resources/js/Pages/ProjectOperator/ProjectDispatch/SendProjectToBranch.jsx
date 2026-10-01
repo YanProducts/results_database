@@ -12,17 +12,15 @@ import InputFiles from "../../../Components/Common/InputFiles";
 // 案件を営業所担当に送信
 export default function SendProjectToBranch({prefix,what,type,placeSets}){
 
-
   // 定義(フォームなど)
   const { data, setData, post, processing, errors, reset,pageMinWidth,pageMaxWidth}=useSendProjectDefinitions();
 
   // 動き
-  const {onPlaceChange,onFileChange,onFileDeleteClick,onSubmitBtnClick}=useSendProjectActions(post,data,setData);
+  const {onPlaceChange,onFileChange,onFileDeleteClick,onSubmitBtnClick}=useSendProjectActions({prefix,post,data,setData});
 
   return(
     <Layout title={`${what}-${type}`}>
         <RoleLayout prefix={prefix}>
-
 
     {/* 投稿フォーム */}
     <form encType="multipart/form-data" onSubmit={onSubmitBtnClick}>
@@ -32,8 +30,10 @@ export default function SendProjectToBranch({prefix,what,type,placeSets}){
              <div className={`base_frame ${pageMinWidth} ${pageMaxWidth} base_backColor pt-3 pb-1 border-2 border-black rounded-sm mb-5`}>
 
             {/* 営業所名 */}
-            <SelectParts name="place" value={data.place} onChange={onPlaceChange} prefix={"営業所名："} maxWidth="max-w-140"
-            minWidth="min-w-75" prefixPercent="w-[40%]" keyValueSets={placeSets} allowEmptyOption={false}/>
+            {prefix=="project_operator" &&
+                <SelectParts name="place" value={data.place} onChange={onPlaceChange} prefix={"営業所名："} maxWidth="max-w-140"
+                minWidth="min-w-75" prefixPercent="w-[40%]" keyValueSets={placeSets} allowEmptyOption={false}/>
+            }
 
             {/* ファイル */}
             <InputFiles name="fileSets" minWidth="min-w-90"

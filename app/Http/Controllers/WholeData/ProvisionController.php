@@ -62,14 +62,14 @@ class ProvisionController extends Controller
         ]);
     }
 
-    // 編集ユーザーの決定
+    // 実際のユーザーの編集
     public function update_user(UpdateUserRequest $request){
 
         // SQL登録(エラーが生じれば内部でエラーが投げられる=Inertiaで補足)
         EditUser::change_user_data($request->validated());
 
         // 完了画面へ
-        return redirect()->route("view_information")->with(["information_message"=>"編集完了しました","linkRouteName"=>"whole_data.provision","linkPageInJpn"=>"トップ"]);
+        return redirect()->route("view_information")->with(["information_message"=>"編集完了しました","linkRouteName"=>"whole_data.admin_overview", "routeParams"=>["type"=>"all"], "linkPageInJpn"=>"全体確認"]);
     }
 
 }

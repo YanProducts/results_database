@@ -4,6 +4,7 @@ namespace App\Http\Requests\ProjectOperator;
 
 use App\Rules\WholeData\PlaceExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 // 案件割り当てのバリデーション
 class DispatchRequest extends FormRequest
@@ -23,9 +24,17 @@ class DispatchRequest extends FormRequest
      */
     public function rules(): array
     {
+        $rule=[];
+
+        // 職種を返す(branch_managerから来ている場合もあり)
+        $role=Auth::user()->role;
+
+        if($role=="project_operator"){
+            $rule["place"]=["required",new PlaceExistsRule];
+        }
+
         return [
-            // 営業所
-            "place"=>["required",new PlaceExistsRule],
+            ...$rule,
             // ファイルの大元
             "fileSets" => ["required", "array","max:20"],
             // 各ファイル(別途、ファイル読み込みの際に各データを除外)

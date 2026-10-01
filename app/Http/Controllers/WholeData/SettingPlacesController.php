@@ -40,14 +40,14 @@ class SettingPlacesController extends Controller
         ]);
     }
 
-    // 営業所の編集
+    // 実際の営業所の編集
     public function update_place(UpdatePlaceRequest $request){
         // 更新
         //パラメータ自体が変わるためrequestで渡す
         EditPlace::update_place_sql($request);
 
         // 完了画面へ
-        return redirect()->route("view_information")->with(["information_message"=>"編集完了しました","linkRouteName"=>"whole_data.provision","linkPageInJpn"=>"トップ"]);
+        return redirect()->route("view_information")->with(["information_message"=>"編集完了しました","linkRouteName"=>"whole_data.admin_overview", "routeParams"=>["type"=>"all"], "linkPageInJpn"=>"全体確認"]);
     }
 
 }

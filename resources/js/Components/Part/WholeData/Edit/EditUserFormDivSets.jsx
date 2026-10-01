@@ -45,7 +45,7 @@ export default function EditUserDivSets({pageMaxWidth,pageMinWidth,onSubmitBtnCl
                 <div className={`each_form_div_sets ${topItem=="registered" && "border-t-2"} `}>
                         <div className="each_form_div_item_title">パスワードリセット</div>
                        <div className="each_form_div_item_form">
-                        <label htmlFor="passReset" className="cursor-pointer w-full text-center"><input id="passReset" checked={isReset} onChange={onIsResetChange} type="checkbox" />リセットする</label></div>
+                        <label htmlFor="passReset" className="cursor-pointer w-full text-center"><input className="mr-2" id="passReset" checked={isReset} onChange={onIsResetChange} type="checkbox" />リセットする</label></div>
                 </div>
                 }
 
@@ -53,7 +53,7 @@ export default function EditUserDivSets({pageMaxWidth,pageMinWidth,onSubmitBtnCl
                 <div className={`each_form_div_sets ${topItem=="isActive" && "border-t-2"} border-b-2 border-b-solid`}>
                      <div className="each_form_div_item_title">{role=="field_staff" ? "稼働/非稼働":"在職/退職"}</div>
                      <div className="each_form_div_item_form">
-                        <label htmlFor="isInWork" className="cursor-pointer w-full text-center"><input id="isInWork" checked={isInWorkChange} onChange={onIsInWorkChange} type="checkbox" />{userInformation.inWork ? (role=="field_staff" ? "非稼働" : "退職" ):"再稼働"}</label></div>
+                        <label htmlFor="isInWork" className="cursor-pointer w-full text-center"><input className="mr-2" id="isInWork" checked={isInWorkChange} onChange={onIsInWorkChange} type="checkbox" />{userInformation.inWork ? (role=="field_staff" ? "非稼働" : "退職" ):"再稼働"}</label></div>
                   </div>
             </div>
 

@@ -27,7 +27,7 @@ class UpdatePlaceRequest extends FormRequest
     {
         return [
             "id"=>["required","integer",new PlaceExistsRule],
-            "place_name"=>["required",new PlaceNameRule,new PlaceNotExistsRule],
+            "place_name"=>["sometimes",new PlaceNameRule,new PlaceNotExistsRule],
             "is_active"=>["sometimes","boolean"],//フロント側の変更確認でisInWorkChangeが真なら元と変更、偽なら変更しない。その上で変更しない場合はキーにセットしない。Userの場合とは構造が別なので、acceptedではなくboolean
             "red"=>["sometimes","integer","between:0,255"],
             "green"=>["sometimes","integer","between:0,255"],
@@ -40,7 +40,6 @@ class UpdatePlaceRequest extends FormRequest
         return [
             "id.required" => "営業所が取得できません",
             "id.integer" => "営業所データが不正です",
-            "place_name.required" => "営業所名を入力してください",
             "is_active.boolean" => "稼働状況が不正です",
             "red.integer" => "赤の値は整数で入力してください",
             "red.between" => "赤の値は0〜255で入力してください",
