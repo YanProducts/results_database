@@ -8,7 +8,13 @@ import DataConfirm from "../../../Components/Part/BranchManager/StaffAssign/Data
 
 
 // 案件を営業所担当に送信
-export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,dateSets,dateProjectsIndex,staffs,flash={}}){
+export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,dateSets,dateProjectsIndex,assignedDays,staffs,flash={}}){
+
+    // 割り当てデータがすでにある案件は取得できているか？
+    console.log(projectsAndTowns)
+    console.log(dateProjectsIndex)
+
+
 
   // 定義(フォームなど)
   const { data, setData, post, processing, errors,clearErrors, reset, assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,pageMinWidth,pageMaxWidth}=useAssignProjectToStaffDefinitions();

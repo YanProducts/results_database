@@ -1,7 +1,7 @@
 <?php
 
 // プロジェクトや町目が既存のものと同じかの確認
-namespace App\Actions\ProjectOperator\Dispatch\CheckDispatch;
+namespace App\Actions\Shared\Dispatch\CheckDispatch;
 
 use App\Exceptions\BusinessException;
 use App\Support\Common\ModelHelpers\AddressHelpers;

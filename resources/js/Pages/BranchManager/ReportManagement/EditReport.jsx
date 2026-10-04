@@ -13,12 +13,13 @@ import useEditReportActions from "../../../Action/BranchManager/ReportManagement
 export default function EditReport({what,type,prefix,staff,dateSet,assignWithRecords}){
 
     // assignWithRecordsキーのプロジェクト名はsameProjectFlagなども想定済みのもの
-    const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,changedData,setChangedData,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia,date}=useEditReportDefinitions({staff,dateSet,assignWithRecords});
+    const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,changedData,setChangedData,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia,date}=useEditReportDefinitions({prefix,staff,dateSet,assignWithRecords});
 
-    const {onIssuedOrReturnedCountsChange,onAssignedInputChange,onStartOverClick,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}=useEditReportActions({date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIssuedCount,setReturnedCount,setIsConfirm,data,setData,post,isBigMedia,setIsBigMedia,clearErrors});
+    const {onIssuedOrReturnedCountsChange,onAssignedInputChange,onStartOverClick,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}=useEditReportActions({prefix,date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIssuedCount,setReturnedCount,setIsConfirm,data,setData,post,isBigMedia,setIsBigMedia,clearErrors});
 
     //テーブルのUIや変数などに必要な要素の取得(依存配列が変化しなければ再計算されない)
     const [tableSets,differenceExists]=useWriteOrEditReportViewData({assignDataToStaff:assignWithRecords,selectedDate:date,inputValues,issuedCount,returnedCount,isBigMedia});
+
 
     return(
     <WriteReportContext.Provider value={{onSetOtherProjectToSameValueClick,isBigMedia,isEdit:true}}>
@@ -36,8 +37,15 @@ export default function EditReport({what,type,prefix,staff,dateSet,assignWithRec
         }
     {/* リンク */}
       <div className="mt-1">
-            {/* 営業所担当のトップへ */}
+
+        {prefix=="branch_manager" ?
+        // 営業所担当の場合はトップへ
         <BaseLinkLine routeName={`${prefix}.top_page`} minWidth={pageMinWidth} maxWidth={pageMaxWidth} what="営業所担当のトップ"/>
+        :
+        // 現場担当の場合は元に戻る
+        <BaseLinkLine routeName={`${prefix}.overview_reports`} minWidth={pageMinWidth} maxWidth={pageMaxWidth} what="確認一覧"/>
+}
+
         <BaseLinkLine routeName={`${prefix}.logout`} minWidth={pageMinWidth} maxWidth={pageMaxWidth} what="ログアウト"/>
       </div>
 

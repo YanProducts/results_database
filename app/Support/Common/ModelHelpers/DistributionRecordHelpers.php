@@ -38,7 +38,6 @@ class DistributionRecordHelpers{
     // その日、そのスタッフのデータを返す
     public static function data_in_the_date_and_staff($date,$staff){
         return DistributionRecord::where("staff_id",$staff)->where("distribution_date",$date)->get();
-
     }
 
     // そのスタッフの、該当期間におけるデータを返す(操作しやすいように期日ごとにgroupByは行わない)

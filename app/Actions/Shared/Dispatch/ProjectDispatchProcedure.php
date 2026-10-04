@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Actions\Shared;
+namespace App\Actions\Shared\Dispatch;
 
-use App\Actions\ProjectOperator\Dispatch\StoreDispatch;
+use App\Actions\Shared\Dispatch\StoreDispatch;
 use App\Utils\Session;
-use App\Actions\ProjectOperator\Dispatch\CheckDispatch\Flow as CheckFlow;
+use App\Actions\Shared\Dispatch\CheckDispatch\Flow as CheckFlow;
 use App\Support\ProjectOperator\DispatchCSVProcessor;
 use App\Exceptions\BusinessException;
 use App\Enums\UserRole;
-use App\Support\Common\ModelHelpers\BranchManagerListHelpers;
 
 // 案件の割り当ての流れ(案件担当と営業所担当で共有)
-class ProjectDispatchPrecedure{
+class ProjectDispatchProcedure{
 
     public static function project_dispatch_procedure($fileSets,$role,$place_id){
         try{

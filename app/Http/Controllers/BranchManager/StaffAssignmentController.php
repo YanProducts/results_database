@@ -20,7 +20,7 @@ class StaffAssignmentController extends Controller
     public function assign_staff(){
 
         // 日付セット、その営業所に来ている案件と、日付と案件(町目)のインデックス、（その日出席している）所属スタッフを返す(当日から5日先まで)
-        [$date_sets,$projects_and_towns,$date_projects_index,$staffs]=GetDataFlowBeforeAssign::get_projects_and_staffs_in_branch();
+        [$date_sets,$assigned_days,$projects_and_towns,$date_projects_index,$staffs]=GetDataFlowBeforeAssign::get_projects_and_staffs_in_branch();
 
         // 日付と案件とスタッフ一覧が表示(取り急ぎ併配も含めた案件ごと、のちにメイン案件でまとめる)
         return Inertia::render("BranchManager/ProjectAssignment/AssignProjectToStaff",[
@@ -30,6 +30,7 @@ class StaffAssignmentController extends Controller
             "projectsAndTowns"=>$projects_and_towns,
             "dateSets"=>$date_sets,
             "dateProjectsIndex"=>$date_projects_index,
+            "assignedDays"=>$assigned_days,
             "staffs"=>$staffs
         ]);
     }

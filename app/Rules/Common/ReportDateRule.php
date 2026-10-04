@@ -28,12 +28,12 @@ class ReportDateRule implements ValidationRule
 
         // その時のroleによって変更する
         $start_offset=match(Auth::user()->role){
-            "field_staff"=>$this->is_edit ? "" :ConstantsDate::StartOffsetInReportPeriod,
+            "field_staff"=>$this->is_edit ? 0 :ConstantsDate::StartOffsetInReportPeriod, //現場担当、編集は必ず当日にしかできない
             "branch_manager"=>ConstantsDate::StartOffsetInConfirmReportPeriodForManager ,
             "clerical"=>""
         };
         $end_offset=match(Auth::user()->role){
-            "field_staff"=>$this->is_edit ? "" :ConstantsDate::EndOffsetInReportPeriod,
+            "field_staff"=>$this->is_edit ? 0 :ConstantsDate::EndOffsetInReportPeriod,//現場担当、編集は必ず当日にしかできない
             "branch_manager"=>ConstantsDate::EndOffsetInConfirmReportPeriodForManager ,
             "clerical"=>""
         };

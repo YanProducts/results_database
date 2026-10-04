@@ -36,7 +36,7 @@ Route::prefix("project_operator")
             Route::post("pass_change","post_pass_change")
             ->name("pass_change_post");
           });
-          Route::middleware(["redirectUnAuth","redirectUnMatchedRole:project_operator"])
+          Route::middleware(["redirectUnAuth","redirectUnMatchedRole:project_operator","redirectUserInActive:project_operator"])
           ->group(function(){
             // 案件自体の登録や確認や削除などのコントローラー
             Route::controller(ProjectManagementController::class)
@@ -80,7 +80,7 @@ Route::prefix("project_operator")
                 ->name("logout");
           });
           // 案件のCrud操作を行うページへ(認証や違う認証の場合は案件担当用のログインページへ)
-          
+
     });
 
 

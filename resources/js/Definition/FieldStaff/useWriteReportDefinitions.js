@@ -28,7 +28,7 @@ export default function useWriteReportDefinitions(){
     const inputRefs=React.useRef([]);
 
       // ページの横幅
-    const [pageMinWidth,pageMaxWidth]=["min-w-90 mobile:min-w-250","max-w-300 mobile:max-w-400"];
+    const [pageMinWidth,pageMaxWidth]=["min_width_when_write_report","max_width_when_write_report"];
 
     // モバイルが大きい時と小さい時で表示を買える
     const [isBigMedia,setIsBigMedia]=React.useState(window.matchMedia("(min-width:500px)").matches);

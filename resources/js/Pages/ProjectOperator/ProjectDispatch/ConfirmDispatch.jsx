@@ -15,7 +15,7 @@ export default function ConfirmDispatch({what,type,prefix,sameProjectsData,sameT
   const { data, setData, post, processing, errors, reset,pageMinWidth,pageMaxWidth}=useConfirmDispatchDefinitions();
 
   // 動き
-  const {onProjectsCheckClick,onSubmitBtnClick,onCancelBtnClick}=useComfirmDispatchActions(post,data,setData);
+  const {onProjectsCheckClick,onSubmitBtnClick,onCancelBtnClick}=useComfirmDispatchActions({prefix,post,data,setData});
 
   return(
     <Layout title={`${what}-${type}`}>

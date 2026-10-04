@@ -5,7 +5,7 @@ import confirmMainOrSubOnlyInput from "../../FieldStaff/Part/confirmMainOrSubOnl
 import { router } from "@inertiajs/react";
 
 // 報告書編集の動き
-export default function useEditReportActions({date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIsConfirm,data,setData,post,setIsBigMedia,clearErrors}){
+export default function useEditReportActions({prefix,date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIsConfirm,data,setData,post,setIsBigMedia,clearErrors}){
 
 
     // 大きなデバイスかどうか
@@ -69,9 +69,9 @@ export default function useEditReportActions({date,assignWithRecords,inputValues
         }));
     }
 
-    // もう１度日付選択から戻るとき
+    // もう１度日付選択から戻るとき(prefixにより分ける)
     const onStartOverClick=()=>{
-        router.visit(route("branch_manager.choice_report_target"));
+        router.visit(route(prefix === "branch_manager" ? "branch_manager.choice_report_target": "field_staff.overview_reports"));
     }
 
 
@@ -145,8 +145,7 @@ export default function useEditReportActions({date,assignWithRecords,inputValues
     const onConfirmOkClick=()=>{
         // バリデーション対策にinputデータを初期化はしないでおく
         // ポスト(代替記入、編集とも同じ)
-        post(route("branch_manager.complete_report_post"));
-
+        post(route(prefix=="branch_manager" ? "branch_manager.complete_report_post" : "field_staff.edit_report_post"));
         // バリデーション失敗した時に備えてconfirmはチェンジ
         setIsConfirm(false)
     }

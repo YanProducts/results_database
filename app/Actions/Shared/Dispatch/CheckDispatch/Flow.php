@@ -2,12 +2,12 @@
 
 // 重複案件のcheckに関する一連の流れ(コントローラーから引き渡し)
 
-namespace App\Actions\ProjectOperator\Dispatch\CheckDispatch;
-use App\Actions\ProjectOperator\Dispatch\CheckDispatch\ReadSql as CheckRead;
-use App\Actions\ProjectOperator\Dispatch\CheckDispatch\Create as CheckCreate;
-use App\Actions\ProjectOperator\Dispatch\CheckDispatch\Delete as CheckDelete;
-use App\Actions\ProjectOperator\Dispatch\StoreDispatch;
-use App\Actions\ProjectOperator\Dispatch\CheckDispatch\ReadFiles;
+namespace App\Actions\Shared\Dispatch\CheckDispatch;
+use App\Actions\Shared\Dispatch\CheckDispatch\ReadSql as CheckRead;
+use App\Actions\Shared\Dispatch\CheckDispatch\Create as CheckCreate;
+use App\Actions\Shared\Dispatch\CheckDispatch\Delete as CheckDelete;
+use App\Actions\Shared\Dispatch\StoreDispatch;
+use App\Actions\Shared\Dispatch\CheckDispatch\ReadFiles;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;

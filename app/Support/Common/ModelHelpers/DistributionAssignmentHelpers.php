@@ -4,6 +4,7 @@
 namespace App\Support\Common\ModelHelpers;
 
 use App\Models\DistributionAssignment;
+use App\Models\FieldStaffList;
 use Illuminate\Support\Facades\Log;
 
 class DistributionAssignmentHelpers{
@@ -11,6 +12,14 @@ class DistributionAssignmentHelpers{
 
 
     // 該当スタッフ、該当期間における、未提出以外のデータ(status=1かどうかで行うと2日案件で2日に分けて行く予定の場合が含まれなくなるので、該当日該当スタッフのデータがあるかどうかで検証)
+
+
+    // 該当営業所(authから取得)における、期間内における割り当てデータが少しでもある日時を配列で返す
+    public static function get_date_sets_having_assign_data($start_offset,$end_offset,$place_id){
+
+         return  DistributionAssignment::whereBetween("date",[$start_offset,$end_offset])->whereIn("staff_id", FieldStaffList::where("place_id",$place_id)->pluck("id"))->pluck("date")->unique();
+
+    }
 
 
 

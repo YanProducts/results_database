@@ -29,6 +29,10 @@ return Application::configure(basePath: dirname(__DIR__))
             "redirectUnAuth"=>\App\Http\Middleware\RedirectIfUnAuthenticated::class,
             // 認証されていても認証先が違う場合はそのログインページへ(authは1つしか無理なので、ログアウトは別に行う)
             "redirectUnMatchedRole"=>\App\Http\Middleware\RedirectIfUnMatchedRole::class,
+            //ユーザーが非稼働の時はログイン後のページは操作させないようにする
+            "redirectUserInActive"=>\App\Http\Middleware\RedirectIfUserInActive::class,
+            //所属営業所が非稼働な時はログイン後のページは操作できないようにする
+            "redirectPlaceInActive"=>\App\Http\Middleware\RedirectIfPlaceInActive::class,
             // 全般管理データのログイン認証
             "redirectWholeDataUnAuth"=>\App\Http\Middleware\RedirectIfWholeDataUnAuthenticated::class,
             // Assign時の重複確認のルートに重複確認テーブルがない

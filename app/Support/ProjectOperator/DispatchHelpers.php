@@ -64,8 +64,9 @@ class DispatchHelpers{
 
     // confirm時に必要な一式がない時はエラーページへ
     public static function check_confirm_data_exisits(){
+        $role=Auth::user()->role; //案件担当だけでなく営業所担当とも共有
         if(empty(session("same_projects_data")) && empty(session("same_towns_data")) && empty(session("same_towns_data_in_files"))|| !ProjectImport::where("created_by",Auth::user()->id)->exists() || !DistributionPlanImport::where("created_by",Auth::user()->id)->exists()){
-            throw new BusinessException("再度ファイル取得してください","project_operator.dispatch_project",true);
+            throw new BusinessException("再度ファイル取得してください",$role.".dispatch_project",true);
         }
     }
 

@@ -7,6 +7,7 @@ use Closure;
 use App\Models\UserAuth;
 use App\Support\Auth\UserRoleResolver;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Facades\Log;
 
 class UserNameExistsRule implements ValidationRule
 {
@@ -35,7 +36,7 @@ class UserNameExistsRule implements ValidationRule
         $id=Login::get_id_in_role_table($model_namespace,$value);
 
         // ユーザー自身が新規登録を行なったか
-        if(!UserAuth::where("authable_id",$id)->exists()){
+        if(!UserAuth::where("authable_id",$id)->where("authable_type",$model_namespace)->exists()){
             $fail("まだ登録されておりません\n新規登録から設定してください");
         }
 

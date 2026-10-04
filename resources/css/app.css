@@ -35,15 +35,6 @@
 
 
 
-     /* divでタイトルとinputやselectなどで横２列・縦に内容を表したい時の最初の行(EditUSerのみの可能性) */
-
-     /* divでタイトルとinputやselectなどで横２列・縦に内容を表したい時の最後の行(EditUSerのみの可能性) */
-
-
-
-
-
-
 /* 自作コンポーネント */
 @layer components {
     /* bodyの高さ */
@@ -106,5 +97,14 @@
      .each_form_div_item_form{
       @apply h-full flex items-center w-[50%]
      }
+     /* 現場担当がスマホで入力する場合を考慮 */
+    .min_width_when_write_report{
+       @apply
+         min-w-[350px] mobile:min-w-[500px] xl:min-w-250
+    }
+    .max_width_when_write_report{
+       @apply
+         max-w-screen xl:max-w-350
+    }
 
   }

@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Actions\ProjectOperator\Dispatch;
+namespace App\Actions\Shared\Dispatch;
 
 use App\Exceptions\BusinessException;
 use App\Models\DistributionPlan;
 use App\Models\DistributionPlanImport;
-use App\Models\DistributionRecord;
 use App\Models\Project;
 use App\Support\Common\ModelHelpers\AddressHelpers;
 use App\Support\Common\ModelHelpers\ProjectHelpers;
@@ -15,7 +14,6 @@ use App\Models\ProjectImport;
 use App\Models\ProjectPlannedCount;
 use App\Models\ProjectPlannedCountImport;
 use App\Support\ProjectOperator\DispatchHelpers;
-use App\Utils\DateHelper;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
@@ -88,6 +86,7 @@ class StoreDispatch{
         $upsert_array=Arr::map($project_sets,fn($date_town_sets,$project_name)=>[
                 "project_name" => $project_name,
                 "another_project_flag" => ProjectHelpers::get_latest_another_project_flag($project_name),//存在しないものは-0で返る(新規作成ではゼロ) //ここでは変更しない
+                // 登録者は全体のAuthテーブルで取得しているので、案件担当でも営業所担当でも分ける必要はない
                 "created_by"=>Auth::user()->id,
                 // 投稿されたファイルと既存データの早い方をstart_dateに
                 "start_date"=>DispatchHelpers::get_earliest_start_date($project_name,$date_town_sets),

@@ -13,6 +13,8 @@ use App\Actions\Auth\Register;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Support\Auth\RedirectTopPage;
 use App\Exceptions\BusinessException;
+use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
@@ -52,46 +54,61 @@ class AuthController extends Controller
 
     // ログインの投稿
     public function post_login(LoginRequest $request){
-        // sessionの再生(その後に作成した方が良い)
-        $request->session()->regenerate();
+        // ログイン失敗時
+        if(!Login::attempt_login($request)){
+            return back()->withErrors([
+                "userName" => "パスワードが違います"
+            ]);
+        }
 
         // 今回ログインを試みたroute
         $route=$request->route()->getName();
 
-        // ログインを試みて、無理ならログインページへ
-        if (Login::attempt_login($request)){
-            // 前にアクセスを試みたページがあれば取得(認証で弾かれるなど)
-            $intended=session("url.intended");
-            // それぞれのトップページへ
-            if(str_contains($route,"whole_data")){
-                // 全般管理(試みがない場合は確認ページへ)
-                $whole_data_top="whole_data.admin_overview/all";
-                // 前に行こうとしていたページがある場合
-                if($intended){
-                  return redirect()->intended($whole_data_top);
-                }
-                // トップページへ
-                return redirect()->route("whole_data.admin_overview",[
-                    "type"=>"all"
-                ]);
+        // sessionの再生(その後に作成した方が良い)
+        $request->session()->regenerate();
 
-            }else{
-                // roleがある場合はauthがない状態で保存されたページへ
-                $role_top_page=RedirectTopPage::redirect_top_page($route);
-                // ログインしているページのprefixが、intendedでログインを試みた時に保存されているページに含まれるかを確認
-                if($intended && str_contains($intended,UserRoleResolver::get_page_name_sets($route)["prefix"])){
-                    // 含まれていたら、そのページへリダイレクト
-                    return redirect()->intended($role_top_page);
-                }
-
-                // 含まれていなければ、各トップページへ
-                return redirect()->route($role_top_page);
-
+        // 以下、ログイン成功だった時
+        // 前にアクセスを試みたページがあれば取得(認証で弾かれるなど)
+        $intended=session("url.intended");
+        // それぞれのトップページへ
+        if(str_contains($route,"whole_data")){
+            // 全般管理(試みがない場合は確認ページへ)
+            $whole_data_top="whole_data.admin_overview/all";
+            // 前に行こうとしていたページがある場合
+            if($intended){
+                return redirect()->intended($whole_data_top);
             }
-        }
-        return back()->withErrors([
-                "userName" => "パスワードが違います"
+            // トップページへ
+            return redirect()->route("whole_data.admin_overview",[
+                "type"=>"all"
             ]);
+
+        }else{
+
+            // ログインはできていたが、稼働ユーザーはなかったとき
+            if(!UserRoleResolver::check_user_is_active($prefix=UserRoleResolver::get_page_name_sets($route)["prefix"],$id=Auth::user()->authable_id)){
+                return back()->withErrors([
+                    "userName" => "稼働していないユーザーです"
+                ]);
+            }
+            // ログインはできていたが、稼働営業所ではなかったとき
+            if(!UserRoleResolver::check_place_is_active($prefix,$id)){
+                return back()->withErrors([
+                    "userName" => "営業所が稼働していません"
+                ]);
+            }
+
+            // roleがある場合はauthがない状態で保存されたページへ
+            $role_top_page=RedirectTopPage::redirect_top_page($route);
+            // ログインしているページのprefixが、intendedでログインを試みた時に保存されているページに含まれるかを確認
+            if($intended && str_contains($intended,UserRoleResolver::get_page_name_sets($route)["prefix"])){
+                // 含まれていたら、そのページへリダイレクト
+                return redirect()->intended($role_top_page);
+            }
+
+            // 含まれていなければ、各トップページへ
+            return redirect()->route($role_top_page);
+        }
     }
 
     // パスワード変更のページへ

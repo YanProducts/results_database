@@ -15,7 +15,6 @@ use App\Http\Requests\BranchManager\ChoiceFromStaffRequest;
 use App\Http\Requests\BranchManager\CompleteEditReportRequest;
 use App\Http\Requests\BranchManager\ReportChoiceDecideRequest;
 use App\Models\BranchManagerList;
-use App\Models\DistributionRecord;
 use App\Support\Common\ModelHelpers\DistributionRecordHelpers;
 use App\Support\Common\ModelHelpers\BranchManagerListHelpers;
 use App\Support\Common\ModelHelpers\FieldStaffListHelpers;
@@ -23,7 +22,6 @@ use App\Utils\DateHelper;
 use App\Utils\Session;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 

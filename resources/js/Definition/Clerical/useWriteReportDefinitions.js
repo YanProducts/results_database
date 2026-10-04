@@ -32,7 +32,7 @@ export default function useWriteReportDefinitions({projectId,reportDataInTheProj
      const [isConfirm,setIsConfirm]=React.useState(false);
 
      // ページの横幅
-      const [pageMinWidth,pageMaxWidth]=["min-w-250","max-w-350"];
+    const [pageMinWidth,pageMaxWidth]=["min-w-90 mobile:min-w-250","max-w-300 mobile:max-w-400"];
 
       return {data, setData, post, processing, errors,clearErrors, reset,dataInReport,setDataInReport,changedId,setChangedId,firstAttention,setFirstAttention,validationHidden,setValidationHidden,isConfirm,setIsConfirm,pageMinWidth,pageMaxWidth}
 }

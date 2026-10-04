@@ -41,7 +41,7 @@ Route::prefix("field_staff")
 
            });
         // 認証後の操作
-        Route::middleware(["redirectUnAuth","redirectUnMatchedRole:field_staff"])
+        Route::middleware(["redirectUnAuth","redirectUnMatchedRole:field_staff","redirectUserInActive:field_staff", "redirectPlaceInActive:field_staff"])
             ->group(function(){
                 Route::controller(WriteReportController::class)
                   ->group(function(){
@@ -58,19 +58,13 @@ Route::prefix("field_staff")
                     // 報告書確認/編集(日付リスト) //monthパラメータは何か月前か
                     Route::get("overview_reports/{year?}/{month?}","overview_reports")
                     ->name("overview_reports");
-                    // 報告書の日付リスト→日付を指定して確認
-                    Route::get("show_detail_report/{date}","show_detail_report")
-                    ->name("show_detail_report");
                     // 上記の日付で編集
                     Route::get("edit_report/{date}","edit_report")
-                    ->name("edit_report_post");
+                    ->name("edit_report");
                     // 上記の日付で編集の投稿
                     Route::post("edit_report","edit_report_post")
                     ->name("edit_report_post");
                 });
-
-
-
             // ログアウト(そもそも認証されていないと無理)
             Route::get("logout",[AuthController::class,"logout"])
             ->name("logout");

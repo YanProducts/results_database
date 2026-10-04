@@ -8,6 +8,7 @@ use App\Models\BranchManagerList;
 use App\Actions\BranchManager\Assgin\DataFetches\GetDataInPlaceAndPeriod;
 use App\Actions\BranchManager\Assgin\DataFetches\GetDatePlanIndex;
 use App\Actions\BranchManager\Assgin\DataFetches\GetStaffsInPlaceAndPeriod;
+use App\Support\Common\ModelHelpers\DistributionAssignmentHelpers;
 use App\Utils\DateHelper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -40,13 +41,22 @@ class GetDataFlowBeforeAssign{
 
         [$start_offset,$end_offset,$place_id,$date_sets,$staffs_in_the_period]=self::get_common_data();
 
+
+        // 開始日から終了日までの中で、現在この営業所のassignのデータが1つでもある日をY-m-dの配列で取得（その日のデータは「データあり」で表示。データ軽量化のため後の取得データからも外す
+        // 現状、end_dateは利用できてない
+        $assigned_days=DistributionAssignmentHelpers::get_date_sets_having_assign_data($start_offset,$end_offset,$place_id);
+
+
+        // 以下2つのメソッド、ここでしか呼ばれていないので、変更可能
+
+
         // 該当期間に計画されている案件を、メイン案件=>[each_sets=>[id(planの),address_name],sub_sets["prject_name"=>,id_sets=>[]]]の形で取得
        $projects_and_towns=GetDataInPlaceAndPeriod::get_projects_and_towns_in_the_place_and_period($place_id,$start_offset,$end_offset);
 
         // 日付とデータのインデックス
         $date_projects_index=GetDatePlanIndex::get_date_projects_index($date_sets,$projects_and_towns);
 
-        return [$date_sets,$projects_and_towns,$date_projects_index,$staffs_in_the_period];
+        return [$date_sets,$assigned_days,$projects_and_towns,$date_projects_index,$staffs_in_the_period];
     }
 
     // スタッフに割り当てる簡易版のデータを返す

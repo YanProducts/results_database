@@ -46,7 +46,7 @@ Route::prefix("clerical")
 
 
         // 入力を行うページへ(認証や違う認証の場合は現場用のログインページへ)
-        Route::middleware(["redirectUnAuth","redirectUnMatchedRole:clerical"])
+        Route::middleware(["redirectUnAuth","redirectUnMatchedRole:clerical","redirectUserInActive:clerical"])
             ->group(function(){
                 Route::controller(DataManagementController::class)
                  ->group(function(){

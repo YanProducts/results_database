@@ -7,5 +7,7 @@ use Illuminate\Http\Request;
 
 class AssignOverviewContorller extends Controller
 {
-    //
+    public function assign_overview(){
+        
+    }
 }

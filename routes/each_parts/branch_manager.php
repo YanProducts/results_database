@@ -39,7 +39,8 @@ Route::prefix("branch_manager")
             ->name("pass_change_post");
             });
     // 担当の決定を行うページへ(認証や違う認証の場合は現場用のログインページへ)
-      Route::middleware(["redirectUnAuth","redirectUnMatchedRole:branch_manager"])
+      Route::middleware(["redirectUnAuth","redirectUnMatchedRole:branch_manager","redirectUserInActive:branch_manager",
+      "redirectPlaceInActive:branch_manager"])
         ->group(function(){
             Route::controller(StaffAssignmentController::class)
             ->group(function(){
@@ -139,12 +140,12 @@ Route::prefix("branch_manager")
                 ->name("handing_assignment_post");
 
                 // 重複可能性のある案件の確認
-                //   Route::get("confirm_dispatch","confirm_dispatch")
-                //   ->name("confirm_dispatch");
+                  Route::get("confirm_dispatch","confirm_dispatch")
+                  ->name("confirm_dispatch");
 
-                //   // 重複可能性のある案件をどうするか決定した時の処理
-                //   Route::post("confirm_dispatch","confirm_dispatch_post")
-                //   ->name("confirm_dispatch_post");
+                  // 重複可能性のある案件をどうするか決定した時の処理
+                  Route::post("confirm_dispatch","confirm_dispatch_post")
+                  ->name("confirm_dispatch_post");
             });
 
 

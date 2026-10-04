@@ -36,7 +36,7 @@ export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,sta
             :(submittedDates.includes(selectedDate) ?
                <div>
                 <p className={`base_frame base_backColor mt-2 ${pageMinWidth} ${pageMaxWidth} text-center font-bold text-red-600`}>すでにデータは投稿されております</p>
-                <BaseLinkLine routeName={`field_staff.show_detail_report`} minWidth={pageMinWidth} maxWidth={pageMaxWidth} routeParams={selectedDate} what="確認する場合"/>
+                <BaseLinkLine routeName={`field_staff.overview_reports`} minWidth={pageMinWidth} maxWidth={pageMaxWidth} routeParams={selectedDate} what="ここ数日の案件確認"/>
               </div>
              :
               <div className={`text-center base_frame base_backColor ${pageMinWidth} ${pageMaxWidth} mb-3`}><p>案件は届いておりません</p></div>

@@ -19,6 +19,8 @@ export default function TopPage({prefix,what,type}){
         <ThemeLists routeName={`${prefix}.choice_report_target`} label="報告書の確認/作成/修正(スタッフから)"/>
         <ThemeLists routeName={`${prefix}.choice_report_date_target`} label="報告書の確認/作成/修正(日付から)"/>
         <ThemeLists routeName={`${prefix}.confirm_project_record`} label="町丁目配布データの確認"/>
+        <ThemeLists routeName={`${prefix}.handing_assignment`} label="案件自体の登録"/>
+
 
     {/* リンク */}
       <div className="mt-4">

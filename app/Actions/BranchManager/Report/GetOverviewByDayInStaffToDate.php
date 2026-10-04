@@ -90,7 +90,7 @@ class GetOverviewByDayInStaffToDate{
                     //project_idからproject_nameの一覧を取得し、address_idから市のリストを選択する
                     // ->only(キーのリスト)で、キーに該当するコレクションのみを残す
                     "all_main_project_names"=>$project_name_sets_key_by_project_id->only($submitted_data_by_date->pluck("project_id"))->implode("・"),
-                    "all_city_lists"=>$city_name_sets_key_by_address_id->only($submitted_data_by_date->pluck("address_id"))->implode("・"),
+                    "all_city_lists"=>$city_name_sets_key_by_address_id->only($submitted_data_by_date->pluck("address_id"))->unique()->implode("・"),
                     // 全案件のメインをトータルした部数
                     "counts"=>$submitted_data_by_date->sum("distribution_count")
                 ]]

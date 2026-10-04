@@ -2,22 +2,15 @@
 
 namespace App\Http\Controllers\ProjectOperator;
 
-use App\Actions\ProjectOperator\Dispatch\CheckDispatch\Delete as CheckDelete;
-use App\Actions\ProjectOperator\Dispatch\CheckDispatch\Flow as CheckFlow;
+use App\Actions\Shared\Dispatch\ProjectDispatchProcedure;
+use App\Actions\Shared\Dispatch\CheckDispatch\Delete as CheckDelete;
+use App\Actions\Shared\Dispatch\CheckDispatch\Flow as CheckFlow;
 use App\Http\Controllers\Controller;
 use App\Support\Common\ModelHelpers\PlaceHelpers;
-use App\Actions\ProjectOperator\Dispatch\StoreDispatch;
-use App\Actions\Shared\ProjectDispatchPrecedure;
-use App\Enums\UserRole;
-use App\Exceptions\BusinessException;
 use App\Http\Requests\ProjectOperator\ConfirmRequest;
 use App\Http\Requests\ProjectOperator\DispatchRequest;
-use App\Models\UserAuth;
-use App\Support\ProjectOperator\DispatchCSVProcessor;
 use App\Support\ProjectOperator\DispatchHelpers;
-use App\Utils\Session;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Log;
 
 class ProjectDispatchController extends Controller
 {
@@ -37,68 +30,22 @@ class ProjectDispatchController extends Controller
     // 営業所(外注含む)へ振る案件投稿→以前と同じものか確認
     public function dispatch_project_post(DispatchRequest $request){
 
-        // try{
-        //     // CSVからテーマ名=>["main"=>["projects"=>"","date_town_sets"=>"","sub"=>["ptojrct_name"と"date_town_sets"がいくつかの配列]]のデータ取得
-        //     // この内部でインストールされたファイルの中身のエラーチェック
-        //     $project_name_and_towns=DispatchCSVProcessor::get_data_in_files($request->fileSets);
-        // }catch(\Throwable $e){
-        //     Session::create_sessions(["error_message"=>$e instanceof BusinessException ? $e->getMessage() : "予期せぬエラーです","back_route"=>UserRole::top_page_route_name("project_operator")]);
-        //     return redirect()->route("view_error");
-        // }
-
-        // //placeはすでにplaceがid
-        // $place_id=$request->place;
-
-        // //重複チェックの一連の流れを行い、重複データを変換(この過程でsqlデータを初期化する,合計テーブルも入れる)
-        // [$same_projects_data,$same_towns_data,$same_towns_data_in_files]=CheckFlow::check_flow($project_name_and_towns,$place_id);
-
-
-        // if(!empty($same_projects_data) || !empty($same_towns_data) || !empty($same_towns_data_in_files)){
-        //     // フラッシュセッションだとバリデーション時のエラー捕捉がやりにくい
-        //     Session::create_sessions([
-        //         "same_projects_data"=>$same_projects_data,
-        //         "same_towns_data"=>$same_towns_data,
-        //         "same_towns_data_in_files"=>$same_towns_data_in_files
-        //     ]);
-        //     // 既存のものと重複可能性がある場合は確認ページへ
-        //     return redirect()->route("project_operator.confirm_dispatch",[
-        //         "same_projects_data"=>session($same_projects_data),
-        //         "same_towns_data"=>session($same_towns_data),
-        //         "same_towns_data_in_files"=>session($same_towns_data_in_files),
-        //     ]);
-        // }
-
-        // // 既存のものと案件名が重ならないか期間的に同じと思われる場合には登録(request->placeは既にid名)
-        // StoreDispatch::store_projects_data($project_name_and_towns,$place_id);
-
         // 割り当てが成功か失敗か重複戻しか
-        $dispatch_test_result=ProjectDispatchPrecedure::project_dispatch_procedure($request->fileSets,"project_operator",$request->place,);
+        $dispatch_test_result=ProjectDispatchProcedure::project_dispatch_procedure($request->fileSets,"project_operator",$request->place,);
 
         return
         match($dispatch_test_result){
             "view_error"=>redirect()->route("view_error"),
             "duplicated"=> redirect()->route("project_operator.confirm_dispatch"),
 
-            // sessionは受け取り先で捕捉!
-            // ,[
-            //     "same_projects_data"=>session($same_projects_data),
-            //     "same_towns_data"=>session($same_towns_data),
-            //     "same_towns_data_in_files"=>session($same_towns_data_in_files),
-            // ]),
-
             "success"=> redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"project_operator.project_overview","linkPageInJpn"=>"確認ページ"])
         };
-
-
-        return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"project_operator.project_overview","linkPageInJpn"=>"確認ページ"]);
-
     }
 
     // 重複可能性がある案件をどうするかを確認
     public function confirm_dispatch(){
         // sessionがないときはエラーページへ
         DispatchHelpers::check_confirm_data_exisits();
-
         // 表示
         return Inertia::render("ProjectOperator/ProjectDispatch/ConfirmDispatch",[
             "what"=>"案件担当",

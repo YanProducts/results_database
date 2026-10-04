@@ -3,10 +3,6 @@
 // 編集項目を決定した時のバリデーション(getできたもののため、自ら定義してメッセージを返却)
 namespace App\Support\WholeData;
 
-use App\Models\BranchManagerList;
-use App\Models\ClericalList;
-use App\Models\FieldStaffList;
-use App\Models\ProjectOperatorList;
 use App\Support\Auth\UserRoleResolver;
 
 class DecideEditItemValidation{

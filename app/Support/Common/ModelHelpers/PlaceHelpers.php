@@ -2,7 +2,10 @@
 // 営業所に関するサポート関数
 
 namespace App\Support\Common\ModelHelpers;
+
+use App\Exceptions\BusinessException;
 use App\Models\Place as PlaceModel;
+
 
 class PlaceHelpers{
 

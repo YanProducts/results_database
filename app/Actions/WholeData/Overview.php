@@ -40,7 +40,7 @@ class Overview{
             // 外側のコレクションのキーではなく、内側のモデルインスタンスを配列化したもののキーを変更していくのでmapで良い。
             $all_user_data_with_role=$all_user_data_in_role->map(fn($each_user)=>[...$each_user->toArray(),
             // is_active_in_jpnは稼働状況の日本語表記に変更
-            "is_active_in_jpn"=>$each_user["is_active"] ? ($role_name=="field_staff" ? "稼働" : "在職") : ($role_name=="field_staff" ? "非稼働" : "旧退職"),
+            "is_active_in_jpn"=>$each_user["is_active"] ? ($role_name=="field_staff" ? "稼働" : "在職") : ($role_name=="field_staff" ? "非稼働" : "休退職"),
             // placeIdからplace_nameを取得する
             "place_name"=>OverViewHelpers::get_place_name_from_id($each_user["place_id"] ?? ""),
             // 現在の登録状況(Authテーブルに存在するか＝パスワードをセットしているか)を加える。

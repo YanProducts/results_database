@@ -2,7 +2,7 @@ import React from 'react';
 import {route} from 'ziggy-js';
 import { router } from '@inertiajs/react';
 
-export default function useComfirmDispatchActions(post,data,setData){
+export default function useComfirmDispatchActions({prefix,post,data,setData}){
 
  // プロジェクトを新しくするかどうかのボタンの変更
  const onProjectsCheckClick=(e)=>{
@@ -27,14 +27,13 @@ export default function useComfirmDispatchActions(post,data,setData){
   const onSubmitBtnClick=(e)=>{
         e.preventDefault();
     // バリデーションはlaravelに任せる(遷移しないため)
-       post(route("project_operator.confirm_dispatch_post"));
+       post(route(`${prefix}.confirm_dispatch_post`));
   }
 
   // やり直すボタンを押した時
   const onCancelBtnClick=()=>{
     // 完全遷移
-    // location.href="";
-    router.visit(route('project_operator.dispatch_project'));
+    router.visit(route(prefix=="project_oerator" ? 'project_operator.dispatch_project' : "branch_manager.handing_assignment"));
   }
 
   return{onProjectsCheckClick,onSubmitBtnClick,onCancelBtnClick}

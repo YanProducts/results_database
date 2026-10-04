@@ -40,7 +40,7 @@ export default function SendProjectToBranch({prefix,what,type,placeSets}){
             onChange={onFileChange} prefix="案件CSV(複数可)："
             attributes={{multiple:true}}
             data={data}
-            onFileDeleteClick={onFileDeleteClick}
+            onFileDeleteClick={onFileDeleteClick} role={prefix}
             />
 
             </div>
@@ -54,7 +54,11 @@ export default function SendProjectToBranch({prefix,what,type,placeSets}){
 
     {/* リンク */}
       <div className="mt-4">
+        {prefix=="project_operator" ?
         <BaseLinkLine routeName={`${prefix}.project_overview`} minWidth={pageMinWidth} maxWidth={pageMaxWidth} what="案件状況の確認"/>
+        :
+        <BaseLinkLine routeName={`${prefix}.top_page`} minWidth={pageMinWidth} maxWidth={pageMaxWidth} what="トップへ"/>
+        }
         <BaseLinkLine routeName={`${prefix}.logout`} minWidth={pageMinWidth} maxWidth={pageMaxWidth} what="ログアウト"/>
       </div>
     </RoleLayout>
