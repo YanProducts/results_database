@@ -36,8 +36,13 @@ class FieldStaffListHelpers{
         return FieldStaffList::whereIn("id",$ids)->selectRaw("coalesce(staff_name,user_name) as staff_name, id")->pluck("staff_name","id");
     }
 
+    // 特定営業所のスタッフのIdをコレクションで返す
+    public static function get_all_staffs_in_the_place($place_id){
+        return FieldStaffList::where("place_id",$place_id)->pluck("id");
+    }
 
-    // 特定営業所のスタッフの「スタッフ名→ないときはid」で返す
+
+    // 特定営業所のスタッフの「idとスタッフ名→ないときはuser_name」で返す
     public static function get_all_names_of_staffs_in_the_place($place_id){
         return FieldStaffList::select("id",DB::raw("COALESCE(staff_name,user_name) as staff_name"))->where("place_id",$place_id)->get();
     }

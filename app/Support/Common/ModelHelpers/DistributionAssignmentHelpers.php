@@ -5,6 +5,8 @@ namespace App\Support\Common\ModelHelpers;
 
 use App\Models\DistributionAssignment;
 use App\Models\FieldStaffList;
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Log;
 
 class DistributionAssignmentHelpers{
@@ -17,10 +19,16 @@ class DistributionAssignmentHelpers{
     // 該当営業所(authから取得)における、期間内における割り当てデータが少しでもある日時を配列で返す
     public static function get_date_sets_having_assign_data($start_offset,$end_offset,$place_id){
 
-         return  DistributionAssignment::whereBetween("date",[$start_offset,$end_offset])->whereIn("staff_id", FieldStaffList::where("place_id",$place_id)->pluck("id"))->pluck("date")->unique();
+        $date=CarbonImmutable::now();
+
+         return  DistributionAssignment::whereBetween("date",[$date->addDays($start_offset),$date->addDays($end_offset)])->whereIn("staff_id", FieldStaffListHelpers::get_all_staffs_in_the_place($place_id))->pluck("date")->unique();
 
     }
 
+    // 該当のplanに対応するassignの取得
+    public static function get_assigns_by_plan_ids($plan_ids){
+        return DistributionAssignment::whereIn("plan_id",$plan_ids)->groupBy("plan_id");
+    }
 
 
     // その日の複数スタッフに割り当てられている案件を[スタッフid=>planidセット]で変換

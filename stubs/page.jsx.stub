@@ -9,7 +9,7 @@ import check{{PageName}}Props from "{{BasePath}}Support/ConfirmProps/{{Directori
 export default function {{PageName}}({ prefix, what, type }) {
 
     // propsの確認
-    check{{pageName}}Props({})
+    check{{PageName}}Props({})
 
     // 定義セット
     const {data, setData, post, processing, errors,clearErrors, reset,validationHidden,setValidationHidden,pageMinWidth,pageMaxWidth} = use{{PageName}}Definitions({});

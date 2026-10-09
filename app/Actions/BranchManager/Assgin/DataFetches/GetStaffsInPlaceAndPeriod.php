@@ -21,6 +21,5 @@ class GetStaffsInPlaceAndPeriod{
         // 本来はシフトサイト連動だが、簡易的に現在のデータ全てから取得
         // date=>出席スタッフで返す(現段階では全スタッフ)
         return collect($date_sets)->mapWithKeys(fn($date_in_jpn,$date_in_Ymd)=>[$date_in_Ymd=>$staffs]);
-
     }
 }

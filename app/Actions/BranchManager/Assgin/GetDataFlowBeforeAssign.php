@@ -32,29 +32,28 @@ class GetDataFlowBeforeAssign{
         //他でも使用する可能性があるので、Support層で定義
         $staffs_in_the_period=GetStaffsInPlaceAndPeriod::get_staffs_in_the_place_and_preriod($place_id,$date_sets);
 
-        return [$start_offset,$end_offset,$place_id,$date_sets,$staffs_in_the_period];
+
+        // 開始日から終了日までの中で、現在この営業所のassignのデータが1つでもある日をY-m-dの配列で取得（その日のデータは「データあり」で表示。データ軽量化のため後の取得データからも外す
+        // 現状、end_dateは利用できてない
+        $assigned_days=DistributionAssignmentHelpers::get_date_sets_having_assign_data($start_offset,$end_offset,$place_id);
+
+        return [$start_offset,$end_offset,$place_id,$date_sets,$staffs_in_the_period,$assigned_days];
     }
 
     // 詳細版
     // 日付、営業所に来ている案件、日付とキーのインデックス、現在のスタッフ取得
     public static function get_projects_and_staffs_in_branch(){
 
-        [$start_offset,$end_offset,$place_id,$date_sets,$staffs_in_the_period]=self::get_common_data();
-
-
-        // 開始日から終了日までの中で、現在この営業所のassignのデータが1つでもある日をY-m-dの配列で取得（その日のデータは「データあり」で表示。データ軽量化のため後の取得データからも外す
-        // 現状、end_dateは利用できてない
-        $assigned_days=DistributionAssignmentHelpers::get_date_sets_having_assign_data($start_offset,$end_offset,$place_id);
-
-
-        // 以下2つのメソッド、ここでしか呼ばれていないので、変更可能
+        [$start_offset,$end_offset,$place_id,$date_sets,$staffs_in_the_period,$assigned_days]=self::get_common_data();
 
 
         // 該当期間に計画されている案件を、メイン案件=>[each_sets=>[id(planの),address_name],sub_sets["prject_name"=>,id_sets=>[]]]の形で取得
+        // planは複数日で渡ることが多いので、割り当て完了日のみの除去は困難(startからendまで全て終えている場合のみ除去は可能だが省略)
        $projects_and_towns=GetDataInPlaceAndPeriod::get_projects_and_towns_in_the_place_and_period($place_id,$start_offset,$end_offset);
 
         // 日付とデータのインデックス
-        $date_projects_index=GetDatePlanIndex::get_date_projects_index($date_sets,$projects_and_towns);
+        //ここで割り当て済みのものを除く
+        $date_projects_index=GetDatePlanIndex::get_date_projects_index($date_sets,$projects_and_towns,$assigned_days);
 
         return [$date_sets,$assigned_days,$projects_and_towns,$date_projects_index,$staffs_in_the_period];
     }
@@ -63,12 +62,12 @@ class GetDataFlowBeforeAssign{
     public static function get_staffs_and_projects_in_branch_for_simple(){
 
         // 共通データ
-        [$start_offset,$end_offset,$place_id,$date_sets,$staffs_in_the_period]=self::get_common_data();
+        [$start_offset,$end_offset,$place_id,$date_sets,$staffs_in_the_period,$assigned_days]=self::get_common_data();
 
         // メイン案件ごとのplan_idとmapのセット/日付ごとにプロジェクトが格納されたもの
-        [$plan_id_and_maps_by_main_projects,$date_projects_index]=GetDataInPlaceAndPeriod::get_project_data_for_simple_pattern($date_sets,$place_id,$start_offset,$end_offset);
+        [$plan_id_and_maps_by_main_projects,$date_projects_index]=GetDataInPlaceAndPeriod::get_project_data_for_simple_pattern($date_sets,$place_id,$start_offset,$end_offset,$assigned_days);
 
-        return [$date_sets,$staffs_in_the_period,$plan_id_and_maps_by_main_projects,$date_projects_index];
+        return [$date_sets,$staffs_in_the_period,$plan_id_and_maps_by_main_projects,$date_projects_index,$assigned_days];
     }
 
 

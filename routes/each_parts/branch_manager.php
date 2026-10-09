@@ -69,6 +69,7 @@ Route::prefix("branch_manager")
                  ->middleware(["assignStaffDuplicatedCheck"])
                  ->name("simple_store_including_duplicated_plans");
             });
+
             // 振った案件の確認と修正
             Route::controller(AssignOverviewContorller::class)
             ->group(function(){
@@ -76,7 +77,7 @@ Route::prefix("branch_manager")
                     Route::get("assign_overview","assign_overview")
                     ->name("assign_overview");
                     // 日の選択→編集
-                    Route::post("edit_assign","edit_assign")
+                    Route::post("edit_assign/{date}","edit_assign")
                     ->name("edit_assign");
             });
 

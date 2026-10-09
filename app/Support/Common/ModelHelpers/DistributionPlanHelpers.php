@@ -48,11 +48,9 @@ class DistributionPlanHelpers{
 
 
         // 「表示する日付内の最初でまだ終わっていない」かつ「表示する日付の最後ですでに始まっている」ものを選択
-        $plan_in_the_place_and_period=DistributionPlan::where("place_id",$place_id)->where("start_date","<=",$end)
+        return DistributionPlan::where("place_id",$place_id)->where("start_date","<=",$end)
         ->where("end_date",">=",$start)
         ->get();
-
-        return $plan_in_the_place_and_period;
     }
 
     // その町目予定は割り当てなどで選択された日の中に入っているか(バリデーションなどで使用)、正否が返る
@@ -98,6 +96,5 @@ class DistributionPlanHelpers{
     public static function check_project_id_by_plan_id($project_id,$plan_id){
         return DistributionPlan::find($plan_id)->project_id==$project_id;
     }
-
 
 }

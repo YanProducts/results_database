@@ -1,0 +1,113 @@
+<?php
+
+// 割り当ての確認/編集における流れ
+namespace App\Actions\BranchManager\Assgin\Management;
+
+use App\Constants\Date;
+use App\Support\Common\ModelHelpers\AddressHelpers;
+use App\Support\Common\ModelHelpers\BranchManagerListHelpers;
+use App\Support\Common\ModelHelpers\DistributionAssignmentHelpers;
+use App\Support\Common\ModelHelpers\DistributionPlanHelpers;
+use App\Support\Common\ModelHelpers\FieldStaffListHelpers;
+use App\Support\Common\ModelHelpers\ProjectHelpers;
+use App\Utils\DateHelper;
+use Carbon\CarbonImmutable;
+
+class AssignOverview{
+    // 割り当て可能な日時における一覧を、「日付=>この営業所に振られたMainproject(plan)=>そのprojectを配布する人」という配列で取得
+    public static function get_overview_data(){
+        // 期間の取得
+        $date_sets=DateHelper::get_date_key_value_sets_for_view(CarbonImmutable::now(),Date::StartOffsetInStaffAssignMent,Date::EndOffsetInStaffAssignMent);
+
+        // 営業所idの取得
+        $place_id=BranchManagerListHelpers::get_login_user_place_id();
+
+        // 上記の期間&営業所における、planとassignのデータ
+        [$staff_lists,$plan_sets_in_the_place,$project_sets,$city_name_sets,$assign_sets]=self::get_sql_data(array_keys($date_sets),$place_id);
+
+        // 「日付=>この営業所に振られたMainproject(plan)=>そのprojectを配布する人」という配列で並び替えたものを返す
+        return self::sort_data($date_sets,$staff_lists,$plan_sets_in_the_place,$project_sets,$city_name_sets,$assign_sets);
+    }
+
+    public static function get_sql_data($date_key_sets,$place_id){
+
+        // この営業所の全員のid=>staff_nameの取得
+        $staff_lists=FieldStaffListHelpers::get_all_names_of_staffs_in_the_place($place_id)->pluck("staff_name","id");
+
+        // その期間にこの営業所に来ている案件のセットを返す(表示と選択用のみに使用するため、main_idがnullのものに限定)
+        $plan_sets_in_the_place=DistributionPlanHelpers::get_plan_in_the_place_and_period($place_id,["start"=>min($date_key_sets),"end"=>max($date_key_sets)])->where("main_id",null);
+
+
+        // 選択&表示用：上記で取得したplanに含まれるprojectIdに対応するprojectの名前を検索(プロジェクトid=>名前)
+        $project_sets=ProjectHelpers::get_project_names_with_another_project_flag_array_key_by_id($plan_sets_in_the_place->pluck("project_id")->unique());
+
+        // 表示用のみ：上記で取得したplanに含まれるaddressIdに対応する市の名前を取得(addressid=>市の名前を配列で)
+        $city_name_sets=AddressHelpers::get_only_city_name_from_ids($plan_sets_in_the_place->pluck("address_id")->unique());
+
+        // 上記のplanのidに対応したassignを取得
+        $assign_sets=DistributionAssignmentHelpers::get_assigns_by_plan_ids($plan_sets_in_the_place->pluck("id"));
+
+        return [$staff_lists,$plan_sets_in_the_place,$project_sets,$city_name_sets,$assign_sets];
+    }
+
+    // 「日付=>この営業所に振られたMainproject(plan)と該当する市のセット=>そのprojectを配布する人」という配列で並び替えたものを返す
+    public static function sort_data($date_sets,$staff_lists,$plan_sets_in_the_place,$project_sets,$city_name_sets,$assign_sets){
+        $return_sets=[];
+        // 日付ごとに見ていく
+        foreach($date_sets as $date=>$date_in_jpn){
+            // この日(範囲あり)に来ているidsとメイン案件名とaddress_idsを取得(同案件で別の現場の場合はround_numberで所得して①②で名前分け)
+            $main_project_sets_in_the_day=self::get_main_projects_data_in_the_day($plan_sets_in_the_place,$project_sets,$date);
+
+
+
+            // 編集や削除可能かのフラグ。今後次第でつける
+            
+
+
+            $project_sets=[];
+            // その日にその案件が振られているスタッフ名を取得
+            foreach($main_project_sets_in_the_day as $project_name_with_round_number=>$data_by_main){
+                // 案件名=>[市の名前、スタッフの名前]で取得
+                $project_sets[$project_name_with_round_number]=[
+                    "cityNames"=>self::get_city_names_by_address_ids($city_name_sets,$data_by_main->address_id), //市の名前
+                    "staffs"=>self::get_staff_names_by_plan_ids($staff_lists,$assign_sets,$data_by_main->plan_id)
+                ];
+            }
+
+            // 日付ごとに格納。いずれも表示用のみ
+            $return_sets[$date]=[
+                "dateInJpn"=>$date_in_jpn,//日付
+                "project_sets"=>$project_sets//メイン案件名をキーに市の名前とスタッフがリスト形式で渡っている
+            ];
+        }
+        return $return_sets;
+    }
+
+    // その日(範囲)におけるメイン案件名と市の名前を取得し、案件名と同案件フラグでまとめて返す
+    // できれば共通関数に
+    public static function get_main_projects_data_in_the_day($plan_sets_in_the_place,$project_sets,$date){
+        return
+        $plan_sets_in_the_place->select("id","address_id","project_id","round_number")->where("start_date","<=",$date)->where("end_date",">=",$date)->groupBy(function($query)use($project_sets){
+            if(empty($query->round_number)){
+                return $project_sets[$query->project_id];
+            }else{
+                return $project_sets[$query->project_id]."：".($query->round_number+1);
+            }
+        });
+    }
+
+    // その日、そのaddress_ids(複数)に割り当てあられている、市の名前の取得
+    // できれば共通関数に
+    public static function get_city_names_by_address_ids($city_name_sets,$address_ids){
+        // 市の名前リストから、address_idsをキーに含むコレクションを返し、文字列にする
+        return $city_name_sets->hasAny($address_ids)->implode("・");
+    }
+
+    // その日、そのplan_ids(複数)に割り当てられている、スタッフの名前の取得
+    // できれば共通関数に
+    public static function get_staff_names_by_plan_ids($staff_lists,$assign_sets,$plan_ids){
+        $staff_ids_in_the_plans=$assign_sets->hasAny($plan_ids)->pluck("staff_id"); //assignされているデータから、plan_idが所定のデータを含むものから、スタッフのidを返す
+        return $staff_ids_in_the_plans->map(fn($each_staff_id)=>$staff_lists[$each_staff_id])->implode("・");
+    }
+
+}

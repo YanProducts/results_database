@@ -7,6 +7,7 @@ import fs from "node:fs";
 const pageStub = fs.readFileSync("stubs/page.jsx.stub", "utf8");
 const definitionStub = fs.readFileSync("stubs/definitions.jsx.stub", "utf8");
 const actionStub = fs.readFileSync("stubs/actions.jsx.stub", "utf8");
+const checkStub = fs.readFileSync("stubs/checkProps.jsx.stub", "utf8");
 
 
 const input = process.argv[2];
@@ -28,19 +29,23 @@ const pageContent = pageStub
     .replaceAll("{{PageName}}", pageName)
     .replaceAll("{{Directories}}", directories.join("/"));
 const definitionContent=definitionStub.replaceAll("{{PageName}}",pageName);
+const checkContent=checkStub.replaceAll("{{PageName}}",pageName);
 const actionContent=actionStub
         .replaceAll("{{PageName}}",pageName)
         .replaceAll("{{BasePath}}", "../".repeat(parts.length));
+
 
 
 // 既存のファイルがあるかを確認する。存在していればエラーに。そのためにまずファイル名を取得する
 const pagePath =`resources/js/Pages/${input}.jsx`;
 const definitionPath =`resources/js/Definition/${directories.join("/")}/use${pageName}Definitions.js`;
 const actionPath =`resources/js/Action/${directories.join("/")}/use${pageName}Actions.js`;
+const checkPath =`resources/js/Support/ConfirmProps/${directories.join("/")}/check${pageName}Props.js`;
 if (
     fs.existsSync(pagePath) ||
     fs.existsSync(definitionPath) ||
-    fs.existsSync(actionPath)
+    fs.existsSync(actionPath) ||
+    fs.existsSync(checkPath)
 ) {
     console.error("既に同名のファイルが存在するため、作成を中止しました。");//コンソールで実行しているだけなのでalertは無理(元々nodeにはない)
     process.exit(1); //関数処理の途中終了ならreturnでも良いが、これはトップレベルなのでprocessを終了させる必要がある。(1)は失敗したという意味
@@ -50,6 +55,7 @@ if (
 fs.mkdirSync(`resources/js/Pages/${directories.join("/")}`, { recursive: true });
 fs.mkdirSync(`resources/js/Definition/${directories.join("/")}`, { recursive: true });
 fs.mkdirSync(`resources/js/Action/${directories.join("/")}`, { recursive: true });
+fs.mkdirSync(`resources/js/Support/ConfirmProps/${directories.join("/")}`, { recursive: true });
 
 
 // ファイル名を指定してjsxファイルを作成
@@ -57,4 +63,5 @@ fs.mkdirSync(`resources/js/Action/${directories.join("/")}`, { recursive: true }
 fs.writeFileSync(pagePath,pageContent,"utf8");
 fs.writeFileSync(definitionPath,definitionContent,"utf8");
 fs.writeFileSync(actionPath,actionContent,"utf8");
+fs.writeFileSync(checkPath,checkContent,"utf8");
 

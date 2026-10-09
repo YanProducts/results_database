@@ -10,13 +10,19 @@ use Illuminate\Support\Facades\Log;
 
 
 class GetDatePlanIndex{
-    public static function get_date_projects_index($date_sets,$project_and_towns){
+    public static function get_date_projects_index($date_sets,$project_and_towns,$assigned_days){
         // 返却用
         $return_sets=[];
 
         // 日付を1つずつみていく
         foreach(array_keys($date_sets) as $date){
             $return_sets[$date]=[];
+
+            // 割当済なら次の日へ
+            if($assigned_days->contains($date)){
+                continue;
+            }
+
             // 案件セットを1つずつみていく
             foreach($project_and_towns as $project_name=>$each_project_sets){
                 if(collect($each_project_sets["each_sets"])->contains(fn($each_set)=>$each_set["start_date"]<=$date && $each_set["end_date"]>=$date)){
@@ -32,7 +38,7 @@ class GetDatePlanIndex{
 
 
     // 本来は一緒にするが、バグ防止のため。ひとまず新たに作成
-    public static function get_date_projects_index_for_simple($date_sets,$project_and_maps){
+    public static function get_date_projects_index_for_simple($date_sets,$project_and_maps,$assigned_days){
 
         // 返却用
         $return_sets=[];
@@ -40,6 +46,12 @@ class GetDatePlanIndex{
         // 日付を1つずつみていく
         foreach(array_keys($date_sets) as $date){
             $return_sets[$date]=[];
+
+            // 割当済なら次の日へ
+            if($assigned_days->contains($date)){
+                continue;
+            }
+
             // 案件セットを1つずつみていく
             foreach($project_and_maps as $project_name=>$each_project_sets_with_round_number){
                 // round_numberでの小分けを1つずつ見ていく

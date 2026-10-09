@@ -58,9 +58,6 @@ class GetDataInPlaceAndPeriod{
 
                 if(array_key_exists($main_project_name,$return_sets)){
                 // 同名のプロジェクトを複数投稿する時
-
-
-
                 }else{
                     $return_sets[$main_project_name]=[
                         "each_sets"=>$each_main_sets,
@@ -88,19 +85,19 @@ class GetDataInPlaceAndPeriod{
 
     // 簡易版のデータ取得
     // 日付=>[{"mainProjectName":...,[["mapNumber":...],["planIds":...]{"""mapNumbers":[]},{}....]の形式で表示
-    public static function get_project_data_for_simple_pattern($date_sets,$place_id,$start_offset,$end_offset){
+    public static function get_project_data_for_simple_pattern($date_sets,$place_id,$start_offset,$end_offset,$assigned_days){
 
         // 設定日後までの、その営業所にあるPlanのcollectionの取得(n+1を避けるため、1回の接続で済ませる)
         $plan_in_the_place_and_period=DistributionPlanHelpers::get_plan_in_the_place_and_period($place_id,DateHelper::get_start_and_end_days("",$start_offset,$end_offset));
 
-        return self::get_projcets_data_array_for_simple($date_sets,$plan_in_the_place_and_period);
+        return self::get_projcets_data_array_for_simple($date_sets,$plan_in_the_place_and_period,$assigned_days);
 
     }
 
 
     // 簡易版の配列作成
     // 日付=>[{"mainProjectName":...,[["mapNumber":...],["planIds":...]{"""mapNumbers":[]},{}....]
-    public static function get_projcets_data_array_for_simple($date_sets,$plan_in_the_place_and_period){
+    public static function get_projcets_data_array_for_simple($date_sets,$plan_in_the_place_and_period,$assigned_days){
 
         // その営業所&その期間でsort済みの案件リストから
         // まずメイン案件でsort
@@ -130,7 +127,7 @@ class GetDataInPlaceAndPeriod{
         // 日付とデータのインデックス(他からも共通で使うので、内部関数はいじらない)
         // 日付=>その期間に入っている案件名で表示
         // ここ、詳細版にround_number調べを入れて統一すべき！
-        $date_projects_index=GetDatePlanIndex::get_date_projects_index_for_simple($date_sets,$project_and_maps_in_the_place_and_period);
+        $date_projects_index=GetDatePlanIndex::get_date_projects_index_for_simple($date_sets,$project_and_maps_in_the_place_and_period,$assigned_days);
 
 
         return [$project_and_maps_in_the_place_and_period,$date_projects_index];

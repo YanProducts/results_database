@@ -1,0 +1,15 @@
+import React from "react";
+import { route } from "ziggy-js";
+import useDisappearValidation from "../../"Share/useDisappearValidation";
+import useClearErrors from "../../"Share/useClearErrors";
+
+export default function useStaffAssignOverviewActions({data,setData,post,errors,clearErrors,setValidationHidden}) {
+
+    //エラー自体の削除
+    useClearErrors({errors,clearErrors})
+
+    //エラーのviewの削除(内部でuseEffect使用) //Errors自体は保護
+    //useDisappearValidation({errors,setValidationHidden})
+
+    return {};
+}

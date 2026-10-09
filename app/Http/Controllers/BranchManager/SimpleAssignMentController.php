@@ -24,7 +24,7 @@ class SimpleAssignMentController extends Controller
         DistributionAssignImport::where("created_by",Auth::user()->id)->delete();
 
         // 日付セット、その営業所に来ている案件と、日付と案件(町目)のインデックス、（その日出席している）所属スタッフを返す(当日から5日先まで)
-        [$date_sets,$staffs,$plan_id_and_maps_by_main_projects,$date_projects_index]=GetDataFlowBeforeAssign::get_staffs_and_projects_in_branch_for_simple();
+        [$date_sets,$staffs,$plan_id_and_maps_by_main_projects,$date_projects_index,$assigned_days]=GetDataFlowBeforeAssign::get_staffs_and_projects_in_branch_for_simple();
 
         // 日付と案件とスタッフ一覧が表示(取り急ぎ併配も含めた案件ごと、のちにメイン案件でまとめる)
         return Inertia::render("BranchManager/ProjectAssignment/SimpleAssignProjectToStaff",[
@@ -35,7 +35,9 @@ class SimpleAssignMentController extends Controller
             "dateProjectsIndex"=>$date_projects_index,
             "staffs"=>$staffs,
             // 日付:[案件名:[地図番号:,planIds:]]
-            "planIdsAndMapsByMainProjects"=>$plan_id_and_maps_by_main_projects
+            "planIdsAndMapsByMainProjects"=>$plan_id_and_maps_by_main_projects,
+            // 既に提出済み
+            "assignedDays"=>$assigned_days
         ]);
 
     }

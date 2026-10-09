@@ -4,7 +4,7 @@ import BaseButton from "../../../Common/BaseButton";
 import StaffListsForSimple from "./Inner/Simple/StaffListsForSimple";
 
 // スタッフを割り当てる際のデータ入力ページ
-export default function DataInputForSimple({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,
+export default function DataInputForSimple({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,assignedDays,
 onMapChoiceClick,onMapDecide,onMapChoiceClose,
 planIdsAndMapsByMainProjects,dateProjectsIndex,staffs,staffInChoice,popUpVisible,choicedMap,processing}){
 
@@ -33,7 +33,7 @@ return(
               <div className={`base_frame base_backColor md:p-1 p-0 border-2 border-black rounded-sm mb-2 max-w-150`}>
 
                 {/* 5日後までの日付(select変化でメイン案件名変化) */}
-                <SelectPartsForViewChange value={selectedDate} onChange={onSelectedDateChange} prefix={"日付："} keyValueSets={dateSets} disabled={selectedDate ? true :false} fixed={selectedDate ? true :false} fixContents={selectedDate ? new Date(selectedDate).toLocaleDateString("ja-JP", {month: "long",day: "numeric"}) : ""}/>
+                <SelectPartsForViewChange value={selectedDate} onChange={onSelectedDateChange} prefix={"日付："} keyValueSets={dateSets} disabled={selectedDate ? true :false} fixed={selectedDate ? true :false} fixContents={selectedDate ? new Date(selectedDate).toLocaleDateString("ja-JP", {month: "long",day: "numeric"}) : ""} disabledLists={assignedDays} disabledReason="分割済"/>
 
               </div>
         }
