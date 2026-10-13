@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BranchManager\AssignOverviewContorller;
+use App\Http\Controllers\BranchManager\AssignManagementContorller;
 use App\Http\Controllers\BranchManager\ReportManagementController;
 use App\Http\Controllers\BranchManager\ProjectHandingController;
 use App\Http\Controllers\BranchManager\ProjectRecordController;
@@ -71,14 +71,17 @@ Route::prefix("branch_manager")
             });
 
             // 振った案件の確認と修正
-            Route::controller(AssignOverviewContorller::class)
+            Route::controller(AssignManagementContorller::class)
             ->group(function(){
                     // 現在の担当の確認
                     Route::get("assign_overview","assign_overview")
                     ->name("assign_overview");
                     // 日の選択→編集
-                    Route::post("edit_assign/{date}","edit_assign")
+                    Route::get("edit_assign/{date}","edit_assign")
                     ->name("edit_assign");
+                    // 日の選択→リセット(リセットは重要なので経路を違う部分からこないためにもpostが適切か)
+                    Route::post("reset_assign/","reset_assign")
+                    ->name("reset_assign");
             });
 
             // 報告書の修正や営業所担当側での記入
@@ -91,6 +94,11 @@ Route::prefix("branch_manager")
                  // 報告書の確認or代替記入(人の決定→日付表示画面へ)
                 Route::post("choice_report_target","choice_report_target_post")
                 ->name("choice_report_target_post");
+
+                // 上記の投稿後、１度リダイレクトしてから、日付の投稿画面へ(バリデーションで返った時の対策)
+                Route::get("date_choice_view_after_choice_staff","date_choice_view_after_choice_staff")
+                ->name("date_choice_view_after_choice_staff");
+
 
                 // 報告書の確認or代替記入する日付の決定→確認(バリデーション返しに備え、１度return redirctで遷移する)
                 Route::post("decide_all_for_report_choice","decide_all_for_report_choice_post")

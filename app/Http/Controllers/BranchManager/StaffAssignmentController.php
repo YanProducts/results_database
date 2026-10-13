@@ -64,7 +64,7 @@ class StaffAssignmentController extends Controller
         // 重複がなければ投稿して確認ページへ
         StoreAssign::assign_staffs_to_plans($date,$all_data,false);
 
-        return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"branch_manager.handing_assignment","linkPageInJpn"=>"現在の割り当ての確認"]);
+        return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"branch_manager.assign_overview","linkPageInJpn"=>"現在の割り当ての確認"]);
     }
 
     // 重複確認でOKだった時(既にimportのsqlには入れている)
@@ -73,7 +73,7 @@ class StaffAssignmentController extends Controller
         // そのユーザーのデータをImportからAssign本番へ挿入（と削除）
         StoreAssign::commit_duplicated_imports();
 
-        return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"","linkPageInJpn"=>"現在の割り当ての確認"]);
+        return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"branch_manager.assign_overview","linkPageInJpn"=>"現在の割り当ての確認"]);
     }
 
 }

@@ -40,6 +40,11 @@ class DistributionPlanHelpers{
             ])->value("id");
     }
 
+    // 指定された営業所と日(単日)における、主案件のidをコレクションで返す
+    public static function get_main_plan_ids_in_the_place_and_date($place_id,$date){
+        return DistributionPlan::where("place_id",$place_id)->where("start_date","<=",$date)->where("end_date",">=",$date)->where("main_id",null)->pluck("id");
+    }
+
     // 該当営業所の該当機関に来ている案件を返す
     public static function get_plan_in_the_place_and_period($place_id,$date_sets){
 

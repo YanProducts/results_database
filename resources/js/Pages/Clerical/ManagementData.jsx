@@ -12,10 +12,6 @@ import BasePageHeader from "../../Components/Common/BasePageHeader";
 // 入力担当が現時点で記録されているデータを確認し、その後エクスポートか自分で記録追加かを決める
 export default function ManagementData({prefix,what,type,projectsInSql,archiveCutOffDate}){
 
-    // 元データ
-    // is_completeが順序ごとに並んでいるか
-    console.log(projectsInSql);
-
 
     // 定義
      const { data, setData, post, processing, errors,clearErrors, reset,CSVOutputSets,setCSVOutputSets,isComplete,setIsComplete,pageMaxWidth,pageMinWidth}=useManagementDataDefinitions();
@@ -48,7 +44,6 @@ export default function ManagementData({prefix,what,type,projectsInSql,archiveCu
 
             {/* リンク */}
             <div className="mt-4">
-
                 <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth} what={`割り当て最終日が${archiveCutOffDate}より前ものは(未作成)`} routeName="clerical.management_report" routeParams={{end_offset:"-120"}}/>
                 <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth} what={`入力を終えたデータの確認は(未作成)`}routeName="clerical.check_archives"/>
                 <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.top_page`}  what="入力担当のトップ"/>

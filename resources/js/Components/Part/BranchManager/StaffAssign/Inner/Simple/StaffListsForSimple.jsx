@@ -3,7 +3,7 @@ import PopUpForMapChoiceByStaff from "./PopUpForMapChoiceByStaff";
 import BaseTable from "../../../../../Common/BaseTable";
 import SimpleChoicedMapListsForView from "../../../Common/SimpleChoicedMapListsForView";
 
-export default function StaffListsForSimple({selectedDate,pageMinWidth,pageMaxWidth,staffsInSelectedDate,planIdsAndMapsByMainProjects,staffInChoice,popUpVisible,onMapChoiceClick,onMapDecide,onMapChoiceClose,choicedMap,onClickDateReset}){
+export default function StaffListsForSimple({selectedDate,pageMinWidth,pageMaxWidth,staffsInSelectedDate,planIdsAndMapsByMainProjects,staffInChoice,popUpVisible,onMapChoiceClick,onMapDecide,onMapChoiceClose,choicedMap,onClickDateReset,dateProjectsIndex}){
 
       return(
         <>
@@ -31,7 +31,7 @@ export default function StaffListsForSimple({selectedDate,pageMinWidth,pageMaxWi
         <p>　</p>
 
         {/* クリックイベントで動的に発動 */}
-        <PopUpForMapChoiceByStaff {...{planIdsAndMapsByMainProjects,popUpVisible,staffInChoice,choicedMap,selectedDate,onMapDecide,onMapChoiceClose}}/>
+        <PopUpForMapChoiceByStaff {...{planIdsAndMapsByMainProjects,popUpVisible,staffInChoice,choicedMap,selectedDate,onMapDecide,onMapChoiceClose,dateProjectsIndex}}/>
 
         </>
         )

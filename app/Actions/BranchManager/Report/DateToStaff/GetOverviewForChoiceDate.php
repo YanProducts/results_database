@@ -22,10 +22,10 @@ class GetOverviewForChoiceDate{
         $date_sets=DateHelper::get_date_key_value_sets_for_view("",Date::StartOffsetInConfirmReportPeriodForManager,Date::EndOffsetInConfirmReportPeriodForManager);
 
         // n+1対策にSQLデータを先に取得
-        [$record_sets,$only_assigned_sets,$date_addrss_sets,$city_names_key_by_id]=self::get_sql_data($date_sets);
+        [$all_staff_lists,$record_sets,$only_assigned_sets,$date_addrss_sets,$city_names_key_by_id]=self::get_sql_data($date_sets);
 
         // 取得したデータを元に、日付=>[報告済スタッフ、割当のみスタッフ、市の名前リスト]に並び替えたものを返す
-        return self::sort_data_by_date($date_sets,$record_sets,$only_assigned_sets,$date_addrss_sets,$city_names_key_by_id);
+        return self::sort_data_by_date($all_staff_lists,$date_sets,$record_sets,$only_assigned_sets,$date_addrss_sets,$city_names_key_by_id);
 
     }
 
@@ -52,16 +52,22 @@ class GetOverviewForChoiceDate{
         // idをキーにした市の名前のセット
         $city_names_key_by_id=AddressHelpers::get_only_city_name_from_ids($date_addrss_sets->pluck("address_id"));
 
-        return [$record_sets->groupBy("distribution_date"),$only_assigned_sets,$date_addrss_sets,$city_names_key_by_id];
+        return [$all_staff_lists,$record_sets->groupBy("distribution_date"),$only_assigned_sets,$date_addrss_sets,$city_names_key_by_id];
     }
 
     // 取得したデータを[日付=>配布済スタッフ、割り当てのみスタッフ、市の名前]に並び替える
-    public static function sort_data_by_date($date_sets,$record_sets_grouped_by_date,$only_assigned_sets,$date_addrss_sets,$city_names_key_by_id){
+    public static function sort_data_by_date($all_staff_lists,$date_sets,$record_sets_grouped_by_date,$only_assigned_sets,$date_addrss_sets,$city_names_key_by_id){
+
+        //リストの名前をidをキーにスタッフ名をとる
+        $all_staff_lists_key_by_id=$all_staff_lists->pluck("staff_name","id");
 
         return  collect(array_keys($date_sets))->mapWithKeys(fn($each_date)=>([$each_date=>[
-            "recorded"=>($record_sets_grouped_by_date[$each_date] ?? collect())->pluck("staff_id")->unique()->values(),
 
-            "only_assigned"=>($only_assigned_sets[$each_date] ?? collect())->pluck("staff_id")->unique()->values(),
+            // 報告書提出済
+            "recorded"=>(($record_sets_grouped_by_date[$each_date] ?? collect())->pluck("staff_id")->unique()->values())->map(fn($each_staff)=>$all_staff_lists_key_by_id[$each_staff]),
+
+            // 割り当て済
+            "only_assigned"=>(($only_assigned_sets[$each_date] ?? collect())->pluck("staff_id")->unique()->values())->map(fn($each_staff)=>$all_staff_lists_key_by_id[$each_staff]),
 
             // 市の名前(該当期間の1日でも可能性があれば取得)
             // ここが取れてない！！

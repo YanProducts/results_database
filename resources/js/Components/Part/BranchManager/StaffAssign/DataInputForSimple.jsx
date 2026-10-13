@@ -23,7 +23,7 @@ return(
                     staffsInSelectedDate={staffs[selectedDate]}
                     projectNameInTheDay={dateProjectsIndex[selectedDate]}
                     {...{selectedDate,pageMinWidth,pageMaxWidth,planIdsAndMapsByMainProjects,staffInChoice,popUpVisible,onMapChoiceClick,onMapDecide,
-                    onMapChoiceClose,choicedMap,onClickDateReset}}
+                    onMapChoiceClose,choicedMap,onClickDateReset,dateProjectsIndex}}
                 />
 
                 <BaseButton processing={processing} disabled={Object.keys(choicedMap).length == 0}/>

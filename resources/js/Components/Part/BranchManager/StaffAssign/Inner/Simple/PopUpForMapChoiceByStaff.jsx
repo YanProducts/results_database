@@ -4,7 +4,10 @@ import simpleGetProjectNameForView from "../../../../../../Support/BranchManager
 // スタッフの欄のクリック時に表示される地図番号のリストをpopUp
 // 複数選択の時のpopUp(divで表示して、checkBoxに格納し、React連動)
 
-export default function PopUpForMapChoiceByStaff({planIdsAndMapsByMainProjects,popUpVisible,staffInChoice,choicedMap,selectedDate,onMapDecide,onMapChoiceClose}){
+export default function PopUpForMapChoiceByStaff({planIdsAndMapsByMainProjects,popUpVisible,staffInChoice,choicedMap,selectedDate,onMapDecide,onMapChoiceClose,dateProjectsIndex}){
+
+    //その日に振られている案件名とround_numberのセット
+    const projectNamesWithRaoundNumberInTheDate= dateProjectsIndex[selectedDate].map((eachIndexSet)=>eachIndexSet.project_name + "|" + Number(eachIndexSet.round_number));
 
     // planIdsAndMapsByMainProjectsはprojectName=>roundNumber=>{each_sets:全データ,map_plan_data:地図とプランIdのデータ}
 
@@ -12,6 +15,7 @@ export default function PopUpForMapChoiceByStaff({planIdsAndMapsByMainProjects,p
             <div id="popUpForMultiSort" className={`${popUpVisible ? "block" :"hidden"} absolute z-20 w-30`}>
                 {
                 Object.entries(planIdsAndMapsByMainProjects).map(([projectName,valueInProjectName])=>
+
                     Object.entries(valueInProjectName).map(function([roundNumber,eachSet],roundNumberIndex){
 
                     // そのプロジェクトがその回において1度ならroundNumberは表示しない
@@ -21,10 +25,13 @@ export default function PopUpForMapChoiceByStaff({planIdsAndMapsByMainProjects,p
                     const choicedMapsInTheRoundNumber=choicedMap?.[selectedDate]?.[staffInChoice]?.[projectName]?.[roundNumber]
 
                     return(
+                        // その日の案件リストの中に入っていないものは表示しない
+                       projectNamesWithRaoundNumberInTheDate.includes(projectName+"|"+Number(roundNumber))?
+
                         // プロジェクト名
                         <div className="font-bold first:border-t border-black" key={`${projectName}_${roundNumber}`}>
                             <div className="bg-white border text-center  border-black p-1 border-b">{projectNameForView}</div>
-                                {  Object.values(eachSet.map_plan_data).map(function(eachDataSet){
+                                { Object.values(eachSet.map_plan_data).map(function(eachDataSet){
 
                                     // 地図番号
                                     const mapNumber=eachDataSet.map_number;
@@ -44,6 +51,7 @@ export default function PopUpForMapChoiceByStaff({planIdsAndMapsByMainProjects,p
                                 )} {/* eachSetのmap */}
                             {/* 選択 */}
                         </div>
+                    :null
                     )
                 }) //roundNumberのmap
                 ) //projectNameのmap

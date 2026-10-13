@@ -1,7 +1,7 @@
 import React from "react";
 import { route } from "ziggy-js";
-import useDisappearValidation from "{{BasePath}}"Share/useDisappearValidation";
-import useClearErrors from "{{BasePath}}"Share/useClearErrors";
+import useDisappearValidation from "{{BasePath}}Share/useDisappearValidation";
+import useClearErrors from "{{BasePath}}Share/useClearErrors";
 
 export default function use{{PageName}}Actions({data,setData,post,errors,clearErrors,setValidationHidden}) {
 

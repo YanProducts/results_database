@@ -57,7 +57,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 if($http_response_code>=500 || in_array($http_response_code,[403,404])){
                     return redirect()->route("view_error")->with([
                         "error_message"=>$error_message,
-                        "back_route"=>$e instanceof BusinessException ? ($e->get_back_route() ?? "top_pgae") : "top_page"
+                        "back_route"=>$e instanceof BusinessException ? ($e->get_back_route() ?? "top_page") : "top_page"
                     ]);
                 }
             }

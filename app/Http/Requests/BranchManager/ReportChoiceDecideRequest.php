@@ -5,6 +5,7 @@ namespace App\Http\Requests\BranchManager;
 use App\Rules\Common\ReportDateRule;
 use App\Rules\Common\StaffIsExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 // 編集する報告書の決定
 class ReportChoiceDecideRequest extends FormRequest
@@ -24,6 +25,7 @@ class ReportChoiceDecideRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
             "date"=>["required","date_format:Y-m-d",new ReportDateRule(true)],
             "staffId"=>["required","integer",new StaffIsExistsRule]

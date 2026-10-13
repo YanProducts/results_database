@@ -31,7 +31,7 @@ class ReportManagementController extends Controller
     public function choice_report_target()
     {
         // 前回バリデーション返しに備えた繊維の際に入れておいたセッションを消す
-        Session::delete_sessions(["staff_for_edit_report","date_for_edit_report"]);
+        Session::delete_sessions(["staff_for_edit_report","date_for_edit_report", "all_data_from_staff_for_edit_choice"]);
 
         return Inertia::render("BranchManager/ReportManagement/StaffToDate/ChoiceFromStaff",[
             "what"=>"営業所担当",
@@ -60,19 +60,28 @@ class ReportManagementController extends Controller
         // データを[スタッフid=>[スタッフ名とデータ=>日付=>dateInViewとdata=>[all_main_project_names,]で表示]
         $all_data=GetOverviewByDayInStaffToDate::get_overview_data($staff_ids,$date_sets);
 
-        //
+        Session::create_sessions(["all_data_from_staff_for_edit_choice"=>$all_data]);
+
+        return redirect()->route("branch_manager.date_choice_view_after_choice_staff");
+    }
+
+    // 日付の選択画面へ
+    // バリデーション返し対策
+    public static function date_choice_view_after_choice_staff(){
         return Inertia::render("BranchManager/ReportManagement/StaffToDate/DecideDate",[
             "what"=>"営業所担当",
             "type"=>"報告書決定",
             // ユーザー名
             "userName"=> BranchManagerList::where("id",Auth::user()->authable_id)->value("user_name"),
-            "allData"=>$all_data
+            "allData"=>session("all_data_from_staff_for_edit_choice")
         ]);
-
     }
+
+
 
     // 報告書確認において、スタッフの決定後、日付が決定したとき
     public function decide_all_for_report_choice_post(ReportChoiceDecideRequest $request){
+
         // パラメータの取得
         [$date,$staff]=[$request->date,$request->staffId];
 
@@ -105,7 +114,7 @@ class ReportManagementController extends Controller
     public function choice_report_date_target()
     {
             // 前回バリデーション返しに備えた繊維の際に入れておいたセッションを消す
-            Session::delete_sessions(["staff_for_edit_report","date_for_edit_report"]);
+            Session::delete_sessions(["staff_for_edit_report","date_for_edit_report","all_data_from_staff_for_edit_choice"]);
 
             // 日付=>[cityLists=>その時に行った市の名前(検索しやすいように市で取得)、complete=>[id=>名前],only_plan=>[id=>名前],only_report[id=>名前]]で取得
             $date_staff_calendar=GetOverviewForChoiceDate::get_staff_status_and_city_names_in_each_day();
@@ -134,16 +143,6 @@ class ReportManagementController extends Controller
         ]);
     }
 
-
-    // 報告書の確認or代替記入(日付決定後、スタッフの選択)
-    public function decide_staff_for_report_choice_post(ReportChoiceDecideRequest $request)
-    {
-        //
-    }
-
-
-
-
     // 報告書の代替記入(最終決定)
     public function complete_report_post(CompleteEditReportRequest $request)
     {
@@ -156,7 +155,7 @@ class ReportManagementController extends Controller
         }
 
         // バリデーション返しに備えた繊維の際に入れておいたセッションを消す
-        Session::delete_sessions(["staff_for_edit_report","date_for_edit_report"]);
+        Session::delete_sessions(["staff_for_edit_report","date_for_edit_report","all_data_from_staff_for_edit_choice"]);
 
         return redirect()->route("view_information")->with(["information_message"=>"編集完了しました","linkRouteName"=>"branch_manager.top_page","linkPageInJpn"=>"営業所トップ"]);
 

@@ -10,8 +10,9 @@ export default function OverviewTable({allData,pageMinWidth,pageMaxWidth,onDecid
             {Object.entries(allData).map(function([date,eachData],index){
                 // 今日かどうかの確認
                 const isToday=date!==new Date().toLocaleDateString("sv-SE");
+   
                 return(
-                    <tr key={index} className={`border-black border-2 ${(isToday && eachData.data?.all_main_project_names && !processing) ? "cursor-pointer hover:bg-amber-200" : ""}`} onClick={isToday ? ()=>onDecideReport({date}) : ()=>{}}>
+                    <tr key={index} className={`border-black border-2 ${(isToday && eachData.data?.all_main_project_names && !processing) ? "cursor-pointer hover:bg-amber-200" : ""}`} onClick={isToday ? (e)=>onDecideReport({e,date,staffId}) : ()=>{}}>
                         <td className="border-black border-x-2">{eachData.dateInView}</td>
                         <td className="border-black border-x-2">{eachData.data?.all_main_project_names || "-"}</td>
                         <td className="border-black border-x-2">{eachData.data?.all_city_lists || "-"}</td>

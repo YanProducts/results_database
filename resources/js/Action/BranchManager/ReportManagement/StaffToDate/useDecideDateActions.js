@@ -9,11 +9,12 @@ export default function useDecideDateActions({data,setData,post}){
         if(!data || Object.keys(data).length==0){
             return;
         }
+
         post(route("branch_manager.decide_all_for_report_choice_post"));
     },[data])
 
     // どの報告書を確認するかの決定
-    const onDecideReport=(e,date,staffId)=>{
+    const onDecideReport=({e,date,staffId})=>{
         setData({
             "date":date,
             "staffId":staffId

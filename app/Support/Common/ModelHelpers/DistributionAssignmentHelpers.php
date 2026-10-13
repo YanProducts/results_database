@@ -3,10 +3,10 @@
 // DistributionAssignmtntのヘルパー
 namespace App\Support\Common\ModelHelpers;
 
+use App\Exceptions\BusinessException;
 use App\Models\DistributionAssignment;
-use App\Models\FieldStaffList;
-use Carbon\Carbon;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class DistributionAssignmentHelpers{
@@ -27,7 +27,7 @@ class DistributionAssignmentHelpers{
 
     // 該当のplanに対応するassignの取得
     public static function get_assigns_by_plan_ids($plan_ids){
-        return DistributionAssignment::whereIn("plan_id",$plan_ids)->groupBy("plan_id");
+        return DistributionAssignment::select("plan_id","staff_id","date")->whereIn("plan_id",$plan_ids)->get()->groupBy("plan_id");
     }
 
 
@@ -61,5 +61,19 @@ class DistributionAssignmentHelpers{
                 });
             }
         });
-    }
+        }
+
+        // 指定された日、指定されたplan_idリストにおける、Assignの削除()
+        //複数日のものをどう反映させるか？現状はend_dateは使用していない。最後まで現状の形式のままでいくのも1つ
+        public static function delete_assign_in_the_date_and_plan_ids($date,$plan_ids){
+            try{
+                DB::transaction(function()use($date,$plan_ids){
+                    DistributionAssignment::where("date",$date)->whereIn("plan_id",$plan_ids)->delete();
+                });
+            }catch(\Throwable $e){
+                Log::info($e->getMessage());
+                throw new BusinessException("データ削除の際にエラーが生じしました");
+            }
+        }
+
 }
