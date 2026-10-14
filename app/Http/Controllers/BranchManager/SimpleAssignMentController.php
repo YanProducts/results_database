@@ -67,7 +67,10 @@ class SimpleAssignMentController extends Controller
         return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"branch_manager.assign_overview","linkPageInJpn"=>"現在の割り当ての確認"]);
     }
 
-    // 重複確認 
+
+
+    // 重複確認
+    // これ不要では？
     public function store_including_duplicated_plans(){
         // そのユーザーのデータをImportからAssign本番へ挿入（と削除）
         // StoreAssign::commit_duplicated_imports();

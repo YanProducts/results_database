@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BranchManager\AssignManagementContorller;
 use App\Http\Controllers\BranchManager\ReportManagementController;
 use App\Http\Controllers\BranchManager\ProjectHandingController;
+use App\Http\Controllers\BranchManager\ProjectOnlyAssignController;
 use App\Http\Controllers\BranchManager\ProjectRecordController;
 use App\Http\Controllers\BranchManager\SimpleAssignMentController;
 use App\Http\Controllers\BranchManager\StaffAssignmentController;
@@ -68,6 +69,17 @@ Route::prefix("branch_manager")
                  Route::post("simple_store_including_duplicated_plans","store_including_duplicated_plans")
                  ->middleware(["assignStaffDuplicatedCheck"])
                  ->name("simple_store_including_duplicated_plans");
+            });
+
+            // 案件のみからの割り当て(案件から選択)
+            Route::controller(ProjectOnlyAssignController::class)
+            ->group(function(){
+                // 案件のみ版(案件から選択)
+                Route::get("project_only_assign_staff","assign_staff")
+                ->name("project_only_assign_staff");
+                // 案件から割り当ての決定
+                Route::post("project_only_assign_staff","assign_staff_post")
+                ->name("project_only_assign_staff_post");
             });
 
             // 振った案件の確認と修正

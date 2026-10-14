@@ -67,4 +67,21 @@ class GetDatePlanIndex{
     return $return_sets;
 
     }
+
+
+        // 案件のみ版の配列作成(日付=>projectPlannedのid,表示用の案件名(roundNumber考慮),説明用セット(併配セット、市の名前)])
+    public static function get_project_data_for_project_only_pattern($date_sets,$projects_sets,$project_and_towns,$assigned_days){
+        $return_sets=[];
+        foreach(array_keys($date_sets) as $date){
+
+        }
+
+
+        // 日付=>[]
+        return [];
+    }
+
+
+
+
 }
