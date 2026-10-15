@@ -37,13 +37,21 @@ class GetDataInPlaceAndPeriod{
         $return_sets=[];
 
             // メイン案件リスト
-            $main_plan_sets_grouped_by_project_id=$plan_in_the_place_and_period->where("main_id",null)->groupBy("project_id");
+            //キーはround_numberつきのメイン案件(project_id."|".round_number)
+            $main_plan_sets_grouped_by_project_id=$plan_in_the_place_and_period->where("main_id",null)->groupBy(fn($query)=>$query->round_number==0 ? $query->project_id : $query->project_id ."|". $query->round_number);
 
             // 上記をmain案件⇨["each_sets"=>[id(distribution_plans)⇨,address_name⇨,"sub"=>["project_name"=>"",id_sets=>[]]]の配列に返還
 
+
             // メイン案件のeach_setsの中身
-            $main_plan_sets_grouped_by_project_name=$main_plan_sets_grouped_by_project_id->mapWithKeys(fn($value,$key)=>
-                [$project_names_key_by_project_id[$key]=>
+            $main_plan_sets_grouped_by_project_name=$main_plan_sets_grouped_by_project_id->mapWithKeys(function($value,$key)use($project_names_key_by_project_id,$address_names_key_by_id){
+                  [$project_id, $round_number] = explode("|", $key);
+
+                  //表示用のround_number
+                  $project_name = $round_number =0 ? $project_names_key_by_project_id[$project_id] : $project_names_key_by_project_id[$project_id]."（" . ($round_number + 1) . "回目）";
+            
+                return 
+                    [$project_name=>
                     $value->map(fn($inner_value)=>
                         ["id"=>$inner_value["id"],
                           "address_name"=>$address_names_key_by_id[$inner_value["address_id"]] ?? throw new BusinessException("データの住所が見つかりません"),
@@ -51,20 +59,19 @@ class GetDataInPlaceAndPeriod{
                           "start_date"=>$inner_value["start_date"],
                           "end_date"=>$inner_value["end_date"]
                         ])
-                ]
-            )->toArray();
+                 ];
+            })->toArray();
+
+
 
             foreach($main_plan_sets_grouped_by_project_name as $main_project_name=>$each_main_sets){
-
-                if(array_key_exists($main_project_name,$return_sets)){
-                // 同名のプロジェクトを複数投稿する時
-                }else{
-                    $return_sets[$main_project_name]=[
+                   $return_sets[$main_project_name]=[
                         "each_sets"=>$each_main_sets,
                         "sub_sets"=>self::get_sub_projects_array($project_names_key_by_project_id,$plan_in_the_place_and_period->where("main_id","!=",null),$each_main_sets)
                     ];
-                }
             }
+
+
             return $return_sets;
     }
 

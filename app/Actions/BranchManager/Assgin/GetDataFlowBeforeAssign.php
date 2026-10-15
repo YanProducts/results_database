@@ -69,7 +69,7 @@ class GetDataFlowBeforeAssign{
         [$start_offset,$end_offset,$place_id,$date_sets,$staffs_in_the_period,$projects_and_towns,$assigned_days]=self::get_common_data();
 
 
-        // ここに案件説明用に$project_and_townsの取得情報も入れる！！！
+        // ここに案件説明のための住所取得のため、$project_and_townsの取得情報も入れる！！！
 
         // メイン案件ごとのplan_idとmapのセット/日付ごとにプロジェクトが格納されたもの
         [$plan_id_and_maps_by_main_projects,$date_projects_index]=GetDataInPlaceAndPeriod::get_project_data_for_simple_pattern($date_sets,$place_id,$start_offset,$end_offset,$assigned_days);
@@ -85,7 +85,7 @@ class GetDataFlowBeforeAssign{
             // 期間内に営業所に来ている案件における[メイン案件名,roundNumbe,project_plannedのId,start_dare,end_date](project_planned_countより取得)
             $projects_sets=ProjectPlannedCountHelpers::get_id_and_project_names_for_view_in_date_array($start_offset,$end_offset,$place_id);
 
-            // 並び替える[日付=>projectPlannedのid,表示用の案件名(roundNumber考慮),説明用セット(併配セット、市の名前)]
+            // 並び替える[日付=>projectPlannedのid,表示用の案件名(roundNumber考慮),説明用セット(住所セット：説明用)]
             $date_projects_index=GetDatePlanIndex::get_project_data_for_project_only_pattern($date_sets,$projects_sets,$project_and_towns,$assigned_days);
 
             return [$date_sets,$staffs_in_the_period,$date_projects_index,$assigned_days];

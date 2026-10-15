@@ -69,16 +69,26 @@ class GetDatePlanIndex{
     }
 
 
-        // 案件のみ版の配列作成(日付=>projectPlannedのid,表示用の案件名(roundNumber考慮),説明用セット(併配セット、市の名前)])
+        // 案件のみ版の配列作成(日付=>projectPlannedのid,表示用の案件名(roundNumber考慮),住所セット（説明用）])
     public static function get_project_data_for_project_only_pattern($date_sets,$projects_sets,$project_and_towns,$assigned_days){
         $return_sets=[];
         foreach(array_keys($date_sets) as $date){
+            //この日のデータ
+            $project_in_the_date=$projects_sets->where("start_date","<=",$date)->where("end_date",">=",$date);
+            
+            //説明用：元のproject_and_townsはメイン案件=>[each_sets=>[id(planの),address_name]
+            //   DistributionPlan::where("place_id",$place_id)->where("start_date","<=",$end)->where("end_date",">=",$start)
 
+            Log::info($project_in_the_date);
+            Log::info($project_and_towns);
+
+            $return_sets[$date]="";
+
+        
         }
 
-
         // 日付=>[]
-        return [];
+        return $return_sets;
     }
 
 
