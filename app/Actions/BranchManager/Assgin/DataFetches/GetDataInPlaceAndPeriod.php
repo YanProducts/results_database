@@ -38,30 +38,36 @@ class GetDataInPlaceAndPeriod{
 
             // メイン案件リスト
             //キーはround_numberつきのメイン案件(project_id."|".round_number)
-            $main_plan_sets_grouped_by_project_id=$plan_in_the_place_and_period->where("main_id",null)->groupBy(fn($query)=>$query->round_number==0 ? $query->project_id : $query->project_id ."|". $query->round_number);
+            //same_project_flagは1月以内のものは必ず同案件のため、意識しないで作成
+            //projectNameも１ヶ月以内のものは必ず同様になる
+            // round_numberはその日に何回目かという仕様だったと思うが統一が未確認（定義要確認）。
+            //最終的にselectedMainProjectでもDatePlanIndexでも使うので、ここでキーを統一名にする必要あり
+            $main_plan_sets_grouped_by_project_id=$plan_in_the_place_and_period->where("main_id",null)->groupBy(["project_id","round_number"]);
 
-            // 上記をmain案件⇨["each_sets"=>[id(distribution_plans)⇨,address_name⇨,"sub"=>["project_name"=>"",id_sets=>[]]]の配列に返還
-
-
+            // 上記をmain案件=>round_number⇨["each_sets"=>[id(distribution_plans)⇨,address_name⇨,"sub"=>["project_name"=>"",id_sets=>[]]]の配列に返還
             // メイン案件のeach_setsの中身
-            $main_plan_sets_grouped_by_project_name=$main_plan_sets_grouped_by_project_id->mapWithKeys(function($value,$key)use($project_names_key_by_project_id,$address_names_key_by_id){
-                  [$project_id, $round_number] = explode("|", $key);
+            $main_plan_sets_grouped_by_project_name=$main_plan_sets_grouped_by_project_id->map(function($value_with_round_number,$project_id)use($project_names_key_by_project_id,$address_names_key_by_id){
+                // この段階のprojectNameにはroundNumberは考慮していない
+                $project_name=$project_names_key_by_project_id[$project_id];
+                return(
+                        // ここでround_numberをセット(最終的に値ではなくindexと共通のキーになるので、round_numberは通算と値で0も限らず作る)
+                        $value_with_round_number->mapWithKeys(function($inner_value,$round_number)use($project_name,$address_names_key_by_id){
+                            return
+                            [$project_name . "|". $round_number=>
+                              $inner_value->map(fn($each_inner)=>[
+                                  "id"=>$each_inner["id"],
+                                  "address_name"=>$address_names_key_by_id[$each_inner["address_id"]] ?? throw new BusinessException("データの住所が見つかりません"),
+                                  "map_number"=>$each_inner["map_number"],
+                                  "start_date"=>$each_inner["start_date"],
+                                  "end_date"=>$each_inner["end_date"]
+                              ])
 
-                  //表示用のround_number
-                  $project_name = $round_number =0 ? $project_names_key_by_project_id[$project_id] : $project_names_key_by_project_id[$project_id]."（" . ($round_number + 1) . "回目）";
-            
-                return 
-                    [$project_name=>
-                    $value->map(fn($inner_value)=>
-                        ["id"=>$inner_value["id"],
-                          "address_name"=>$address_names_key_by_id[$inner_value["address_id"]] ?? throw new BusinessException("データの住所が見つかりません"),
-                          "map_number"=>$inner_value["map_number"],
-                          "start_date"=>$inner_value["start_date"],
-                          "end_date"=>$inner_value["end_date"]
-                        ])
-                 ];
-            })->toArray();
-
+                            ];
+                        }
+                        )
+                    );
+                }
+            )->collapse()->toArray();
 
 
             foreach($main_plan_sets_grouped_by_project_name as $main_project_name=>$each_main_sets){
@@ -70,7 +76,6 @@ class GetDataInPlaceAndPeriod{
                         "sub_sets"=>self::get_sub_projects_array($project_names_key_by_project_id,$plan_in_the_place_and_period->where("main_id","!=",null),$each_main_sets)
                     ];
             }
-
 
             return $return_sets;
     }
@@ -92,19 +97,19 @@ class GetDataInPlaceAndPeriod{
 
     // 簡易版のデータ取得
     // 日付=>[{"mainProjectName":...,[["mapNumber":...],["planIds":...]{"""mapNumbers":[]},{}....]の形式で表示
-    public static function get_project_data_for_simple_pattern($date_sets,$place_id,$start_offset,$end_offset,$assigned_days){
+    public static function get_project_data_for_simple_pattern($date_sets,$place_id,$start_offset,$end_offset,$assigned_days,$projects_and_towns){
 
         // 設定日後までの、その営業所にあるPlanのcollectionの取得(n+1を避けるため、1回の接続で済ませる)
         $plan_in_the_place_and_period=DistributionPlanHelpers::get_plan_in_the_place_and_period($place_id,DateHelper::get_start_and_end_days("",$start_offset,$end_offset));
 
-        return self::get_projcets_data_array_for_simple($date_sets,$plan_in_the_place_and_period,$assigned_days);
+        return self::get_projcets_data_array_for_simple($date_sets,$plan_in_the_place_and_period,$assigned_days,$projects_and_towns);
 
     }
 
 
     // 簡易版の配列作成
     // 日付=>[{"mainProjectName":...,[["mapNumber":...],["planIds":...]{"""mapNumbers":[]},{}....]
-    public static function get_projcets_data_array_for_simple($date_sets,$plan_in_the_place_and_period,$assigned_days){
+    public static function get_projcets_data_array_for_simple($date_sets,$plan_in_the_place_and_period,$assigned_days,$projects_and_towns){
 
         // その営業所&その期間でsort済みの案件リストから
         // まずメイン案件でsort

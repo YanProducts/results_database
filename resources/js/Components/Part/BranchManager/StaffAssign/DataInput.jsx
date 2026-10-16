@@ -8,6 +8,28 @@ import TownLists from "./Inner/Detail/TownLists";
 // スタッフを割り当てる際のデータ入力ページ
 export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,assignedDays,selectedMainProject,onSelectedMainProjectChange,projectsAndTowns,dateProjectsIndex,onChangeMapOrTown,needNumber,mapMeta,staffs,handleAssignChangeInMaps,assignPlan,handleAssignChangeInTowns,processing}){
 
+ //複数回使用するので前もって定義
+ const projectsInTheSelectedDate=selectedDate ? Object.values(dateProjectsIndex[selectedDate]) : [];
+// というか、この時点で、表示用をセットする必要がある
+        // このターンでのプロジェクト名のセット(roundNumberつき)
+        const projectRoundNumberArray=projectRoundNumberSet?.split("|");
+        // これを[キーはそのまま通算の回数(キーで統一):値をプロジェクトNameの今回の数に合わせた何番目か変化させる]
+
+                    // // 同じprojectの名前をまとめる(1月内のものは必ず同じ案件なのでsame_project_flagは必要ない)
+                    // const sameProjectSets
+                    // projectsInTheSelectedDate.filter((eachProject)=>
+                    //     eachProject.split("|")==projectRoundNumberArray[0]
+                    // );
+
+
+
+                    // // これもっと前の段階で変える必要あり！！！！！
+                    // // 最初に行う！？
+
+
+                    // const roundNumberIndex=projectRoundNumberArray[1];
+
+
  return(
     <>
 
@@ -22,7 +44,22 @@ export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitB
                 <SelectPartsForViewChange value={selectedDate} onChange={onSelectedDateChange} prefix={"日付："} keyValueSets={dateSets} disabled={selectedDate ? true :false} fixed={selectedDate ? true :false} fixContents={selectedDate ? new Date(selectedDate).toLocaleDateString("ja-JP", {month: "long",day: "numeric"}) : ""}  disabledLists={assignedDays} disabledReason="分割済"/>
 
                 {/* メイン案件名(クリックすれば「MapNo選択⇨必要なら修正」or「町目リストから直接」の項目開く) */}
-                <SelectPartsForViewChange value={selectedMainProject} onChange={onSelectedMainProjectChange} prefix={"メイン案件名："} keyValueSets={selectedDate ? Object.fromEntries(Object.values(dateProjectsIndex[selectedDate]).map(project=>[project,project])) : {}} disabled={selectedDate ? false :true} opacity={selectedDate ? "opacity-100" : "opacity-30"}/>
+                <SelectPartsForViewChange value={selectedMainProject} onChange={onSelectedMainProjectChange} prefix={"メイン案件名："} keyValueSets={selectedDate ? Object.fromEntries(projectsInTheSelectedDate).map
+                (function(projectRoundNumberSet){
+
+
+                    // 現時点では[projectName|roundNumber]で来てる
+                    // そに日に来ている当該projectNameの案件数と、そのroundNumberが何番目かの取得
+
+                    return(
+                        // キーと値のオブジェクトで返す(object.fromEntriesだから？)
+                        ""
+                        // [project+"|"+roundNumberIndex || "",roundNumberIndex==1 ? project : project + ":" + roundNumberIndex]
+
+                    )}
+                ) : {}}
+
+                disabled={selectedDate ? false :true} opacity={selectedDate ? "opacity-100" : "opacity-30"}/>
 
                 {/* 案件ナンバーと町目リストのどちらから選ぶか */}
                 <RadioButton onChange={(e)=>{onChangeMapOrTown(e)}} minWidth="min-w-80" maxWitdh="max-w-100"

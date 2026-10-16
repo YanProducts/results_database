@@ -37,9 +37,9 @@ class GetDataFlowBeforeAssign{
         $staffs_in_the_period=GetStaffsInPlaceAndPeriod::get_staffs_in_the_place_and_preriod($place_id,$date_sets);
 
 
-        // 該当期間に計画されている案件を、メイン案件=>[each_sets=>[id(planの),address_name],sub_sets["prject_name"=>,id_sets=>[]]]の形で取得
+        // 該当期間に計画されている案件を、[メイン案件(round_numberつき)]=>[each_sets=>[id(planの),address_name],sub_sets["prject_name"=>,id_sets=>[]]]の形で取得
         // planは複数日で渡ることが多いので、割り当て完了日のみの除去は困難(startからendまで全て終えている場合のみ除去は可能だが省略)
-        // そのメイン案件がどのようなものかと案件Idから判別するため、簡易版や案件のみ版でも必要
+        // そのメイン案件がどのような町を含むものかと案件Idから判別するため、簡易版や案件のみ版でも必要
         $projects_and_towns=GetDataInPlaceAndPeriod::get_projects_and_towns_in_the_place_and_period($place_id,$start_offset,$end_offset);
 
         // 開始日から終了日までの中で、現在この営業所のassignのデータが1つでもある日をY-m-dの配列で取得（その日のデータは「データあり」で表示。データ軽量化のため後の取得データからも外す
@@ -72,7 +72,7 @@ class GetDataFlowBeforeAssign{
         // ここに案件説明のための住所取得のため、$project_and_townsの取得情報も入れる！！！
 
         // メイン案件ごとのplan_idとmapのセット/日付ごとにプロジェクトが格納されたもの
-        [$plan_id_and_maps_by_main_projects,$date_projects_index]=GetDataInPlaceAndPeriod::get_project_data_for_simple_pattern($date_sets,$place_id,$start_offset,$end_offset,$assigned_days);
+        [$plan_id_and_maps_by_main_projects,$date_projects_index]=GetDataInPlaceAndPeriod::get_project_data_for_simple_pattern($date_sets,$place_id,$start_offset,$end_offset,$assigned_days,$projects_and_towns);
 
         return [$date_sets,$staffs_in_the_period,$plan_id_and_maps_by_main_projects,$date_projects_index,$assigned_days];
     }

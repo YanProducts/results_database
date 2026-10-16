@@ -23,10 +23,10 @@ class GetDatePlanIndex{
                 continue;
             }
 
-            // 案件セットを1つずつみていく
-            foreach($project_and_towns as $project_name=>$each_project_sets){
-                if(collect($each_project_sets["each_sets"])->contains(fn($each_set)=>$each_set["start_date"]<=$date && $each_set["end_date"]>=$date)){
-                    array_push($return_sets[$date],$project_name);
+            // 案件セットを1つずつみていく(round_number_indexは期間内で何回目か：最終的にキーになる)
+            foreach($project_and_towns as $project_name_with_round_number=>$each_project_sets){
+                    if(collect($each_project_sets["each_sets"])->contains(fn($each_set)=>$each_set["start_date"]<=$date && $each_set["end_date"]>=$date)){
+                        array_push($return_sets[$date],$project_name_with_round_number);
                 }
             }
         }
@@ -75,7 +75,7 @@ class GetDatePlanIndex{
         foreach(array_keys($date_sets) as $date){
             //この日のデータ
             $project_in_the_date=$projects_sets->where("start_date","<=",$date)->where("end_date",">=",$date);
-            
+
             //説明用：元のproject_and_townsはメイン案件=>[each_sets=>[id(planの),address_name]
             //   DistributionPlan::where("place_id",$place_id)->where("start_date","<=",$end)->where("end_date",">=",$start)
 
@@ -84,7 +84,7 @@ class GetDatePlanIndex{
 
             $return_sets[$date]="";
 
-        
+
         }
 
         // 日付=>[]
