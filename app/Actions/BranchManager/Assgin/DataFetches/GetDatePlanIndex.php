@@ -5,10 +5,6 @@ namespace App\Actions\BranchManager\Assgin\DataFetches;
 
 use Illuminate\Support\Facades\Log;
 
-
-// ここ、rounde_numberを返すようにする！
-
-
 class GetDatePlanIndex{
     public static function get_date_projects_index($date_sets,$project_and_towns,$assigned_days){
         // 返却用
@@ -69,20 +65,47 @@ class GetDatePlanIndex{
     }
 
 
-        // 案件のみ版の配列作成(日付=>projectPlannedのid,表示用の案件名(roundNumber考慮),住所セット（説明用）])
+    // 案件のみ版の配列作成(日付=>projectPlannedのid,表示用の案件名(roundNumber考慮),住所セット（説明用）])
+    // projectPlannedCountのidを取得しておけば、その後にprojectIdもroundNumberも取得可能なので、この時点でセットする
     public static function get_project_data_for_project_only_pattern($date_sets,$projects_sets,$project_and_towns,$assigned_days){
         $return_sets=[];
         foreach(array_keys($date_sets) as $date){
+
+            // 割当済なら次の日へ
+            if($assigned_days->contains($date)){
+                continue;
+            }
+
             //この日のデータ
             $project_in_the_date=$projects_sets->where("start_date","<=",$date)->where("end_date",">=",$date);
 
+            // $projects_setsは期間内に営業所に来ている案件における[メイン案件名,roundNumbe,project_plannedのId,start_dare,end_date](project_planned_countより取得)。そこからその日が絞り込まれたのが$project_in_the_date
+            $formatted_project_data_in_the_date=$project_in_the_date->map(function($each_project_data){
+
+
+                // 同じメイン案件のものがその日のデータにいくつあるか。複数のものにはround_numberもfor_viewの名前に入れる
+
+
+
+                // 住所リストの作成(説明用)
+
+
+
+                return[
+                    "project_plan_Id"=>$each_project_data->id, //これだけで投稿時に特定できる
+                    "project_name_for_view"=>"",
+                    "address_sets"=>""
+
+                ];
+            });
+
             //説明用：元のproject_and_townsはメイン案件=>[each_sets=>[id(planの),address_name]
-            //   DistributionPlan::where("place_id",$place_id)->where("start_date","<=",$end)->where("end_date",">=",$start)
+
 
             Log::info($project_in_the_date);
             Log::info($project_and_towns);
 
-            $return_sets[$date]="";
+            $return_sets[$date]=$formatted_project_data_in_the_date;
 
 
         }

@@ -32,9 +32,11 @@ export default function useAssignProjectToStaffDefinitions(){
   //   確認用のviewに表示するための配列
   const [assignPlanForConfirmView,setAssignPlanForConfirmView]=React.useState({});
 
+  const [showAllTowns,setShowAllTowns]=React.useState("");
+
    // ページの横幅
    const [pageMinWidth,pageMaxWidth]=["min-w-200","max-w-300"];
 
 
-  return { data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,pageMinWidth,pageMaxWidth}
+  return { data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,showAllTowns,setShowAllTowns,pageMinWidth,pageMaxWidth}
 }

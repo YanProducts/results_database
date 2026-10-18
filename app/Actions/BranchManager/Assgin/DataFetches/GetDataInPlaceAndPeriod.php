@@ -38,9 +38,8 @@ class GetDataInPlaceAndPeriod{
 
             // メイン案件リスト
             //キーはround_numberつきのメイン案件(project_id."|".round_number)
-            //same_project_flagは1月以内のものは必ず同案件のため、意識しないで作成
+            //same_project_flagは同じ町目を複数案件(主目的はproject自体の割り当ての時に重なりの防止など)にて分割している時に使う。メイン案件はround_numberで分割するので使用しなくとも良い
             //projectNameも１ヶ月以内のものは必ず同様になる
-            // round_numberはその日に何回目かという仕様だったと思うが統一が未確認（定義要確認）。
             //最終的にselectedMainProjectでもDatePlanIndexでも使うので、ここでキーを統一名にする必要あり
             $main_plan_sets_grouped_by_project_id=$plan_in_the_place_and_period->where("main_id",null)->groupBy(["project_id","round_number"]);
 
@@ -115,9 +114,10 @@ class GetDataInPlaceAndPeriod{
         // まずメイン案件でsort
         // 次にproject_idとround_numberごとにまとめる(同案件フラグは月日が経たないとないものと判断
 
+
         $project_and_maps_in_the_place_and_period=$plan_in_the_place_and_period->where("main_id",null)->groupBy(["project_id","round_number"])->mapWithKeys(fn($each_contents_with_round_number,$project_id)=>[
             // プロジェクト名
-            ProjectHelpers::get_project_name_from_id($project_id)=>$each_contents_with_round_number->mapWithKeys(fn($each_contents,$round_number)=>
+            $project_name=ProjectHelpers::get_project_name_from_id($project_id)=>$each_contents_with_round_number->mapWithKeys(fn($each_contents,$round_number)=>
             [
             // 入れ子でround_number
             // 値がそれぞれのprojectIdにおけるデータの配列。それをmapNumberでgroupByして、map_numberと、それに対応するplan_idsを取得する
@@ -130,7 +130,9 @@ class GetDataInPlaceAndPeriod{
                     "map_number"=>$map_number,
                     "plan_ids"=>$data_by_map_number->pluck("id")
                 ]
-                )]
+                ),
+                "address_sets"=>array_column($projects_and_towns[$project_name."|".$round_number]["each_sets"],"address_name")
+                ]
             ]
             )
         ]);
@@ -140,7 +142,6 @@ class GetDataInPlaceAndPeriod{
         // 日付=>その期間に入っている案件名で表示
         // ここ、詳細版にround_number調べを入れて統一すべき！
         $date_projects_index=GetDatePlanIndex::get_date_projects_index_for_simple($date_sets,$project_and_maps_in_the_place_and_period,$assigned_days);
-
 
         return [$project_and_maps_in_the_place_and_period,$date_projects_index];
 

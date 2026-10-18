@@ -6,7 +6,7 @@ import popUpPositionSeeting from '../../../Support/Common/popUpPositionSetting';
 import SimpleFormatDataByProjects from './DataConfirm/SimpleFormatDataByProjects';
 import SimpleDataFormatToFormData from './DataConfirm/SimpleDataFormatToFormData';
 
-export default function useSimpleAssignProjectToStaffActions({data,setData,post,processing,clearErrors,staffs,isConfirm,setIsConfirm,selectedDate,setSelectedDate,choicedMap,setChoicedMap,choicedByProjects,setChoicedByProjects,planIdsAndMapsByMainProjects,staffInChoice,setStaffInChoice,setPopUpVisible}){
+export default function useSimpleAssignProjectToStaffActions({data,setData,post,processing,clearErrors,staffs,isConfirm,setIsConfirm,selectedDate,setSelectedDate,choicedMap,setChoicedMap,choicedByProjects,setChoicedByProjects,planIdsAndMapsByMainProjects,staffInChoice,setShowAllTowns,setStaffInChoice,setPopUpVisible}){
 
 //useReducerで定義する
 
@@ -38,6 +38,7 @@ React.useEffect(()=>{
     // 選択スタッフが決定すれば、ポップアップ
     setPopUpVisible(true)
 },[staffInChoice])
+
 
 // // 日付の変更
 const onSelectedDateChange=(e)=>{
@@ -90,6 +91,20 @@ const onMapChoiceClose=()=>{
     setPopUpVisible(false);
     setStaffInChoice("");
 }
+
+// 町目のサンプルから全てを表示するボタンがクリックされたとき
+const onShowAllTownsClick=({e,projectNameForView})=>{
+    // どの町目リストを全部載せるか
+    setShowAllTowns(projectNameForView)
+
+    // ポップアップの場所のセット(表示はStateにセットが完了次第。先に場所のみ指定。useStateだとeが取得できない)
+    popUpPositionSeeting(e,"popUpForShowAllTowns",0,"150")
+}
+// 町目のサンプルの全て表示を閉じる
+const onCloseAllTownsClick=()=>{
+    setShowAllTowns("")
+}
+
 
    // 決定ボタンを押した際は値を変換し、その後に確認ページへ
   const onSubmitBtnClick=(e)=>{
@@ -148,5 +163,5 @@ const onMoveDetailPageClick=(routeName)=>{
     })
 }
 
-  return{onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onMapChoiceClose,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick,onMoveDetailPageClick}
+  return{onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onMapChoiceClose,onShowAllTownsClick, onCloseAllTownsClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick,onMoveDetailPageClick}
 }

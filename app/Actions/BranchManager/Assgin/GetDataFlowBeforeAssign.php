@@ -86,6 +86,7 @@ class GetDataFlowBeforeAssign{
             $projects_sets=ProjectPlannedCountHelpers::get_id_and_project_names_for_view_in_date_array($start_offset,$end_offset,$place_id);
 
             // 並び替える[日付=>projectPlannedのid,表示用の案件名(roundNumber考慮),説明用セット(住所セット：説明用)]
+            // projectPlannedCountのidを取得しておけば、その後にprojectIdもroundNumberも取得可能なので、この時点でセットする
             $date_projects_index=GetDatePlanIndex::get_project_data_for_project_only_pattern($date_sets,$projects_sets,$project_and_towns,$assigned_days);
 
             return [$date_sets,$staffs_in_the_period,$date_projects_index,$assigned_days];

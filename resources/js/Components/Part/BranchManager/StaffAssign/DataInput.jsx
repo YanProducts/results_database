@@ -4,31 +4,17 @@ import BaseButton from "../../../../Components/Common/BaseButton";
 import RadioButton from "../../../../Components/Common/RadioButton";
 import MapLists from "./Inner/Detail/MapLists";
 import TownLists from "./Inner/Detail/TownLists";
+import getProjectNameForView from "../../../../Support/BranchManager/getProjectNameForView";
+import TownByProjectsForExplain from "./Inner/Detail/TownByProjectsForExplain";
 
 // スタッフを割り当てる際のデータ入力ページ
 export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,assignedDays,selectedMainProject,onSelectedMainProjectChange,projectsAndTowns,dateProjectsIndex,onChangeMapOrTown,needNumber,mapMeta,staffs,handleAssignChangeInMaps,assignPlan,handleAssignChangeInTowns,processing}){
 
- //複数回使用するので前もって定義
- const projectsInTheSelectedDate=selectedDate ? Object.values(dateProjectsIndex[selectedDate]) : [];
-// というか、この時点で、表示用をセットする必要がある
-        // このターンでのプロジェクト名のセット(roundNumberつき)
-        const projectRoundNumberArray=projectRoundNumberSet?.split("|");
-        // これを[キーはそのまま通算の回数(キーで統一):値をプロジェクトNameの今回の数に合わせた何番目か変化させる]
-
-                    // // 同じprojectの名前をまとめる(1月内のものは必ず同じ案件なのでsame_project_flagは必要ない)
-                    // const sameProjectSets
-                    // projectsInTheSelectedDate.filter((eachProject)=>
-                    //     eachProject.split("|")==projectRoundNumberArray[0]
-                    // );
-
-
-
-                    // // これもっと前の段階で変える必要あり！！！！！
-                    // // 最初に行う！？
-
-
-                    // const roundNumberIndex=projectRoundNumberArray[1];
-
+ // その日のprojectnameとroundNumeberの配列(Object.values(dateProjectsIndex[selectedDate]))を[{キー用:表示用},{キー用:表示用},{キー用:表示用}...]のオブジェクトに変換したもの
+ //  キーはそのままprojectName|roundNumberで、表示はprojectName|roundNumber:その日の中で何番目か
+ //  その日の中で何番目かはroundNumberの値ではなく日によって変更するため、日に合わせた取得が必要
+//  キーはそのまま使いたいので構造は変化させない
+const projectsWithRoundNumberObject=getProjectNameForView(selectedDate ? dateProjectsIndex[selectedDate] : [])
 
  return(
     <>
@@ -44,26 +30,17 @@ export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitB
                 <SelectPartsForViewChange value={selectedDate} onChange={onSelectedDateChange} prefix={"日付："} keyValueSets={dateSets} disabled={selectedDate ? true :false} fixed={selectedDate ? true :false} fixContents={selectedDate ? new Date(selectedDate).toLocaleDateString("ja-JP", {month: "long",day: "numeric"}) : ""}  disabledLists={assignedDays} disabledReason="分割済"/>
 
                 {/* メイン案件名(クリックすれば「MapNo選択⇨必要なら修正」or「町目リストから直接」の項目開く) */}
-                <SelectPartsForViewChange value={selectedMainProject} onChange={onSelectedMainProjectChange} prefix={"メイン案件名："} keyValueSets={selectedDate ? Object.fromEntries(projectsInTheSelectedDate).map
-                (function(projectRoundNumberSet){
-
-
-                    // 現時点では[projectName|roundNumber]で来てる
-                    // そに日に来ている当該projectNameの案件数と、そのroundNumberが何番目かの取得
-
-                    return(
-                        // キーと値のオブジェクトで返す(object.fromEntriesだから？)
-                        ""
-                        // [project+"|"+roundNumberIndex || "",roundNumberIndex==1 ? project : project + ":" + roundNumberIndex]
-
-                    )}
-                ) : {}}
-
-                disabled={selectedDate ? false :true} opacity={selectedDate ? "opacity-100" : "opacity-30"}/>
+                <SelectPartsForViewChange value={selectedMainProject} onChange={onSelectedMainProjectChange} prefix={"メイン案件名："} keyValueSets={selectedDate ? projectsWithRoundNumberObject : {}} disabled={selectedDate ? false :true} opacity={selectedDate ? "opacity-100" : "opacity-30"}/>
 
                 {/* 案件ナンバーと町目リストのどちらから選ぶか */}
                 <RadioButton onChange={(e)=>{onChangeMapOrTown(e)}} minWidth="min-w-80" maxWitdh="max-w-100"
                 contentsSets={[{"prefix":"地図番号から選ぶ","value":"mapNumber"},{"prefix":"町目リストから選ぶ","value":"townList"}]} radioName="mapOrTown" stateForSelected={needNumber}/>
+
+                {/* この日のメイン案件名と町目リストの大雑把な一覧 */}
+                {/* projectsWithRoundNumberObjectに案件名とroundnumberのセットが入り、projectsAndTownsにプロジェクトごとの一覧が入る */}
+                {selectedDate &&
+                <TownByProjectsForExplain {...{projectsWithRoundNumberObject,projectsAndTowns,pageMinWidth}} />
+                }
 
                 {selectedDate && <div className={`base_frame base_backColor text-center  max-w-150`}>日程を選択し直す場合は<span className="text-blue-600 font-bold cursor-pointer underline underline-offset-4" onClick={onClickDateReset}>こちら</span></div>}
 

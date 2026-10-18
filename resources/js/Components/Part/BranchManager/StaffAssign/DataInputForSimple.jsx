@@ -2,11 +2,17 @@ import SelectPartsForViewChange from "../../../Common/SelectPartsForViewChange";
 import InputPageHeader from "../../../Common/InputPageHeader";
 import BaseButton from "../../../Common/BaseButton";
 import StaffListsForSimple from "./Inner/Simple/StaffListsForSimple";
+import TownByProjectsForExplainForSimple from "./Inner/Simple/TownByProjectsForExplainForSimple";
 
 // スタッフを割り当てる際のデータ入力ページ
 export default function DataInputForSimple({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,assignedDays,
 onMapChoiceClick,onMapDecide,onMapChoiceClose,
 planIdsAndMapsByMainProjects,dateProjectsIndex,staffs,staffInChoice,popUpVisible,choicedMap,processing}){
+
+
+// 最終的にキーがproject|roundNumber,値がproject:~回目
+// dateProjectIndex...ここには[projectName=>,roundNumber=>]という形式で入れ子
+// planIdsAndMapsByMainProjects...ここは[projectName=>roundNumber=>]という二重カッコ
 
 return(
     <>
@@ -26,7 +32,12 @@ return(
                     onMapChoiceClose,choicedMap,onClickDateReset,dateProjectsIndex}}
                 />
 
-                <BaseButton processing={processing} disabled={Object.keys(choicedMap).length == 0}/>
+                {/* projectごとの町の説明 */}
+                {selectedDate &&
+                <TownByProjectsForExplainForSimple {...{planIdsAndMapsByMainProjects,dateProjectsIndexInTheDate:dateProjectsIndex[selectedDate]}} />
+                }
+
+                <BaseButton processing={processing} disabled={Object.keys(choicedMap).length == 0 || popUpVisible}/>
              </>
             :
             // selectedDateが設定されていない時は日付選び

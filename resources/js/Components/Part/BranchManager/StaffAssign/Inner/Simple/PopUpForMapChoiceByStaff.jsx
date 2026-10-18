@@ -18,14 +18,19 @@ export default function PopUpForMapChoiceByStaff({planIdsAndMapsByMainProjects,p
 
                     Object.entries(valueInProjectName).map(function([roundNumber,eachSet],roundNumberIndex){
 
-                    // そのプロジェクトがその回において1度ならroundNumberは表示しない
+                    // そのプロジェクトがその回において1度ならroundNumberは表示しない。1度ではない場合は、roundNumberの登場が何回目かで表示
+
+
+                    //ちょっと待て日付のfilterが後で行われているから、期間通算データにしかならない！？
+
+
                     const projectNameForView=simpleGetProjectNameForView({valueInProjectName,projectName,roundNumberIndex})
 
                     // その日付・スタッフ・project・roundNumberで現在選択されているMap
                     const choicedMapsInTheRoundNumber=choicedMap?.[selectedDate]?.[staffInChoice]?.[projectName]?.[roundNumber]
 
                     return(
-                        // その日の案件リストの中に入っていないものは表示しない
+                        // その日の案件リストの中に入っていないものは表示しない。
                        projectNamesWithRaoundNumberInTheDate.includes(projectName+"|"+Number(roundNumber))?
 
                         // プロジェクト名

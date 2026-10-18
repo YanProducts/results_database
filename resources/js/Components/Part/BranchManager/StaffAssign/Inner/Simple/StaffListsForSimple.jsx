@@ -28,11 +28,11 @@ export default function StaffListsForSimple({selectedDate,pageMinWidth,pageMaxWi
 
         <div className={`base_frame base_backColor text-center  max-w-150 mt-2 border-black border rounded-sm`}>日程を選択し直す場合は<span className={`text-blue-600 font-bold  ${popUpVisible ? "cursor-auto opacity-30" :"cursor-pointer underline underline-offset-4 opacity-100"}`} onClick={popUpVisible ? ()=>{} :onClickDateReset}>こちら</span></div>
 
-        <p>　</p>
 
         {/* クリックイベントで動的に発動 */}
         <PopUpForMapChoiceByStaff {...{planIdsAndMapsByMainProjects,popUpVisible,staffInChoice,choicedMap,selectedDate,onMapDecide,onMapChoiceClose,dateProjectsIndex}}/>
 
         </>
-        )
+
+    )
 }

@@ -5,18 +5,22 @@ import useAssignProjectToStaffDefinitions from "../../../Definition/BranchManage
 import useAssignProjectToStaffActions from "../../../Action/BranchManager/ProjectAssignment/useAssingProjectToStaffActions";
 import DataInput from "../../../Components/Part/BranchManager/StaffAssign/DataInput";
 import DataConfirm from "../../../Components/Part/BranchManager/StaffAssign/DataConfirm";
+import AssignProjectToStaffContext from "../../../Contexts/BranchManager/useAssignProjectToStaffContexts";
 
 
 // 案件を営業所担当に送信
 export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,dateSets,dateProjectsIndex,assignedDays,staffs,flash={}}){
 
   // 定義(フォームなど)
-  const { data, setData, post, processing, errors,clearErrors, reset, assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,pageMinWidth,pageMaxWidth}=useAssignProjectToStaffDefinitions();
+  const { data, setData, post, processing, errors,clearErrors, reset, assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,showAllTowns,setShowAllTowns,pageMinWidth,pageMaxWidth}=useAssignProjectToStaffDefinitions();
 
   // 動き
-  const {onSubmitBtnClick,onSelectedDateChange,onClickDateReset,onSelectedMainProjectChange,onChangeMapOrTown,handleAssignChangeInMaps,handleAssignChangeInTowns,onConfirmOkClick,onConfirmCancelClick,onDuplicatedOkClick,onMoveSimplePageClick}=useAssignProjectToStaffActions({data,post,clearErrors,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash});
+  const {onSubmitBtnClick,onSelectedDateChange,onClickDateReset,onSelectedMainProjectChange,onChangeMapOrTown,onShowAllTownsClick, onCloseAllTownsClick,handleAssignChangeInMaps,handleAssignChangeInTowns,onConfirmOkClick,onConfirmCancelClick,onDuplicatedOkClick,onMoveSimplePageClick}=useAssignProjectToStaffActions({data,post,clearErrors,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setShowAllTowns,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash});
+
+
 
   return(
+    <AssignProjectToStaffContext.Provider value={{showAllTowns,onShowAllTownsClick,onCloseAllTownsClick}}>
     <Layout title={`${what}-${type}`}>
     <RoleLayout prefix={prefix}>
 
@@ -41,6 +45,7 @@ export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,
 
     </RoleLayout>
     </Layout>
+    </AssignProjectToStaffContext.Provider>
   )
 }
 

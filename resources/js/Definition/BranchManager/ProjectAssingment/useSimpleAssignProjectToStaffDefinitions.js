@@ -32,9 +32,12 @@ export default function useSimpleAssignProjectToStaffDefinitions(){
     // 確認ページ使う、案件による選択した地図の分割
     const [choicedByProjects,setChoicedByProjects]=React.useState({});
 
+    // プロジェクトの内容説明のための町目の説明を表示するか
+    const [showAllTowns,setShowAllTowns]=React.useState("");
+
     // ページの横幅
     const [pageMinWidth,pageMaxWidth]=["min-w-200","max-w-300"];
 
 
-  return { data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,choicedMap,setChoicedMap,staffInChoice,setStaffInChoice,popUpVisible,setPopUpVisible,choicedByProjects,setChoicedByProjects,pageMinWidth,pageMaxWidth}
+  return { data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,choicedMap,setChoicedMap,staffInChoice,setStaffInChoice,popUpVisible,setPopUpVisible,choicedByProjects,setChoicedByProjects,showAllTowns,setShowAllTowns,pageMinWidth,pageMaxWidth}
 }

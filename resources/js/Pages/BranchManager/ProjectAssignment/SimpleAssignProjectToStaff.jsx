@@ -1,6 +1,7 @@
 // 簡易版(mapのみから選択)
 import useSimpleAssignProjectToStaffDefinitions from "../../../Definition/BranchManager/ProjectAssingment/useSimpleAssignProjectToStaffDefinitions";
 import useSimpleAssignProjectToStaffActions from "../../../Action/BranchManager/ProjectAssignment/useSimpleAssingProjectToStaffActions";
+import AssignProjectToStaffContext from "../../../Contexts/BranchManager/useAssignProjectToStaffContexts";
 import Layout from "../../../Layout/Layout";
 import { RoleLayout } from "../../../Layout/RoleLayout";
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
@@ -13,12 +14,13 @@ export default function SimpleAssingProjectToStaff({prefix,what,type,dateSets,da
 
 
   // 定義(フォームなど)
-  const {data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,choicedMap,setChoicedMap,staffInChoice,setStaffInChoice,popUpVisible,setPopUpVisible,choicedByProjects,setChoicedByProjects,pageMinWidth,pageMaxWidth}=useSimpleAssignProjectToStaffDefinitions();
+  const {data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,choicedMap,setChoicedMap,staffInChoice,setStaffInChoice,popUpVisible,setPopUpVisible,choicedByProjects,setChoicedByProjects,showAllTowns,setShowAllTowns,pageMinWidth,pageMaxWidth}=useSimpleAssignProjectToStaffDefinitions();
 
   // 動き
-  const {onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onMapChoiceClose,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick,onMoveDetailPageClick}=useSimpleAssignProjectToStaffActions({data,setData,post,clearErrors,staffs,isConfirm,setIsConfirm,selectedDate,setSelectedDate,choicedMap,setChoicedMap,choicedByProjects,setChoicedByProjects,planIdsAndMapsByMainProjects,staffInChoice,setStaffInChoice,setPopUpVisible});
+  const {onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onMapChoiceClose,onShowAllTownsClick, onCloseAllTownsClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick,onMoveDetailPageClick}=useSimpleAssignProjectToStaffActions({data,setData,post,clearErrors,staffs,isConfirm,setIsConfirm,selectedDate,setSelectedDate,choicedMap,setChoicedMap,choicedByProjects,setChoicedByProjects,planIdsAndMapsByMainProjects,staffInChoice,setStaffInChoice,setShowAllTowns,setPopUpVisible});
 
     return(
+       <AssignProjectToStaffContext.Provider value={{showAllTowns,onShowAllTownsClick,onCloseAllTownsClick,pageMaxWidth,pageMinWidth}}>
         <Layout title={`${what}-${type}`}>
             <RoleLayout  prefix={prefix} >
 
@@ -40,5 +42,6 @@ export default function SimpleAssingProjectToStaff({prefix,what,type,dateSets,da
           <p>　</p>
         </RoleLayout>
     </Layout>
+    </AssignProjectToStaffContext.Provider>
     )
 }

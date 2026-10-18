@@ -7,8 +7,9 @@ import { useHandleChangeMapOrTown } from './DataInput/useHandleChangeMapOrTown';
 import FormatDataForFormAndView from './DataConfirm/FormatDataForFormAndView';
 import useHandleDataChange from './DataInput/useHandleDateChange';
 import useHandleProjectChange from './DataInput/useHandleProjectChange';
+import popUpPositionSeeting from '../../../Support/Common/popUpPositionSetting';
 
-export default function useAssignProjectToStaffActions({data,post,clearErrors,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash}){
+export default function useAssignProjectToStaffActions({data,post,clearErrors,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta, setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setShowAllTowns,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash}){
 
 //useReducerで定義する
 
@@ -20,7 +21,6 @@ React.useEffect(()=>{
     // データを①form用②表示で使える用の土台に変換(この段階では、スタッフも町名もIdで格納)
     FormatDataForFormAndView({assignPlan,staffs,selectedDate,projectsAndTowns,setAssignPlanForConfirmView,setData,mapMeta});
 },[isConfirm])
-
 
 // 日付の変更
 const onSelectedDateChange=(e)=>{
@@ -46,6 +46,18 @@ const onSelectedMainProjectChange=(e)=>{
 // 表示が地図か町目か
 const onChangeMapOrTown=(e)=>{
     useHandleChangeMapOrTown(e,needNumber,setNeedNumber,selectedMainProject,assignPlan,setAssignPlan,setMapMeta)
+}
+
+// 町目のサンプルから全てを表示するボタンがクリックされたとき
+const onShowAllTownsClick=({e,eachProjectKey})=>{
+    // どの町目リストを全部載せるか
+    setShowAllTowns(eachProjectKey)
+    // ポップアップの場所のセット(表示はStateにセットが完了次第。先に場所のみ指定。useStateだとeが取得できない)
+    popUpPositionSeeting(e,"popUpId",0,"150")
+}
+// 町目のサンプルの全て表示を閉じる
+const onCloseAllTownsClick=()=>{
+    setShowAllTowns("")
 }
 
  // mapにスタッフの選択が変わった時(formを伴う)
@@ -122,7 +134,7 @@ const onConfirmCancelClick=(e)=>{
   return{onSubmitBtnClick,
     onSelectedDateChange,onClickDateReset,
     onSelectedMainProjectChange,
-    onChangeMapOrTown,
+    onChangeMapOrTown,onShowAllTownsClick, onCloseAllTownsClick,
     handleAssignChangeInMaps,handleAssignChangeInTowns
     ,onConfirmOkClick,onConfirmCancelClick,onDuplicatedOkClick,onMoveSimplePageClick}
 }
