@@ -13,8 +13,9 @@ export default function TopPage({prefix,what,type}){
 
         <BasePageHeader what={what} type={type} subtitle="何を行いますか"/>
 
-        <ThemeLists routeName={`${prefix}.simple_assign_staff`} label="案件の割り当て(簡略版)"/>
-        <ThemeLists routeName={`${prefix}.assign_staff`} label="案件の割り当て(詳細版)"/>
+        <ThemeLists routeName={`${prefix}.project_only_assign_staff`} label="案件の割り当て(案件版)"/>
+        <ThemeLists routeName={`${prefix}.simple_assign_staff`} label="案件の割り当て(マップ版)"/>
+        <ThemeLists routeName={`${prefix}.assign_staff`} label="案件の割り当て(町目版)"/>
         <ThemeLists routeName={`${prefix}.assign_overview`} label="案件の確認と編集"/>
         <ThemeLists routeName={`${prefix}.choice_report_target`} label="報告書の確認/作成/修正(スタッフから)"/>
         <ThemeLists routeName={`${prefix}.choice_report_date_target`} label="報告書の確認/作成/修正(日付から)"/>

@@ -83,7 +83,7 @@ class GetDataFlowBeforeAssign{
             [$start_offset,$end_offset,$place_id,$date_sets,$staffs_in_the_period,$project_and_towns,$assigned_days]=self::get_common_data();
 
             // 期間内に営業所に来ている案件における[メイン案件名,roundNumbe,project_plannedのId,start_dare,end_date](project_planned_countより取得)
-            $projects_sets=ProjectPlannedCountHelpers::get_id_and_project_names_for_view_in_date_array($start_offset,$end_offset,$place_id);
+            $projects_sets=ProjectPlannedCountHelpers::get_id_and_project_names_for_view_in_date_array($start_offset,$end_offset,$place_id,need_main:true);
 
             // 並び替える[日付=>projectPlannedのid,表示用の案件名(roundNumber考慮),説明用セット(住所セット：説明用)]
             // projectPlannedCountのidを取得しておけば、その後にprojectIdもroundNumberも取得可能なので、この時点でセットする

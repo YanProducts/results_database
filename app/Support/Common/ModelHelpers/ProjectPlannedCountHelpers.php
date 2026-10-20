@@ -24,7 +24,8 @@ class ProjectPlannedCountHelpers{
 
     // 指定された日から日に含まれるIdと表示用案件名(案件IdとroundNumberのセット)を返す
     // place_idがあれば、営業所限定した案件を返す
-    public static function get_id_and_project_names_for_view_in_date_array($start_offset,$end_offset,$place_id=null){
+    // need_mainがあれば、メイン案件のみを返す
+    public static function get_id_and_project_names_for_view_in_date_array($start_offset,$end_offset,$place_id=null,$need_main=false){
         // 現在日時
         $now=CarbonImmutable::now();
 
@@ -34,8 +35,14 @@ class ProjectPlannedCountHelpers{
 
         //終了日がSqlでnullのものを考慮しつつ、開始日~終了日の間が案件期日のものを返す
         // place_idが指定されている場合と指定されていない場合も考慮
-        return ProjectPlannedCount::select("id","start_date","end_date","project_name","round_number")->where(function($query1)use($start_date,$end_date){return (($query1->whereBetween("start_date",[$start_date,$end_date])->andWhere("end_date",null)) || ($query1->where("start_date","<=",$start_date)->andWhere("end_date","<>",null)->andWhere("end_date",">=",$end_date)));})
-        ->andWhere(fn($query2) => empty($place_id) ? $query2 :$query2->where("place_id",$place_id));
+        return ProjectPlannedCount::select("id","start_date","end_date","project_id","round_number")->where(function($query1)use($start_date,$end_date){ return(($query1
+            ->where(function($query1_1)use($start_date,$end_date){return $query1_1->whereBetween("start_date",[$start_date,$end_date])->where("end_date",null);})
+            ->orWhere(function($query1_2)use($start_date,$end_date){return $query1_2->where("start_date","<=",$end_date)->where("end_date",">=",$start_date);})
+            ));
+        })
+            ->when(!empty($place_id) , fn($query2)=>$query2->where("place_id",$place_id))
+            ->when(!empty($need_main) , fn($query3)=>$query3->where("main_id",null))
+        ->get();
     }
 
 

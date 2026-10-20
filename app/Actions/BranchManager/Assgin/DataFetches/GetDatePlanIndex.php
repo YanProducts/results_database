@@ -3,6 +3,8 @@
 // 日付とプランidを紐づける操作ページで使用するインデックス作成
 namespace App\Actions\BranchManager\Assgin\DataFetches;
 
+use App\Exceptions\BusinessException;
+use App\Support\Common\ModelHelpers\ProjectHelpers;
 use Illuminate\Support\Facades\Log;
 
 class GetDatePlanIndex{
@@ -68,6 +70,18 @@ class GetDatePlanIndex{
     // 案件のみ版の配列作成(日付=>projectPlannedのid,表示用の案件名(roundNumber考慮),住所セット（説明用）])
     // projectPlannedCountのidを取得しておけば、その後にprojectIdもroundNumberも取得可能なので、この時点でセットする
     public static function get_project_data_for_project_only_pattern($date_sets,$projects_sets,$project_and_towns,$assigned_days){
+
+
+
+    // projects_setsのキーの中に、
+    // project_and_townsのキーが含まれない？
+    // いや、これは案件登録時に、おそらく案件全体テーブルには2回目3回目とround_numberが加算されているが、planのデータには加算されていないのが原因！
+
+
+
+
+
+        // date込みの配列
         $return_sets=[];
         foreach(array_keys($date_sets) as $date){
 
@@ -77,40 +91,38 @@ class GetDatePlanIndex{
             }
 
             //この日のデータ
-            $project_in_the_date=$projects_sets->where("start_date","<=",$date)->where("end_date",">=",$date);
+            $project_in_the_date=$projects_sets->where("start_date","<=",$date)->where("end_date",">=",$date)->groupBy(["project_id","round_number"]);
 
             // $projects_setsは期間内に営業所に来ている案件における[メイン案件名,roundNumbe,project_plannedのId,start_dare,end_date](project_planned_countより取得)。そこからその日が絞り込まれたのが$project_in_the_date
-            $formatted_project_data_in_the_date=$project_in_the_date->map(function($each_project_data){
+            // 変換した配列の作成
+            $formatted_project_data_in_the_date=collect();
+            foreach($project_in_the_date as $project_id=>$data_with_round_number){
+                $project_name=ProjectHelpers::get_project_name_from_id($project_id);
+                $round_number_index=0;
+                foreach($data_with_round_number as $round_number=>$each_project_data_base){
+                $round_number_index+=1;
+                //  round_numberでgroupByしたまとまりがeach_project_data_baseには格納
+                // 同じプロジェクトId、同じplace_id、同じround_numberの案件は必ず1つ。それ以上の場合はエラー
+                if(count($each_project_data_base)>1){
+                    throw new BusinessException("予期せぬエラーです");
+                }
+                // 案件セットの取得
+                $each_project_data=$each_project_data_base[0];
 
+                // キーはproject?planned_countのidだが、Jsxが並び替えることを考えid_とつける
+                $formatted_project_data_in_the_date->put("id_".$project_plan_id=$each_project_data["id"],[
+                    "project_plan_Id"=>$project_plan_id, //これだけで投稿時に特定できる
+                    "project_name_for_view"=>$round_number_index==1 ? $project_name : $project_name.":".$round_number_index, // 同じメイン案件のものがその日のデータにいくつあるか。複数のものにはround_numberもfor_viewの名前に入れる(同じ日のことなので、round_numberがそのまま入るわけではない)
+                    "address_sets"=>array_column($project_and_towns[$project_name."|".$round_number]["each_sets"] ?? [],"address_name")//project_name_and_townsは既に営業所ではソート済。同じ期間内=前から1月以内のため、案件名で最新案件idは発見、ronnd_numberで1つの案件に決定される。[project_name|round_number]がキーになっている
+                ]);
 
-                // 同じメイン案件のものがその日のデータにいくつあるか。複数のものにはround_numberもfor_viewの名前に入れる
-
-
-
-                // 住所リストの作成(説明用)
-
-
-
-                return[
-                    "project_plan_Id"=>$each_project_data->id, //これだけで投稿時に特定できる
-                    "project_name_for_view"=>"",
-                    "address_sets"=>""
-
-                ];
-            });
-
-            //説明用：元のproject_and_townsはメイン案件=>[each_sets=>[id(planの),address_name]
-
-
-            Log::info($project_in_the_date);
-            Log::info($project_and_towns);
+                }
+            }
 
             $return_sets[$date]=$formatted_project_data_in_the_date;
-
-
         }
 
-        // 日付=>[]
+        // 日付=>[案件全体(project_planned_count)id_id名]=>[案件全体(project_planned_count)テーブルのid,表示名,市町村セット]
         return $return_sets;
     }
 

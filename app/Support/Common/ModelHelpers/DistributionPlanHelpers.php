@@ -48,9 +48,8 @@ class DistributionPlanHelpers{
     // 該当営業所の該当機関に来ている案件を返す
     public static function get_plan_in_the_place_and_period($place_id,$date_sets){
 
-    $start=$date_sets["start"] ?? throw new BusinessException("日付取得のエラーです");
-    $end=$date_sets["end"] ?? throw new BusinessException("日付取得のエラーです");
-
+        $start=$date_sets["start"] ?? throw new BusinessException("日付取得のエラーです");
+        $end=$date_sets["end"] ?? throw new BusinessException("日付取得のエラーです");
 
         // 「表示する日付内の最初でまだ終わっていない」かつ「表示する日付の最後ですでに始まっている」ものを選択
         return DistributionPlan::where("place_id",$place_id)->where("start_date","<=",$end)
