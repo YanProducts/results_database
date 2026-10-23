@@ -33,9 +33,7 @@ return(
                 />
 
                 {/* projectごとの町の説明 */}
-                {selectedDate &&
                 <TownByProjectsForExplainForSimple {...{planIdsAndMapsByMainProjects,dateProjectsIndexInTheDate:dateProjectsIndex[selectedDate]}} />
-                }
 
                 <BaseButton processing={processing} disabled={Object.keys(choicedMap).length == 0 || popUpVisible}/>
              </>

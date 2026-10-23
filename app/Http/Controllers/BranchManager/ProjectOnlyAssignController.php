@@ -4,6 +4,7 @@ namespace App\Http\Controllers\BranchManager;
 
 use App\Actions\BranchManager\Assgin\GetDataFlowBeforeAssign;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BranchManager\ProjectOnlyAssignRequest;
 use App\Models\DistributionAssignImport;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -36,7 +37,7 @@ class ProjectOnlyAssignController extends Controller
             "dateSets"=>$date_sets,
 
             //日々の案件テーブルからとる(project_planned_counts) 案件名、roundNumber、place_idが同じ案件は一意に決まるので、このidを撮れば案件は一意に決まる
-            //[日付=>[案件名(roundNumberつき),project_plannedのId(投稿用)]]
+            //[日付=>[案件名(roundNumberつき),project_plannedのId(投稿用)、address_sets]]
             "dateProjectsIndex"=>$date_projects_index,
 
             "staffs"=>$staffs,
@@ -46,7 +47,7 @@ class ProjectOnlyAssignController extends Controller
     }
 
     // 投稿
-    public static function assign_staff_post(){
+    public static function assign_staff_post(ProjectOnlyAssignRequest $request){
 
     }
 }

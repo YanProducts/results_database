@@ -68,11 +68,11 @@ const onMapDecide=(e,projectName,roundNumber)=>{
     const target=e.currentTarget;
     const targetValue=target.value;
 
-// valueが配列に入っていれば配列から外し、入っていなければ新たに加える
-// 現在の値を値渡しする
-let nowMapNumberArray=choicedMap?.[selectedDate]?.[staffInChoice]?.[projectName]?.[roundNumber] || [];
+    // valueが配列に入っていれば配列から外し、入っていなければ新たに加える
+    // 現在の値を値渡しする
+    let nowMapNumberArray=choicedMap?.[selectedDate]?.[staffInChoice]?.[projectName]?.[roundNumber] || [];
 
-const newMapNumberArray=nowMapNumberArray.includes(targetValue) ? nowMapNumberArray.filter(eachNumber=>targetValue!=eachNumber):[...nowMapNumberArray,targetValue]
+    const newMapNumberArray=nowMapNumberArray.includes(targetValue) ? nowMapNumberArray.filter(eachNumber=>targetValue!=eachNumber):[...nowMapNumberArray,targetValue]
 
     setChoicedMap(prev=>({...prev,
     [selectedDate]:({
@@ -153,8 +153,8 @@ const onConfirmCancelClick=(e)=>{
     // post(route("branch_manager.store_including_duplicated_plans"));
  }
 
-//  詳細版へのリンク
-const onMoveDetailPageClick=(routeName)=>{
+//  町目・案件版へのリンク
+const onMovePageClick=(routeName)=>{
     if(!confirm("入力データは初期化されます\nよろしいですか？")){
         return;
     }
@@ -163,5 +163,5 @@ const onMoveDetailPageClick=(routeName)=>{
     })
 }
 
-  return{onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onMapChoiceClose,onShowAllTownsClick, onCloseAllTownsClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick,onMoveDetailPageClick}
+  return{onSelectedDateChange,onClickDateReset,onMapChoiceClick,onMapDecide,onMapChoiceClose,onShowAllTownsClick, onCloseAllTownsClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick,onMovePageClick}
 }
