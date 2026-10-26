@@ -1,11 +1,11 @@
-import SelectPartsForViewChange from "../../../Common/SelectPartsForViewChange";
-import InputPageHeader from "../../../Common/InputPageHeader";
-import BaseButton from "../../../Common/BaseButton";
-import StaffListsForSimple from "./Inner/Simple/StaffListsForSimple";
-import TownByProjectsForExplainForSimple from "./Inner/Simple/TownByProjectsForExplainForSimple";
+import SelectPartsForViewChange from "../../../../Common/SelectPartsForViewChange";
+import InputPageHeader from "../../../../Common/InputPageHeader";
+import BaseButton from "../../../../Common/BaseButton";
+import StaffListsForSimple from "../Inner/Simple/StaffListsForSimple";
+import TownByProjectsForExplainForSimple from "../Inner/Simple/TownByProjectsForExplainForSimple";
 
 // スタッフを割り当てる際のデータ入力ページ
-export default function DataInputForSimple({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,assignedDays,
+export default function DataInputForSimple({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,nonDataInTheDayFlag,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,assignedDays,
 onMapChoiceClick,onMapDecide,onMapChoiceClose,
 planIdsAndMapsByMainProjects,dateProjectsIndex,staffs,staffInChoice,popUpVisible,choicedMap,processing}){
 
@@ -43,6 +43,13 @@ return(
 
                 {/* 5日後までの日付(select変化でメイン案件名変化) */}
                 <SelectPartsForViewChange value={selectedDate} onChange={onSelectedDateChange} prefix={"日付："} keyValueSets={dateSets} disabled={selectedDate ? true :false} fixed={selectedDate ? true :false} fixContents={selectedDate ? new Date(selectedDate).toLocaleDateString("ja-JP", {month: "long",day: "numeric"}) : ""} disabledLists={assignedDays} disabledReason="分割済"/>
+
+
+                {/* その日の案件が何もなかった時 */}
+                {nonDataInTheDayFlag &&
+                <p className={`base_backColor base_frame text-center my-1 w-[90%]`}>その日は案件が届いておりません</p>
+                }
+
 
               </div>
         }

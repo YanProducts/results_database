@@ -10,6 +10,7 @@ use Inertia\Inertia;
 use App\Actions\BranchManager\Assgin\GetDataFlowBeforeAssign;
 use App\Actions\BranchManager\Assgin\StoreAssign;
 use App\Http\Requests\BranchManager\AssignStaffRequest;
+use App\Actions\BranchManager\Assgin\DuplicatedChek\Common\Delete;
 use App\Utils\DateHelper;
 
 // スタッフへの案件割り当て系統を行う
@@ -18,6 +19,9 @@ class StaffAssignmentController extends Controller
 
     //案件割り当て画面へ
     public function assign_staff(){
+
+        // 過去の重複データを消す
+        Delete::delete_imports_by_auth_user();
 
         // 日付セット、その営業所に来ている案件と、日付と案件(町目)のインデックス、（その日出席している）所属スタッフを返す(当日から5日先まで)
         [$date_sets,$assigned_days,$projects_and_towns,$date_projects_index,$staffs]=GetDataFlowBeforeAssign::get_projects_and_staffs_in_branch();
@@ -62,7 +66,7 @@ class StaffAssignmentController extends Controller
         }
 
         // 重複がなければ投稿して確認ページへ
-        StoreAssign::assign_staffs_to_plans($date,$all_data,false);
+        StoreAssign::assign_plans_to_staffs($date,$all_data,false);
 
         return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"branch_manager.assign_overview","linkPageInJpn"=>"現在の割り当ての確認"]);
     }

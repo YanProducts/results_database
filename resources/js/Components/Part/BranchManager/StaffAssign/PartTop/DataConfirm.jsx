@@ -1,8 +1,8 @@
-import SubmitOrBackButtons from "../../../Common/SubmitOrBackButtons";
-import AssignSetsForConfirming from "./Inner/Detail/AssignSetsForConfirming";
-import BasePageHeader from "../../../Common/BasePageHeader";
-import DuplicatedTownsTable from "./Inner/Detail/DuplicatedTownsTable";
-import ViewValidationErrors from "../../../Common/ViewValidationErrors";
+import SubmitOrBackButtons from "../../../../Common/SubmitOrBackButtons";
+import AssignSetsForConfirming from "../Inner/Detail/AssignSetsForConfirming";
+import BasePageHeader from "../../../../Common/BasePageHeader";
+import DuplicatedTownsTable from "../Inner/Detail/DuplicatedTownsTable";
+import ViewValidationErrors from "../../../../Common/ViewValidationErrors";
 
 // スタッフを割り当てた後のデータ確認ページ
 export default function DataConfirm({what,type,errors,pageMinWidth,pageMaxWidth,processing,selectedDate,onConfirmOkClick,onConfirmCancelClick,assignPlanForConfirmView,duplicatedCheck,flash,onDuplicatedOkClick}){

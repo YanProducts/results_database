@@ -3,8 +3,8 @@ import { RoleLayout } from "../../../Layout/RoleLayout";
 import BaseLinkLine from "../../../Components/Common/BaseLinkLine";
 import useAssignProjectToStaffDefinitions from "../../../Definition/BranchManager/ProjectAssingment/useAssignProjectToStaffDefinitions";
 import useAssignProjectToStaffActions from "../../../Action/BranchManager/ProjectAssignment/useAssingProjectToStaffActions";
-import DataInput from "../../../Components/Part/BranchManager/StaffAssign/DataInput";
-import DataConfirm from "../../../Components/Part/BranchManager/StaffAssign/DataConfirm";
+import DataInput from "../../../Components/Part/BranchManager/StaffAssign//PartTop/DataInput";
+import DataConfirm from "../../../Components/Part/BranchManager/StaffAssign/PartTop/DataConfirm";
 import AssignProjectToStaffContext from "../../../Contexts/BranchManager/useAssignProjectToStaffContexts";
 
 
@@ -15,7 +15,7 @@ export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,
   const { data, setData, post, processing, errors,clearErrors, reset, assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,assignPlanForConfirmView,setAssignPlanForConfirmView,showAllTowns,setShowAllTowns,pageMinWidth,pageMaxWidth}=useAssignProjectToStaffDefinitions();
 
   // 動き
-  const {onSubmitBtnClick,onSelectedDateChange,onClickDateReset,onSelectedMainProjectChange,onChangeMapOrTown,onShowAllTownsClick, onCloseAllTownsClick,handleAssignChangeInMaps,handleAssignChangeInTowns,onConfirmOkClick,onConfirmCancelClick,onDuplicatedOkClick,onMoveSimplePageClick}=useAssignProjectToStaffActions({data,post,clearErrors,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setShowAllTowns,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash});
+  const {onSubmitBtnClick,onSelectedDateChange,onClickDateReset,onSelectedMainProjectChange,onChangeMapOrTown,onShowAllTownsClick, onCloseAllTownsClick,handleAssignChangeInMaps,handleAssignChangeInTowns,onConfirmOkClick,onConfirmCancelClick,onDuplicatedOkClick,onMovePageClick}=useAssignProjectToStaffActions({data,post,clearErrors,projectsAndTowns,staffs,assignPlan,setAssignPlan,selectedMainProject,setSelectedMainProject,needNumber,setNeedNumber,mapMeta,setMapMeta,selectedDate,setSelectedDate,isConfirm,setIsConfirm,setShowAllTowns,setAssignPlanForConfirmView,setData,duplicatedCheck,setDuplicatedCheck,flash});
 
 
 
@@ -35,9 +35,8 @@ export default function AssingProjectToStaff({prefix,what,type,projectsAndTowns,
     {/* リンク */}
     <div className="mt-4">
     <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.top_page`}  what="営業所担当のトップ"/>
-
-    <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.simple_assign_staff`}  what="簡易版" needAlert={true} needAlertFunc=  {onMoveSimplePageClick}/>
-
+    <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.project_only_assign_staff`}  what="案件版" needAlert={true} needAlertFunc={onMovePageClick}/>
+    <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.simple_assign_staff`}  what="地図版" needAlert={true} needAlertFunc={onMovePageClick}/>
     <BaseLinkLine minWidth={pageMinWidth} maxWidth={pageMaxWidth}  routeName={`${prefix}.logout`}  what="ログアウト"/>
     </div>
 

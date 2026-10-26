@@ -4,10 +4,12 @@
 namespace App\Actions\BranchManager\Assgin\Management;
 
 use App\Constants\Date;
+use App\Models\DistributionProjectAssignment;
 use App\Support\Common\ModelHelpers\AddressHelpers;
 use App\Support\Common\ModelHelpers\BranchManagerListHelpers;
 use App\Support\Common\ModelHelpers\DistributionAssignmentHelpers;
 use App\Support\Common\ModelHelpers\DistributionPlanHelpers;
+use App\Support\Common\ModelHelpers\DistributionProjectAssignmentHelpers;
 use App\Support\Common\ModelHelpers\FieldStaffListHelpers;
 use App\Support\Common\ModelHelpers\ProjectHelpers;
 use App\Utils\DateHelper;
@@ -36,7 +38,7 @@ class AssignOverview{
         $staff_lists=FieldStaffListHelpers::get_all_names_of_staffs_in_the_place($place_id)->pluck("staff_name","id");
 
         // その期間にこの営業所に来ている案件のセットを返す(表示と選択用のみに使用するため、main_idがnullのものに限定)
-        $plan_sets_in_the_place=DistributionPlanHelpers::get_plan_in_the_place_and_period($place_id,["start"=>min($date_key_sets),"end"=>max($date_key_sets)])->where("main_id",null);
+        $plan_sets_in_the_place=DistributionPlanHelpers::get_plan_in_the_place_and_period($place_id,["start"=>$start_date=min($date_key_sets),"end"=>$end_date=max($date_key_sets)])->where("main_id",null);
 
 
         // 選択&表示用：上記で取得したplanに含まれるprojectIdに対応するprojectの名前を検索(プロジェクトid=>名前)
@@ -47,6 +49,14 @@ class AssignOverview{
 
         // 上記のplanのidに対応したassignを取得
         $assign_sets=DistributionAssignmentHelpers::get_assigns_by_plan_ids($plan_sets_in_the_place->pluck("id"));
+
+        // project版の案件(これは日付->メイン案件のID(projectPlanIdからproject_idとround_numberを取得)=>スタッフの名前で取得可能)
+
+        $assigns_by_project_only=DistributionProjectAssignmentHelpers::get_assigns_between_the_date($staff_lists->keys(),$start_date,$end_date);
+
+        Log::info($assigns_by_project_only);
+        dd(1);
+
 
         return [$staff_lists,$plan_sets_in_the_place,$project_sets,$city_name_sets,$assign_sets];
     }

@@ -20,6 +20,9 @@ export default function useSimpleAssignProjectToStaffDefinitions(){
   // 表示する日付(選択中のY-m-d型の文字列を返す)
   const [selectedDate,setSelectedDate]=React.useState("");
 
+  // 選択した日付に案件がない場合の表示部分
+  const [nonDataInTheDayFlag,setNonDataInTheDayFlag]=React.useState(false)
+
  // 現在選択中のmap...date=>{staff:{"projectName":{"roundNumber":{"map_number":},{},{}...]}の形式で捕捉
    const [choicedMap,setChoicedMap]=React.useState({})
 
@@ -39,5 +42,5 @@ export default function useSimpleAssignProjectToStaffDefinitions(){
     const [pageMinWidth,pageMaxWidth]=["min-w-200","max-w-300"];
 
 
-  return { data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,choicedMap,setChoicedMap,staffInChoice,setStaffInChoice,popUpVisible,setPopUpVisible,choicedByProjects,setChoicedByProjects,showAllTowns,setShowAllTowns,pageMinWidth,pageMaxWidth}
+  return { data, setData, post, processing, errors,clearErrors, reset,assignPlan,setAssignPlan,isConfirm,setIsConfirm,duplicatedCheck,setDuplicatedCheck,selectedDate,setSelectedDate,nonDataInTheDayFlag,setNonDataInTheDayFlag,choicedMap,setChoicedMap,staffInChoice,setStaffInChoice,popUpVisible,setPopUpVisible,choicedByProjects,setChoicedByProjects,showAllTowns,setShowAllTowns,pageMinWidth,pageMaxWidth}
 }

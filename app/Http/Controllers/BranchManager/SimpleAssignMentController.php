@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\BranchManager;
 
+use App\Actions\BranchManager\Assgin\DuplicatedChek\Common\Delete;
 use App\Http\Controllers\Controller;
 use App\Actions\BranchManager\Assgin\GetDataFlowBeforeAssign;
 use App\Http\Requests\BranchManager\AssignStaffRequest;
 use App\Actions\BranchManager\Assgin\StoreAssign;
 use App\Actions\BranchManager\Assgin\DuplicatedChek\Simple\Check as SimpleCheck;
 use App\Actions\BranchManager\Assgin\DuplicatedChek\Simple\Insert;
-use App\Models\DistributionAssignImport;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -20,8 +19,8 @@ class SimpleAssignMentController extends Controller
     //地図に少しでも入っていればその地図のmapを登録する
     public function assign_staff(){
 
-        // 前段階として、importを消しておく
-        DistributionAssignImport::where("created_by",Auth::user()->id)->delete();
+        // 前段階として、importを消しておく(既に前町目行っている差し戻し用)
+        Delete::delete_imports_by_auth_user();
 
         // 日付セット、その営業所に来ている案件と、日付と案件(町目)のインデックス、（その日出席している）所属スタッフを返す(当日から5日先まで)
         [$date_sets,$staffs,$plan_id_and_maps_by_main_projects,$date_projects_index,$assigned_days]=GetDataFlowBeforeAssign::get_staffs_and_projects_in_branch_for_simple();
@@ -62,7 +61,7 @@ class SimpleAssignMentController extends Controller
         }
 
         //登録 //登録時に行うことはfrom_simple_flagをつけるだけで他は同じ
-        StoreAssign::assign_staffs_to_plans($date,$all_data,true);
+        StoreAssign::assign_plans_to_staffs($date,$all_data,true);
 
         return redirect()->route("view_information")->with(["information_message"=>"登録完了しました","linkRouteName"=>"branch_manager.assign_overview","linkPageInJpn"=>"現在の割り当ての確認"]);
     }

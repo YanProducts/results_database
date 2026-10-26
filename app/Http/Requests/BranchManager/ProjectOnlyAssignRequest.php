@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\BranchManager;
 
+use App\Rules\BranchManager\AssignDateRule;
 use App\Rules\BranchManager\StaffIsWorkingRule;
+use App\Rules\Common\ProjectPalnIdExistsRule;
 use App\Rules\Common\StaffIsExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,13 +27,27 @@ class ProjectOnlyAssignRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-            "staffId"=>["required","integer",new StaffIsExistsRule,new StaffIsWorkingRule],
-            "projectPlanIds"=>["present","array",],
+            "assignDate"=>["required","date_format:Y-m-d",new AssignDateRule],
+            "allData"=>["required","array"],
+            //スタッフのIdが存在するか、その営業所にいるか
+            "allData.*.staffId"=>["required","integer",new StaffIsExistsRule,new StaffIsWorkingRule],
+            "allData.*.projectPlanIds"=>["present","array"],
+            // 案件のId(projectPlannedCountsのid)が存在するか
+            "allData.*.projectPlanIds.*"=>["integer",new ProjectPalnIdExistsRule] //これはrequiredになるのか！？
+        ];
+    }
 
-
-            "projectPlanIds.*"=>["integer",] //これはrequiredになるのか！？
-
+    public function messages(){
+        return[
+            "assignDate.required"=>"日付が取得できません",
+            "assignDate.date_format"=>"日付取得のエラーです",
+            "allData.required"=>"データ選択されていません",
+            "allData.array"=>"データの形が異常です",
+            "allData.*.staffId.required"=>"スタッフ指定のエラーです",
+            "allData.*.staffId.integer"=>"スタッフ指定のエラーです",
+            "allData.*.projectPlanIds.present"=>"案件指定のエラーです",
+            "allData.*.projectPlanIds.array"=>"案件指定のエラーです",
+            "allData.*.projectPlanIds.*.integer"=>"案件取得のエラーです",
         ];
     }
 }

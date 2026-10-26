@@ -2,16 +2,19 @@
 // Assignで投稿されたデータをSQLに入れる過程でのメソッド
 namespace App\Actions\BranchManager\Assgin;
 
-use App\Actions\BranchManager\Assgin\DuplicatedChek\Detail\Delete;
+use App\Actions\BranchManager\Assgin\DuplicatedChek\Common\Delete as CommonDelete;
+use App\Exceptions\BusinessException;
 use App\Models\DistributionAssignImport;
+use App\Models\DistributionProjectAssignment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class StoreAssign{
     // スタッフを町目に当てはめる(シンプル、詳細とも同じ)
     //allData以下は入れ子の配列。その配列下のplan_idsにはdistribution_planのidが格納。そのidにはプロジェクトのidも紐づけられている
-    public static function assign_staffs_to_plans($date,$all_data,$from_simple_flag){
+    public static function assign_plans_to_staffs($date,$all_data,$from_simple_flag){
         // すでに重複確認は終えているのでimportではなくassignmentに入れる
         DB::transaction(function()use($date,$all_data,$from_simple_flag){
             $new_assigned_data=[];
@@ -51,10 +54,37 @@ class StoreAssign{
            DB::table("distribution_assignments")->insert($distribution_assign_to_sql_data);
 
            // データの削除
-           Delete::delete_imports_by_auth_user();
+           CommonDelete::delete_imports_by_auth_user();
        });
     }
 
-
+    // 案件ごと指定におけるSQL登録
+    public static function assign_project_to_staffs($date,$all_data){
+        try{
+          DB::transaction(function()use($date,$all_data){
+            $array_for_insert=[];
+            foreach($all_data as $data){
+                if(empty($data["projectPlanIds"])){
+                    continue;
+                }
+                foreach($data["projectPlanIds"] as $project_plan_id){
+                    $array_for_insert[]=[
+                      "project_plan_id"=>$project_plan_id,
+                      "staff_id"=>$data["staffId"],
+                      "date"=>$date,
+                      //end_dateは現時点では全てnull。今後仕様を変えていくかを含めて要検討
+                      "created_by"=>Auth::user()->id,
+                      "created_at"=>Carbon::now(),
+                      "updated_at"=>Carbon::now(),
+                    ];
+                }
+            }
+            DistributionProjectAssignment::insert($array_for_insert);
+          });
+        }catch(\Throwable $e){
+            Log::info($e->getMessage());
+            throw new BusinessException("データ挿入の際にエラーが生じました");
+        }
+    }
 
 }

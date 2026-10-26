@@ -1,11 +1,11 @@
-import SelectPartsForViewChange from "../../../../Components/Common/SelectPartsForViewChange";
-import InputPageHeader from "../../../../Components/Common/InputPageHeader";
-import BaseButton from "../../../../Components/Common/BaseButton";
-import RadioButton from "../../../../Components/Common/RadioButton";
-import MapLists from "./Inner/Detail/MapLists";
-import TownLists from "./Inner/Detail/TownLists";
-import getProjectNameForView from "../../../../Support/BranchManager/getProjectNameForView";
-import TownByProjectsForExplain from "./Inner/Detail/TownByProjectsForExplain";
+import SelectPartsForViewChange from "../../../../../Components/Common/SelectPartsForViewChange";
+import InputPageHeader from "../../../../../Components/Common/InputPageHeader";
+import BaseButton from "../../../../../Components/Common/BaseButton";
+import RadioButton from "../../../../../Components/Common/RadioButton";
+import MapLists from "../Inner/Detail/MapLists";
+import TownLists from "../Inner/Detail/TownLists";
+import getProjectNameForView from "../../../../../Support/BranchManager/getProjectNameForView";
+import TownByProjectsForExplain from "../Inner/Detail/TownByProjectsForExplain";
 
 // スタッフを割り当てる際のデータ入力ページ
 export default function DataInput({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,assignedDays,selectedMainProject,onSelectedMainProjectChange,projectsAndTowns,dateProjectsIndex,onChangeMapOrTown,needNumber,mapMeta,staffs,handleAssignChangeInMaps,assignPlan,handleAssignChangeInTowns,processing}){

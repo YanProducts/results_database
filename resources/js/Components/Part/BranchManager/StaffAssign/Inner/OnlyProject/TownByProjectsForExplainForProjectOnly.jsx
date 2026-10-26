@@ -1,51 +1,25 @@
 // 案件が識別番号では分かりにくので、町目ごとのサンプルを作成
-// 後から作ったものなのでデータ構造が違うため、詳細版と分ける
-// またmap選択のdom作成の処理と似通った面もあるが、dom作成処理においてはstateの変更があるため統一はしない
+// 詳細版とマップ版とは仕様が別
 
 import React from "react";
 import AssignProjectToStaffContext from "../../../../../../Contexts/BranchManager/useAssignProjectToStaffContexts";
-import simpleGetProjectNameForView from "../../../../../../Support/BranchManager/simpleGetProjectNameForView";
 
-export default function TownByProjectsForExplainForProjectOnly({planIdsAndMapsByMainProjects,dateProjectsIndexInTheDate,pageMaxWidth,pageMinWidth}){
+export default function TownByProjectsForExplainForProjectOnly({dateProjectsIndexInTheDate,pageMaxWidth,pageMinWidth}){
 
     const {showAllTowns,onShowAllTownsClick,onCloseAllTownsClick}=React.useContext(AssignProjectToStaffContext);
 
-    // planIdsAndMapsByMainProjectsは[project_name=>round_number]
-    // dateProjectIndexInTheDateは[project_name,round_number]
-    //planIdsAndMapsByMainProjectsのtown_listsにaddress_nameを配列で入れる
-
-    // その日に来ている案件
-    const projectNamesWithRaoundNumberInTheDate= dateProjectsIndexInTheDate.map((eachIndexSet)=>eachIndexSet.project_name + "|" + Number(eachIndexSet.round_number));
+    // 案件版ではdateProjectIndexInTheDateでproject_planed_countから案件がroundNumberごとに既に入っているので、入れ子ではない。そのproject_plan_id,project_name_for_vuew,address_setsが入ってる
 
 
-    //プロジェクトのデータセットで、その日の案件に入っていないデータはフィルター(入れ子での条件設定なのでfilterは使えない)
-    // project直下のroundNumber以下のものをなくしていく
-    let filteredPlanIdsAndMapsByMainProjects={}
-    Object.entries(planIdsAndMapsByMainProjects).forEach(function([projectName,valueInProjectName]){
-        Object.entries(valueInProjectName).forEach(function([roundNumber,eachSet]){
-        if(projectNamesWithRaoundNumberInTheDate.includes(projectName + "|" + Number(roundNumber))){
-            if(!Object.hasOwn(filteredPlanIdsAndMapsByMainProjects,projectName)){
-                filteredPlanIdsAndMapsByMainProjects[projectName]={}
-            }
-            filteredPlanIdsAndMapsByMainProjects[projectName][roundNumber]=eachSet
-        };
-        })
-  })
-
-    // マップの表示用の案件名と統一(PopIpMapChoiceByStaffを参照する)
+    // 案件名ごとの町目一覧
     return(
          <div className={`base_frame base_backColor px-5 border border-black rounded-md my-3 ${pageMaxWidth,pageMinWidth}`}>
             <p className="mt-0 mb-1 font-bold text-left px-3 pt-1  border-b border-black">町目一覧（案件把握用）</p>
-            {Object.entries(filteredPlanIdsAndMapsByMainProjects).map(function([projectName,valueInProjectName]){
-                return(
-                Object.entries(valueInProjectName).map(function([roundNumber,eachSet],roundNumberIndex){
-
-                    // そのプロジェクトがその回において1度ならroundNumberは表示しない。1度ではない場合は、roundNumberの登場が何回目かで表示
-                    const projectNameForView=simpleGetProjectNameForView({valueInProjectName,projectName,roundNumberIndex});
-
-                    // 住所セット
-                    const townStr=eachSet.address_sets.join("、");
-
+            {Object.values(dateProjectsIndexInTheDate).map(function(eachProjectData){
+                // 案件表示名
+                const projectNameForView=eachProjectData?.project_name_for_view ?? "";
+                // 住所セット
+                const townStr=(eachProjectData?.address_sets ?? []).join("、");
                     return(
                         <React.Fragment key={projectNameForView}>
                         <div className={`${showAllTowns==projectNameForView ? "bg-amber-200" : ""}`}>{`${projectNameForView}…${townStr.substring(0,50)}`}
@@ -62,8 +36,6 @@ export default function TownByProjectsForExplainForProjectOnly({planIdsAndMapsBy
                         }
                         </React.Fragment>
                     )
-                })
-            )
             })
             }
         </div>

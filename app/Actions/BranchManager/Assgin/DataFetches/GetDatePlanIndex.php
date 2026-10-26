@@ -111,7 +111,7 @@ class GetDatePlanIndex{
 
                 // キーはproject?planned_countのidだが、Jsxが並び替えることを考えid_とつける
                 $formatted_project_data_in_the_date->put("id_".$project_plan_id=$each_project_data["id"],[
-                    "project_plan_Id"=>$project_plan_id, //これだけで投稿時に特定できる
+                    "project_plan_id"=>$project_plan_id, //これだけで投稿時に特定できる
                     "project_name_for_view"=>$round_number_index==1 ? $project_name : $project_name.":".$round_number_index, // 同じメイン案件のものがその日のデータにいくつあるか。複数のものにはround_numberもfor_viewの名前に入れる(同じ日のことなので、round_numberがそのまま入るわけではない)
                     "address_sets"=>array_column($project_and_towns[$project_name."|".$round_number]["each_sets"] ?? [],"address_name")//project_name_and_townsは既に営業所ではソート済。同じ期間内=前から1月以内のため、案件名で最新案件idは発見、ronnd_numberで1つの案件に決定される。[project_name|round_number]がキーになっている
                 ]);

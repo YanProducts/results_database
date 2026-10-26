@@ -9,6 +9,7 @@ use App\Actions\BranchManager\Assgin\DataFetches\GetDataInPlaceAndPeriod;
 use App\Actions\BranchManager\Assgin\DataFetches\GetDatePlanIndex;
 use App\Actions\BranchManager\Assgin\DataFetches\GetStaffsInPlaceAndPeriod;
 use App\Support\Common\ModelHelpers\DistributionAssignmentHelpers;
+use App\Support\Common\ModelHelpers\DistributionProjectAssignmentHelpers;
 use App\Support\Common\ModelHelpers\ProjectPlannedCountHelpers;
 use App\Utils\DateHelper;
 use Illuminate\Support\Facades\Auth;
@@ -42,9 +43,10 @@ class GetDataFlowBeforeAssign{
         // そのメイン案件がどのような町を含むものかと案件Idから判別するため、簡易版や案件のみ版でも必要
         $projects_and_towns=GetDataInPlaceAndPeriod::get_projects_and_towns_in_the_place_and_period($place_id,$start_offset,$end_offset);
 
-        // 開始日から終了日までの中で、現在この営業所のassignのデータが1つでもある日をY-m-dの配列で取得（その日のデータは「データあり」で表示。データ軽量化のため後の取得データからも外す
+        // 開始日から終了日までの中で、現在この営業所のassignのデータが1つでもある日をY-m-dの配列で取得（その日のデータは「データあり」で表示。データ軽量化のため後の取得データからも外す)
+        // concatでcollectionを連結
         // 現状、end_dateは利用できてない
-        $assigned_days=DistributionAssignmentHelpers::get_date_sets_having_assign_data($start_offset,$end_offset,$place_id);
+        $assigned_days=DistributionAssignmentHelpers::get_date_sets_having_assign_data($start_offset,$end_offset,$place_id)->concat(DistributionProjectAssignmentHelpers::get_date_sets_having_assign_data($start_offset,$end_offset,$place_id))->unique()->values();
 
         return [$start_offset,$end_offset,$place_id,$date_sets,$staffs_in_the_period,$projects_and_towns,$assigned_days];
     }

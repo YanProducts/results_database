@@ -1,10 +1,10 @@
-import SubmitOrBackButtons from "../../../Common/SubmitOrBackButtons";
-import BasePageHeader from "../../../Common/BasePageHeader";
-import ViewValidationErrors from "../../../Common/ViewValidationErrors";
-import simpleGetProjectNameForView from "../../../../Support/BranchManager/simpleGetProjectNameForView";
-import TableByStaffsForConfirm from "./Inner/Simple/TableByStaffsForConfirm";
-import TableByProjectsForConfirm from "./Inner/Simple/TableByProjectsForConfirm";
-import DuplicatedTownsTable from "./Inner/Detail/DuplicatedTownsTable";
+import SubmitOrBackButtons from "../../../../Common/SubmitOrBackButtons";
+import BasePageHeader from "../../../../Common/BasePageHeader";
+import ViewValidationErrors from "../../../../Common/ViewValidationErrors";
+import simpleGetProjectNameForView from "../../../../../Support/BranchManager/simpleGetProjectNameForView";
+import TableByStaffsForConfirm from "../Inner/Simple/TableByStaffsForConfirm";
+import TableByProjectsForConfirm from "../Inner/Simple/TableByProjectsForConfirm";
+import DuplicatedTownsTable from "../Inner/Detail/DuplicatedTownsTable";
 
 
 

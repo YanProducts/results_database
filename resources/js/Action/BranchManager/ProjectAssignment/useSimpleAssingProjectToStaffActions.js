@@ -6,7 +6,7 @@ import popUpPositionSeeting from '../../../Support/Common/popUpPositionSetting';
 import SimpleFormatDataByProjects from './DataConfirm/SimpleFormatDataByProjects';
 import SimpleDataFormatToFormData from './DataConfirm/SimpleDataFormatToFormData';
 
-export default function useSimpleAssignProjectToStaffActions({data,setData,post,processing,clearErrors,staffs,isConfirm,setIsConfirm,selectedDate,setSelectedDate,choicedMap,setChoicedMap,choicedByProjects,setChoicedByProjects,planIdsAndMapsByMainProjects,staffInChoice,setShowAllTowns,setStaffInChoice,setPopUpVisible}){
+export default function useSimpleAssignProjectToStaffActions({data,setData,post,processing,clearErrors,staffs,dateProjectsIndex,isConfirm,setIsConfirm,selectedDate,setSelectedDate,setNonDataInTheDayFlag,choicedMap,setChoicedMap,choicedByProjects,setChoicedByProjects,planIdsAndMapsByMainProjects,staffInChoice,setShowAllTowns,setStaffInChoice,setPopUpVisible}){
 
 //useReducerで定義する
 
@@ -42,7 +42,7 @@ React.useEffect(()=>{
 
 // // 日付の変更
 const onSelectedDateChange=(e)=>{
-    useHandleDataChange(setSelectedDate,e);
+    useHandleDataChange({setSelectedDate,e,dateProjectsIndex,setNonDataInTheDayFlag});
 }
 
 // // 日付の初期化(全データが初期化される)

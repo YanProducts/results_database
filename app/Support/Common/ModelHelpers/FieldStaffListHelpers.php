@@ -47,4 +47,11 @@ class FieldStaffListHelpers{
         return FieldStaffList::select("id",DB::raw("COALESCE(staff_name,user_name) as staff_name"))->where("place_id",$place_id)->get();
     }
 
+
+    // そのスタッフidが特定営業所に所属し、かつ稼働中か(バリデーション等に使用)
+    public static function is_staff_is_active_and_in_the_place($staff_id,$place_id){
+        return FieldStaffList::where("id",$staff_id)->where("place_id",$place_id)->where("is_active",true)->exists();
+    }
+
+
 }

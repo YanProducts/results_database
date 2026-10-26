@@ -1,19 +1,15 @@
-import SelectPartsForViewChange from "../../../Common/SelectPartsForViewChange";
-import InputPageHeader from "../../../Common/InputPageHeader";
-import BaseButton from "../../../Common/BaseButton";
-import StaffListsForSimple from "./Inner/Simple/StaffListsForSimple";
-import TownByProjectsForExplainForSimple from "./Inner/Simple/TownByProjectsForExplainForSimple";
-import StaffListsForOnlyProject from "./Inner/OnlyProject/StaffListsForOnlyProject";
+import SelectPartsForViewChange from "../../../../Common/SelectPartsForViewChange";
+import InputPageHeader from "../../../../Common/InputPageHeader";
+import BaseButton from "../../../../Common/BaseButton";
+import StaffListsForOnlyProject from "../Inner/OnlyProject/StaffListsForOnlyProject";
+import TownByProjectsForExplainForProjectOnly from "../Inner/OnlyProject/TownByProjectsForExplainForProjectOnly";
 
-// スタッフを割り当てる際のデータ入力ページ
-export default function DataInputForProjectOnly({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,assignedDays,
-onProjectChoiceClick,onProjectDecide,onProejectChoiceClose,
-planIdsAndMapsByMainProjects,dateProjectsIndex,staffs,staffInChoice,popUpVisible,choicedProject,processing}){
+// 案件版のスタッフを割り当てる際のデータ入力ページ
+export default function DataInputForProjectOnly({what,type,pageMinWidth,pageMaxWidth,onSubmitBtnClick,nonDataInTheDayFlag,selectedDate,onSelectedDateChange,onClickDateReset,dateSets,assignedDays,
+onProjectChoiceClick,onProjectDecide,onProjectChoiceClose,
+dateProjectsIndex,staffs,staffInChoice,popUpVisible,choicedProjects,processing}){
 
-// 最終的にキーがproject|roundNumber,値がproject:~回目
-// dateProjectIndex...ここには[projectName=>,roundNumber=>]という形式で入れ子
-// planIdsAndMapsByMainProjects...ここは[projectName=>roundNumber=>]という二重カッコ
-
+// 最終的には[date=>{satfId=>,projetcPlanIds=>}の形式で投稿]
 return(
     <>
     {/* タイトル */}
@@ -29,13 +25,13 @@ return(
                     staffsInSelectedDate={staffs[selectedDate]}
                     projectSetsInTheDay={dateProjectsIndex[selectedDate]}
                     {...{selectedDate,pageMinWidth,pageMaxWidth,staffInChoice,popUpVisible,onProjectChoiceClick,onProjectDecide,
-                    onProejectChoiceClose,choicedProject,onClickDateReset,dateProjectsIndex}}
+                    onProjectChoiceClose,choicedProjects,onClickDateReset,dateProjectsIndex}}
                 />
 
                 {/* projectごとの町の説明 */}
-                <TownByProjectsForExplainForSimple {...{planIdsAndMapsByMainProjects,dateProjectsIndexInTheDate:dateProjectsIndex[selectedDate]}} />
+                <TownByProjectsForExplainForProjectOnly {...{dateProjectsIndexInTheDate:dateProjectsIndex[selectedDate]}} />
 
-                <BaseButton processing={processing} disabled={Object.keys(choicedMap).length == 0 || popUpVisible}/>
+                <BaseButton processing={processing} disabled={Object.keys(choicedProjects).length == 0 || popUpVisible}/>
              </>
             :
             // selectedDateが設定されていない時は日付選び
@@ -43,6 +39,13 @@ return(
 
                 {/* 5日後までの日付(select変化でメイン案件名変化) */}
                 <SelectPartsForViewChange value={selectedDate} onChange={onSelectedDateChange} prefix={"日付："} keyValueSets={dateSets} disabled={selectedDate ? true :false} fixed={selectedDate ? true :false} fixContents={selectedDate ? new Date(selectedDate).toLocaleDateString("ja-JP", {month: "long",day: "numeric"}) : ""} disabledLists={assignedDays} disabledReason="分割済"/>
+
+                {/* その日の案件が何もなかった時 */}
+                {nonDataInTheDayFlag &&
+                <p className={`base_backColor base_frame text-center my-1 w-[90%]`}>その日は案件が届いておりません</p>
+                }
+
+
 
               </div>
         }

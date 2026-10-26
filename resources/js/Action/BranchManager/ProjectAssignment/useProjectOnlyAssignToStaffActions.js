@@ -1,12 +1,12 @@
 import React from "react";
 import { route } from "ziggy-js";
 import { router } from "@inertiajs/react";
-import useDisappearValidation from "../../../Share/useDisappearValidation";
+import useDisappearValidation from "../../Share/useDisappearValidation";
 import popUpPositionSeeting from "../../../Support/Common/popUpPositionSetting";
-import useClearErrors from "../../../Share/useClearErrors";
+import useClearErrors from "../../Share/useClearErrors";
 import useHandleDataChange from "./DataInput/useHandleDateChange";
 
-export default function useProjectOnlyAssignToStaffActions({data,setData,post,errors,clearErrors,setValidationHidden,selectedDate,setSelectedDate,setShowAllTowns,staffInChoice,setStaffInChoice,choicedProjects,setChoicedProjects,setPopUpVisible,setIsConfirm}){
+export default function useProjectOnlyAssignToStaffActions({data,setData,post,errors,processing,clearErrors,setValidationHidden,dateProjectsIndex,selectedDate,setSelectedDate,setNonDataInTheDayFlag,setShowAllTowns,staffInChoice,setStaffInChoice,choicedProjects,setChoicedProjects,setPopUpVisible,setIsConfirm}){
 
     // 確認ボタンが押されたら、確認ページへ
     React.useEffect(()=>{
@@ -15,7 +15,14 @@ export default function useProjectOnlyAssignToStaffActions({data,setData,post,er
         setIsConfirm(false);
         return;
        }
+       setIsConfirm(true)
     },[data])
+
+    React.useEffect(()=>{
+        if(!staffInChoice) return;
+        // 選択スタッフが決定すれば、ポップアップ
+        setPopUpVisible(true)
+    },[staffInChoice])
 
 
     //エラー自体の削除
@@ -27,7 +34,7 @@ export default function useProjectOnlyAssignToStaffActions({data,setData,post,er
 
     // // 日付の変更
     const onSelectedDateChange=(e)=>{
-        useHandleDataChange(setSelectedDate,e);
+        useHandleDataChange({setSelectedDate,e,dateProjectsIndex,setNonDataInTheDayFlag});
     }
 
     // // 日付の初期化(全データが初期化される)
@@ -46,6 +53,7 @@ export default function useProjectOnlyAssignToStaffActions({data,setData,post,er
         // ポップアップの場所のセット(表示はStateにセットが完了次第。先に場所のみ指定。useStateだとeが取得できない)
         popUpPositionSeeting(e,"popUpForShowAllTowns",0,"150")
     }
+
     // 町目のサンプルの全て表示を閉じる
     const onCloseAllTownsClick=()=>{
         setShowAllTowns("");
@@ -53,17 +61,18 @@ export default function useProjectOnlyAssignToStaffActions({data,setData,post,er
 
 
     // 案件の選択するボタン（人の決定）
-    const onProejectChoiceClick=(e,staff)=>{
+    const onProjectChoiceClick=(e,staff)=>{
         // まずはスタッフを反映
         setStaffInChoice(staff)
         // クリックポイントが必要なので、先に位置のみ指定(staffに連動してvisibleにする)
-        popUpPositionSeeting(e,"popUpForMultiSort",0,-200)
+        popUpPositionSeeting(e,"popUpForMultiSort",100,0)
     }
 
     // 案件の選択が押されたとき(targetの値はprojectPlannedId,staffInChoiceがスタッフのid)
     const onProjectDecide=(e)=>{
         // 選択を押されたId
         const projectPlanId=Number(e.currentTarget.value);
+
         // choicedProjectsに、スタッフ=>そのプロジェクトのIDが存在するか。存在していれば消し、存在していなければ入れる
         // 存在している時は、該当スタッフに対して、そのプロジェクト以外のプロジェクトを残す
         setChoicedProjects(prev=>{
@@ -76,7 +85,7 @@ export default function useProjectOnlyAssignToStaffActions({data,setData,post,er
 
 
     // 案件選択を閉じる
-    const onProejectChoiceClose=()=>{
+    const onProjectChoiceClose=()=>{
             setPopUpVisible(false);
             setStaffInChoice("");
     }
@@ -86,14 +95,8 @@ export default function useProjectOnlyAssignToStaffActions({data,setData,post,er
   const onSubmitBtnClick=(e)=>{
         e.preventDefault();
 
-
-
         // 解析やバリデーションのしやすさを考え、["staffId"=>"","projectPlanIds"=>["","",""](projectPlannedIdのリスト)]という配列に変更
-        const filteredChoicesProjects=[];
-
-
-
-
+        const filteredChoicesProjects=Object.entries(choicedProjects).map(([eachStaff,projectsByStaff],index)=>({"staffId":eachStaff,"projectPlanIds":projectsByStaff}));
 
         // 送信フォームに設定
         setData({"assignDate":selectedDate,"allData":filteredChoicesProjects})
@@ -133,5 +136,5 @@ export default function useProjectOnlyAssignToStaffActions({data,setData,post,er
         })
     }
 
-    return {onSelectedDateChange,onClickDateReset,onProejectChoiceClick,onProjectDecide,onProejectChoiceClose,onShowAllTownsClick,onCloseAllTownsClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick,onMovePageClick};
+    return {onSelectedDateChange,onClickDateReset,onProjectChoiceClick,onProjectDecide,onProjectChoiceClose,onShowAllTownsClick,onCloseAllTownsClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick,onMovePageClick};
 }

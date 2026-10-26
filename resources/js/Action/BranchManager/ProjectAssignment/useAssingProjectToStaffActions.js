@@ -24,7 +24,7 @@ React.useEffect(()=>{
 
 // 日付の変更
 const onSelectedDateChange=(e)=>{
-    useHandleDataChange(setSelectedDate,e)
+    useHandleDataChange({setSelectedDate,e})
 }
 
 // 日付の初期化(全データが初期化される)
@@ -121,20 +121,20 @@ const onConfirmCancelClick=(e)=>{
     post(route("branch_manager.store_including_duplicated_plans"));
  }
 
- //  簡易版へのリンク
- const onMoveSimplePageClick=(routeName)=>{
-     if(!confirm("入力データは初期化されます\nよろしいですか？")){
-         return;
-     }
-     router.visit(route(routeName),{
-         preserveState:false
-     })
- }
+//  マップ・案件版へのリンク
+const onMovePageClick=(routeName)=>{
+    if(!confirm("入力データは初期化されます\nよろしいですか？")){
+        return;
+    }
+    router.visit(route(routeName),{
+        preserveState:false
+    })
+}
 
   return{onSubmitBtnClick,
     onSelectedDateChange,onClickDateReset,
     onSelectedMainProjectChange,
     onChangeMapOrTown,onShowAllTownsClick, onCloseAllTownsClick,
     handleAssignChangeInMaps,handleAssignChangeInTowns
-    ,onConfirmOkClick,onConfirmCancelClick,onDuplicatedOkClick,onMoveSimplePageClick}
+    ,onConfirmOkClick,onConfirmCancelClick,onDuplicatedOkClick,onMovePageClick}
 }

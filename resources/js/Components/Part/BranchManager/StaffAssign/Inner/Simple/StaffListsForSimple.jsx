@@ -10,7 +10,7 @@ export default function StaffListsForSimple({selectedDate,pageMinWidth,pageMaxWi
         <BaseTable tableTheme={`日付：${new Date(selectedDate).toLocaleDateString("ja-JP", {month: "long",day: "numeric"})}`}
         thSets={{"staff":"スタッフ名","confirm":"マップの確認"}}
         width="w-[85%]" thWidthSets={["w-[35%]","w-[65%]"]}
-        pageMaxWidth={pageMaxWidth} pageMinWidth={pageMinWidth}>
+        maxWidth={pageMaxWidth} minWidth={pageMinWidth}>
             {Object.values(staffsInSelectedDate).map((eachStaff,index)=>
                 // スタッフごとに列を並べる
                 <tr className="border-2 border-black" key={index}>

@@ -4,27 +4,25 @@ import BaseTable from "../../../../../Common/BaseTable";
 import ChoicedProjectListsForView from "./ChoicedProjectListsForView";
 
 
-export default function StaffListsForOnlyProject({staffsInSelectedDate,projectSetsInTheDay,selectedDate,pageMinWidth,pageMaxWidth,staffInChoice,popUpVisible,onProjectChoiceClick,onProjectDecide,onProjectChoiceClose,choicedProject,onClickDateReset,dateProjectsIndex}){
+export default function StaffListsForOnlyProject({staffsInSelectedDate,projectSetsInTheDay,selectedDate,pageMinWidth,pageMaxWidth,staffInChoice,popUpVisible,onProjectChoiceClick,onProjectDecide,onProjectChoiceClose,choicedProjects,onClickDateReset,dateProjectsIndex}){
 
       return(
         <>
         <BaseTable tableTheme={`日付：${new Date(selectedDate).toLocaleDateString("ja-JP", {month: "long",day: "numeric"})}`}
-        thSets={{"staff":"スタッフ名","confirm":"マップの確認"}}
+        thSets={{"staff":"スタッフ名","confirm":"案件の確認"}}
         width="w-[85%]" thWidthSets={["w-[35%]","w-[65%]"]}
-        pageMaxWidth={pageMaxWidth} pageMinWidth={pageMinWidth}>
-            {Object.values(staffsInSelectedDate).map((eachStaff,index)=>
+        maxWidth={pageMaxWidth} minWidth={pageMinWidth}>
+            {Object.entries(staffsInSelectedDate).map(([staffId,staffName],index)=>
                 // スタッフごとに列を並べる
                 <tr className="border-2 border-black" key={index}>
                         {/* スタッフ名 */}
                         {/* クリックしたらpopUpが表示 */}
-                        <td  className={`border-2 border-black w-[35%] align-middle text-center ${staffInChoice == eachStaff ? "bg-green-300" : "base_backColor"} ${popUpVisible ? "cursor-auto" : "cursor-pointer"}`} onClick={popUpVisible ? ()=>{} : (e)=>{onProjectChoiceClick(e,eachStaff)}}>{eachStaff}</td>
+                        <td  className={`border-2 border-black w-[35%] align-middle text-center ${staffInChoice == staffId ? "bg-green-300" : "base_backColor"} ${popUpVisible ? "cursor-auto" : "cursor-pointer"}`} onClick={popUpVisible ? ()=>{} : (e)=>{onProjectChoiceClick(e,staffId)}}>{staffName}</td>
 
                         {/* 現在選択中の案件 */}
                         <td className="whitespace-pre-wrap w-[65%]">
-                            <ChoicedProjectListsForView {...{eachStaff,choicedProject,selectedDate,projectSetsInTheDay}}/>
+                            <ChoicedProjectListsForView {...{staffId,choicedProjects,selectedDate,projectSetsInTheDay}}/>
                         </td>
-
-
                      </tr>
                   )
             }
@@ -34,7 +32,7 @@ export default function StaffListsForOnlyProject({staffsInSelectedDate,projectSe
 
 
         {/* クリックイベントで動的に発動 */}
-        <PopUpForProjectChoiceByStaff {...{popUpVisible,staffInChoice,choicedProject,selectedDate,onProjectDecide,onProjectChoiceClose,dateProjectsIndex}}/>
+        <PopUpForProjectChoiceByStaff {...{popUpVisible,staffInChoice,choicedProjects,selectedDate,onProjectDecide,onProjectChoiceClose,dateProjectsIndex}}/>
 
         </>
 
