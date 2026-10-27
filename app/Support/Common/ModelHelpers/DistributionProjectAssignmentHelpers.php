@@ -29,7 +29,7 @@ class DistributionProjectAssignmentHelpers{
     // 指定された期間内におけるAssignされたproject_plannedのid(最終的にはprojectのidとround_numberも取得に繋げる)とスタッフIdで取得[日付でgroupBy]（*ここは通常盤のassignとも最終的に連結する）
     // staffIdは既に取得済み
     public static function get_assigns_between_the_date($staff_ids,$start_date,$end_date){
-        return DistributionProjectAssignment::select("project_plan_id","staff_id","date")->whereBetween("date",[$start_date,$end_date])->whereIn("staff_id",$staff_ids)->groupBy("date")->get();
+        return DistributionProjectAssignment::select("project_plan_id","staff_id","date")->whereBetween("date",[$start_date,$end_date])->whereIn("staff_id",$staff_ids)->get()->groupBy("date");
     }
 
 
