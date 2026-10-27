@@ -113,38 +113,41 @@ class AssignOverview{
         return $city_name_sets->only($address_ids->toArray())->unique()->values()->implode("・");
     }
 
-    // その日、そのplan_ids(複数)に割り当てられている、スタッフの名前の取得
+    // その日、そのplan_ids(複数)に割り当てられている、スタッフの名前の取得(この時点で案件とround_numberは1つに決定している)
     // できれば共通関数に
     public static function get_staff_names_by_plan_ids($date,$staff_lists,$assign_sets,$assigns_by_project_only,$plan_ids,$project_plan_index,$project_id,$round_number){
 
 
-        //assignされているデータから、plan_idが所定のデータを含むものから、スタッフのidを返す
-        // その際に、複数日間案件自体は予定されているplanを複数日そのまま指定しないよう、その日のデータを絞ることが必要(filterの部分)
-        //onlyはeloquent collectionだと別の仕様になるので、通常のcollectionのためにtoBase()が必要
-        //1つのplan_idを複数人のスタッフが言っている場合は複数人のスタッフが配列で格納されているので、flattenで並列にする
-        $staff_ids_in_the_plans=($assign_sets->toBase()->only($plan_ids)->flatten(1)->filter(fn($assign) => $assign->date == $date)->pluck("staff_id"))->unique()->values();
+        //mapとtownからassignされているデータ
+        //plan_idが所定のデータを含むものから、スタッフのidを返す
+        // 日付でfilter、onlyはeloquent collectionだと別の仕様になるので、通常のcollectionのためにtoBase()が必要。1つのplan_idを複数人のスタッフが言っている場合は複数人のスタッフが配列で格納されているので、flattenで並列にする
+        // uniqueとvaluesは後ほどまとめて行う
+        $staff_ids_by_the_plans=($assign_sets->toBase()->only($plan_ids)->flatten(1)->filter(fn($assign) => $assign->date == $date)->pluck("staff_id"));
 
 
 
         // ここにassigns_by_project_onlyを加えていく!!!!!!!!
 Log::info($date);
-Log::info($staff_ids_in_the_plans);//特定のplanIdセットに行くスタッフ
+Log::info($staff_ids_by_the_plans);//特定のplanIdセットに行くスタッフ
 
 
 //このplanIdsのセットが表すproject_nameとround_numberを知る必要がある！
 Log::info($assigns_by_project_only);
 
+// 案件からのデータ
 // project_plan_indexにおいて、営業所、project_id、round_numberが決定した案件は一位に決まる。営業所では既にsort済み
 $project_plan_ids_in_the_day=$project_plan_index->where("project_id",$project_id)->where("round_number",$round_number)->pluck("id");
-
-$assigns_by_project_only->whereIn("project_plan_id",$project_plan_ids_in_the_day)->pluck("staff_id");
+$staff_ids_by_project_only=$assigns_by_project_only->whereIn("project_plan_id",$project_plan_ids_in_the_day)->pluck("staff_id");
 
 // これにはproject_plan_idとproject_idの参照が必要か
+$staff_ids_in_the_projects=$staff_ids_by_the_plans->concat($staff_ids_by_project_only)->unique()->values();
+
+Log::info($staff_ids_in_the_projects);
 dd("ここで加える!");
 
 
 
-        return $staff_ids_in_the_plans->map(fn($each_staff_id)=>$staff_lists[$each_staff_id])->implode("・");
+        return $staff_ids_in_the_projects->map(fn($each_staff_id)=>$staff_lists[$each_staff_id])->implode("・");
     }
 
 }
