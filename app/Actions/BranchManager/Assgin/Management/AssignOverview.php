@@ -4,6 +4,7 @@
 namespace App\Actions\BranchManager\Assgin\Management;
 
 use App\Constants\Date;
+use App\Exceptions\BusinessException;
 use App\Models\DistributionProjectAssignment;
 use App\Support\Common\ModelHelpers\AddressHelpers;
 use App\Support\Common\ModelHelpers\BranchManagerListHelpers;
@@ -75,10 +76,13 @@ class AssignOverview{
             // その日にその案件が振られているスタッフ名を取得
             foreach($main_project_sets_in_the_day as $project_name_with_round_number=>$data_by_main){
 
+                // groupByを行ったprojectのidとround_numberの取得
+                [$project_id,$round_number]=explode("|",$project_name_with_round_number);
+
                 // 案件名(表示用)=>[市の名前、スタッフの名前]で取得
                 $project_data_sets[$project_name_with_round_number]=[
                     "cityNames"=>self::get_city_names_by_address_ids($city_name_sets,$data_by_main->pluck("address_id")), //市の名前リストから市の名前の一覧の文字列を取得
-                    "staffs"=>self::get_staff_names_by_plan_ids($date,$staff_lists,$assign_sets,$assigns_by_project_only,$data_by_main->pluck("id"),$project_plan_index,$data_by_main["project_id"],$data_by_main["round_number"]) //その日にその案件を振られているスタッフ //project側からも取得
+                    "staffs"=>self::get_staff_names_by_plan_ids($date,$staff_lists,$assign_sets,$assigns_by_project_only,$data_by_main->pluck("id"),$project_plan_index,$project_id,$round_number) //その日にその案件を振られているスタッフ //project側からも取得
                 ];
             }
 
@@ -98,11 +102,9 @@ class AssignOverview{
         return
         $plan_sets_in_the_place->select("id","address_id","project_id","round_number","start_date","end_date")->where("start_date","<=",$date)->where("end_date",">=",$date)->groupBy(
             function($query)use($project_sets){
-                if(empty($query->round_number)){
-                    return $project_sets[$query["project_id"]];
-                }else{
-                    return $project_sets[$query["project_id"]]."：".($query["round_number"]+1);
-                }
+                // 表示は後で直す
+                //データの照合のために、そのままの値を使用
+                    return $query["project_id"]."|".$query["round_number"];
             });
     }
 
@@ -124,28 +126,14 @@ class AssignOverview{
         // uniqueとvaluesは後ほどまとめて行う
         $staff_ids_by_the_plans=($assign_sets->toBase()->only($plan_ids)->flatten(1)->filter(fn($assign) => $assign->date == $date)->pluck("staff_id"));
 
+        // 案件からのデータ
+        // その日からなければ次へ
+        // project_plan_indexにおいて、営業所、project_id、round_numberが決定した案件は一位に決まる。営業所では既にsort済み（なので、project_plan_idはwhereからのvalueで求める。valueはない場合はnullが返る）。
 
+        $staff_ids_by_project_only=!$assigns_by_project_only->has($date) ? collect() :             $staff_ids_by_project_only=$assigns_by_project_only[$date]->where("project_plan_id",($project_plan_index->where("project_id",$project_id)->where("round_number",$round_number)->value("id")))->pluck("staff_id");
 
-        // ここにassigns_by_project_onlyを加えていく!!!!!!!!
-Log::info($date);
-Log::info($staff_ids_by_the_plans);//特定のplanIdセットに行くスタッフ
-
-
-//このplanIdsのセットが表すproject_nameとround_numberを知る必要がある！
-Log::info($assigns_by_project_only);
-
-// 案件からのデータ
-// project_plan_indexにおいて、営業所、project_id、round_numberが決定した案件は一位に決まる。営業所では既にsort済み
-$project_plan_ids_in_the_day=$project_plan_index->where("project_id",$project_id)->where("round_number",$round_number)->pluck("id");
-$staff_ids_by_project_only=$assigns_by_project_only->whereIn("project_plan_id",$project_plan_ids_in_the_day)->pluck("staff_id");
-
-// これにはproject_plan_idとproject_idの参照が必要か
-$staff_ids_in_the_projects=$staff_ids_by_the_plans->concat($staff_ids_by_project_only)->unique()->values();
-
-Log::info($staff_ids_in_the_projects);
-dd("ここで加える!");
-
-
+        // それぞれでとってきたスタッフIdを連結し、重複除去
+        $staff_ids_in_the_projects=$staff_ids_by_the_plans->concat($staff_ids_by_project_only)->unique()->values();
 
         return $staff_ids_in_the_projects->map(fn($each_staff_id)=>$staff_lists[$each_staff_id])->implode("・");
     }
