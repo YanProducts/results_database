@@ -5,6 +5,7 @@ namespace App\Http\Controllers\FieldStaffs;
 use App\Actions\FieldStaff\WriteReport\DataExistsCheck;
 use App\Actions\Shared\GetDataInStaffAndDate;
 use App\Actions\FieldStaff\WriteReport\StoreAfterDistribution;
+use App\Actions\Shared\GetProjectOnlyDataInStaffAndDate;
 use App\Constants\Date;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FieldStaff\WriteReportRequest;
@@ -31,8 +32,10 @@ class WriteReportController extends Controller
         // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名-sameproject-roundnumberからとった案件名がサブキー、さらにmapNumberをnキーにおいて、:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
 
         // address_nameは報告書記入の際のスマホの横幅を考慮し、基本的には町名のみで行い、重なった場合のみ町名\n(市名)で行う
-
         [$data_in_staff_and_date,$from_simple_flag,$submitted_dates]=GetDataInStaffAndDate::get_assigned_data($staff_id,$date_sets);
+
+        // 案件のみでセットしたスタッフの日毎のデータの取得
+        [$project_only_data_in_staff_and_date,$project_only_submitted_dates]=GetProjectOnlyDataInStaffAndDate::get_assigned_data($staff_id,$date_sets);
 
 
 

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ProjectImport;
 use App\Models\ProjectPlannedCount;
 use App\Models\ProjectPlannedCountImport;
+use App\Support\Common\ModelHelpers\ProjectPlannedCountHelpers;
 use App\Support\ProjectOperator\DispatchHelpers;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
@@ -37,15 +38,23 @@ class StoreDispatch{
                 // メイン案件の案件Id
                 $main_project_id=ProjectHelpers::get_latest_project_id_from_name($main_sets["project_name"]);
 
+                // このメイン案件、この営業所で、このメイン案件が何番目かの取得(すなわちround_number)、ない場合はnullで変換(0とは明確に区別)
+                // 併配案件でしかいっていない場合はnullで返る
+                // これはProjectPlanContから取得するのが良い
+                $max_round_number=ProjectPlannedCountHelpers::get_max_round_number_in_the_project_and_place($main_project_id,$place_id);
+
+                // 併配案件ではnullで渡すから分岐は必要ない
+                $round_number=$max_round_number === null ? 0 : $max_round_number+1;
+                // Log::info($round_number); //1
+
                 // 最も早い開始日と最も遅い終了日の取得(subはmainに連動する)
                 [$earliest_start_date,$latest_end_date]=[min(array_column($main_sets["date_town_sets"],"start_date")),max(array_column($main_sets["date_town_sets"],"end_date"))];
 
-
                 // メインの町丁目セット
-                self::insert_distribution_plans_table($main_sets["date_town_sets"],$main_project_id,$place_id,true,null);
+                self::insert_distribution_plans_table($main_sets["date_town_sets"],$main_project_id,$place_id,true,null,$round_number);
 
                 // メインの設定合計(最後に挿入されたidを返す)
-                $main_id=self::insert_total_data($main_project_id,$main_sets["total_count"],$place_id,$earliest_start_date,$latest_end_date,false,null);
+                $project_planned_count_main_id=self::insert_total_data($main_project_id,$main_sets["total_count"],$place_id,$earliest_start_date,$latest_end_date,false,null,$round_number);
 
                 // サブ案件
                 $sub_sets=$each_project["sub"];
@@ -53,9 +62,9 @@ class StoreDispatch{
                     // プロジェクトのid(必然的に最も新しいプロジェクトidが取得される)
                     $sub_project_id=ProjectHelpers::get_latest_project_id_from_name($each_sets["project_name"]);
                     // 町丁目ごとの配布テーブル
-                    self::insert_distribution_plans_table($each_sets["date_town_sets"],$sub_project_id,$place_id,false,$main_project_id);
+                    self::insert_distribution_plans_table($each_sets["date_town_sets"],$sub_project_id,$place_id,false,$main_project_id,null);
                     // 設定合計
-                    self::insert_total_data($sub_project_id,$each_sets["total_count"],$place_id,$earliest_start_date,$latest_end_date,false,$main_id);
+                    self::insert_total_data($sub_project_id,$each_sets["total_count"],$place_id,$earliest_start_date,$latest_end_date,false,$project_planned_count_main_id,null);
                 }
             }
         });
@@ -63,7 +72,6 @@ class StoreDispatch{
     }
 
     // projectsテーブルに挿入(全て確認不要or確認し終えたデータ)
-    // projectsテーブル自体がなくなる可能性はあり
     public static function upsert_projects_table($project_name_and_towns){
 
         foreach($project_name_and_towns as $each_project){
@@ -82,7 +90,41 @@ class StoreDispatch{
 
     // 実際のアップザートのクエリ
     public static function project_upsert_query($project_sets){
+
+
+// Log::info($project_sets);
+//   'LLL-10' =>
+//   array (
+//     0 =>
+//     array (
+//       'start_date' => '2026-10-30',
+//       'end_date' => '2026-11-03',
+//     ),
+//   ),
+
         // upsert(複数データの変換可能)の基本形。作成するならこの情報
+        // $upsert_array=Arr::map($project_sets,function($date_town_sets,$project_name){
+
+        // Log::info(DispatchHelpers::get_earliest_start_date($project_name,$date_town_sets));
+        // Log::info(DispatchHelpers::get_lateest_end_date($project_name,$date_town_sets));
+
+
+        //      return[
+        //         "project_name" => $project_name,
+        //         "another_project_flag" => ProjectHelpers::get_latest_another_project_flag($project_name),//存在しないものは-0で返る(新規作成ではゼロ) //ここでは変更しない
+        //         // 登録者は全体のAuthテーブルで取得しているので、案件担当でも営業所担当でも分ける必要はない
+        //         "created_by"=>Auth::user()->id,
+        //         // 投稿されたファイルと既存データの早い方をstart_dateに
+        //         "start_date"=>DispatchHelpers::get_earliest_start_date($project_name,$date_town_sets),
+        //         // 投稿されたファイルと既存データの遅い方をend_dateに
+        //         "end_date"=>DispatchHelpers::get_lateest_end_date($project_name,$date_town_sets),
+        // ];
+        // });
+
+
+        // dd("終了");
+
+
         $upsert_array=Arr::map($project_sets,fn($date_town_sets,$project_name)=>[
                 "project_name" => $project_name,
                 "another_project_flag" => ProjectHelpers::get_latest_another_project_flag($project_name),//存在しないものは-0で返る(新規作成ではゼロ) //ここでは変更しない
@@ -90,7 +132,6 @@ class StoreDispatch{
                 "created_by"=>Auth::user()->id,
                 // 投稿されたファイルと既存データの早い方をstart_dateに
                 "start_date"=>DispatchHelpers::get_earliest_start_date($project_name,$date_town_sets),
-
                 // 投稿されたファイルと既存データの遅い方をend_dateに
                 "end_date"=>DispatchHelpers::get_lateest_end_date($project_name,$date_town_sets),
         ]);
@@ -103,7 +144,7 @@ class StoreDispatch{
             $upsert_array,
             // もし同じプロジェクト名で、同案件フラグナンバーが最大のものが存在した場合(1か月内なのでアップデート)
             ["project_name","another_project_flag"],
-            // 重なる場合はstart_dateとend_dateのみアップデート
+            // 重なる場合はstart_date(投稿データと現在SQLの早い方)とend_date(投稿データと現在SQLの遅い方)のみアップデート
             ["start_date","end_date"],
             );
     }
@@ -119,19 +160,20 @@ class StoreDispatch{
 
         // 新案件で渡されてきたリストのプロジェクト
         $new_projects_lists=$project_imports->filter(fn($import)=>in_array($import->project_id,$new_projects));
-
-        // 既存のプロジェクトとは違う新案件だと渡されてきたものは、同案件ナンバーを1つ足す
+        // 新案件のデータ挿入
+        // 既存のプロジェクトとは違う新案件だと渡されてきたものは、同案件ナンバーを1つ足して、Projectテーブルに保存
         self::add_another_project_flag($new_projects_lists,$user_id);
 
+        // 新案件では「ない」もののデータ変換
         // upsertに渡す配列(現在データにないものは新規作成、あるものは自動更新でend_dateを変更)
         $upsert_imports_array=DispatchHelpers::change_after_confirm_post_data_for_upsert($project_imports,$new_projects);
 
-        // アップザート
+        // 新案件ではない案件のアップザート
         self::project_upsert_query($upsert_imports_array);
     }
 
 
-    // 既存のプロジェクトとは違う新案件だと渡されてきたものは、同案件ナンバーを1つ足す
+    // 既存のプロジェクトとは違う新案件だと渡されてきたものは、同案件ナンバーを1つ足して、Projectテーブルに保存
     public static function add_another_project_flag($new_projects_lists,$user_id){
         foreach($new_projects_lists as $new_project){
             $project_name=$new_project->project_name;
@@ -147,7 +189,10 @@ class StoreDispatch{
 
 
     // 重ならないと決定したあとで、配布予定の案件や町目などを入れていく
-    public static function insert_distribution_plans_table($date_town_sets,$project_id,$place_id,$is_main,$main_project_id){
+    public static function insert_distribution_plans_table($date_town_sets,$project_id,$place_id,$is_main,$main_project_id,$round_number){
+
+
+    // 現在、round_numberは「新案件だった場合」を踏まえてImport仮に入れている(新案件でその案件名をもつものが2つ以上あったとき、それらを区分けできていないため→未着手！！！！)
 
     // project_name_and_townsは[テーマ名]=> ["main"=>["project_names"=>"","date_town_sets"=>"","sub"=>["ptojrct_name"と"date_town_sets"がいくつかの配列]]のデータ取得
 
@@ -163,6 +208,8 @@ class StoreDispatch{
                 $distribution_plans->project_id=$project_id;
                 // 営業所Id
                 $distribution_plans->place_id=$place_id;
+                // このidの案件を、この営業所で行くのは何度目か
+                $distribution_plans->round_number=$round_number;
                 // 期限
                 $distribution_plans->start_date=$each_sets["start_date"];
                 $distribution_plans->end_date=$each_sets["end_date"];
@@ -176,14 +223,14 @@ class StoreDispatch{
                 // メイン案件のid(メインとは分けて行っているため、必ずメイン案件は保存されている)
                 if(!$is_main){
                     $distribution_plans->main_id=DistributionPlan::where([
-                        // このメインプロジェクト、住所、営業所でmain_idがnullのものがメイン案件(念のため同案件フラグNo.まで同じの同じ案件同じ町目が何回も行った場合に備えてround_numberも設定)
+                        // このメインプロジェクト、住所、営業所でmain_idがnullのものがメイン案件
+                        // round_numberは案件Idと町目が同じなら営業所の中では必ず1つ(same_project_flagが同じ場合はあるが、大きな差はない)
+
                         ["project_id","=",$main_project_id],
                         ["main_id","=",null],
-                        //round_number
-
                         ["place_id","=",$place_id],
                         ["address_id","=",$address_id],
-                        ])->orderBy("id","desc")->value("id");
+                        ])->orderByDesc("id")->value("id");
                 }
 
                 $distribution_plans->save();
@@ -213,14 +260,14 @@ class StoreDispatch{
 
             //セットになっているメイン案件の同町目のセットが保存されるidを返す。(メイン案件の場合はnull)
             // projectは重複に関わらず既に更新済。
-
-            // projectが内容によって新しいものと古いものが合わさっていないか？
-
-            $main_id=DistributionPlanImport::where("id",$each_import->main_id)->value("project_name");
-            if(!$main_id==null){
-                $plan->main_id=DistributionPlan::where("project_id",ProjectHelpers::get_latest_project_id_from_name($main_id))->where("address_id",$address_id)->where("place_id",$place_id)->value("id") ?? throw new BusinessException("予期せぬエラーです");
+            // main_idはimportではなくdistribution_plansのmain_id。そのため、「1：importから登録されたmain_idの案件名を取得 2：その案件の最大のanother_project_flag(つまり)のproject_idを取得 3：そのimportのtown」この3つから、「planにおける最大のプロジェクトid：該当町目を求め、そのplan_idを返している」
+            // この手法の課題１：「投稿ごとに新案件と週案件が重なる時(最大のproject_idが該当するとは限らない)」、課題２：先にmainが登録されていることが重要(順序的にmain_idはメインのidがなければ尊愛しないが)。１は１ヶ月間以内は必ず同案件&同じIDが使われることは、そもそも考えにくいので同じとみなす。２はそもそも先でないと登録時にmain_idが見つからずにエラーになる
+            $main_id=DistributionPlanImport::where("id",$main_id_from_import=$each_import->main_id)->value("project_name");
+            if($main_id!=null){
+                $plan->main_id=DistributionPlan::where("project_id",ProjectHelpers::get_latest_project_id_from_name($main_id))->where("address_id",$address_id)->where("place_id",$place_id)->orderByDesc("id")->value("id") ?? throw new BusinessException("予期せぬエラーです");
             }
 
+            // 備考 //未着手
             $plan->remark_from_operator="";
 
             // 初投稿データのとき(すでにplan側にtransaction内部で保存されている)
@@ -229,42 +276,47 @@ class StoreDispatch{
 
                 // プロジェクトは変更なしの時はプロジェクトのidをそのまま挿入
                 // これまでと重複ではなく全く新しい案件の場合は新たに作られたidを取得（既に作成済）
-                $plan->project_id=$each_import->project_id ?? ProjectHelpers::get_latest_project_id_from_name($each_import->project_name);
+                $new_project_id=$each_import->project_id ?? ProjectHelpers::get_latest_project_id_from_name($each_import->project_name);
 
             }else{
                 // 新しい案件に更新するとき(トランザクション内部でも更新が反映しているためproject_idは変わっている)
-                // projectsテーブルのprojectIdにおける最新の同案件ナンバーのidを取得
+                // projectsテーブルのprojectIdにおける最新の同案件ナンバーのidを取得(Projectは更新を終えている)
                 if(empty($new_project_id= ProjectHelpers::get_latest_project_id_from_name(ProjectHelpers::get_project_name_from_id($each_import->project_id)))){ //これ更新に関わらず上の条件と同じでは？
                     throw new BusinessException("予期せぬエラーが発生しました\n最初からやり直してください");
                 };
-                $plan->project_id=$new_project_id;
             }
 
-            // projectとplaceと住所が同じものの同案件ナンバーの最大値を取得
-            // 案件に更新しない重複案件は、「同町目フラグナンバー」を1つ追加する
-            $max_same_project_flag = DistributionPlan::where("project_id", $plan->project_id)->where("address_id", $address_id)->where("place_id", $place_id)->max("same_project_flag");
+            $plan->project_id=$new_project_id;
 
+            // projectとplaceが同じものは「その営業所で何回目か」というカウントでround_numberを取得し、現在のものがnull(=存在しない)ではなくmain_idがnullのもの(併配ではない)は足して保存
+            $max_round_number=
+            ProjectPlannedCountHelpers::get_max_round_number_in_the_project_and_place($new_project_id,$place_id);
+
+            // 併配案件ではnullで渡すから分岐は必要ない
+            $round_number=$main_id_from_import!=null ? null : ($max_round_number === null ? 0 : $max_round_number+1);
+            $plan->round_number=$round_number;
+
+            // projectと住所が同じものの同じ町目を検索し、同じ案件としてsame_project_flagの最大値を取得。
+            $max_same_project_flag = DistributionPlan::where("project_id", $plan->project_id)->where("address_id", $address_id)->max("same_project_flag");
             // まだ登録されていない案件は何もしない、登録済の案件は同案件No.を1つたす
             if($max_same_project_flag !== null){
                 // 同町目ナンバーを記載
                 $plan->same_project_flag=$max_same_project_flag+1;
             }
 
+
             $plan->save();
         }
     }
 
     // 合計部数の挿入(トランザクション内部には既にいる)
-    public static function insert_total_data($project_id,$total_count,$place_id,$earliest_start_date,$latest_end_date,$need_main_id,$main_project_id){
+    public static function insert_total_data($project_id,$total_count,$place_id,$earliest_start_date,$latest_end_date,$need_main_id,$main_project_id,$round_number){
         $project_planned_count=new ProjectPlannedCount();
         $project_planned_count->project_id=$project_id; //案件Id
         $project_planned_count->place_id=$place_id; //営業所Id
+        $project_planned_count->round_number=$round_number;// 同じ営業所、同じメイン案件が、これで何回目か(サブ案件の時はnullで渡ってる)
         $project_planned_count->start_date=$earliest_start_date; // 開始日
         $project_planned_count->end_date=$latest_end_date; // 終了日
-
-        // すでに同じ案件が挿入され、かつmain案件が別のときは、同案件フラグを足す
-        // $project_planned_count->round_number=""
-
         $project_planned_count->counts=$total_count; //合計部数
         if(!$need_main_id){
             $project_planned_count->main_id=$main_project_id;//対応するメイン案件(メイン案件のときはnull)
@@ -293,7 +345,8 @@ class StoreDispatch{
             $planned_count_data->project_id=$project_id;//案件id(最新のもの)
             $planned_count_data->counts=$import->counts;//合計
             !empty($import->main_id) && $planned_count_data->main_id= $id_by_imports_id[$import->main_id];//メイン案件id(nullの場合もあり)
-            $max_round_number!==null && $planned_count_data->round_number=$max_round_number+1;//初期設定0なので、emptyではなくnullで捕捉
+
+            $planned_count_data->round_number=!empty(($import->main_id)) ? null :($max_round_number===null ? 0 :$max_round_number + 1);//初期設定0なので、emptyではなくnullで捕捉
 
             $planned_count_data->save();
             // main_id検索用

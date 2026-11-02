@@ -101,4 +101,18 @@ class DistributionPlanHelpers{
         return DistributionPlan::find($plan_id)->project_id==$project_id;
     }
 
+    // project_idとround_numberとplace_idに該当するplanを取得(project_planned_countsから逆引き。住所のため)
+    public static function get_plan_data_from_project_planned_table_data($data_from_project_planned_table,$place_id){
+        // コレクションセットから逆引きするためforeach検索が必要。コレクションを回しているだけなのでN+1には該当しない
+        return
+        $data_from_project_planned_table->isEmpty() ? collect() :
+        DistributionPlan::where("place_id",$place_id)->where(function($query)use($data_from_project_planned_table){
+            foreach($data_from_project_planned_table as $each_project_only_data){
+                $query->orWhere(function($inner_query)use($each_project_only_data){
+                    $inner_query->where("project_id",$each_project_only_data["project_id"])->where("round_number",$each_project_only_data["round_number"]);
+                });
+            }
+        })->get();
+    }
+
 }

@@ -9,6 +9,14 @@ use Carbon\CarbonImmutable;
 
 class ProjectPlannedCountHelpers{
 
+    // その案件Id&その営業所での案件が何度か(すなわちround_number)を返す(これに+1したものが、登録時のround_number)
+    // 併配の場合はnullであり、maxはnullはnullと返してくれる
+    public static function get_max_round_number_in_the_project_and_place($project_id,$place_id){
+        return ProjectPlannedCount::where("place_id",$place_id)->where("project_id",$project_id)->max("round_number");
+    }
+
+
+
     // 開始日が指定月以内(指定がなければDateに指定された期間)の設定部数などの予定
     public static function get_plans_by_start_day($start_month=null){
         //いつからのデータをとってくるか(デフォルトは1ヶ月前)
@@ -44,6 +52,19 @@ class ProjectPlannedCountHelpers{
             ->when(!empty($need_main) , fn($query3)=>$query3->where("main_id",null))
         ->get();
     }
+
+    // その日、その営業所に来ている、project_planned_countのidを返す(現状、使用してない)
+    public static function get_id_by_the_place_and_date($place_id,$date){
+        return
+        ProjectPlannedCount::where("place_id",$place_id)->where(fn($query)=>$query->where(fn($query1)=>$query1->where("start_date",$date)->whereNull("end_date"))->orWhere(fn($query2)=>$query2->where("end_date",">=",$date)->where("start_date","<=",$date)))->pluck("id");
+    }
+
+    // project_planned_countsのテーブルにおけるidから、project_idとround_numberを返す(主にdistribution_plansを逆引きするのに使用)
+    public static function get_project_id_and_round_number_and_place_id_for_search_plans($project_planned_ids,$place_id){
+        // findは配列やコレクションで複数指定可能、第二引数はselectで限定するカラム（だが今回は最終的にsortでも使用するのでdateも取得したいので、そのままfindで取得）
+        return ProjectPlannedCount::find($project_planned_ids)->where("place_id",$place_id)->pluck("project_id","round_number");
+    }
+
 
 
 }

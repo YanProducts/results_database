@@ -11,6 +11,7 @@ use App\Http\Requests\ProjectOperator\DispatchRequest;
 use App\Actions\Shared\Dispatch\ProjectDispatchProcedure;
 use App\Support\ProjectOperator\DispatchHelpers;
 use App\Actions\Shared\Dispatch\CheckDispatch\Flow as CheckFlow;
+use App\Http\Requests\ProjectOperator\ConfirmRequest;
 use Illuminate\Support\Facades\Log;
 
 // 案件を自分で登録する系統
@@ -61,8 +62,9 @@ class ProjectHandingController extends Controller
 
 
     // 重複可能性がある案件の決定投稿(ほとんど同じ内容なので、 ProjectOperatorのをほぼコピー)
-    public function confirm_dispatch_post(){
-              // sessionがないときはエラーページへ
+    public function confirm_dispatch_post(ConfirmRequest $request){
+
+        // sessionがないときはエラーページへ
         DispatchHelpers::check_confirm_data_exisits();
 
         // ProjectImportにて新案件は新案件ナンバーを追加、既存案件の場合は最終期限を直す

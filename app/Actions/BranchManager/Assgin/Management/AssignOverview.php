@@ -68,7 +68,7 @@ class AssignOverview{
         foreach($date_sets as $date=>$date_in_jpn){
 
             // この日(範囲あり)に来ているidsとメイン案件名とaddress_idsを取得(同案件で別の現場の場合はround_numberで所得して①②で名前分け)
-            $main_project_sets_in_the_day=self::get_main_projects_data_in_the_day($plan_sets_in_the_place,$project_sets,$date);
+            $main_project_sets_in_the_day=self::get_main_projects_data_in_the_day($plan_sets_in_the_place,$date);
 
             // 編集や削除可能かのフラグ。今後次第でつける
 
@@ -80,7 +80,8 @@ class AssignOverview{
                 [$project_id,$round_number]=explode("|",$project_name_with_round_number);
 
                 // 案件名(表示用)=>[市の名前、スタッフの名前]で取得
-                $project_data_sets[$project_name_with_round_number]=[
+                // 表示用は案件名とround_numberのセット（案件名だけにしてしまうと、同じ案件名で取得時にキーでの区別ができなくなる：JSXでの表示では案件名だけ表示で町目で違いを認識してもらう）
+                $project_data_sets[$project_sets[$project_id]."|".$round_number]=[
                     "cityNames"=>self::get_city_names_by_address_ids($city_name_sets,$data_by_main->pluck("address_id")), //市の名前リストから市の名前の一覧の文字列を取得
                     "staffs"=>self::get_staff_names_by_plan_ids($date,$staff_lists,$assign_sets,$assigns_by_project_only,$data_by_main->pluck("id"),$project_plan_index,$project_id,$round_number) //その日にその案件を振られているスタッフ //project側からも取得
                 ];
@@ -97,13 +98,13 @@ class AssignOverview{
 
     // その日(範囲)におけるメイン案件名と市の名前を取得し、表示用の案件名とround_numberでまとめて返す
     // できれば共通関数に
-    public static function get_main_projects_data_in_the_day($plan_sets_in_the_place,$project_sets,$date){
+    public static function get_main_projects_data_in_the_day($plan_sets_in_the_place,$date){
 
         return
         $plan_sets_in_the_place->select("id","address_id","project_id","round_number","start_date","end_date")->where("start_date","<=",$date)->where("end_date",">=",$date)->groupBy(
-            function($query)use($project_sets){
-                // 表示は後で直す
-                //データの照合のために、そのままの値を使用
+            function($query){
+                //編集は日にちから行うので、表示用のみ
+                //idとround_numberでgroupby(後に表示用に直す)
                     return $query["project_id"]."|".$query["round_number"];
             });
     }

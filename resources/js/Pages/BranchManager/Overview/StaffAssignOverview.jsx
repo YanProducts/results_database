@@ -12,7 +12,6 @@ import BaseTable from "../../../Components/Common/BaseTable";
 
 export default function StaffAssignOverview({ prefix, what, type,allData, errors: errorFromRouter = {}}) {
 
-
     // propsの確認
     checkStaffAssignOverviewProps({allData})
 
@@ -40,28 +39,32 @@ export default function StaffAssignOverview({ prefix, what, type,allData, errors
                             // その日のメイン案件が何件あるか？(colspanに使用するため、案件が存在しない時でも1にする)
                             const mainProjectCounts=Object.keys(dataInDate?.project_sets).length || 0;
 
-                            console.log(mainProjectCounts) //0も数多くある
-
                             return(
                                     (dataInDate?.project_sets && mainProjectCounts!==0) ?
-                                    Object.entries(dataInDate.project_sets).map(([mainProjectName,dataInTheproject],index)=>
-                                        <tr key={mainProjectName} className="">
+                                    Object.entries(dataInDate.project_sets).map(function([mainProjectName,dataInTheproject],index){
+
+                                        // 表示用の案件名(round_numberを除く、同じ日に同じ案件があった場合は、市町村サンプルの差で見る)
+                                        const mainProjectNameForView=mainProjectName.split("|")[0] ?? "-";
+
+                                        return(
+                                            <tr key={dataInDate.dateInJpn} className="">
+                                                {index==0 &&
+                                                <td className={`border-black border-2`}  rowSpan={mainProjectCounts}>{dataInDate?.dateInJpn || ""}</td> //日付
+                                                }
+                                                <td className={`border-black border-2`}>{mainProjectNameForView}</td>
+                                                <td className={`border-black border-2`}>{dataInTheproject?.cityNames ?? "-"}</td>
+                                                <td className={`border-black border-2`}>{dataInTheproject?.staffs ?? "-"}</td>
                                             {index==0 &&
-                                            <td className={`border-black border-2`}  rowSpan={mainProjectCounts}>{dataInDate?.dateInJpn || ""}</td> //日付
+                                            <>
+                                                <td rowSpan={mainProjectCounts} className={`border-black border-2`}><button className={`base_btn`} onClick={()=>{onEditBtnClick(date)}}>編集</button></td>
+                                                <td rowSpan={mainProjectCounts} className={`border-black border-2`}><button className={"base_btn"} onClick={()=>{onResetBtnClick(date)}}>リセット</button></td>
+                                            </>
                                             }
-                                            <td className={`border-black border-2`}>{mainProjectName ?? "-"}</td>
-                                            <td className={`border-black border-2`}>{dataInTheproject?.cityNames ?? "-"}</td>
-                                            <td className={`border-black border-2`}>{dataInTheproject?.staffs ?? "-"}</td>
-                                           {index==0 &&
-                                           <>
-                                            <td rowSpan={mainProjectCounts} className={`border-black border-2`}><button className={`base_btn`} onClick={()=>{onEditBtnClick(date)}}>編集</button></td>
-                                            <td rowSpan={mainProjectCounts} className={`border-black border-2`}><button className={"base_btn"} onClick={()=>{onResetBtnClick(date)}}>リセット</button></td>
-                                           </>
-                                           }
-                                      </tr>
-                                    )
+                                        </tr>
+                                      )
+                                    })
                                     :
-                                      <tr>
+                                      <tr key={dataInDate.dateInJpn}>
                                          <td className={`border-black border-2`}>{dataInDate?.dateInJpn || ""}</td>
                                          <td className={`border-black border-2`}>-</td>
                                          <td className={`border-black border-2`}>-</td>

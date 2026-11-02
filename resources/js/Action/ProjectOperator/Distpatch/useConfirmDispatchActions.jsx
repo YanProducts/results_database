@@ -33,7 +33,7 @@ export default function useComfirmDispatchActions({prefix,post,data,setData}){
   // やり直すボタンを押した時
   const onCancelBtnClick=()=>{
     // 完全遷移
-    router.visit(route(prefix=="project_oerator" ? 'project_operator.dispatch_project' : "branch_manager.handing_assignment"));
+    router.visit(route(prefix=="project_operator" ? 'project_operator.dispatch_project' : "branch_manager.handing_assignment"));
   }
 
   return{onProjectsCheckClick,onSubmitBtnClick,onCancelBtnClick}
