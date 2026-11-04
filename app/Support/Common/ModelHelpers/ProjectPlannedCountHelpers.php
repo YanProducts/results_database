@@ -59,10 +59,10 @@ class ProjectPlannedCountHelpers{
         ProjectPlannedCount::where("place_id",$place_id)->where(fn($query)=>$query->where(fn($query1)=>$query1->where("start_date",$date)->whereNull("end_date"))->orWhere(fn($query2)=>$query2->where("end_date",">=",$date)->where("start_date","<=",$date)))->pluck("id");
     }
 
-    // project_planned_countsのテーブルにおけるidから、project_idとround_numberを返す(主にdistribution_plansを逆引きするのに使用)
-    public static function get_project_id_and_round_number_and_place_id_for_search_plans($project_planned_ids,$place_id){
+    // project_planned_countsのテーブルにおけるidから、project_idとround_numberを返すために使用する（dateなども使用する可能性に備えて全取得）。 idで検索ができるようにする(主にdistribution_plansを逆引きするのに使用)
+    public static function get_project_id_and_round_number_for_search_plans($project_planned_ids,$place_id){
         // findは配列やコレクションで複数指定可能、第二引数はselectで限定するカラム（だが今回は最終的にsortでも使用するのでdateも取得したいので、そのままfindで取得）
-        return ProjectPlannedCount::find($project_planned_ids)->where("place_id",$place_id)->pluck("project_id","round_number");
+        return ProjectPlannedCount::find($project_planned_ids)->where("place_id",$place_id)->get()->keyBy("id");
     }
 
 

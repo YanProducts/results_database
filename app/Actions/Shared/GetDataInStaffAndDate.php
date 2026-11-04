@@ -88,6 +88,7 @@ class GetDataInStaffAndDate{
 
     // サブ案件も含めたプロジェクトのセット(キーがid&idの数字=>値がプロジェクトのID)
     // mapでは配布外でも対応した報告書(mapになくとも全体表にあることが必要なため、案件に合わせる)
+    // 検索用だからround_numberは必要ない
     public static function get_project_names_in_the_report($all_distribution_plans,$main_project_id,$round_number,$existed_projects_sets,$main_project_name){
 
             $all_id_lists_in_the_main_projects=$all_distribution_plans->where("project_id",$main_project_id)->where("round_number",$round_number)->where("main_id",null)->pluck("id");
@@ -153,16 +154,9 @@ class GetDataInStaffAndDate{
                                     // 編集の場合は[[project_id=>"",counts=>""]]のセットにする
                                     "sub_sets"=>isset($sub_sets_in_the_day[$main_plan_id]) ? //単配の場合の除外
                                     ($is_edit ?
-
-
                                     ($sub_sets_in_the_day[$main_plan_id]->pluck("project_id","id"))->mapWithKeys(fn($sub_project_name,$id)=>[
                                         $sub_project_name=>$record_data->where("plan_id",$id)->value("distribution_count") //その併配案件の結果(日付とスタッフでは絞りこみ済み)
-                                    ])
-
-
-
-
-                                    : ($sub_sets_in_the_day[$main_plan_id]->pluck("project_id"))) : [],
+                                    ]): ($sub_sets_in_the_day[$main_plan_id]->pluck("project_id"))) : [],
                                 ];
                             } //map_numberごと
                         }//round_numberごと

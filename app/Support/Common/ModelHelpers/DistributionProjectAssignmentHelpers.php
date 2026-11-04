@@ -32,9 +32,9 @@ class DistributionProjectAssignmentHelpers{
         return DistributionProjectAssignment::select("project_plan_id","staff_id","date")->whereBetween("date",[$start_date,$end_date])->whereIn("staff_id",$staff_ids)->get()->groupBy("date");
     }
 
-    // 特定のスタッフ、特定の期間における、project_planned_idのコレクションの取得
+    // 特定のスタッフ、特定の期間のコレクションの取得
     public static function get_assigns_by_staff_and_date($staff_id,$date_sets){
-        return DistributionProjectAssignment::whereBetween("date",$date_sets)->whereIn("staff_id",$staff_id)->pluck("project_planned_id");
+        return DistributionProjectAssignment::whereBetween("date",$date_sets)->whereIn("staff_id",$staff_id)->get();
     }
 
 

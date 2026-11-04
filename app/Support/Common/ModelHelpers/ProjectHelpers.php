@@ -16,6 +16,12 @@ class ProjectHelpers{
         return Project::find($project_id)?->project_name;
     }
 
+    // 該当のidセットから、その案件の名前セットを返す(表示用でanother_project_flagは最新のものと定義し、round_numberはそもそも営業所別で日毎によっても変わるため別途定義する)
+    public static function get_project_names_key_by_id($ids){
+        // findは配列指定するとそのidを含む全てのものが取得
+        return Project::find($ids)->pluck("project_name","id");
+    }
+
     // そのプロジェクトidに対応するプロジェクト一覧をid=>案件名(round_number込み)の配列で返す
     public static function get_project_names_with_another_project_flag_array_key_by_id($ids){
        return Project::whereIn("id",$ids)->get()->mapWithKeys(fn($each_project)=>[$each_project->id=>$each_project->project_name . ($each_project->another_project_flag == 0 ? "" : $each_project->another_project_flag)]);
@@ -33,6 +39,7 @@ class ProjectHelpers{
        return
         Project::where("project_name",$project_name)->orderBy("another_project_flag","desc")->value("id");
     }
+
     // 最新の同案件No.を返す
     public static function get_latest_another_project_flag($project_name){
 
