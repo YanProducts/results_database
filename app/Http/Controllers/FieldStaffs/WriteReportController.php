@@ -31,11 +31,24 @@ class WriteReportController extends Controller
 
         // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名-sameproject-roundnumberからとった案件名がサブキー、さらにmapNumberをnキーにおいて、:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
 
+
+
+        // 下記を$data_in_staff_and_dateでまとめる(Action)
+
         // address_nameは報告書記入の際のスマホの横幅を考慮し、基本的には町名のみで行い、重なった場合のみ町名\n(市名)で行う
         [$data_in_staff_and_date,$from_simple_flag,$submitted_dates]=GetDataInStaffAndDate::get_assigned_data($staff_id,$date_sets);
 
         // 案件のみでセットしたスタッフの日毎のデータの取得
         [$project_only_data_in_staff_and_date,$project_only_submitted_dates]=GetProjectOnlyDataInStaffAndDate::get_assigned_data($staff_id,$date_sets);
+
+
+        // それぞれdateごとにsort //両方ある場合はエラー
+        // 1：バリデーション(両者のキーの数が同じか)、keysは同じか？
+        //２：どちらかのkeysを取得し、両方のデータを1つずつ見て、片側にデータがあればそれを挿入。両方にデータがあればエラー
+
+
+
+
 
 
 
