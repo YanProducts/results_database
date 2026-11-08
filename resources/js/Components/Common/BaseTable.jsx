@@ -1,5 +1,5 @@
 // 基準となるテーブルのJSX
-export default function BaseTable({tableTheme,allData,thSets,width="w-[80%]",thWidthSets=[], minWidth="min-w-150", maxWidth="max-w-600",mb="",plusTrCss=null, plusTrCssFunc=()=>{} ,needSort=false, sortClick=()=>{},needEdit=false, editFunc=()=>{} ,editFuncParam=undefined,editFuncKey=undefined,children}){
+export default function BaseTable({tableTheme,allData,thSets,width="w-[80%]",thWidthSets=[], minWidth="min-w-150", maxWidth="max-w-600",mb="",plusTrCss=null, plusTrCssFunc=()=>{} ,needSort=false, sortClick=()=>{},needEdit=false, editFunc=()=>{} ,editFuncParam=undefined,editFuncKey=undefined, thHidden=false,children}){
 
     // dataにはオブジェクトをラップした配列
     // thSetsにはdataの各オブジェクトのキーをキーに持ち値を日本語とする、各列のタイトルが格納
@@ -8,7 +8,7 @@ export default function BaseTable({tableTheme,allData,thSets,width="w-[80%]",thW
       <>
         <div className={`bg-amber-300 ${width} ${minWidth} ${maxWidth} mx-auto border-black border-t-2 border-x-2 border-collapse`}><h3 className="mb-0 pb-0 text-center font-bold text-lg">{tableTheme}</h3></div>
         <table className={`table-fixed ${width} ${minWidth} ${maxWidth} ${mb} mx-auto base_backColor border-black border-2 border-collapse`}>
-            <thead className="font-bold  text-center">
+            <thead className={`font-bold  text-center ${thHidden && "hidden" }`}>
                 <tr className={`border-black border-2 `}>
 
                     {/* thSetsの値を展開 */}

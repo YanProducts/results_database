@@ -12,7 +12,6 @@ export default function TrInner({mainProjectName,projectSets,eachData,mapNumber,
 
         // 編集と作成とで併配案件のidセットの取得元を分ける
         const subProjectIdSets=isEdit ? Object.keys(eachData.sub_sets) : eachData.sub_sets;
-
         return(
                 <tr className={`border-black border-2 ${indexInMaps == 0 ? "border-t-3" : "border-t-2"} base_backColor`} key={trIndex}>
                    <td className={`border-black border-x-2 whitespace-pre-wrap ${widthSets[0]} `}>{isBigMedia ? eachData.address_name_when_big_media : eachData.address_name}</td>

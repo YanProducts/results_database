@@ -1,6 +1,6 @@
 <?php
 // その日のそのスタッフにおける、割り当てられたデータ
-namespace App\Actions\Shared;
+namespace App\Actions\Shared\GetDataInStaffAndDate;
 
 use App\Models\DistributionAssignment;
 use App\Models\DistributionPlan;
@@ -66,9 +66,11 @@ class GetDataInStaffAndDate{
             // 住所のキー=>市町目&世帯数のセットで返す(メイン案件のみで網羅できる)
             $existed_address_sets=AddressHelpers::get_address_name_and_household_set_arrays_key_by_id(array_unique([...$existed_plan_collections->pluck("address_id")]));
 
-            // 案件のキー=>(同案件フラグこみの)案件の名前のセットで返す
+            // 案件のキー(project_id)=>案件の名前のセットで返す
             // その日に配布するわけではないが報告書に載る案件名も必要
-            $existed_projects_sets=ProjectHelpers::get_project_names_with_another_project_flag_array_key_by_id(array_unique([...$existed_plan_collections->pluck("project_id"),...$sub_plan_collections->pluck("project_id")]));
+            // round_numberの値は別途用意
+            // another_project_flagは基本的には数日間で同じ案件名で別のものは存在しない前提で考える
+            $existed_projects_sets=ProjectHelpers::get_project_names_key_by_id(array_unique([...$existed_plan_collections->pluck("project_id"),...$sub_plan_collections->pluck("project_id")]));
 
             return[$submitted_dates,
             $data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$existed_projects_sets,$existed_address_sets,$sub_plan_collections];

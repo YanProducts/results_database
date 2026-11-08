@@ -8,18 +8,17 @@ import useWriteOrEditReportViewData from "../../Computed/Share/useWriteOrEditRep
 import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 import WriteReportContext from "../../Contexts/FieldStaffs/useWriteReportContexts";
 
-export default function WriteReport({what,type,prefix,staff,dateSets,assignDataToStaff,fromSimpleFlag,submittedDates}){
-
+export default function WriteReport({what,type,prefix,staff,dateSets,assignDataToStaff,projectOnlyAssignedDates,fromSimpleFlag,submittedDates}){
     // assignDataToStaffキーのプロジェクト名はsameProjectFlagなども想定済みのもの
-    const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,selectedDate,setSelectedDate,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia}=useWriteReportDefinitions();
+    const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,selectedDate,setSelectedDate,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,choicedMap,setChoicedMap,choiceFinishedMapProjectLists,setChoiceFinishedMapProjectLists,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia}=useWriteReportDefinitions();
 
-    const {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}=useWriteReportActions({assignDataToStaff,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,isBigMedia,setIsBigMedia,clearErrors});
+    const {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onMapNumberChange,onMapNumberChoiceDecide,onMapNumberChoiceReset,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}=useWriteReportActions({data,assignDataToStaff,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,setChoicedMap,setChoiceFinishedMapProjectLists,isBigMedia,setIsBigMedia,clearErrors});
 
     //テーブルのUIや変数などに必要な要素の取得(依存配列が変化しなければ再計算されない)
     const [tableSets,differenceExists]=useWriteOrEditReportViewData({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount,isBigMedia});
 
     return(
-    <WriteReportContext.Provider value={{onSetOtherProjectToSameValueClick,isBigMedia}}>
+    <WriteReportContext.Provider value={{onSetOtherProjectToSameValueClick,isBigMedia,projectOnlyAssignedDates,choicedMap,onMapNumberChange,onMapNumberChoiceDecide,onMapNumberChoiceReset,choiceFinishedMapProjectLists}}>
 
     <Layout title={`${what}-${type}`}>
      <RoleLayout prefix={prefix}>

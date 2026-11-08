@@ -6,7 +6,6 @@ import React from "react";
 import getTableSetsByMainProjects from "../../Support/FieldStaff/getTableSetsByMainProjetcs";
 export default function useWriteOrEditReportViewData({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount,isBigMedia,isEdit=false}){
 
-
        const tableSets=React.useMemo(()=>{
         if(!selectedDate){
             return [];

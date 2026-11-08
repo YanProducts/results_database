@@ -19,9 +19,13 @@ class DistributionAssignmentHelpers{
     // 該当営業所(authから取得)における、期間内における割り当てデータが少しでもある日時を配列で返す
     public static function get_date_sets_having_assign_data($start_offset,$end_offset,$place_id){
 
-        $date=CarbonImmutable::now();
+          // nowならデータを入れた時刻より前のものは弾いてしまう
+        // 00:00:00でtodayは挿入
+        $date=CarbonImmutable::today();
 
-         return  DistributionAssignment::whereBetween("date",[$date->addDays($start_offset),$date->addDays($end_offset)])->whereIn("staff_id", FieldStaffListHelpers::get_all_staffs_in_the_place($place_id))->pluck("date")->unique();
+         return
+        //  00:00:00ではじめているので、endOfDay()を入れておかないと
+          DistributionAssignment::whereBetween("date",[$date->addDays($start_offset),$date->addDays($end_offset)->endOfDay()])->whereIn("staff_id", FieldStaffListHelpers::get_all_staffs_in_the_place($place_id))->pluck("date")->unique();
 
     }
 

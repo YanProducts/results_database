@@ -5,6 +5,7 @@ namespace App\Http\Controllers\FieldStaffs;
 use App\Actions\FieldStaff\WriteReport\DataExistsCheck;
 use App\Actions\Shared\GetDataInStaffAndDate;
 use App\Actions\FieldStaff\WriteReport\StoreAfterDistribution;
+use App\Actions\Shared\GetDataInStaffAndDate\GetDataProcedure;
 use App\Actions\Shared\GetProjectOnlyDataInStaffAndDate;
 use App\Constants\Date;
 use App\Http\Controllers\Controller;
@@ -28,29 +29,9 @@ class WriteReportController extends Controller
         // Constantsに書いている報告書記入が許される期間を取得
         $date_sets=DateHelper::get_date_key_value_sets_for_view(Carbon::now()->format("Y-m-d"),Date::StartOffsetInReportPeriod,Date::EndOffsetInReportPeriod);
 
-
-        // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名-sameproject-roundnumberからとった案件名がサブキー、さらにmapNumberをnキーにおいて、:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
-
-
-
-        // 下記を$data_in_staff_and_dateでまとめる(Action)
-
-        // address_nameは報告書記入の際のスマホの横幅を考慮し、基本的には町名のみで行い、重なった場合のみ町名\n(市名)で行う
-        [$data_in_staff_and_date,$from_simple_flag,$submitted_dates]=GetDataInStaffAndDate::get_assigned_data($staff_id,$date_sets);
-
-        // 案件のみでセットしたスタッフの日毎のデータの取得
-        [$project_only_data_in_staff_and_date,$project_only_submitted_dates]=GetProjectOnlyDataInStaffAndDate::get_assigned_data($staff_id,$date_sets);
-
-
-        // それぞれdateごとにsort //両方ある場合はエラー
-        // 1：バリデーション(両者のキーの数が同じか)、keysは同じか？
-        //２：どちらかのkeysを取得し、両方のデータを1つずつ見て、片側にデータがあればそれを挿入。両方にデータがあればエラー
-
-
-
-
-
-
+        // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名-roundnumberからとった案件名がサブキー、さらにmapNumberをキーにおいて、:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
+        // エラーが生じれば、この内部で例外が投げられる
+        [$data_in_staff_and_date,$from_simple_flag,$submitted_dates,$project_only_assigned_dates]=GetDataProcedure::get_data_procedure($staff_id,$date_sets);
 
       return Inertia::render("FieldStaff/WriteReport",[
         "prefix"=>"field_staff",
@@ -61,8 +42,15 @@ class WriteReportController extends Controller
         "dateSets"=>$date_sets,
         // そのスタッフに割り当てられたデータ(期限内)
         "assignDataToStaff"=>$data_in_staff_and_date,
-        // 少しでも地図のみから選択が入っていたらtrue
+
+        // 案件からの登録で登録した日付
+        "projectOnlyAssignedDates"=>$project_only_assigned_dates,
+
+        //少しでも地図のみから選択が入っていたらtrue
+        //これは日毎に変更すべき！
         "fromSimpleFlag"=>$from_simple_flag,
+
+
         // すでに提出データがある日のリスト
         "submittedDates"=>$submitted_dates
       ]);

@@ -27,11 +27,17 @@ export default function useWriteReportDefinitions(){
      //  inputのRef
     const inputRefs=React.useRef([]);
 
+    // 案件のみからきた場合の表示用の地図番号選択(案件:地図番号の配列)
+    const [choicedMap,setChoicedMap]=React.useState({})
+
+    // 案件のみからきた場合の表示用の地図選択が一時的に完了している案件
+    const [choiceFinishedMapProjectLists,setChoiceFinishedMapProjectLists]=React.useState([]);
+
       // ページの横幅
     const [pageMinWidth,pageMaxWidth]=["min_width_when_write_report","max_width_when_write_report"];
 
     // モバイルが大きい時と小さい時で表示を買える
     const [isBigMedia,setIsBigMedia]=React.useState(window.matchMedia("(min-width:500px)").matches);
 
-      return {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,selectedDate,setSelectedDate,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia};
+      return {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,selectedDate,setSelectedDate,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,choicedMap,setChoicedMap,choiceFinishedMapProjectLists,setChoiceFinishedMapProjectLists,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia};
 }

@@ -3,7 +3,7 @@ import { route } from "ziggy-js";
 import applyOtherProjectToSameValueClick from "../Share/applyOtherProjectToSameValueClick";
 import confirmMainOrSubOnlyInput from "./Part/confirmMainOrSubOnlyInput";
 
-export default function useWriteReportActions({assignDataToStaff,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,isBigMedia,setIsBigMedia,clearErrors}){
+export default function useWriteReportActions({data,assignDataToStaff,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,setChoicedMap,setChoiceFinishedMapProjectLists,isBigMedia,setIsBigMedia,clearErrors}){
 
 
     // 日付が変更されたらpost用のデータにセット(他のデータは自動的に初期化)
@@ -101,7 +101,35 @@ export default function useWriteReportActions({assignDataToStaff,inputValues,set
         applyOtherProjectToSameValueClick({mainProjectName,projectId,index,inputValues,setInputValues,assignDataToStaff,selectedDate})
     }
 
+    // (案件から選択の際に)地図番号選択の変化時
+    const onMapNumberChange=({e,mainProjectName})=>{
+        const targetValue=e.currentTarget.value;
+        setChoicedMap(prev=>({
+            ...prev,
+            [mainProjectName]:
+                prev[mainProjectName] ?
+                (prev[mainProjectName].map(eachSelectedMap=>String(eachSelectedMap)).includes(String(targetValue)) ?prev[mainProjectName].filter(eachMap=>String(eachMap)!=String(targetValue))
+                :[...prev[mainProjectName],targetValue])
+                :[targetValue]
+        }))
+    }
 
+    // (案件のみから選択の際に)一時的に表示用のマップの選択が完了している地図のリスト
+    const onMapNumberChoiceDecide=(mainProjectName)=>{
+
+        // 何も選択されていない場合にアラートを出して戻りはしない。なぜなら、stateが反映されていないだけの可能性もあるのが1つ目、 何も選択しないでの選択もある。なぜなら他の人がフォローしたり翌日に回した可能性が2つ目の理由
+
+        // stateの遅延で二重送信を考慮
+        setChoiceFinishedMapProjectLists(prev=>prev.includes(mainProjectName) ? prev : [...prev,mainProjectName]
+        )
+    }
+
+    // (案件から選択の際に)地図番号のリセット
+    const onMapNumberChoiceReset=(mainProjectName)=>{
+        // setChoicedMap(prev=>({...prev,[mainProjectName]:[]}))
+        // //初期状態は以前の状態を残す
+        setChoiceFinishedMapProjectLists(prev=>prev.filter(eachMainProject=>eachMainProject!=mainProjectName))
+    }
 
     // 決定ボタンを押した際は確認ページを表示する
     const onSubmitBtnClick=(e,tableSets)=>{
@@ -111,7 +139,6 @@ export default function useWriteReportActions({assignDataToStaff,inputValues,set
             if(!confirmMainOrSubOnlyInput({assignDataToStaff,selectedDate,inputValues})){
                 return;
             }
-
 
             // 投稿データは１：メインはassignIdで案件に関わらずいける。２：サブはassignIdに紐づいたplanIdからmainIdを検索可能(その中で、そのプロジェクトidと合うものを選択。sameProjectFlagが違えばidは別。roundNumberは必ず1意に決まる)
             // そのため、[assignId:...,mainCount:...,subCounts:[projectId:...,subCount:...]の入れ子この配列にする
@@ -166,6 +193,6 @@ export default function useWriteReportActions({assignDataToStaff,inputValues,set
         setIsConfirm(false);
     }
 
-    return {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}
+    return {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onMapNumberChange,onMapNumberChoiceDecide,onMapNumberChoiceReset,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}
 
 }

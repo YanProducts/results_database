@@ -20,9 +20,13 @@ class DistributionProjectAssignmentHelpers{
     // 該当営業所(authから取得)における、期間内における割り当てデータが少しでもある日時を配列で返す
     public static function get_date_sets_having_assign_data($start_offset,$end_offset,$place_id){
 
-        $date=CarbonImmutable::now();
+        // nowならデータを入れた時刻より前のものは弾いてしまう
+        // 00:00:00でtodayは挿入
+        $date=CarbonImmutable::today();
 
-         return  DistributionProjectAssignment::whereBetween("date",[$date->addDays($start_offset),$date->addDays($end_offset)])->whereIn("staff_id", FieldStaffListHelpers::get_all_staffs_in_the_place($place_id))->pluck("date")->unique();
+         return
+        //  00:00:00ではじめているので、endOfDay()を入れておかないと
+         DistributionProjectAssignment::whereBetween("date",[$date->addDays($start_offset),$date->addDays($end_offset)->endOfDay()])->whereIn("staff_id", FieldStaffListHelpers::get_all_staffs_in_the_place($place_id))->pluck("date")->unique();
 
     }
 
@@ -34,7 +38,7 @@ class DistributionProjectAssignmentHelpers{
 
     // 特定のスタッフ、特定の期間のコレクションの取得
     public static function get_assigns_by_staff_and_date($staff_id,$date_sets){
-        return DistributionProjectAssignment::whereBetween("date",$date_sets)->whereIn("staff_id",$staff_id)->get();
+        return DistributionProjectAssignment::whereIn("date",$date_sets)->where("staff_id",$staff_id)->get();
     }
 
 
