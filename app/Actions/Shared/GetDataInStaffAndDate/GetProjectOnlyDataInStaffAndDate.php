@@ -23,11 +23,7 @@ class GetProjectOnlyDataInStaffAndDate{
         // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名がサブキー:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
         foreach(array_keys($date_sets) as $date){
 
-            // // その日が配布済みに入っていたら報告リストには載せない(編集側の場合は、そもそもsubmitted_datesを入れていない)
-            if(!empty($submitted_dates) && $submitted_dates->contains($date)){
-               $return_sets[$date]=null;
-                continue;
-            }
+            // // その日が配布済みに入っている場合も、案件と通常の両方でassignがあった場合にエラーを出すため、continueせずに捕捉する
 
             // // phpはスコープ内宣言でOK
             // // 結果と予定で仕分ける
@@ -85,11 +81,10 @@ class GetProjectOnlyDataInStaffAndDate{
 
         // その日に案件ごとに割り当てられたメイン案件から、メイン案件のproject_planned_countのidのセットを求め、そのidセットを含むproject_plannd_countsのコレクションを取得
         $project_plans_sets_in_the_date=$project_plans_sets->only($project_only_assigned_data->where("date",$date)->pluck("project_plan_id")->toArray());
-
         // その日のproject_planned_countのデータから、最終的にはproject_nameとround_numberを持つplanを求める
         //その前に表示用のprojectNameを求めるために、project_nameでgroupByを行う(project_nameでgroupByしたとき、その要素がいくつあるかがround_numberの個数)
         $return_sets=[];
-        foreach($project_plans_sets_in_the_date->groupBy("project_id") as $project_id=>$each_plan_data_by_project){
+        foreach($project_plans_sets_in_the_date->groupBy(["project_id","round_number"]) as $project_id=>$each_plan_data_by_project){
             // その日のproject_idを持つ案件数によって配列の個数が決定
             $round_number_index=0;
 
@@ -112,7 +107,8 @@ class GetProjectOnlyDataInStaffAndDate{
                 // ここはプロジェクト名に直すこと
                 $return_sets[($project_names_sets[$project_id] ?? "不明").":".$round_number_index]=
                 [
-                    "project_set"=>$project_names_sets->mapWithKeys(fn($each_project_name,$each_project_id)=>["id".$each_project_id=>$each_project_name]),
+                    // project_name_setsはid=>プロジェクト名。そこからこの案件のprojectを抽出
+                    "project_set"=>($project_names_sets->only([$project_id,...$sub_plan_sets_in_the_project->pluck("project_id")]))->mapWithKeys(fn($each_project_name,$each_project_id)=>["id".$each_project_id=>$each_project_name]),
                     "each_data"=>$main_plan_sets_in_the_project->groupBy("map_number")->mapWithKeys(function($each_data_sets_by_map_number,$map_number)use($address_sets_in_the_project,$is_edit,$duplicate_town_names,$record_data,$sub_plan_sets_in_the_project){
                         return[$map_number=>
                             $each_data_sets_by_map_number->map(function($each_plan_data)use($address_sets_in_the_project,$is_edit,$duplicate_town_names,$record_data,$sub_plan_sets_in_the_project){
@@ -133,7 +129,7 @@ class GetProjectOnlyDataInStaffAndDate{
                                     $sub_project_id=>$record_data->where("plan_id",$id)->value("distribution_count") //その併配案件の結果(日付とスタッフでは絞りこみ済み)
                                 ]):
                                 // 併配案件のプロジェクトidを返す
-                                $sub_plan_sets_in_the_project->pluck("project_id")
+                                $sub_plan_sets_in_the_project->where("main_id",$each_plan_data->id)->pluck("project_id")
                                 ):[] //単配の場合;
                             ];
                             })

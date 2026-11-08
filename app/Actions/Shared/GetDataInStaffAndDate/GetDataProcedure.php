@@ -57,7 +57,7 @@ class GetDataProcedure{
         // 挿入(project_onlyのcollectは既に分岐済)
         $return_data_sets[$date]=!empty($normal) ? $normal : $project_only;
 
-        //
+        // 案件のみ版で登録されたもの
         if(!empty($project_only)){
             $project_only_assigned_dates[]=$date;
         }

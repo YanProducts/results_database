@@ -3,7 +3,7 @@ import { route } from "ziggy-js";
 import applyOtherProjectToSameValueClick from "../Share/applyOtherProjectToSameValueClick";
 import confirmMainOrSubOnlyInput from "./Part/confirmMainOrSubOnlyInput";
 
-export default function useWriteReportActions({data,assignDataToStaff,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,setChoicedMap,setChoiceFinishedMapProjectLists,isBigMedia,setIsBigMedia,clearErrors}){
+export default function useWriteReportActions({data,assignDataToStaff,projectOnlyAssignedDates,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,setChoicedMap,setChoiceFinishedMapProjectLists,isBigMedia,setIsBigMedia,clearErrors}){
 
 
     // 日付が変更されたらpost用のデータにセット(他のデータは自動的に初期化)
@@ -18,7 +18,9 @@ export default function useWriteReportActions({data,assignDataToStaff,inputValue
         }
         setData({
             "date":selectedDate,
-            "reportData":[]
+            "reportData":[],
+            // その日が案件のみからassignされているか
+            "projectOnlyFlag":projectOnlyAssignedDates.includes(selectedDate),
         })
     },[selectedDate])
 
@@ -104,6 +106,18 @@ export default function useWriteReportActions({data,assignDataToStaff,inputValue
     // (案件から選択の際に)地図番号選択の変化時
     const onMapNumberChange=({e,mainProjectName})=>{
         const targetValue=e.currentTarget.value;
+
+        // その案件のデータを削除するかの確認して、する場合は削除
+        // ここの仕様、意見次第で変わる可能性あり
+        const isDelete=confirm("案件のデータを初期化しますか？")
+        if(isDelete){
+            setInputValues(prev=>({
+                ...prev,
+                [mainProjectName]:{}
+            }))
+        }
+
+        // 表示地図番号の変化
         setChoicedMap(prev=>({
             ...prev,
             [mainProjectName]:
@@ -161,7 +175,8 @@ export default function useWriteReportActions({data,assignDataToStaff,inputValue
 
             setData({
                 "date":selectedDate,
-                "reportData":dataForForm
+                "reportData":dataForForm,
+                "projectOnlyFlag": projectOnlyAssignedDates.includes(selectedDate),
             });
             setIsConfirm(true);
             clearErrors();

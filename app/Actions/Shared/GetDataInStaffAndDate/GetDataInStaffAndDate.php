@@ -23,12 +23,7 @@ class GetDataInStaffAndDate{
         // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名がサブキー:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
         foreach(array_keys($date_sets) as $date){
 
-            // その日が配布済みに入っていたら報告リストには載せない(編集側の場合は、そもそもsubmitted_datesを入れていない)
-            if(!empty($submitted_dates) && $submitted_dates->contains($date)){
-               $return_sets[$date]=null;
-                $from_simple_flag[$date]=false;
-                continue;
-            }
+            // // その日が配布済みに入っている場合も、案件と通常の両方でassignがあった場合にエラーを出すため、continueせずに捕捉する
 
             // phpはスコープ内宣言でOK
             // 結果と予定で仕分ける
@@ -45,7 +40,7 @@ class GetDataInStaffAndDate{
 
             // そのスタッフの、期間内を含む案件の、配布済のデータを含むdateの取得(planとassignのSQLデータは「期間」で取得しているため期間全取得、最後の配列変換の際に影響）
             // 編集の場合は実行されない(配布データがあるかどうかに関わらず予定は取得する必要があるため：結果テーブルだと行っていないor書き忘れの町目のデータがないため)
-            $submitted_dates=!$is_edit ? DistributionRecord::where("staff_id",$staff_id)->whereIn("distribution_date",array_keys($date_sets))->pluck("distribution_date")->unique()->values() : "";
+            $submitted_dates=!$is_edit ? DistributionRecord::where("staff_id",$staff_id)->whereIn("distribution_date",array_keys($date_sets))->pluck("distribution_date")->unique()->values() : collect();
 
             // 期間内&営業所あてに割り当てられている全てのplan(併配リストを添付データに合わせるため担当外も必要)
             $all_distribution_plans=GetDateRangeQuery::get_date_range_query(DistributionPlan::select("id","project_id","same_project_flag","round_number","address_id","map_number","place_id","main_id")->where("place_id",FieldStaffList::where("id",$staff_id)->value("place_id")),$date_sets,"start_date")
@@ -112,7 +107,7 @@ class GetDataInStaffAndDate{
                 $main_project_name=ProjectHelpers::get_project_name_from_id($main_project_id);
 
                     // round_numberはSQLの番号ではなく今回のインデックスで表示
-                    $round_index=1;
+                    $round_index=0;
                     foreach($main_project_data_sets_with_round_number as $round_number=>$main_project_data_sets_with_map_number){
                         // そのメイン案件の同時期のもので、今回営業所にきたメイン案件あるか(round_numberの長さ)
                         $round_length=count($main_project_data_sets_with_round_number);
@@ -173,7 +168,7 @@ class GetDataInStaffAndDate{
 
             // 割り当てされた予定の場合はその日に配布もしくはその日が期限内のassignされたデータを取得
             $main_data_in_date= $fetched_data->filter(fn($each_data)=>
-                $each_data->date==$date || ($each_data->end_data && ($each_data->end_date>=$date || $each_data->date < $date)));
+                $each_data->date==$date || ($each_data->end_date && ($each_data->end_date>=$date && $each_data->date < $date)));
 
             if($main_data_in_date->isEmpty()){
                 return [null,false];
