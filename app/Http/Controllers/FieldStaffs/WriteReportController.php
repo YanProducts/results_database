@@ -63,14 +63,15 @@ class WriteReportController extends Controller
         $date=$request->date;
         $report_data=$request->reportData;
         $staff_id=Auth::user()->authable_id;
+        $project_only_flag=$request->project_only_flag; //案件のみか提出されたか否か
 
-        // 存在確認
+        // 存在確認(その日のそのスタッフのデータが存在していたらアウト) //案件も通常も同じ
         if(!empty($duplicated_sets=DataExistsCheck::data_exists_check($date,$staff_id))){
             return back()->with($duplicated_sets);
         }
 
         // 投稿された値(dataとassignIdと、assignmentテーブルにis_mainがある場合は対応するprojectId)からプロジェクトIdと町目Idを取得し、それを保存する
-        StoreAfterDistribution::store_report_data_procedure($date,$report_data,$staff_id);
+        StoreAfterDistribution::store_report_data_procedure($date,$report_data,$staff_id,$project_only_flag);
 
         return redirect()->route("view_information")->with(["information_message"=>"送信完了しました","linkRouteName"=>"field_staff.overview_reports","linkPageInJpn"=>"確認ページ"]);
 

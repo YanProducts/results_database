@@ -116,12 +116,13 @@ class GetProjectOnlyDataInStaffAndDate{
                                 //その町目のデータ
                                 $town_data=$address_sets_in_the_project[$address_id];
                                 return[
+                                "plan_id"=>$plan_id=$each_plan_data->id, //通常盤ではassign_idだが、それ自体が存在しない
                                 "address_id"=>$address_id,
                                 "address_name"=>$duplicate_town_names->contains($town_name=$town_data["town"]) ? $town_name."\n(".$town_data["city"].")" : $town_name,
                                 "address_name_when_big_media"=>$town_data["city"].$town_data["town"],
                                 "household"=>$town_data["household"],
                                 // 編集用の合計(record_dataは引き渡しの段階でdateとstaffでfilter済)
-                                "counts"=>$is_edit ? $record_data->where("plan_id",$each_plan_data->id)->value("distribution_count") :"",
+                                "counts"=>$is_edit ? $record_data->where("plan_id",$plan_id)->value("distribution_count") :"",
 
                                 "sub_sets"=>$sub_plan_sets_in_the_project->isNotEmpty() ? ($is_edit ?
                                 // 編集の時(その町目のplanのデータがあるかどうかで取得)

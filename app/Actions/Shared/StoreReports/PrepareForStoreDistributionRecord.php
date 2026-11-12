@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Shared;
+namespace App\Actions\Shared\StoreReports;
 use App\Models\DistributionAssignment;
 use App\Support\Common\ModelHelpers\DistributionPlanHelpers;
 use Carbon\Carbon;
@@ -12,7 +12,8 @@ class PrepareForStoreDistributionRecord{
     // 保存に必要なデータ(配布済に変更するassignidと保存用配列)を取得
     public static function prepare_for_store($date,$report_data,$staff_id,$from_edit=false){
         // 投稿されたassignId(必然的にmainになる)
-        $assign_ids=(collect($report_data)->map(fn($each_report_data)=>$each_report_data["assignId"]))->toArray();
+        // assignIdはidentifier(案件版ではplan_idなので、パラメータを統一している)
+        $assign_ids=(collect($report_data)->map(fn($each_report_data)=>$each_report_data["identifier"]))->toArray();
 
         // n+1防止のためsqlデータを取得
         [$main_plan_ids_key_by_assigned_id,$main_data_for_insert,$sub_data_for_insert]=self::get_sql_data($assign_ids);
@@ -57,8 +58,8 @@ class PrepareForStoreDistributionRecord{
                     continue;
                 }
 
-                // 投稿されたassignId
-                $assign_id=$each_report_data["assignId"];
+                // assignIdはidentifier(案件版ではplan_idなので、パラメータを統一している
+                $assign_id=$each_report_data["identifier"];
                 // そこに対応するplan_id
                 $plan_id=$main_plan_ids_key_by_assigned_id[$assign_id];
 

@@ -50,4 +50,14 @@ class DistributionProjectAssignmentHelpers{
         DistributionProjectAssignment::where("date",$date)->whereIn("staff_id",FieldStaffListHelpers::get_all_staffs_in_the_place($place_id))->delete();
     }
 
+    // 案件で振った際に、該当スタッフはprojet_plan_idを振られた予定を持っているか
+    public static function is_project_plan_id_by_the_staff_and_date_exists($staff_id,$date,$project_plan_id){
+        return DistributionProjectAssignment::where("staff_id",$staff_id)->where("project_plan_id",$project_plan_id)->where(function($query)use($date){
+            $query->where("date",$date)->orWhere(function($inner_query)use($date){
+                $inner_query->where("date","<=",$date)->where("end_date",">=",$date);
+            });
+        })
+        ->exists();
+    }
+
 }

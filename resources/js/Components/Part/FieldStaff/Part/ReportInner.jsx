@@ -13,6 +13,8 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,retur
 
     const {isBigMedia,projectOnlyAssignedDates,choiceFinishedMapProjectLists}=React.useContext(WriteReportContext);
 
+    const projectOnlyFlag=projectOnlyAssignedDates.includes(selectedDate);
+
     return(
         // 案件が届いていない場合は外側で捕捉済み
          tableSets.map(function(eachTableSets,index){
@@ -25,10 +27,10 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,retur
                 return(
                 <React.Fragment key={index}>
 
-                <BaseTable tableTheme={mainProjectName} width={"w-[97.5%]"} thSets={{"town":"町名","household":"世帯数",...projectSets,"mapNumber":(isBigMedia ? "地図" : "") + "番号"}} thWidthSets={widthSets} maxWidth={pageMaxWidth} minWidth={pageMinWidth} allData={[]} mb={"mb-4"} thHidden={projectOnlyAssignedDates.includes(selectedDate) && !choiceFinishedMapProjectLists.includes(mainProjectName)}>
+                <BaseTable tableTheme={mainProjectName} width={"w-[97.5%]"} thSets={{"town":"町名","household":"世帯数",...projectSets,"mapNumber":(isBigMedia ? "地図" : "") + "番号"}} thWidthSets={widthSets} maxWidth={pageMaxWidth} minWidth={pageMinWidth} allData={[]} mb={"mb-4"} thHidden={projectOnlyFlag && !choiceFinishedMapProjectLists.includes(mainProjectName)}>
 
                 {/* 案件のみ版のデータがこの日に存在するときはMap選択 */}
-                {projectOnlyAssignedDates.includes(selectedDate) &&
+                {projectOnlyFlag &&
                 <ChoiceMapNumberWhenProjectOnly {...{projectSets,mainProjectName,dataInEachMainProject,pageMaxWidth,pageMinWidth}}/>
                 }
 
@@ -43,7 +45,7 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,retur
                         return(
                             Object.values(eachDataByMap).map((eachData,indexInMaps)=>
                                 // テーブルの中身
-                                <TrInner key={`${trIndex}_${indexInMaps}`} {...{mainProjectName,projectSets,eachData,mapNumber,trIndex,indexInMaps,widthSets,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,isConfirm,fromSimpleFlag,processing,changedData}}/>
+                                <TrInner key={`${trIndex}_${indexInMaps}`} {...{mainProjectName,projectSets,eachData,mapNumber,trIndex,indexInMaps,widthSets,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,isConfirm,projectOnlyFlag,fromSimpleFlag,processing,changedData}}/>
                             )
                         )
                         })

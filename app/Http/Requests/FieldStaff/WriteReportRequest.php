@@ -29,7 +29,7 @@ class WriteReportRequest extends FormRequest
 
         return [
             // 「現場担当、編集ではない」の条件で共通関数で検証
-            ...ReportValidationRules::rules(Auth::user()->authable_id,false)
+            ...ReportValidationRules::rules(Auth::user()->authable_id,$this->input("date"),false,$this->boolean("projectOnlyFlag"))
         ];
     }
 

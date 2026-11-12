@@ -63,7 +63,7 @@ export default function useWriteReportActions({data,assignDataToStaff,projectOnl
 
 
     // 入力された部数が変化したとき
-    const onAssignedInputChange=({e,assignId,subProjectId=null,mainProjectName,trIndex,indexInMaps,index})=>{
+    const onAssignedInputChange=({e,identifier,subProjectId=null,mainProjectName,trIndex,indexInMaps,index})=>{
         const target=e.currentTarget.value;
         if (target && !/^\d+$/.test(target)){
             alert("数値以外は入力できません")
@@ -78,8 +78,8 @@ export default function useWriteReportActions({data,assignDataToStaff,projectOnl
             ...prev,
             [mainProjectName]:{
                 ...(prev?.[mainProjectName] || {}),
-                [assignId]:{
-                    ...(prev?.[mainProjectName]?.[assignId] || {}),
+                [identifier]:{
+                    ...(prev?.[mainProjectName]?.[identifier] || {}),
                     [subProjectId ?? "main"]:target
                 }
             }
@@ -154,16 +154,16 @@ export default function useWriteReportActions({data,assignDataToStaff,projectOnl
                 return;
             }
 
-            // 投稿データは１：メインはassignIdで案件に関わらずいける。２：サブはassignIdに紐づいたplanIdからmainIdを検索可能(その中で、そのプロジェクトidと合うものを選択。sameProjectFlagが違えばidは別。roundNumberは必ず1意に決まる)
-            // そのため、[assignId:...,mainCount:...,subCounts:[projectId:...,subCount:...]の入れ子この配列にする
+            // 投稿データは１：メインはassignId(projectOnlyはplanId):双方でidentifierで案件に関わらずいける。２：サブは(assignIdに紐づいた)planIdからmainIdを検索可能。
+            // そのため、[identifier(assignIdもしくはplanId):...,mainCount:...,subCounts:[projectId:...,subCount:...]の入れ子この配列にする
             const dataForForm=[];
             Object.entries(inputValues).forEach((eachInputValue,index)=>{
                 Object.entries(eachInputValue[1]).forEach(eachSets=>{
                     const eachMainId=eachSets[0];
                     const eachCount=eachSets[1];
-                    // メインはassignedIdで取得、サブはそのassignのplan_idのidをmain_idに持つproject_idで取得。
+                    // メインはassignedId/planIdで取得、サブは(そのassignの)plan_idのidをmain_idに持つproject_idで取得。
                     dataForForm.push({
-                        "assignId":eachMainId,
+                        "identifier":eachMainId,
                         "mainCount":eachCount.main ?? 0,
                         "subData":
                             Object.entries(eachCount).map((IdCountSets)=>

@@ -4,11 +4,11 @@ import MainTdInner from "./MainTdinner";
 import SubTdInner from "./SubTdInner";
 
 // 報告書入力のtableの中身(各Trの行)
-export default function TrInner({mainProjectName,projectSets,eachData,mapNumber,trIndex,indexInMaps,widthSets,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,isConfirm,processing,fromSimpleFlag,changedData}){
+export default function TrInner({mainProjectName,projectSets,eachData,mapNumber,trIndex,indexInMaps,widthSets,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,isConfirm,processing,projectOnlyFlag,fromSimpleFlag,changedData}){
 
         const {isBigMedia,isEdit=false}=React.useContext(WriteReportContext);
 
-        const assignId=eachData.assign_id;
+        const identifier=projectOnlyFlag ? eachData.planId : eachData.assign_id;
 
         // 編集と作成とで併配案件のidセットの取得元を分ける
         const subProjectIdSets=isEdit ? Object.keys(eachData.sub_sets) : eachData.sub_sets;
@@ -22,8 +22,8 @@ export default function TrInner({mainProjectName,projectSets,eachData,mapNumber,
                         // メイン案件
                         if(index==0){
                             return(
-                                <td key="main" className={`border-black border-x-2 ${widthSets[2]} ${(isConfirm && !inputValues?.[mainProjectName]?.[assignId]?.["main"]) && "ui_attention"}`}>
-                                    <MainTdInner {...{isConfirm,onAssignedInputChange,assignId,mainProjectName,trIndex,indexInMaps,index,inputValues,inputRefs,onInputKeyDown,processing,fromSimpleFlag,changedData}} />
+                                <td key="main" className={`border-black border-x-2 ${widthSets[2]} ${(isConfirm && !inputValues?.[mainProjectName]?.[identifier]?.["main"]) && "ui_attention"}`}>
+                                    <MainTdInner {...{isConfirm,onAssignedInputChange,identifier,mainProjectName,trIndex,indexInMaps,index,inputValues,inputRefs,onInputKeyDown,processing,fromSimpleFlag,changedData}} />
                                 </td>
                        )}
 
@@ -33,8 +33,8 @@ export default function TrInner({mainProjectName,projectSets,eachData,mapNumber,
                         // 併配セット
                         return(
                             subProjectIdSets.map(subProjectIdInnAssignSets=>Number(subProjectIdInnAssignSets)).includes(subProjectId) ?
-                            <td key={"sub" + index} className={`border-black border-x-2 ${widthSets[index+2]} ${(isConfirm && !inputValues?.[mainProjectName]?.[assignId]?.[subProjectId]) &&  "ui_attention"} `}>
-                             <SubTdInner {...{isConfirm,onAssignedInputChange,assignId,subProjectId,mainProjectName,trIndex,indexInMaps,index,inputValues,inputRefs,onInputKeyDown,processing,fromSimpleFlag,changedData}}/>
+                            <td key={"sub" + index} className={`border-black border-x-2 ${widthSets[index+2]} ${(isConfirm && !inputValues?.[mainProjectName]?.[identifier]?.[subProjectId]) &&  "ui_attention"} `}>
+                             <SubTdInner {...{isConfirm,onAssignedInputChange,identifier,subProjectId,mainProjectName,trIndex,indexInMaps,index,inputValues,inputRefs,onInputKeyDown,processing,fromSimpleFlag,changedData}}/>
                             </td>
                         :
                         <td key={"sub" + index} className={`border-black border-x-2 ${widthSets[index+2]}`}>-</td>

@@ -101,6 +101,16 @@ class DistributionPlanHelpers{
         return DistributionPlan::find($plan_id)->project_id==$project_id;
     }
 
+    // そのplan_idから、project_id,round_number,place_idを返す
+    // バリデーションのカスタムRuleから来ていて、plan_idは存在しているものとみなす(別途バリデーションが存在)
+    public static function get_project_and_round_number_and_place_id($id){
+            // 該当モデルの取得
+            $model_instance=DistributionPlan::find($id);
+            // データが更新されている可能性を考慮？？？
+
+            return [$model_instance->project_id,$model_instance->round_number,$model_instance->place_id];
+    }
+
     // project_idとround_numberとplace_idに該当するplanを取得(project_planned_countsから逆引き。住所のため)
     public static function get_plan_data_from_project_planned_table_data($data_from_project_planned_table,$place_id){
         // コレクションセットから逆引きするためforeach検索が必要。コレクションを回しているだけなのでN+1には該当しない

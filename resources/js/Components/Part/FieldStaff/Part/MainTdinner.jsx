@@ -1,7 +1,7 @@
 import React from "react";
 import WriteReportContext from "../../../../Contexts/FieldStaffs/useWriteReportContexts"
 
-export default function MainTdInner({isConfirm,onAssignedInputChange,assignId,mainProjectName,trIndex,indexInMaps,index,inputValues,inputRefs,onInputKeyDown,processing,fromSimpleFlag,changedData}){
+export default function MainTdInner({isConfirm,onAssignedInputChange,identifier,mainProjectName,trIndex,indexInMaps,index,inputValues,inputRefs,onInputKeyDown,processing,fromSimpleFlag,changedData}){
 
     // 編集かどうかとLaravelから送信のデータ(結果のデフォルト表示に使用)//この時点では日付のデータに変換されている
     const {isEdit=false}=React.useContext(WriteReportContext);
@@ -9,7 +9,7 @@ export default function MainTdInner({isConfirm,onAssignedInputChange,assignId,ma
     // keyDownイベントは現時点では実装されていない。後日、意見を考えて実装検討
     return(
         (!isConfirm && !processing ) ?
-        <input className={`w-full text-right ${(isEdit && changedData?.[mainProjectName]?.[assignId]?.includes("main") )? "bg-lime-300 border-green-300 border-2 font-extrabold text-green-950" : ""}`} onChange={(e)=>onAssignedInputChange({e,assignId,mainProjectName,trIndex,indexInMaps,index})} onKeyDown={(e)=>onInputKeyDown(e,mainProjectName,trIndex,indexInMaps,index)} value={inputValues?.[mainProjectName]?.[assignId]?.["main"] ?? ""}  ref={(el)=>
+        <input className={`w-full text-right ${(isEdit && changedData?.[mainProjectName]?.[identifier]?.includes("main") )? "bg-lime-300 border-green-300 border-2 font-extrabold text-green-950" : ""}`} onChange={(e)=>onAssignedInputChange({e,identifier,mainProjectName,trIndex,indexInMaps,index})} onKeyDown={(e)=>onInputKeyDown(e,mainProjectName,trIndex,indexInMaps,index)} value={inputValues?.[mainProjectName]?.[identifier]?.["main"] ?? ""}  ref={(el)=>
         {
             // 作成されていない時は作成
             if (!inputRefs.current[mainProjectName]) {
@@ -25,7 +25,7 @@ export default function MainTdInner({isConfirm,onAssignedInputChange,assignId,ma
         }}/>
         :
     // 確認用(地図からのみ記入されている場合は全町確認は不要)
-    inputValues?.[mainProjectName]?.[assignId]?.["main"] || (!fromSimpleFlag ? "未記入" : "-")
+    inputValues?.[mainProjectName]?.[identifier]?.["main"] || (!fromSimpleFlag ? "未記入" : "-")
 
 
 

@@ -39,7 +39,7 @@ class CompleteEditReportRequest extends FormRequest
             // 4などidの形式
             "staff"=>$staff_rule,
             // 「営業所担当、編集」の条件で共通関数で検証
-            ...ReportValidationRules::rules($this->input("staff"),true)
+            ...ReportValidationRules::rules($this->input("staff"),$this->input("date"),true,false)
         ];
     }
 

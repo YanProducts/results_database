@@ -2,7 +2,7 @@
 
 namespace App\Actions\BranchManager\Report;
 
-use App\Actions\Shared\PrepareForStoreDistributionRecord;
+use App\Actions\Shared\StoreReports\PrepareForStoreDistributionRecord;
 use App\Models\DistributionAssignment;
 use App\Models\DistributionRecord;
 use Illuminate\Support\Facades\DB;

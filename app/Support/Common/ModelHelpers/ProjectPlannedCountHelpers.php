@@ -65,6 +65,11 @@ class ProjectPlannedCountHelpers{
         return ProjectPlannedCount::find($project_planned_ids)->where("place_id",$place_id)->keyBy("id");
     }
 
+    // 指定されたproject_id、round_number、place_idから、一意に決まった、project_plannedのidを求める
+    public static function get_project_planned_id($project_id,$round_number,$place_id){
+        return ProjectPlannedCount::where("project_id",$project_id)->where("round_number",$round_number)->where("place_id",$place_id)->value("id"); //必ず一意に決定
+    }
+
 
 
 }

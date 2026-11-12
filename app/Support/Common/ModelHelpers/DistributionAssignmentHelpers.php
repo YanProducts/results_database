@@ -29,6 +29,15 @@ class DistributionAssignmentHelpers{
 
     }
 
+    // 該当id、該当スタッフ、該当の日付のassignは存在するか？
+    public static function is_assign_id_by_the_staff_and_date_exists($id,$staff_id,$date){
+        return DistributionAssignment::where("staff_id",$staff_id)->where("id",$id)->where(function($query)use($date){
+            $query->where("date",$date)->orWhere(function($inner_query)use($date){
+               $inner_query->where("date","<=",$date)->where("end_date",">=",$date);
+            });
+        })->exists();
+    }
+
     // 該当のplanに対応するassignの取得
     public static function get_assigns_by_plan_ids($plan_ids){
         return DistributionAssignment::select("plan_id","staff_id","date")->whereIn("plan_id",$plan_ids)->get()->groupBy("plan_id");
