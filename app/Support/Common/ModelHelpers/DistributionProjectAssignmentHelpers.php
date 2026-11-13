@@ -60,4 +60,8 @@ class DistributionProjectAssignmentHelpers{
         ->exists();
     }
 
+    // project_idとround_numberとplace_idのセットから一意に決まったproject_planned_idを返す
+    //存在しなければ内部でエラーを投げる
+
+
 }

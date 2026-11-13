@@ -40,7 +40,7 @@ class GetProjectOnlyDataInStaffAndDate{
     public static function get_data_in_sql($staff_id,$date_sets,$is_edit=false){
 
             // 営業所Idの取得
-            $place_id=FieldStaffListHelpers::get_place_name_by_user($staff_id);
+            $place_id=FieldStaffListHelpers::get_place_id_by_user($staff_id);
 
             // // そのスタッフの、期間内を含む案件の、配布済のデータを含むdateの取得(planとassignのSQLデータは「期間」で取得しているため期間全取得、最後の配列変換の際に影響）
             // // 編集の場合は実行されない(配布データがあるかどうかに関わらず予定は取得する必要があるため：結果テーブルだと行っていないor書き忘れの町目のデータがないため)

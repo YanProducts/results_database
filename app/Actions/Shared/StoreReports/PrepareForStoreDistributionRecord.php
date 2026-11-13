@@ -90,8 +90,8 @@ class PrepareForStoreDistributionRecord{
                 // サブ案件のデータをメイン案件のプランidのキーに対して取得し、そのうちに投稿されたproject_idと同じものを取得(filterは単一ではないので0を返すことが必要)
                 $sub_plan_data=$sub_data_for_insert->get($plan_id)?->first(fn($sub_data)=>$sub_data->project_id==$sub_project_id) ?? throw new \App\Exceptions\BusinessException("メインに対応する併配案件データが見つかりません");
 
-                // 途中で消して空白になっている場合は次のループへ
-                if($reported_sub_data["subCount"]==""){
+                // 途中で消して空白になっている場合は次のループへ(厳密比較でないと、0も""で判定する可能性あり)
+                if($reported_sub_data["subCount"]===""){
                     continue;
                 }
 

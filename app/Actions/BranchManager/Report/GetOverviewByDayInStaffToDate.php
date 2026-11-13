@@ -45,7 +45,7 @@ class GetOverviewByDayInStaffToDate{
     public static function get_data_in_sql($staff_ids,$date_sets,$role){
 
         // 0:該当期間にその営業所に割り当てられた、planidがmain_id=nullのもの(つまりメイン案件)を取得
-        $main_plans_in_the_dates_and_the_place=GetDateRangeQuery::get_date_range_query(DistributionPlan::select("project_id","address_id","main_id","id as plan_id")->where("place_id",$role=="branch_manager" ?BranchManagerListHelpers::get_login_user_place_id() : FieldStaffListHelpers::get_place_name_by_user($staff_ids[0]))->where("main_id",null),$date_sets,"start_date")->get();
+        $main_plans_in_the_dates_and_the_place=GetDateRangeQuery::get_date_range_query(DistributionPlan::select("project_id","address_id","main_id","id as plan_id")->where("place_id",$role=="branch_manager" ?BranchManagerListHelpers::get_login_user_place_id() : FieldStaffListHelpers::get_place_id_by_user($staff_ids[0]))->where("main_id",null),$date_sets,"start_date")->get();
 
         // 上記のid(他でいうplan_id)のリスト(recordとassignで2度使用)
         $main_plans_ids_in_the_dates_and_the_place=$main_plans_in_the_dates_and_the_place->pluck("plan_id");
