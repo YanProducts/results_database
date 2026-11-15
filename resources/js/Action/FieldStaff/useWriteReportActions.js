@@ -2,9 +2,12 @@ import React from "react";
 import { route } from "ziggy-js";
 import applyOtherProjectToSameValueClick from "../Share/applyOtherProjectToSameValueClick";
 import confirmMainOrSubOnlyInput from "./Part/confirmMainOrSubOnlyInput";
+import useClearErrors from "../Share/useClearErrors";
 
-export default function useWriteReportActions({data,assignDataToStaff,projectOnlyAssignedDates,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,setChoicedMap,setChoiceFinishedMapProjectLists,isBigMedia,setIsBigMedia,clearErrors}){
+export default function useWriteReportActions({data,assignDataToStaff,projectOnlyAssignedDates,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,setChoicedMap,setChoiceFinishedMapProjectLists,isBigMedia,setIsBigMedia,errors,clearErrors}){
 
+    //エラー自体の削除
+    useClearErrors({errors,clearErrors})
 
     // 日付が変更されたらpost用のデータにセット(他のデータは自動的に初期化)
     //日付が初期化されたら関連するstateとformは全て戻す
@@ -64,6 +67,7 @@ export default function useWriteReportActions({data,assignDataToStaff,projectOnl
 
     // 入力された部数が変化したとき
     const onAssignedInputChange=({e,identifier,subProjectId=null,mainProjectName,trIndex,indexInMaps,index})=>{
+
         const target=e.currentTarget.value;
         if (target && !/^\d+$/.test(target)){
             alert("数値以外は入力できません")
@@ -72,7 +76,6 @@ export default function useWriteReportActions({data,assignDataToStaff,projectOnl
 
         // 変化したinput要素をfocus(indexは併配の数)
         inputRefs.current[mainProjectName][trIndex][indexInMaps][index]?.focus();
-
         // input要素のvalueの更新
         setInputValues(prev=>({
             ...prev,
@@ -97,25 +100,16 @@ export default function useWriteReportActions({data,assignDataToStaff,projectOnl
     }
 
     // 他の案件も同じ値を挿入する時
-    const onSetOtherProjectToSameValueClick=(e,mainProjectName,projectId,index)=>{
+    const onSetOtherProjectToSameValueClick=(e,mainProjectName,projectId,index,projectOnlyFlag)=>{
         e.preventDefault()
         // 外注定義
-        applyOtherProjectToSameValueClick({mainProjectName,projectId,index,inputValues,setInputValues,assignDataToStaff,selectedDate})
+        applyOtherProjectToSameValueClick({mainProjectName,projectId,index,inputValues,setInputValues,assignDataToStaff,selectedDate,projectOnlyFlag})
     }
 
     // (案件から選択の際に)地図番号選択の変化時
     const onMapNumberChange=({e,mainProjectName})=>{
-        const targetValue=e.currentTarget.value;
 
-        // その案件のデータを削除するかの確認して、する場合は削除
-        // ここの仕様、意見次第で変わる可能性あり
-        const isDelete=confirm("案件のデータを初期化しますか？")
-        if(isDelete){
-            setInputValues(prev=>({
-                ...prev,
-                [mainProjectName]:{}
-            }))
-        }
+        const targetValue=e.currentTarget.value;
 
         // 表示地図番号の変化
         setChoicedMap(prev=>({
@@ -140,7 +134,28 @@ export default function useWriteReportActions({data,assignDataToStaff,projectOnl
 
     // (案件から選択の際に)地図番号のリセット
     const onMapNumberChoiceReset=(mainProjectName)=>{
-        // setChoicedMap(prev=>({...prev,[mainProjectName]:[]}))
+        // 最初の選択もしくはその案件が空の時はそのまま初期化、すでに選択した状態からマップの変更もしくは次のマップ選択を行う時は「前のマップにおける案件データを削除するか」を確認する
+        // ここの仕様、意見次第で変わる可能性あり
+        if(Object.keys(inputValues[mainProjectName] ?? {}).length && confirm("案件のデータを初期化しますか？")){
+            // そのほかのキーの情報を残したまま、特定のキーのセットを削除(町目ごと配布数、持ち出し、返却)
+            //オブジェクトで特定のキーの削除にはdeleteを使用
+            setInputValues((prev)=>{
+                const copyPrev={...prev}
+                delete copyPrev[mainProjectName];
+                return copyPrev;
+            })
+            setIssuedCount((prev)=>{
+                const copyPrev={...prev}
+                delete copyPrev[mainProjectName];
+                return copyPrev;
+            })
+            setReturnedCount((prev)=>{
+                const copyPrev={...prev}
+                delete copyPrev[mainProjectName];
+                return copyPrev;
+            })
+        }
+        // その地図の町目リストの表示を隠す
         // //初期状態は以前の状態を残す
         setChoiceFinishedMapProjectLists(prev=>prev.filter(eachMainProject=>eachMainProject!=mainProjectName))
     }

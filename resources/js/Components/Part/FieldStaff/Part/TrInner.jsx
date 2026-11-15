@@ -8,7 +8,7 @@ export default function TrInner({mainProjectName,projectSets,eachData,mapNumber,
 
         const {isBigMedia,isEdit=false}=React.useContext(WriteReportContext);
 
-        const identifier=projectOnlyFlag ? eachData.planId : eachData.assign_id;
+        const identifier=projectOnlyFlag ? eachData.plan_id : eachData.assign_id;
 
         // 編集と作成とで併配案件のidセットの取得元を分ける
         const subProjectIdSets=isEdit ? Object.keys(eachData.sub_sets) : eachData.sub_sets;

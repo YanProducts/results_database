@@ -6,6 +6,7 @@ use App\Constants\Date;
 use App\Models\ProjectPlannedCount;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\DB;
 
 class ProjectPlannedCountHelpers{
 
@@ -68,6 +69,17 @@ class ProjectPlannedCountHelpers{
     // 指定されたproject_id、round_number、place_idから、一意に決まった、project_plannedのidを求める
     public static function get_project_planned_id($project_id,$round_number,$place_id){
         return ProjectPlannedCount::where("project_id",$project_id)->where("round_number",$round_number)->where("place_id",$place_id)->value("id"); //必ず一意に決定
+    }
+
+    // 「project_id&round_number$place_id」がセットになったコレクションから、それぞれ一意になったproject_planned_idのidの配列を返す
+    public static function get_project_planned_ids_from_project_round_number_place_collections($collections){
+        return ProjectPlannedCount::where(function($query)use($collections){
+            // where条件3つに合うものをorWhereで返していく(そのコードがそのまま返るイメージ)
+            foreach($collections as $collect){
+            $query->orWhere(fn($inner_query)=>
+                $inner_query->where("project_id",$collect->project_id)->where("round_number",$collect->round_number)->where("place_id",$collect->place_id));
+            }
+        })->pluck("id");
     }
 
 

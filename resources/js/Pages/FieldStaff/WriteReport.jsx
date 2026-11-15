@@ -9,10 +9,20 @@ import BaseLinkLine from "../../Components/Common/BaseLinkLine";
 import WriteReportContext from "../../Contexts/FieldStaffs/useWriteReportContexts";
 
 export default function WriteReport({what,type,prefix,staff,dateSets,assignDataToStaff,projectOnlyAssignedDates,fromSimpleFlag,submittedDates}){
+
+// LD-11のデータがおかしい。併配データが存在しない？あとカラムの順序がおかしい。どこでずれた？
+// project_setsの順序がid順になっていて、メインプロジェクトが先にきていないのが原因！
+console.log(assignDataToStaff)
+
+
+
+
+
+
     // assignDataToStaffキーのプロジェクト名はsameProjectFlagなども想定済みのもの
     const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,selectedDate,setSelectedDate,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,choicedMap,setChoicedMap,choiceFinishedMapProjectLists,setChoiceFinishedMapProjectLists,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia}=useWriteReportDefinitions();
 
-    const {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onMapNumberChange,onMapNumberChoiceDecide,onMapNumberChoiceReset,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}=useWriteReportActions({data,assignDataToStaff,projectOnlyAssignedDates,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,setChoicedMap,setChoiceFinishedMapProjectLists,isBigMedia,setIsBigMedia,clearErrors});
+    const {onSelectedDateChange,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onMapNumberChange,onMapNumberChoiceDecide,onMapNumberChoiceReset,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onStartOverClick,onConfirmOkClick,onConfirmCancelClick}=useWriteReportActions({data,assignDataToStaff,projectOnlyAssignedDates,inputValues,setInputValues,inputRefs,selectedDate,setSelectedDate,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,setChoicedMap,setChoiceFinishedMapProjectLists,isBigMedia,setIsBigMedia,errors,clearErrors});
 
     //テーブルのUIや変数などに必要な要素の取得(依存配列が変化しなければ再計算されない)
     const [tableSets,differenceExists]=useWriteOrEditReportViewData({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount,isBigMedia});
@@ -26,7 +36,7 @@ export default function WriteReport({what,type,prefix,staff,dateSets,assignDataT
         {/* 確認か入力か */}
         {!isConfirm ?
         <ReportDataInput {...{what,type,pageMinWidth,pageMaxWidth,staff,selectedDate,onSelectedDateChange,submittedDates,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,
-        dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,fromSimpleFlag}} />
+        dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,projectOnlyAssignedDates,fromSimpleFlag}} />
         :
         <ReportConfirm {...{what,type,pageMaxWidth,pageMinWidth,data,assignDataToStaff,selectedDate,issuedCount,returnedCount,inputRefs,inputValues,onAssignedInputChange,onConfirmOkClick,onConfirmCancelClick,tableSets,errors,processing,isConfirm,fromSimpleFlag}}/>
         }

@@ -22,6 +22,10 @@
 
             // ~丁で終わっている地名を直す(＊現時点では堺のみ)
             $each_data["town"]=TownNameNormalizer::modify_cho_end_pattern($each_data["city"],$each_data["town"]);
+
+            // 特別な表記を直す（例:枚方市北山１）
+            $each_data["town"]=TownNameNormalizer::modify_special_patterns($each_data["city"],$each_data["town"]);
+
             return $each_data;
          },$csv_data);
 

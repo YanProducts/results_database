@@ -2,7 +2,7 @@ import MainTdInner from "../../Components/Part/FieldStaff/Part/MainTdinner";
 import useTargetChangeHandler from "../BranchManager/ReportManagement/Part/useTargetChangeHandler";
 
 // 他の案件も同じ値を記入する時
-export default function applyOtherProjectToSameValueClick({mainProjectName,projectId,index,inputValues,setInputValues,assignDataToStaff,selectedDate,isEdit=false,changedData={},setChangedData=()=>{}}){
+export default function applyOtherProjectToSameValueClick({mainProjectName,projectId,index,inputValues,setInputValues,projectOnlyFlag=false,assignDataToStaff,selectedDate,isEdit=false,changedData={},setChangedData=()=>{}}){
 
         // 参照しないコピー
         let inputMainProjectCopy=structuredClone(inputValues[mainProjectName])
@@ -13,11 +13,6 @@ export default function applyOtherProjectToSameValueClick({mainProjectName,proje
         if(isEdit){
             newChangedData= structuredClone(changedData[mainProjectName])
         }
-
-        console.log(isEdit)
-        console.log(inputMainProjectCopy)
-        console.log(mainProjectName)
-        console.log(changedData) //まだない
 
         // それぞれのmainProjectにおけるキーの取得(これはassignId、つまり割り当て後の案件のキー:mainのみ)
         const mainKeys=Object.keys(inputMainProjectCopy);
@@ -31,10 +26,12 @@ export default function applyOtherProjectToSameValueClick({mainProjectName,proje
             // キーにはmap番号が振られているので、データはvalueに入っている
             Object.values(assignDataToStaff[selectedDate][mainProjectName].each_data).forEach(function(eachAssignedData){
 
+                    const identifier=projectOnlyFlag ? "plan_id" : "assign_id";
+
                     // メイン案件の時
                     if(index==0){
                         // 今入力している町目のidにおける、Laravelから送られてきた値で参照される併配が記述された一式
-                        const matchedAssignData=eachAssignedData.find(eachTownData=>eachTownData?.assign_id==mainKey)
+                        const matchedAssignData=eachAssignedData.find(eachTownData=>eachTownData?.[identifier]==mainKey)
 
                         // 違う地図の場合はmatchする案件が見つからないので次へ
                         if(!matchedAssignData){

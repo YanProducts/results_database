@@ -54,7 +54,7 @@ class TownNameNormalizer{
                 match(true){
                     // 二十丁以上は前段階でチェックし、あれば前もって「手動でファイルを直せ」と指示を出す(大阪と兵庫の最高は岸和田土生町の１３丁)
                     str_ends_with($town,"一〇丁")=>str_replace("一〇丁","１０",$town),
-                    str_ends_with($town,"十丁")=>str_replace("十丁","１１",$town),
+                    str_ends_with($town,"十丁")=>str_replace("十丁","１０",$town),
                     str_ends_with($town,"十一丁")=>str_replace("十一丁","１１",$town),
                     str_ends_with($town,"十二丁")=>str_replace("十二丁","１２",$town),
                     str_ends_with($town,"十三丁")=>str_replace("十三丁","１３",$town),
@@ -77,6 +77,15 @@ class TownNameNormalizer{
                 };
         }
 
+        // 完全な得意ケース
+        public static function modify_special_patterns($city,$town){
+            // 例外１：枚方市北山ではなく枚方市北山1。これは「北山」が統計データには表相が２で上がっているのに、実際の統計には北山１（丁目）と丁目がついた状態での記録のため
+            if($city=="枚方市" && $town=="北山"){
+                return "北山１";
+            }
+            return $town;
+        }
+
          // 手書きでデータを直すべき項目が存在する場合
         public static function check_over20_town_name($pref,$pref_data_array){
             // 「二十丁目」もしくは「二十丁」で終わっているデータがある場合
@@ -87,6 +96,5 @@ class TownNameNormalizer{
                 throw new BusinessException($pref."ファイルに「二十丁目」もしくは「二十丁」以上のデータが存在しています\n手書き修正か、プログラム修正が必要です");
             }
         }
-
 
 }

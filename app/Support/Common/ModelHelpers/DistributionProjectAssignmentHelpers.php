@@ -60,8 +60,13 @@ class DistributionProjectAssignmentHelpers{
         ->exists();
     }
 
-    // project_idとround_numberとplace_idのセットから一意に決まったproject_planned_idを返す
-    //存在しなければ内部でエラーを投げる
-
+    // そのスタッフ、その日付、そのproject_plan_ids(複数)がセットになったdistribution_project_assignmentsのidセットを返す
+    public static function get_ids_by_project_plan_ids_and_staff_and_date($staff_id,$date,$project_plan_ids){
+        return DistributionProjectAssignment::where("staff_id",$staff_id)->whereIn("project_plan_id",$project_plan_ids)->where(function($query)use($date){
+            $query->where("date",$date)->orWhere(function($inner_query)use($date){
+                $inner_query->where("date","<=",$date)->where("end_date",">=",$date);
+            });
+        })->pluck("id");
+    }
 
 }

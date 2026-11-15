@@ -8,15 +8,18 @@ export default function ChoiceMapNumberWhenProjectOnly({projectSets,mainProjectN
     // 変数呼び出し
     const {choicedMap,onMapNumberChange,onMapNumberChoiceDecide,onMapNumberChoiceReset,choiceFinishedMapProjectLists}=React.useContext(WriteReportContext);
 
+    const choicedMapExistsInTheProjects=(Object.keys(choicedMap).includes(mainProjectName) && Object.keys(choicedMap[mainProjectName]).length>0);
+
     return(
              <tr>
                 <td colSpan={ 3 + Object.keys(projectSets).length}>
                     {!choiceFinishedMapProjectLists.includes(mainProjectName) ?
                     <>
                         <p className="base_frame mt-3 mb-0 text-center font-bold base_backColor max-w-20 border border-black rounded-sm">地図を選択してください</p>
-                        <FlatToggleLists {...{pageMaxWidth,pageMinWidth,contents:Object.keys(dataInEachMainProject).map((eachMapNumber)=>({id:eachMapNumber,nameForUI:"Map"+eachMapNumber})),formLists:choicedMap[mainProjectName] ?? [], formNotNumberFlag:true,prefixId:{mainProjectName},onToggleListsChange:(e)=>{onMapNumberChange({e,mainProjectName})}}}//メソッドの引数は引き渡した先から渡される
+                        <FlatToggleLists {...{pageMaxWidth,pageMinWidth,      prefixId:mainProjectName,contents:Object.keys(dataInEachMainProject).map((eachMapNumber)=>({id:eachMapNumber,
+                        nameForUI:"Map"+eachMapNumber})),formLists:choicedMap[mainProjectName] ?? [], formNotNumberFlag:true,onToggleListsChange:(e)=>{onMapNumberChange({e,mainProjectName})}}}//メソッドの引数は引き渡した先から渡される
                     />
-                    <div className="flex justify-center my-3"><button className="base_btn" onClick={()=>{onMapNumberChoiceDecide(mainProjectName)}}>決定！</button></div>
+                    <div className="flex justify-center my-3"><button className={`base_btn ${choicedMapExistsInTheProjects ? "active_btn" : "non_active_btn"}`} onClick={()=>{onMapNumberChoiceDecide(mainProjectName)}} disabled={!choicedMapExistsInTheProjects} >決定！</button></div>
                     </>
                     :
                     <div className="base_frame flex justify-center align-middle mx-auto my-3">

@@ -4,30 +4,31 @@ import TrInner from "./TrInner";
 import TrForSum from "./TrForSum";
 import IssuedAndReturns from "./IssueAndReturns";
 import WriteReportContext from "../../../../Contexts/FieldStaffs/useWriteReportContexts";
-import SelectPartsForViewChange from "../../../Common/SelectPartsForViewChange";
-import FlatToggleLists from "../../../Common/FlatToggleLists";
 import ChoiceMapNumberWhenProjectOnly from "./ChoiceMapNumberWhenProjectOnly";
+import getProjectNameWithoutRoundNumberForView from "../../../../Support/Common/getProjectNameWithoutRoundNumberForView";
 
 // 報告書テーブルの内部
-export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,tableSets,isConfirm,processing,fromSimpleFlag,changedData,selectedDate}){
+export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,tableSets,isConfirm,processing,fromSimpleFlag,changedData,projectOnlyFlag}){
 
-    const {isBigMedia,projectOnlyAssignedDates,choiceFinishedMapProjectLists}=React.useContext(WriteReportContext);
-
-    const projectOnlyFlag=projectOnlyAssignedDates.includes(selectedDate);
+    const {isBigMedia,choiceFinishedMapProjectLists,choicedMap}=React.useContext(WriteReportContext);
 
     return(
         // 案件が届いていない場合は外側で捕捉済み
          tableSets.map(function(eachTableSets,index){
+
                 // プロジェクトの数に応じてthやtdの長さの変化
                 const widthSets=eachTableSets.widthSets
                 const mainProjectName=eachTableSets.mainProjectName;
+                const mainProjectNameWithoutRoundNumber=getProjectNameWithoutRoundNumberForView(mainProjectName);
                 const projectSets=eachTableSets.projectSets;
-                const dataInEachMainProject=eachTableSets.dataInEachMainProject;
+
+                // それぞれの案件の各町目ごとのデータ
+                const dataInEachMainProject= eachTableSets.dataInEachMainProject;
 
                 return(
                 <React.Fragment key={index}>
 
-                <BaseTable tableTheme={mainProjectName} width={"w-[97.5%]"} thSets={{"town":"町名","household":"世帯数",...projectSets,"mapNumber":(isBigMedia ? "地図" : "") + "番号"}} thWidthSets={widthSets} maxWidth={pageMaxWidth} minWidth={pageMinWidth} allData={[]} mb={"mb-4"} thHidden={projectOnlyFlag && !choiceFinishedMapProjectLists.includes(mainProjectName)}>
+                <BaseTable tableTheme={mainProjectNameWithoutRoundNumber} width={"w-[97.5%]"} thSets={{"town":"町名","household":"世帯数",...projectSets,"mapNumber":(isBigMedia ? "地図" : "") + "番号"}} thWidthSets={widthSets} maxWidth={pageMaxWidth} minWidth={pageMinWidth} allData={[]} mb={"mb-4"} thHidden={projectOnlyFlag && !choiceFinishedMapProjectLists.includes(mainProjectName)}>
 
                 {/* 案件のみ版のデータがこの日に存在するときはMap選択 */}
                 {projectOnlyFlag &&
@@ -41,7 +42,8 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,retur
                         <IssuedAndReturns {...{projectSets,mainProjectName,onIssuedOrReturnedCountsChange,state:returnedCount,setState:setReturnedCount,isConfirm,processing,jpnWord:"返却"}}/>
 
                         {/* その日そのメイン案件におけるセットが「keyValueSets」で、それをmapごとにわけ、それを町目ごとに見ていく */}
-                        {Object.entries(dataInEachMainProject).map(function([mapNumber,eachDataByMap],trIndex){
+                        {/* projectOnlyの時はchoicedMapに含まれるmapのものしか見せないようにする*/}
+                        {Object.entries(dataInEachMainProject).filter(([mapNumber]) =>!projectOnlyFlag ||(choicedMap?.[mainProjectName] ?? []).includes(mapNumber)).map(function([mapNumber,eachDataByMap],trIndex){
                         return(
                             Object.values(eachDataByMap).map((eachData,indexInMaps)=>
                                 // テーブルの中身
@@ -52,7 +54,7 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,retur
                     }
 
                     {/* 合計(町目ごと＆そのずれ) */}
-                    <TrForSum {...{mainProjectName,projectSets,isConfirm,sumSets:eachTableSets.sumSets,changedData}} />
+                    <TrForSum {...{mainProjectName,projectSets,isConfirm,sumSets:eachTableSets.sumSets,changedData,projectOnlyFlag}} />
                  </>
                 }
 
