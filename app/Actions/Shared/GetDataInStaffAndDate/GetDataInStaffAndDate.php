@@ -2,6 +2,7 @@
 // その日のそのスタッフにおける、割り当てられたデータ
 namespace App\Actions\Shared\GetDataInStaffAndDate;
 
+use App\Exceptions\BusinessException;
 use App\Models\DistributionAssignment;
 use App\Models\DistributionPlan;
 use App\Models\DistributionRecord;
@@ -10,6 +11,8 @@ use App\Support\Common\ModelHelpers\AddressHelpers;
 use App\Support\Common\ModelHelpers\ProjectHelpers;
 use App\Support\FieldStaff\ChangeProjectNameForView;
 use App\Support\Common\GetDateRangeQuery;
+use App\Support\Common\ModelHelpers\FieldStaffListHelpers;
+use App\Support\Common\ModelHelpers\ProjectPlannedCountHelpers;
 use Illuminate\Support\Facades\Log;
 
 class GetDataInStaffAndDate{
@@ -18,7 +21,7 @@ class GetDataInStaffAndDate{
     public static function get_assigned_data($staff_id,$date_sets,$is_edit=false,$record_data=null){
 
         // N+1防止のため、SQLデータを先に取得
-        [$submitted_dates,$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$existed_projects_sets,$existed_address_sets,$sub_plan_collections]=self::get_data_in_sql($staff_id,$date_sets,$is_edit);
+        [$submitted_dates,$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$existed_projects_sets,$existed_address_sets,$sub_plan_collections,$main_project_planned_counts_for_excel_order,$sub_project_planns_for_excel_order]=self::get_data_in_sql($staff_id,$date_sets,$is_edit);
 
         // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名がサブキー:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
         foreach(array_keys($date_sets) as $date){
@@ -27,7 +30,7 @@ class GetDataInStaffAndDate{
 
             // phpはスコープ内宣言でOK
             // 結果と予定で仕分ける
-            [$return_sets[$date],$from_simple_flag[$date]]=self::get_data_by_date($date,$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$sub_plan_collections,$existed_projects_sets,$existed_address_sets,$record_data,$is_edit);
+            [$return_sets[$date],$from_simple_flag[$date]]=self::get_data_by_date($date,$data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$sub_plan_collections,$existed_projects_sets,$existed_address_sets,$main_project_planned_counts_for_excel_order,$sub_project_planns_for_excel_order,$record_data,$is_edit);
         }
 
 
@@ -67,12 +70,36 @@ class GetDataInStaffAndDate{
             // another_project_flagは基本的には数日間で同じ案件名で別のものは存在しない前提で考える
             $existed_projects_sets=ProjectHelpers::get_project_names_key_by_id(array_unique([...$existed_plan_collections->pluck("project_id"),...$sub_plan_collections->pluck("project_id")]));
 
+            //紙の順序に合わせるための順番整理用に「project_plannded_counts」の取得
+            // project_id,round_number,place_idが取得されれば一意に決定
+            // $exitstd_plan_collectionはすでにstaffに限定ということはplaceも限定、project_idとround_numberを取得すれば案件は一意に決定。またmain_idにも限定されている。
+            $place_id=FieldStaffListHelpers::get_place_id_by_user($staff_id);
+
+            //$existed_plan_collectionsからproject_idとround_numberのセットをuniqueでまとめる
+            $main_project_id_and_round_number_sets=$existed_plan_collections->groupBy(["project_id","round_number"])->map(
+            fn($each_plan_by_project_id,$project_id)=>$each_plan_by_project_id->map(
+            fn($each_plan_by_project_id_and_round_number,$round_number)=>["project_id"=>$project_id,"round_number"=>$round_number,"place_id"=>$place_id]
+            )//round_numberでのmap
+        )->flatten(1);//project_idでのmap
+
+            // 上記で取得したメイン案件のproject_idとround_numberとplace_idのセットから、一意に決定したproject_planned_countsのコレクションの取得
+            $main_project_planned_counts_for_excel_order=ProjectPlannedCountHelpers::get_project_planned_collection_from_project_round_number_place_collections($main_project_id_and_round_number_sets);
+
+            // project_planned_countsのサブ案件を上記で取得したメイン案件でgroupByして取得(マップの順序を合わせるため)
+            $sub_project_planns_for_excel_order=ProjectPlannedCountHelpers::get_sub_collections_by_main_ids($main_project_planned_counts_for_excel_order->pluck("id"));
+
+            // project_idとround_numberでグループ分けした案件と、案件表に載っている案件は、必ず個数が同じになる
+            if($main_project_planned_counts_for_excel_order->count() !== $main_project_id_and_round_number_sets->count()){
+                throw new BusinessException("案件データ取得の際にエラーが発生しました");
+            }
+
             return[$submitted_dates,
-            $data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$existed_projects_sets,$existed_address_sets,$sub_plan_collections];
+            $data_in_staff_and_date,$all_distribution_plans,$existed_plan_collections,$existed_projects_sets,$existed_address_sets,$sub_plan_collections,$main_project_planned_counts_for_excel_order,$sub_project_planns_for_excel_order];
     }
 
     // メイン案件のデータを返す(main_plan_collectionsはexisted_collectionsと同じ。assignの段階でメインに絞っているため)
     public static function get_main_projects_data_in_the_day($main_data_in_date,$main_plan_collections){
+
             // その日の「assignのid=>planのid」と対応した連想配列を取得(値だけみたらmain_plan_ids)。条件としてmain案件のもののみを取得する
             $main_plan_ids=collect($main_data_in_date->mapWithKeys(fn($each_data)=>[$each_data->id=>$each_data->plan_id]))->filter(fn($each_plan_id,$each_assign_id)=>$main_plan_collections->where("id",$each_plan_id)->isNotEmpty());
 
@@ -84,13 +111,17 @@ class GetDataInStaffAndDate{
     }
 
     // サブ案件も含めたプロジェクトのセット(キーがid&idの数字=>値がプロジェクトのID)
-    // mapでは配布外でも対応した報告書(mapになくとも全体表にあることが必要なため、案件に合わせる)
+    // mapでは配布外でも対応した報告書(mapになくとも全体表にあることが必要なため、案件に合わせる) 順序はマップの表示に合わせる
     // 検索用だからround_numberは必要ない
-    public static function get_project_names_in_the_report($all_distribution_plans,$main_project_id,$round_number,$existed_projects_sets,$main_project_name){
+    public static function get_project_names_in_the_report($main_project_id,$round_number,$main_project_planned_counts_for_excel_order,$sub_project_planns_for_excel_order,$existed_projects_sets,$main_project_name){
 
-            $all_id_lists_in_the_main_projects=$all_distribution_plans->where("project_id",$main_project_id)->where("round_number",$round_number)->where("main_id",null)->pluck("id");
+            // project_plannedのid。すでに営業所で絞られているので、必ず一意に決定
+            $main_project_planned_id_in_project_planned_counts=$main_project_planned_counts_for_excel_order->where("project_id",$main_project_id)->where("round_number",$round_number)->value("id");
 
-            $all_sub_lists_in_the_projects=$all_distribution_plans->whereIn("main_id",$all_id_lists_in_the_main_projects)->pluck("project_id")->unique()->mapWithKeys(fn($each_project_id)=>["id".$each_project_id=>$existed_projects_sets[$each_project_id]]);
+            // サブ案件のリストを登録順に取得
+            $all_sub_lists_in_the_projects=$sub_project_planns_for_excel_order[$main_project_planned_id_in_project_planned_counts]->pluck("project_id")->mapWithKeys(fn($each_sub_project)=>[
+                "id".$each_sub_project=>$existed_projects_sets[$each_sub_project]
+            ]);
 
             return [
                 "id".$main_project_id=>$main_project_name,
@@ -99,7 +130,7 @@ class GetDataInStaffAndDate{
     }
 
     // 案件セットが得られた後で、それを表示用に並べ替える
-    public static function format_project_sets_key_by_project_for_view($main_plans_grouped_by_project_names,$all_distribution_plans,$main_plan_ids_in_the_day,$existed_address_sets,$sub_sets_in_the_day,$existed_projects_sets,$record_data,$is_edit){
+    public static function format_project_sets_key_by_project_for_view($main_plans_grouped_by_project_names,$all_distribution_plans,$main_plan_ids_in_the_day,$existed_address_sets,$sub_sets_in_the_day,$existed_projects_sets,$main_project_planned_counts_for_excel_order,$sub_project_planns_for_excel_order,$record_data,$is_edit){
 
        foreach($main_plans_grouped_by_project_names as $main_project_id=>$main_project_data_sets_with_round_number){
 
@@ -111,14 +142,15 @@ class GetDataInStaffAndDate{
                     foreach($main_project_data_sets_with_round_number as $round_number=>$main_project_data_sets_with_map_number){
                         // そのメイン案件の同時期のもので、今回営業所にきたメイン案件あるか(round_numberの長さ)
                         $round_length=count($main_project_data_sets_with_round_number);
+
                         // ここのmain_projectは表示用なので変えてもOKかも？round_numberなどと連動して
                         $main_project_key_name_for_view=ChangeProjectNameForView::get_project_name_for_view($main_project_name,$round_index,$round_length);
                        // round_indexを1つたす
                         $round_index++;
 
                         // サブ案件も含めたプロジェクトのセット(キーがid&idの数字=>値がプロジェクトのID)
-                        // mapでは配布外でも対応した報告書(mapになくとも全体表にあることが必要なため、案件に合わせる)
-                         $return_sets_by_date[$main_project_key_name_for_view]["project_set"]=self::get_project_names_in_the_report($all_distribution_plans,$main_project_id,$round_number,$existed_projects_sets,$main_project_name);
+                        // mapでは配布外でも対応した報告書(mapになくとも全体表にあることが必要なため、案件に合わせる) 順序はマップの表示に合わせる
+                         $return_sets_by_date[$main_project_key_name_for_view]["project_set"]=self::get_project_names_in_the_report($main_project_id,$round_number,$main_project_planned_counts_for_excel_order,$sub_project_planns_for_excel_order,$existed_projects_sets,$main_project_name);
 
                         foreach($main_project_data_sets_with_map_number as $map_number=>$main_project_data_sets_by_map_number){
 
@@ -164,7 +196,7 @@ class GetDataInStaffAndDate{
 
 
     // 日毎の処理 //すでに日は限定
-    public static function get_data_by_date($date,$fetched_data,$all_distribution_plans,$existed_plan_collections,$sub_plan_collections,$existed_projects_sets,$existed_address_sets,$record_data,$is_edit){
+    public static function get_data_by_date($date,$fetched_data,$all_distribution_plans,$existed_plan_collections,$sub_plan_collections,$existed_projects_sets,$existed_address_sets,$main_project_planned_counts_for_excel_order,$sub_project_planns_for_excel_order,$record_data,$is_edit){
 
             // 割り当てされた予定の場合はその日に配布もしくはその日が期限内のassignされたデータを取得
             $main_data_in_date= $fetched_data->filter(fn($each_data)=>
@@ -186,7 +218,7 @@ class GetDataInStaffAndDate{
             $from_simple_flag=$main_data_in_date->contains(fn($each_data)=>$each_data["from_simple_flag"]==true);
 
             // projectName~MapnNumberのそれぞれを入れ子のキーにしたセットの一覧を返す
-            return [self::format_project_sets_key_by_project_for_view($main_plans_grouped_by_project_names,$all_distribution_plans,$main_plan_ids_in_the_day,$existed_address_sets,$sub_sets_in_the_day,$existed_projects_sets,$record_data,$is_edit) ?? [],$from_simple_flag];
+            return [self::format_project_sets_key_by_project_for_view($main_plans_grouped_by_project_names,$all_distribution_plans,$main_plan_ids_in_the_day,$existed_address_sets,$sub_sets_in_the_day,$existed_projects_sets,$main_project_planned_counts_for_excel_order,$sub_project_planns_for_excel_order,$record_data,$is_edit) ?? [],$from_simple_flag];
     }
 
 }

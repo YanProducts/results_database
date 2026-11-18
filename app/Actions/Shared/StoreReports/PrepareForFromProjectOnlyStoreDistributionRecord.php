@@ -52,7 +52,7 @@ class PrepareForFromProjectOnlyStoreDistributionRecord{
 
         //project_idとround_numberとplace_idのセットの取得 //project_idとround_numberとplace_idが決まると、project_planned_idは一意に決まる(dateは必要ない。なぜならdateが違うとround_numberも違い、複数日案件はend_dateが記載されるだけだから)
         // 一意になったproject_planned_countsのidの取得
-        $project_planned_ids=ProjectPlannedCountHelpers::get_project_planned_ids_from_project_round_number_place_collections($project_round_number_place_id_sets);
+        $project_planned_ids=ProjectPlannedCountHelpers::get_project_planned_collection_from_project_round_number_place_collections($project_round_number_place_id_sets)->pluck("id");
 
         // 上記のproject_planned_countsのidとdateとstaff_idで一意になったdistribution_assignmentsのidを取得
         // 戻したfunctionでstatusをデータありという意味で「１」にするが、end_dateの扱い次第では、「０、１、２」で分けることもあり(そもそもstatusを分ける必要があるのかも未確定)とりあえずidを戻す

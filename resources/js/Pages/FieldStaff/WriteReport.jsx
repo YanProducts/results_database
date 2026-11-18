@@ -10,15 +10,6 @@ import WriteReportContext from "../../Contexts/FieldStaffs/useWriteReportContext
 
 export default function WriteReport({what,type,prefix,staff,dateSets,assignDataToStaff,projectOnlyAssignedDates,fromSimpleFlag,submittedDates}){
 
-// LD-11のデータがおかしい。併配データが存在しない？あとカラムの順序がおかしい。どこでずれた？
-// project_setsの順序がid順になっていて、メインプロジェクトが先にきていないのが原因！
-console.log(assignDataToStaff)
-
-
-
-
-
-
     // assignDataToStaffキーのプロジェクト名はsameProjectFlagなども想定済みのもの
     const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,selectedDate,setSelectedDate,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,choicedMap,setChoicedMap,choiceFinishedMapProjectLists,setChoiceFinishedMapProjectLists,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia}=useWriteReportDefinitions();
 

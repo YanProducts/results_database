@@ -1,7 +1,10 @@
 import judgeTownCount from "../../../Support/ProjectOperator/Filter/judges/judgeTownCount";
 
 // メインもしくはサブ案件のみが記入されているとき
-export default function confirmMainOrSubOnlyInput({assignDataToStaff,selectedDate,inputValues,isEdit=false}){
+export default function confirmMainOrSubOnlyInput({assignDataToStaff,selectedDate,inputValues,projectOnlyFlag,isEdit=false}){
+
+    // 案件のみ版か通常盤かでassignかplanかを選択
+    const identifier=projectOnlyFlag ? "plan_id" : "assign_id";
 
     // 片側だけ記入されているセット
     const missingSets=[];
@@ -30,7 +33,7 @@ export default function confirmMainOrSubOnlyInput({assignDataToStaff,selectedDat
 
                     // 対象の町がmapに存在すれ、matchされた街のデータが返る
                     matchedAssignedTown=Object.values(assignedDataByMap).find(function(assignedDataByTown){
-                    return townId==assignedDataByTown.assign_id}
+                    return townId==assignedDataByTown?.[identifier]}
                     );
 
                     // そのマップにある場合は、その後のforを飛ばす
@@ -42,7 +45,6 @@ export default function confirmMainOrSubOnlyInput({assignDataToStaff,selectedDat
 
             //併配案件同数で設定した時、nullがそのままセットされている可能性
             // ここが同数セットでnullが含まれる
-
             const matchedSubSets=isEdit ? Object.keys(matchedAssignedTown.sub_sets) : matchedAssignedTown.sub_sets;
 
 

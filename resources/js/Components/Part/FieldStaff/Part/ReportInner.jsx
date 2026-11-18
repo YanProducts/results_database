@@ -31,19 +31,26 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,retur
                 <BaseTable tableTheme={mainProjectNameWithoutRoundNumber} width={"w-[97.5%]"} thSets={{"town":"町名","household":"世帯数",...projectSets,"mapNumber":(isBigMedia ? "地図" : "") + "番号"}} thWidthSets={widthSets} maxWidth={pageMaxWidth} minWidth={pageMinWidth} allData={[]} mb={"mb-4"} thHidden={projectOnlyFlag && !choiceFinishedMapProjectLists.includes(mainProjectName)}>
 
                 {/* 案件のみ版のデータがこの日に存在するときはMap選択 */}
-                {projectOnlyFlag &&
-                <ChoiceMapNumberWhenProjectOnly {...{projectSets,mainProjectName,dataInEachMainProject,pageMaxWidth,pageMinWidth}}/>
-                }
+                {(projectOnlyFlag &&
+                <ChoiceMapNumberWhenProjectOnly {...{projectSets,mainProjectName,dataInEachMainProject,pageMaxWidth,pageMinWidth}}/>)}
 
-                    {/* 持ち出しと返却(確認用) */}
-                    { choiceFinishedMapProjectLists.includes(mainProjectName) &&
+
+
+                    {/* メイン案件の設定が完了したら以下を表示 */}
+                    {(!projectOnlyFlag ||choiceFinishedMapProjectLists.includes(mainProjectName)) &&
+
+                    //  持ち出しと返却(確認用)
                     <>
                         <IssuedAndReturns {...{projectSets,mainProjectName,onIssuedOrReturnedCountsChange,state:issuedCount,setState:setIssuedCount,isConfirm,processing,jpnWord:"持ち出し"}}/>
                         <IssuedAndReturns {...{projectSets,mainProjectName,onIssuedOrReturnedCountsChange,state:returnedCount,setState:setReturnedCount,isConfirm,processing,jpnWord:"返却"}}/>
 
                         {/* その日そのメイン案件におけるセットが「keyValueSets」で、それをmapごとにわけ、それを町目ごとに見ていく */}
                         {/* projectOnlyの時はchoicedMapに含まれるmapのものしか見せないようにする*/}
-                        {Object.entries(dataInEachMainProject).filter(([mapNumber]) =>!projectOnlyFlag ||(choicedMap?.[mainProjectName] ?? []).includes(mapNumber)).map(function([mapNumber,eachDataByMap],trIndex){
+                        {Object.entries(dataInEachMainProject).filter(([mapNumber]) =>(!projectOnlyFlag) || (choicedMap?.[mainProjectName] ?? []).includes(mapNumber)).map(function([mapNumber,eachDataByMap],trIndex){
+
+
+console.log(eachDataByMap);//countsは全くない状態
+
                         return(
                             Object.values(eachDataByMap).map((eachData,indexInMaps)=>
                                 // テーブルの中身

@@ -97,7 +97,11 @@ export default function useEditReportActions({prefix,date,assignWithRecords,inpu
             e.preventDefault();
 
             // mainだけ、subだけが記入されている空欄があれば間違いないかチェック
-            if(!confirmMainOrSubOnlyInput({assignDataToStaff:assignWithRecords,selectedDate:date,inputValues,isEdit:true})){
+
+
+            //projectOnlyFlagあとで入れること！
+            if(!confirmMainOrSubOnlyInput({assignDataToStaff:assignWithRecords,selectedDate:date,inputValues,
+            projectOnlyFlag:projectOnlyFlag,isEdit:true})){
                 return;
             }
 

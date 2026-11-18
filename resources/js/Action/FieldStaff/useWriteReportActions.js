@@ -132,8 +132,9 @@ export default function useWriteReportActions({data,assignDataToStaff,projectOnl
         )
     }
 
-    // (案件から選択の際に)地図番号のリセット
+    // (案件から選択の際に)記入データがある場合は地図番号のリセット
     const onMapNumberChoiceReset=(mainProjectName)=>{
+
         // 最初の選択もしくはその案件が空の時はそのまま初期化、すでに選択した状態からマップの変更もしくは次のマップ選択を行う時は「前のマップにおける案件データを削除するか」を確認する
         // ここの仕様、意見次第で変わる可能性あり
         if(Object.keys(inputValues[mainProjectName] ?? {}).length && confirm("案件のデータを初期化しますか？")){
@@ -165,13 +166,19 @@ export default function useWriteReportActions({data,assignDataToStaff,projectOnl
             e.preventDefault();
 
             // mainだけ、subだけが記入されている空欄があれば間違いないかチェック
-            if(!confirmMainOrSubOnlyInput({assignDataToStaff,selectedDate,inputValues})){
+            if(!confirmMainOrSubOnlyInput({assignDataToStaff,selectedDate,inputValues,projectOnlyFlag:projectOnlyAssignedDates.includes(selectedDate)})){
                 return;
             }
 
             // 投稿データは１：メインはassignId(projectOnlyはplanId):双方でidentifierで案件に関わらずいける。２：サブは(assignIdに紐づいた)planIdからmainIdを検索可能。
             // そのため、[identifier(assignIdもしくはplanId):...,mainCount:...,subCounts:[projectId:...,subCount:...]の入れ子この配列にする
             const dataForForm=[];
+
+
+
+            console.log(inputValues)
+
+
             Object.entries(inputValues).forEach((eachInputValue,index)=>{
                 Object.entries(eachInputValue[1]).forEach(eachSets=>{
                     const eachMainId=eachSets[0];
@@ -187,6 +194,9 @@ export default function useWriteReportActions({data,assignDataToStaff,projectOnl
                     })
                 })
             })
+
+
+            console.log(dataForForm); //mainCountは入ってる //subにもデータは入ってる
 
             setData({
                 "date":selectedDate,

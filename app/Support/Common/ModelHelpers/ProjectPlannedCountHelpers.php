@@ -7,6 +7,7 @@ use App\Models\ProjectPlannedCount;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProjectPlannedCountHelpers{
 
@@ -72,14 +73,19 @@ class ProjectPlannedCountHelpers{
     }
 
     // 「project_id&round_number$place_id」がセットになったコレクションから、それぞれ一意になったproject_planned_idのidの配列を返す
-    public static function get_project_planned_ids_from_project_round_number_place_collections($collections){
+    public static function get_project_planned_collection_from_project_round_number_place_collections($collections){
         return ProjectPlannedCount::where(function($query)use($collections){
             // where条件3つに合うものをorWhereで返していく(そのコードがそのまま返るイメージ)
-            foreach($collections as $collect){
+            foreach($collections as $inner_array){
             $query->orWhere(fn($inner_query)=>
-                $inner_query->where("project_id",$collect->project_id)->where("round_number",$collect->round_number)->where("place_id",$collect->place_id));
+                $inner_query->where("project_id",$inner_array["project_id"])->where("round_number",$inner_array["round_number"])->where("place_id",$inner_array["place_id"]));
             }
-        })->pluck("id");
+        })->get();
+    }
+
+    // メイン案件のidから、サブ案件をメイン案件のidごとにgroupByして取得する
+    public static function get_sub_collections_by_main_ids($main_ids){
+        return ProjectPlannedCount::whereIn("main_id",$main_ids)->get()->groupBy("main_id");
     }
 
 

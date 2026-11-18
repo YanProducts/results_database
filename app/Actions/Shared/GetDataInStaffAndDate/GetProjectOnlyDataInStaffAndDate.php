@@ -18,7 +18,7 @@ class GetProjectOnlyDataInStaffAndDate{
     public static function get_assigned_data($staff_id,$date_sets,$is_edit=false,$record_data=null){
 
         // N+1防止のため、SQLデータを先に取得
-        [$submitted_dates,$project_only_assigned_data,$project_plans_sets,$main_plan_sets,$sub_plan_sets,$project_names_sets,$existed_address_sets]=self::get_data_in_sql($staff_id,$date_sets,$is_edit);
+        [$submitted_dates,$project_only_assigned_data,$main_project_plans_sets,$main_plan_sets,$sub_project_planns_for_map_order,$sub_plan_sets,$project_names_sets,$existed_address_sets]=self::get_data_in_sql($staff_id,$date_sets,$is_edit);
 
         // そのスタッフの報告書用のデータ(dateをキーに:メイン案件名がサブキー:[その下位はオブジェクトの配列。addressId,addressName,planId,subSets{"projectName","planId"}]//併配も含めた案件セット})
         foreach(array_keys($date_sets) as $date){
@@ -27,7 +27,7 @@ class GetProjectOnlyDataInStaffAndDate{
 
             // // phpはスコープ内宣言でOK
             // // 結果と予定で仕分ける
-            $return_sets[$date]=self::get_data_by_date($date,$project_only_assigned_data,$project_plans_sets,$main_plan_sets,$sub_plan_sets,$project_names_sets,$existed_address_sets,$is_edit,$record_data);
+            $return_sets[$date]=self::get_data_by_date($date,$project_only_assigned_data,$main_project_plans_sets,$main_plan_sets,$sub_project_planns_for_map_order,$sub_plan_sets,$project_names_sets,$existed_address_sets,$is_edit,$record_data);
 
         }
 
@@ -50,41 +50,46 @@ class GetProjectOnlyDataInStaffAndDate{
             $project_only_assigned_data=DistributionProjectAssignmentHelpers::get_assigns_by_staff_and_date($staff_id,array_keys($date_sets));
 
             // 上記に相当するproject_planned_countsのテーブルにおけるidから、project_idとround_numberを返すために使用する（dateなども使用する可能性に備えて全取得）。 idで検索ができるようにする(主にdistribution_plansを逆引きするのに使用)
-            $project_plans_sets=ProjectPlannedCountHelpers::get_project_id_and_round_number_for_search_plans($project_only_assigned_data->pluck("project_plan_id"),$place_id);
-
-            // メインで使用するプロジェクトの名前のセット(まとめてできるかも)
-            // $main_project_names_sets=Project::find($project_plans_sets->pluck("project_id"))->pluck("project_name","id");
+            $main_project_plans_sets=ProjectPlannedCountHelpers::get_project_id_and_round_number_for_search_plans($project_only_assigned_data->pluck("project_plan_id"),$place_id);
 
             // 上記に相当するdistribution_planのデータの取得(同様にメイン案件のみ)
-            $main_plan_sets=DistributionPlanHelpers::get_plan_data_from_project_planned_table_data($project_plans_sets,$place_id);
+            $main_plan_sets=DistributionPlanHelpers::get_plan_data_from_project_planned_table_data($main_project_plans_sets,$place_id);
+
+            // サブ案件のproject_planned_countsのコレクション
+            // メイン案件のid(main_id)でgroupBy
+            $sub_project_planns_for_map_order=ProjectPlannedCountHelpers::get_sub_collections_by_main_ids($main_project_plans_sets->keys());
+            //main_project_plans_sestはidでkeyByされている
 
             // サブ案件のplanのコレクション
             //報告書の欄に載せるために、その日にassignされたmain案件に限らず、その日に営業所にきた案件のidは取得が必要
             $sub_plan_sets=DistributionPlan::select("id","project_id","round_number","address_id","main_id")->whereIn("main_id",$main_plan_sets->pluck("id"))->get();
 
             // プロジェクトの名前セット(id=>プロジェクト名) //表示用のためround_number無視(後で表示用の値は設定)
-            $project_names_sets=ProjectHelpers::get_project_names_key_by_id(array_unique([...$project_plans_sets->pluck("project_id"),...$sub_plan_sets->pluck("project_id")]));
+            $project_names_sets=ProjectHelpers::get_project_names_key_by_id(array_unique([...$main_project_plans_sets->pluck("project_id"),...$sub_plan_sets->pluck("project_id")]));
 
             // 住所のキー=>市町目&世帯数のセットで返す(メイン案件のみで網羅できる)
             $existed_address_sets=AddressHelpers::get_address_name_and_household_set_arrays_key_by_id(array_unique([...$main_plan_sets->pluck("address_id")]));
 
-            return[$submitted_dates,$project_only_assigned_data,$project_plans_sets,$main_plan_sets,$sub_plan_sets,$project_names_sets,$existed_address_sets];
+            return[$submitted_dates,$project_only_assigned_data,$main_project_plans_sets,$main_plan_sets,$sub_project_planns_for_map_order,$sub_plan_sets,$project_names_sets,$existed_address_sets];
     }
 
 
     // 日毎の処理 //すでに日は限定
     // その日、そのスタッフ割り当てられているplan限定
-    public static function get_data_by_date($date,$project_only_assigned_data,$project_plans_sets,$main_plan_sets,$sub_plan_sets,$project_names_sets,$existed_address_sets,$is_edit,$record_data){
+    public static function get_data_by_date($date,$project_only_assigned_data,$main_project_plans_sets,$main_plan_sets,$sub_project_planns_for_map_order,$sub_plan_sets,$project_names_sets,$existed_address_sets,$is_edit,$record_data){
 
         // その日に自分に割り当てられているメイン案件のplan($project_only_assigned_data)から、project_nameとround_numberをgroupByして名前を取得(いくつかのコレクションを辿る)。対象のものを限定し(place_idは限定済のため案件は一意に決定)、MapでgroupByして自分でソートできるようにする。
         // 最終系はdate=>割り当てられた案件(planIdで提出するので名前で良い)=>[project_sets=>併配も含めた案件idと名前のセット(キーには"id"をつけた後にid名、名前はプロジェクトのround_numberつき表示名)、each_data=>map_number=>[address_id,address_name,"address_name_when_big_media",household,counts(edit用),sub_sets=>[]*assign_idは存在しない代わりに、上位にproject_onlyからきたことを記すフラグをつける]]
 
         // その日に案件ごとに割り当てられたメイン案件から、メイン案件のproject_planned_countのidのセットを求め、そのidセットを含むproject_plannd_countsのコレクションを取得
-        $project_plans_sets_in_the_date=$project_plans_sets->only($project_only_assigned_data->where("date",$date)->pluck("project_plan_id")->toArray());
+        $main_project_plans_sets_in_the_date=$main_project_plans_sets->only($project_only_assigned_data->where("date",$date)->pluck("project_plan_id")->toArray());//project_only_assigned_dataにend_date条件をつけていないのは現時点での仕様。今後変更していく可能性あり。
+
+
+
         // その日のproject_planned_countのデータから、最終的にはproject_nameとround_numberを持つplanを求める
         //その前に表示用のprojectNameを求めるために、project_nameでgroupByを行う(project_nameでgroupByしたとき、その要素がいくつあるかがround_numberの個数)
         $return_sets=[];
-        foreach($project_plans_sets_in_the_date->groupBy(["project_id","round_number"]) as $project_id=>$each_plan_data_by_project){
+        foreach($main_project_plans_sets_in_the_date->groupBy(["project_id","round_number"]) as $project_id=>$each_plan_data_by_project){
             // その日のproject_idを持つ案件数によって配列の個数が決定
             $round_number_index=0;
 
@@ -93,10 +98,11 @@ class GetProjectOnlyDataInStaffAndDate{
                 // そのproject_idとround_numberを持つplanの取得=すなわちメイン案件(=住所や世帯などにも必要)
                 $main_plan_sets_in_the_project=$main_plan_sets->where("project_id",$project_id)->where("round_number",$round_number);
 
-                // 上記をmain_idに持つ案件の取得＝すなわちサブ案件
+                // 上記をmain_idに持つ案件のplanの取得＝すなわちサブ案件
                 $sub_plan_sets_in_the_project=$sub_plan_sets->whereIn("main_id",$main_plan_sets_in_the_project->pluck("id"));
 
-                // [project_sets=>併配も含めた案件idと名前のセット(キーには"id"をつけた後にid名、名前はプロジェクトのround_numberつき表示名)、each_data=>map_number=>[address_id,address_name,"address_name_when_big_media",household,counts(edit用),sub_sets=>[]*assign_idは存在しない代わりに、上位にproject_onlyからきたことを記すフラグをつける]]
+                // そのproject_planned_countのmain案件データ($each_plan_data_by_project_and_round_number)のidをmain_idに持つサブ案件の取得(つまり、このメイン案件に連動した併配案件を)。これをmain案件順番に並べる
+                $sub_project_ids_for_map_order_in_date=$sub_project_planns_for_map_order[$each_plan_data_by_project_and_round_number->value("id")]->pluck("project_id");
 
                 // このプロジェクトで使用する住所セット
                 $address_sets_in_the_project=collect($existed_address_sets)->whereIn("id",$main_plan_sets_in_the_project->pluck("address_id"));
@@ -104,11 +110,18 @@ class GetProjectOnlyDataInStaffAndDate{
                 // このプロジェクトの内部で違う市で同名の町が存在するか
                 $duplicate_town_names=$address_sets_in_the_project->pluck("town")->duplicates();
 
-                // ここはプロジェクト名に直すこと
+                // 返却セット(プロジェクトid:round_number_indexがキー)
                 $return_sets[($project_names_sets[$project_id] ?? "不明").":".$round_number_index]=
                 [
-                    // project_name_setsはid=>プロジェクト名。そこからこの案件のprojectを抽出
-                    "project_set"=>($project_names_sets->only([$project_id,...$sub_plan_sets_in_the_project->pluck("project_id")]))->mapWithKeys(fn($each_project_name,$each_project_id)=>["id".$each_project_id=>$each_project_name]),
+
+                    // [project_sets=>併配も含めた案件idと名前のセット(キーには"id"をつけた後にid名、名前はプロジェクトのround_numberつき表示名)。$sub_project_ids_for_map_order_in_dateを使用してマップの順番に合わせる
+
+                    "project_set"=>collect([$project_id,...$sub_project_ids_for_map_order_in_date])->mapWithKeys(fn($each_project_id)=>[
+                        "id".$each_project_id=>$project_names_sets[$each_project_id]
+                    ]),
+
+                    // each_data=>map_number=>[address_id,address_name,"address_name_when_big_media",household,counts(edit用),sub_sets=>[併配案件が存在するもののproject_id]*assign_idは存在しない代わりに、上位にproject_onlyからきたことを記すフラグをつける]]
+
                     "each_data"=>$main_plan_sets_in_the_project->groupBy("map_number")->mapWithKeys(function($each_data_sets_by_map_number,$map_number)use($address_sets_in_the_project,$is_edit,$duplicate_town_names,$record_data,$sub_plan_sets_in_the_project){
                         return[$map_number=>
                             $each_data_sets_by_map_number->map(function($each_plan_data)use($address_sets_in_the_project,$is_edit,$duplicate_town_names,$record_data,$sub_plan_sets_in_the_project){
