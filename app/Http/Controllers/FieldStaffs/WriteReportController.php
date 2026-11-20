@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\FieldStaffs;
 
 use App\Actions\FieldStaff\WriteReport\DataExistsCheck;
-use App\Actions\Shared\GetDataInStaffAndDate;
 use App\Actions\FieldStaff\WriteReport\StoreAfterDistribution;
 use App\Actions\Shared\GetDataInStaffAndDate\GetDataProcedure;
-use App\Actions\Shared\GetProjectOnlyDataInStaffAndDate;
 use App\Constants\Date;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FieldStaff\WriteReportRequest;
@@ -63,7 +61,7 @@ class WriteReportController extends Controller
         $date=$request->date;
         $report_data=$request->reportData;
         $staff_id=Auth::user()->authable_id;
-        $project_only_flag=$request->project_only_flag; //案件のみか提出されたか否か
+        $project_only_flag=$request->projectOnlyFlag; //案件のみか提出されたか否か
 
         // 存在確認(その日のそのスタッフのデータが存在していたらアウト) //案件も通常も同じ
         if(!empty($duplicated_sets=DataExistsCheck::data_exists_check($date,$staff_id))){

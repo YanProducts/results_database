@@ -1,6 +1,7 @@
 import BasePageHeader from "../../Common/BasePageHeader";
 import ReportInner from "./Part/ReportInner";
 import SubmitOrBackButtons from "../../Common/SubmitOrBackButtons";
+import WriteReportContext from "../../../Contexts/FieldStaffs/useWriteReportContexts";
 
 // 報告書の確認
 export default function ReportConfirm({what,type,pageMaxWidth,pageMinWidth,data,assignDataToStaff,selectedDate,issuedCount,returnedCount,inputRefs,inputValues,onAssignedInputChange,onConfirmOkClick,onConfirmCancelClick,tableSets,errors,processing,isConfirm,fromSimpleFlag}){

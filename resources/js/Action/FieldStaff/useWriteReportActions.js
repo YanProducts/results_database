@@ -195,9 +195,6 @@ export default function useWriteReportActions({data,assignDataToStaff,projectOnl
                 })
             })
 
-
-            console.log(dataForForm); //mainCountは入ってる //subにもデータは入ってる
-
             setData({
                 "date":selectedDate,
                 "reportData":dataForForm,

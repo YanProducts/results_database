@@ -4,7 +4,7 @@ namespace App\Http\Controllers\FieldStaffs;
 
 use App\Actions\BranchManager\Report\GetOverviewByDayInStaffToDate;
 use App\Actions\BranchManager\Report\StoreEditedReports;
-use App\Actions\Shared\GetDataInStaffAndDate;
+use App\Actions\Shared\GetDataInStaffAndDate\GetDataInStaffAndDate;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Constants\Date;

@@ -6,7 +6,7 @@ namespace App\Http\Requests\BranchManager;
 use App\Rules\BranchManager\AssignDateRule;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\BranchManager\StaffIsWorkingRule;
-use App\Rules\Common\PlanIdIsExistsRule;
+use App\Rules\Common\PlanIdsIsExistRule;
 use App\Rules\BranchManager\PlanValidateForDateRule;
 use App\Rules\Common\StaffIsExistsRule;
 use Illuminate\Support\Facades\Log;
@@ -36,7 +36,7 @@ class AssignStaffRequest extends FormRequest
             "allData.*.staffId"=>["required",new StaffIsExistsRule,new StaffIsWorkingRule],
             // planIdsは配列で渡る(そのスタッフの案件が未定の場合も考える)
             // 選ばれたplanIdが存在するか, planIdは投稿された日の中に入っているか
-            "allData.*.planIds"=>["present","array",new PlanIdIsExistsRule,new PlanValidateForDateRule($this->input("assignDate"))],
+            "allData.*.planIds"=>["present","array",new PlanIdsIsExistRule,new PlanValidateForDateRule($this->input("assignDate"))],
 
 
             // その日の出席スタッフが網羅されているかは、スタッフの一部のみが利用することも踏まえ、js側で確認を出すようにする

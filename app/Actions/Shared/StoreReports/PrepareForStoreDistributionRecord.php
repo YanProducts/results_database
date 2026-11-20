@@ -6,7 +6,7 @@ use App\Support\Common\ModelHelpers\DistributionPlanHelpers;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-// 報告書の投稿・編集の中で、どのroleから来ようとも共通した流れ
+// 報告書の投稿・編集の中で、どのroleから来ようとも共通した流れ(通常版のみ)
 class PrepareForStoreDistributionRecord{
 
     // 保存に必要なデータ(配布済に変更するassignidと保存用配列)を取得
@@ -91,7 +91,7 @@ class PrepareForStoreDistributionRecord{
                 $sub_plan_data=$sub_data_for_insert->get($plan_id)?->first(fn($sub_data)=>$sub_data->project_id==$sub_project_id) ?? throw new \App\Exceptions\BusinessException("メインに対応する併配案件データが見つかりません");
 
                 // 途中で消して空白になっている場合は次のループへ(厳密比較でないと、0も""で判定する可能性あり)
-                if($reported_sub_data["subCount"]===""){
+                if (in_array($reported_sub_data["subCount"], ["", null], true)) {
                     continue;
                 }
 

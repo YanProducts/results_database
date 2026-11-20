@@ -3,12 +3,11 @@ import SelectPartsForViewChange from "../../Common/SelectPartsForViewChange";
 import ReportInner from "./Part/ReportInner";
 import ViewValidationErrors from "../../Common/ViewValidationErrors";
 import CheckAndSubmits from "./Part/CheckAndSubmits";
-import BaseLinkLine from "../../Common/BaseLinkLine";
+import WriteReportContext from "../../../Contexts/FieldStaffs/useWriteReportContexts";
+
 
 // 報告書の記入
-export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,staff,selectedDate,onSelectedDateChange,submittedDates=[],issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,changedData=null,projectOnlyAssignedDates,fromSimpleFlag}){
-
-    const projectOnlyFlag=projectOnlyAssignedDates.includes(selectedDate)
+export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,staff,selectedDate,onSelectedDateChange,submittedDates=[],issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,changedData=null,fromSimpleFlag}){
 
   return(
     <>
@@ -28,10 +27,10 @@ export default function ReportDataInput({what,type,pageMinWidth,pageMaxWidth,sta
             {selectedDate &&
              (Object.keys(assignDataToStaff[selectedDate]).length>0 ?
              <>
-                <ReportInner {...{pageMinWidth,pageMaxWidth,issuedCount,returnedCount,setIssuedCount,setReturnedCount,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,inputRefs,inputValues,tableSets,processing,isConfirm,fromSimpleFlag,changedData,selectedDate,projectOnlyFlag}} />
+                <ReportInner {...{pageMinWidth,pageMaxWidth,issuedCount,returnedCount,setIssuedCount,setReturnedCount,onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,inputRefs,inputValues,tableSets,processing,isConfirm,fromSimpleFlag,changedData,selectedDate}} />
 
                 {/* ズレの確認&問題ない時は送信 */}
-                <CheckAndSubmits {...{differenceExists,processing,inputValues,pageMaxWidth,pageMinWidth,onSubmitBtnClick,onStartOverClick,tableSets,projectOnlyFlag}} />
+                <CheckAndSubmits {...{differenceExists,processing,inputValues,pageMaxWidth,pageMinWidth,onSubmitBtnClick,onStartOverClick,tableSets}} />
 
                 <p>　</p>
              </>

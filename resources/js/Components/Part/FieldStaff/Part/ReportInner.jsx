@@ -8,9 +8,9 @@ import ChoiceMapNumberWhenProjectOnly from "./ChoiceMapNumberWhenProjectOnly";
 import getProjectNameWithoutRoundNumberForView from "../../../../Support/Common/getProjectNameWithoutRoundNumberForView";
 
 // 報告書テーブルの内部
-export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,tableSets,isConfirm,processing,fromSimpleFlag,changedData,projectOnlyFlag}){
+export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,tableSets,isConfirm,processing,fromSimpleFlag,changedData}){
 
-    const {isBigMedia,choiceFinishedMapProjectLists,choicedMap}=React.useContext(WriteReportContext);
+    const {isBigMedia,choiceFinishedMapProjectLists,choicedMap,projectOnlyFlag}=React.useContext(WriteReportContext);
 
     return(
         // 案件が届いていない場合は外側で捕捉済み
@@ -47,9 +47,6 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,retur
                         {/* その日そのメイン案件におけるセットが「keyValueSets」で、それをmapごとにわけ、それを町目ごとに見ていく */}
                         {/* projectOnlyの時はchoicedMapに含まれるmapのものしか見せないようにする*/}
                         {Object.entries(dataInEachMainProject).filter(([mapNumber]) =>(!projectOnlyFlag) || (choicedMap?.[mainProjectName] ?? []).includes(mapNumber)).map(function([mapNumber,eachDataByMap],trIndex){
-
-
-console.log(eachDataByMap);//countsは全くない状態
 
                         return(
                             Object.values(eachDataByMap).map((eachData,indexInMaps)=>

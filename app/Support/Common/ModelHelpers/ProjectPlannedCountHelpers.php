@@ -73,14 +73,20 @@ class ProjectPlannedCountHelpers{
     }
 
     // 「project_id&round_number$place_id」がセットになったコレクションから、それぞれ一意になったproject_planned_idのidの配列を返す
-    public static function get_project_planned_collection_from_project_round_number_place_collections($collections){
+    public static function get_project_planned_collection_from_project_round_number_place_queries($collections){
         return ProjectPlannedCount::where(function($query)use($collections){
+            // コレクションが空なら「全部取得しないを返す」(絶対にnullになるquery)
+            if($collections->isEmpty()){
+                $query->whereRaw("1 = 0");
+                return;
+            }
+
             // where条件3つに合うものをorWhereで返していく(そのコードがそのまま返るイメージ)
             foreach($collections as $inner_array){
             $query->orWhere(fn($inner_query)=>
                 $inner_query->where("project_id",$inner_array["project_id"])->where("round_number",$inner_array["round_number"])->where("place_id",$inner_array["place_id"]));
             }
-        })->get();
+        });
     }
 
     // メイン案件のidから、サブ案件をメイン案件のidごとにgroupByして取得する

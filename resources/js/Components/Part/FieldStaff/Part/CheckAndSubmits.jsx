@@ -4,9 +4,9 @@ import React from "react";
 import WriteReportContext from "../../../../Contexts/FieldStaffs/useWriteReportContexts";
 
 // 記入合計にズレがないかチェックして、ないのであれば提出
-export default function CheckAndSubmits({differenceExists,processing,inputValues,pageMaxWidth,pageMinWidth,onSubmitBtnClick,onStartOverClick,tableSets,projectOnlyFlag}){
+export default function CheckAndSubmits({differenceExists,processing,inputValues,pageMaxWidth,pageMinWidth,onSubmitBtnClick,onStartOverClick,tableSets}){
 
-    const {isEdit}=React.useContext(WriteReportContext);
+    const {isEdit,projectOnlyFlag}=React.useContext(WriteReportContext);
     const cancelSentence=(isEdit ? "最初" : "日付選択") + "からやり直す";
 
     return(

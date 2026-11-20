@@ -4,7 +4,7 @@ namespace App\Http\Controllers\BranchManager;
 
 use App\Actions\BranchManager\Report\DateToStaff\GetOverviewForChoiceDate;
 use App\Actions\BranchManager\Report\DateToStaff\GetOverviewForChoiceStaff;
-use App\Actions\Shared\GetDataInStaffAndDate;
+use App\Actions\Shared\GetDataInStaffAndDate\GetDataInStaffAndDate;
 use App\Actions\BranchManager\Report\GetOverviewByDayInStaffToDate;
 use App\Actions\BranchManager\Report\StoreEditedReports;
 use App\Constants\Date;

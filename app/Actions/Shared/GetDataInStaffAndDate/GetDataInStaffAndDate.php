@@ -82,8 +82,10 @@ class GetDataInStaffAndDate{
             )//round_numberでのmap
         )->flatten(1);//project_idでのmap
 
+
             // 上記で取得したメイン案件のproject_idとround_numberとplace_idのセットから、一意に決定したproject_planned_countsのコレクションの取得
-            $main_project_planned_counts_for_excel_order=ProjectPlannedCountHelpers::get_project_planned_collection_from_project_round_number_place_collections($main_project_id_and_round_number_sets);
+            // 期間を報告書入力可能期間に合わせる
+            $main_project_planned_counts_for_excel_order=GetDateRangeQuery::get_date_range_query(ProjectPlannedCountHelpers::get_project_planned_collection_from_project_round_number_place_queries($main_project_id_and_round_number_sets),$date_sets,"start_date")->get();
 
             // project_planned_countsのサブ案件を上記で取得したメイン案件でgroupByして取得(マップの順序を合わせるため)
             $sub_project_planns_for_excel_order=ProjectPlannedCountHelpers::get_sub_collections_by_main_ids($main_project_planned_counts_for_excel_order->pluck("id"));

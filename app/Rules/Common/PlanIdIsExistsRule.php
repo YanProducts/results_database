@@ -2,9 +2,9 @@
 
 namespace App\Rules\Common;
 
+use App\Models\DistributionPlan;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use App\Models\DistributionPlan;
 
 class PlanIdIsExistsRule implements ValidationRule
 {
@@ -13,13 +13,11 @@ class PlanIdIsExistsRule implements ValidationRule
      *
      * @param  \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString  $fail
      */
-    // 計画されたplanのidが存在するか？
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        foreach($value as $each_plan_id){
-            if(is_null(DistributionPlan::find($each_plan_id))){
-                $fail("計画に存在しない町目が入ってます");
-            }
+        //plan_idが存在するか？（単数）
+        if(is_null(DistributionPlan::find($value))){
+           $fail("計画に存在しない町目が入ってます");
         }
     }
 }

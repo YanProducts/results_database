@@ -52,7 +52,7 @@ class PrepareForFromProjectOnlyStoreDistributionRecord{
 
         //project_idとround_numberとplace_idのセットの取得 //project_idとround_numberとplace_idが決まると、project_planned_idは一意に決まる(dateは必要ない。なぜならdateが違うとround_numberも違い、複数日案件はend_dateが記載されるだけだから)
         // 一意になったproject_planned_countsのidの取得
-        $project_planned_ids=ProjectPlannedCountHelpers::get_project_planned_collection_from_project_round_number_place_collections($project_round_number_place_id_sets)->pluck("id");
+        $project_planned_ids=ProjectPlannedCountHelpers::get_project_planned_collection_from_project_round_number_place_queries($project_round_number_place_id_sets)->pluck("id"); //クエリに対してpluckは可能
 
         // 上記のproject_planned_countsのidとdateとstaff_idで一意になったdistribution_assignmentsのidを取得
         // 戻したfunctionでstatusをデータありという意味で「１」にするが、end_dateの扱い次第では、「０、１、２」で分けることもあり(そもそもstatusを分ける必要があるのかも未確定)とりあえずidを戻す
@@ -126,7 +126,7 @@ class PrepareForFromProjectOnlyStoreDistributionRecord{
                     ){throw new BusinessException("併配案件取得でエラーが生じました");}
 
                 // 途中で消して空白になっている場合は次のループへ(厳密比較でないと、0も""で判定する可能性あり)
-                if($each_sub_set["subCount"]===""){
+                if (in_array($each_sub_set["subCount"], ["", null], true)) {
                     continue;
                 }
 

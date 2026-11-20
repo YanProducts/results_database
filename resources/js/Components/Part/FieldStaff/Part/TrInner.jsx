@@ -4,11 +4,13 @@ import MainTdInner from "./MainTdinner";
 import SubTdInner from "./SubTdInner";
 
 // 報告書入力のtableの中身(各Trの行)
-export default function TrInner({mainProjectName,projectSets,eachData,mapNumber,trIndex,indexInMaps,widthSets,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,isConfirm,processing,projectOnlyFlag,fromSimpleFlag,changedData}){
+export default function TrInner({mainProjectName,projectSets,eachData,mapNumber,trIndex,indexInMaps,widthSets,onAssignedInputChange,inputRefs,inputValues,onInputKeyDown,isConfirm,processing,fromSimpleFlag,changedData}){
 
-        const {isBigMedia,isEdit=false}=React.useContext(WriteReportContext);
+        const {projectOnlyFlag,isBigMedia,isEdit=false}=React.useContext(WriteReportContext);
 
         const identifier=projectOnlyFlag ? eachData.plan_id : eachData.assign_id;
+
+        console.log(projectOnlyFlag)
 
         // 編集と作成とで併配案件のidセットの取得元を分ける
         const subProjectIdSets=isEdit ? Object.keys(eachData.sub_sets) : eachData.sub_sets;
@@ -18,6 +20,8 @@ export default function TrInner({mainProjectName,projectSets,eachData,mapNumber,
                     <td className={`border-black border-x-2 bg-yellow-300 ${widthSets[1]}`}>{eachData.household}</td>
                     {/* 案件ごとの配布数 案件数によって数を変化 */}
                     {Object.keys(projectSets).map(function(eachSet,index){
+
+                        console.log(identifier)
 
                         // メイン案件
                         if(index==0){

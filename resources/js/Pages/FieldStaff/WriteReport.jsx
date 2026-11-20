@@ -18,8 +18,13 @@ export default function WriteReport({what,type,prefix,staff,dateSets,assignDataT
     //テーブルのUIや変数などに必要な要素の取得(依存配列が変化しなければ再計算されない)
     const [tableSets,differenceExists]=useWriteOrEditReportViewData({assignDataToStaff,selectedDate,inputValues,issuedCount,returnedCount,isBigMedia});
 
+    // 通常盤から来ているかどうか
+    const projectOnlyFlag =
+    !!selectedDate && projectOnlyAssignedDates.includes(selectedDate);
+
+
     return(
-    <WriteReportContext.Provider value={{onSetOtherProjectToSameValueClick,isBigMedia,projectOnlyAssignedDates,choicedMap,onMapNumberChange,onMapNumberChoiceDecide,onMapNumberChoiceReset,choiceFinishedMapProjectLists}}>
+    <WriteReportContext.Provider value={{onSetOtherProjectToSameValueClick,isBigMedia,projectOnlyAssignedDates,choicedMap,onMapNumberChange,onMapNumberChoiceDecide,onMapNumberChoiceReset,choiceFinishedMapProjectLists,projectOnlyFlag}}>
 
     <Layout title={`${what}-${type}`}>
      <RoleLayout prefix={prefix}>
@@ -27,7 +32,7 @@ export default function WriteReport({what,type,prefix,staff,dateSets,assignDataT
         {/* 確認か入力か */}
         {!isConfirm ?
         <ReportDataInput {...{what,type,pageMinWidth,pageMaxWidth,staff,selectedDate,onSelectedDateChange,submittedDates,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,
-        dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,projectOnlyAssignedDates,fromSimpleFlag}} />
+        dateSets,assignDataToStaff,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,onStartOverClick,differenceExists,errors,processing,isConfirm,fromSimpleFlag}} />
         :
         <ReportConfirm {...{what,type,pageMaxWidth,pageMinWidth,data,assignDataToStaff,selectedDate,issuedCount,returnedCount,inputRefs,inputValues,onAssignedInputChange,onConfirmOkClick,onConfirmCancelClick,tableSets,errors,processing,isConfirm,fromSimpleFlag}}/>
         }

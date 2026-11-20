@@ -14,7 +14,6 @@ export default function confirmMainOrSubOnlyInput({assignDataToStaff,selectedDat
 
         const projectNameSets=assignDataToStaff[selectedDate][mainProjectName].project_set
 
-
         // 編集の場合は初期でセットされているのでnullを除去
         // 初期投稿の場合の併配同数セットでも同じことが生じないか確認必要
         const filteredInputByMainProjectName=isEdit ?
