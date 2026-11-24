@@ -28,7 +28,7 @@ export default function ReportInner({pageMinWidth,pageMaxWidth,issuedCount,retur
                 return(
                 <React.Fragment key={index}>
 
-                <BaseTable tableTheme={mainProjectNameWithoutRoundNumber} width={"w-[97.5%]"} thSets={{"town":"町名","household":"世帯数",...projectSets,"mapNumber":(isBigMedia ? "地図" : "") + "番号"}} thWidthSets={widthSets} maxWidth={pageMaxWidth} minWidth={pageMinWidth} allData={[]} mb={"mb-4"} thHidden={projectOnlyFlag && !choiceFinishedMapProjectLists.includes(mainProjectName)}>
+                <BaseTable tableTheme={mainProjectNameWithoutRoundNumber} width={"w-[97.5%]"} thSets={{"town":"町名","household":"世帯数",...projectSets,"mapNumber":(isBigMedia ? "地図" : "") + "番号"}} thWidthSets={widthSets} maxWidth={pageMaxWidth} minWidth={pageMinWidth} allData={[]} mb={"mb-4"} thHidden={projectOnlyFlag &&  !choiceFinishedMapProjectLists.includes(mainProjectName)}>
 
                 {/* 案件のみ版のデータがこの日に存在するときはMap選択 */}
                 {(projectOnlyFlag &&

@@ -1,7 +1,7 @@
 // 報告書の編集において変更したTd要素のcssを変化
-export default function useTargetChangeHandler({changedData,setChangedData,mainProjectName,assignId,subProjectId}){
+export default function useTargetChangeHandler({changedData,setChangedData,mainProjectName,identifier,subProjectId}){
 
-        const changedTarget=changedData?.[mainProjectName]?.[assignId] || null;
+        const changedTarget=changedData?.[mainProjectName]?.[identifier] || null;
         const changedProject=subProjectId ?? "main";
 
         if(!changedTarget?.includes(changedProject)){
@@ -9,8 +9,8 @@ export default function useTargetChangeHandler({changedData,setChangedData,mainP
                 ...prev,
                 [mainProjectName]:{
                     ...(prev?.[mainProjectName] || []),
-                    [assignId]:[
-                        ...(prev?.[mainProjectName]?.[assignId] || []),
+                    [identifier]:[
+                        ...(prev?.[mainProjectName]?.[identifier] || []),
                         changedProject
                     ]
                 }

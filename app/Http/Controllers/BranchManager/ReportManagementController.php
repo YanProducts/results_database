@@ -6,7 +6,9 @@ use App\Actions\BranchManager\Report\DateToStaff\GetOverviewForChoiceDate;
 use App\Actions\BranchManager\Report\DateToStaff\GetOverviewForChoiceStaff;
 use App\Actions\Shared\GetDataInStaffAndDate\GetDataInStaffAndDate;
 use App\Actions\BranchManager\Report\GetOverviewByDayInStaffToDate;
+use App\Actions\BranchManager\Report\JudgeAssignedPattern;
 use App\Actions\BranchManager\Report\StoreEditedReports;
+use App\Actions\Shared\GetDataInStaffAndDate\GetProjectOnlyDataInStaffAndDate;
 use App\Constants\Date;
 use App\Exceptions\BusinessException;
 use App\Http\Controllers\Controller;
@@ -77,8 +79,6 @@ class ReportManagementController extends Controller
         ]);
     }
 
-
-
     // 報告書確認において、スタッフの決定後、日付が決定したとき
     public function decide_all_for_report_choice_post(ReportChoiceDecideRequest $request){
 
@@ -94,19 +94,32 @@ class ReportManagementController extends Controller
         // バリデーション返しに備えて１度リダイレクト
         // フラッシュセッションに入れて引数は渡す
         return redirect()->route("branch_manager.edit_report_view");
-
     }
 
     //報告書編集そのものview(バリデーション返しに備えて1つリダイレクトを入れている)
     public function edit_report_view(){
 
+        // assignがprojectOnlyと通常の、どちらによるものか(両方取得されない、もしくは両方存在していればエラー)
+        try{
+            $assign_which=JudgeAssignedPattern::JudgeWhich($staff=session("staff_for_edit_report"),$date=session("date_for_edit_report"));
+        }catch(\Throwable $e){
+            return  redirect()->route("view_error")->with([
+                "error_message"=>$e instanceof BusinessException ? $e->getMessage() : "予期せぬエラーです",
+                "back_route"=>"branch_manager.top_page"
+            ]);
+        }
+
+        // その日、そのスタッフのrecordsテーブルのデータ
+        $record_data=DistributionRecordHelpers::data_in_the_date_and_staff($date,$staff)[0];
+
         // そのスタッフに割り当てられた案件と、それに即した結果データを返す
         return Inertia::render("BranchManager/ReportManagement/EditReport",[
             "what"=>"営業所担当",
             "type"=>"報告書編集",
-            "staff"=>$staff=session("staff_for_edit_report"),
-            "dateSet"=>$date_set=DateHelper::change_key_value_set($date=session("date_for_edit_report")),
-            "assignWithRecords"=>GetDataInStaffAndDate::get_assigned_data($staff,$date_set,true,DistributionRecordHelpers::data_in_the_date_and_staff($date,$staff))[0],
+            "staff"=>$staff,
+            "dateSet"=>$date_set=DateHelper::change_key_value_set($date),
+            "assignWithRecords"=>$assign_which === "normal" ? GetDataInStaffAndDate::get_assigned_data($staff,$date_set,true,$record_data)[0] : GetProjectOnlyDataInStaffAndDate::get_assigned_data($staff,$date_set,true,$record_data)[0],
+            "projectOnlyFlag"=>$assign_which==="project_only"
         ]);
     }
 

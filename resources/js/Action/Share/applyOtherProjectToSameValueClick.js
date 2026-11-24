@@ -6,6 +6,7 @@ export default function applyOtherProjectToSameValueClick({mainProjectName,proje
 
         // 参照しないコピー
         let inputMainProjectCopy=structuredClone(inputValues[mainProjectName])
+        console.log(inputMainProjectCopy)
 
         //新しく変更するデータ
         //isEditの内部だけだが、letは外側で行わないとエラーがでる

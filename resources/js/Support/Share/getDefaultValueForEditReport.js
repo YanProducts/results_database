@@ -1,5 +1,8 @@
 // 報告書編集用の初期値の設定(この値を定義時に代入)
-export default function getDefaultValueForEditReport({assignWithRecords,date}){
+export default function getDefaultValueForEditReport({assignWithRecords,date,projectOnlyFlag=false}){
+
+  const identifier=projectOnlyFlag ? "plan_id" : "assign_id";
+
  return(
     Object.fromEntries(Object.entries(assignWithRecords[date]).map(([mainProjectName,dataByMainProject],index)=>(
         // メイン案件とそのデータのセットの要素2の配列をfromEntriesでオブジェクトに直す
@@ -8,8 +11,8 @@ export default function getDefaultValueForEditReport({assignWithRecords,date}){
             // 要素2の配列を作り、fromEntriesでオブジェクト化
             Object.fromEntries(Object.values(dataByMainProject.each_data).flatMap(dataByMapNumber=>
                 Object.values(dataByMapNumber).map(dataInEachTown=>([
-                    // 内側のキーはassignIdごとにセット
-                    dataInEachTown.assign_id,{
+                    // 内側のキーはassignId(projectOnlyはplan_id)ごとにセット
+                    dataInEachTown[identifier],{
                         // メイン案件の初期の数値
                         main:dataInEachTown.counts ?? null,
                         // 併配案件の初期の数値

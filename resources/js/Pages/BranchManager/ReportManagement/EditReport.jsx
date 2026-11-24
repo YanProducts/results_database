@@ -10,19 +10,19 @@ import WriteReportContext from "../../../Contexts/FieldStaffs/useWriteReportCont
 import useEditReportDefinitions from "../../../Definition/BranchManager/ReportManagement/useEditReportDefinitions";
 import useEditReportActions from "../../../Action/BranchManager/ReportManagement/useEditReportActions";
 
-export default function EditReport({what,type,prefix,staff,dateSet,assignWithRecords}){
+export default function EditReport({what,type,prefix,staff,dateSet,assignWithRecords,projectOnlyFlag}){
+
 
     // assignWithRecordsキーのプロジェクト名はsameProjectFlagなども想定済みのもの
-    const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,changedData,setChangedData,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia,date}=useEditReportDefinitions({prefix,staff,dateSet,assignWithRecords});
+    const {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues, setInputValues,inputRefs,choicedMap,setChoicedMap,choiceFinishedMapProjectLists,setChoiceFinishedMapProjectLists,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia,date,changedData,setChangedData}=useEditReportDefinitions({prefix,staff,dateSet,assignWithRecords,projectOnlyFlag});
 
-    const {onIssuedOrReturnedCountsChange,onAssignedInputChange,onStartOverClick,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}=useEditReportActions({prefix,date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIssuedCount,setReturnedCount,setIsConfirm,data,setData,post,isBigMedia,setIsBigMedia,clearErrors});
+    const {onIssuedOrReturnedCountsChange,onAssignedInputChange,onStartOverClick,onInputKeyDown,onSetOtherProjectToSameValueClick,onMapNumberChange,onMapNumberChoiceDecide,onMapNumberChoiceReset,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}=useEditReportActions({prefix,errors,date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIssuedCount,setReturnedCount,choicedMap,setChoicedMap,choiceFinishedMapProjectLists,setChoiceFinishedMapProjectLists,setIsConfirm,data,setData,post,isBigMedia,setIsBigMedia,clearErrors});
 
     //テーブルのUIや変数などに必要な要素の取得(依存配列が変化しなければ再計算されない)
     const [tableSets,differenceExists]=useWriteOrEditReportViewData({assignDataToStaff:assignWithRecords,selectedDate:date,inputValues,issuedCount,returnedCount,isBigMedia});
 
-
     return(
-    <WriteReportContext.Provider value={{onSetOtherProjectToSameValueClick,isBigMedia,isEdit:true}}>
+    <WriteReportContext.Provider value={{onSetOtherProjectToSameValueClick,isBigMedia,isEdit:true,projectOnlyFlag,choiceFinishedMapProjectLists,choicedMap,onMapNumberChange,onMapNumberChoiceDecide,onMapNumberChoiceReset}}>
 
     <Layout title={`${what}-${type}`}>
      <RoleLayout prefix={prefix}>
@@ -30,7 +30,7 @@ export default function EditReport({what,type,prefix,staff,dateSet,assignWithRec
         {/* 確認か入力か */}
         {!isConfirm ?
         <ReportDataInput {...{what,type,pageMinWidth,pageMaxWidth,staff:"No"+staff,issuedCount,returnedCount,onIssuedOrReturnedCountsChange,setIssuedCount,setReturnedCount,
-        dateSet,assignDataToStaff:assignWithRecords,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,differenceExists,errors,processing,isConfirm,changedData,fromSimpleFlag:true,selectedDate:date,onSelectedDateChange:()=>{},onStartOverClick}} />
+        dateSet,assignDataToStaff:assignWithRecords,inputValues,inputRefs,onAssignedInputChange,onInputKeyDown,tableSets,onSubmitBtnClick,differenceExists,errors,processing,isConfirm,changedData,fromSimpleFlag:true,selectedDate:date,onSelectedDateChange:()=>{},onStartOverClick,projectOnlyFlag}} />
         :
         <ReportConfirm {...{what,type,pageMaxWidth,pageMinWidth,data,assignWithRecords,issuedCount,returnedCount,inputRefs,inputValues,onAssignedInputChange,onConfirmOkClick,onConfirmCancelClick,tableSets,errors,processing,isConfirm,fromSimpleFlag:true}}/>
         //簡易表示型でなければ提出時に項目確認が増えるが、編集では様々なパターンに対応すべきなのでそれで良い

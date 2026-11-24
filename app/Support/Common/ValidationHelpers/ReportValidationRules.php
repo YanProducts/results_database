@@ -25,7 +25,6 @@ class ReportValidationRules{
             // この日が案件のみ版で提出されたかのフラグ
             "projectOnlyFlag"=>["boolean"],
             "reportData"=>["required","array","min:1"],
-            // "reportData.*.assignId"=>["required",new AssignExistsRule,new AssignedToUserRule($staff_id)],
             "reportData.*.identifier"=>["bail","required",...$added_identifier_rule],
             // メイン案件の報告書の数字
             "reportData.*.mainCount"=>[$is_edit ? "nullable" : "required", "integer",],

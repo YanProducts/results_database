@@ -1,45 +1,19 @@
 import React from "react";
-import { useForm } from "@inertiajs/react";
+import useReportCommonDefinitions from "../../Share/useReportCommonDefinitions";
 import getDefaultValueForEditReport from "../../../Support/Share/getDefaultValueForEditReport";
 
 // 報告書編集の定義(fieldStaffと重なる部分も多いが、違う部分もあるので、ひとまず別途定義)
-export default function useEditReportDefinitions({assignWithRecords,staff,dateSet}){
+export default function useEditReportDefinitions({assignWithRecords,staff,dateSet,projectOnlyFlag}){
 
- // Y-m-dの日付(dateSetsより。何度も使うので前もって呼び出す)
-  const date=Object.keys(dateSet)[0];
+        // Y-m-dの日付(dateSetsより。何度も使うので前もって呼び出す)
+        //dateは後にも使うので先に定義
+        const date=Object.keys(dateSet)[0];
 
-  // フォーム
-    const { data, setData, post, processing, errors,clearErrors, reset}=useForm({
-        // staffIdはLaravel側のauth::user()で操作
-        "date":date,
-        "staff":staff,
-        "changedReportData":[]
-    });
+        // 現場担当との共通部分
+        const commonDefinitions=useReportCommonDefinitions({defaultData:{ "date":date,"staff":staff,"projectOnlyFlag":projectOnlyFlag,"changedReportData":[]},defaultInputValues:getDefaultValueForEditReport({assignWithRecords,date,projectOnlyFlag})});
 
-     //  報告書入力か確認か
-    const [isConfirm,setIsConfirm]=React.useState(false);
+        // 何かしらの変化が生じた部位(Tailwindで枠線を色を変え太くする)
+        const [changedData,setChangedData]=React.useState({});
 
-    //   持ち出し部数(表示のみ)
-    const [issuedCount,setIssuedCount]=React.useState(0)
-
-    //   返却部数(表示のみ)
-    const [returnedCount,setReturnedCount]=React.useState(0)
-
-     // inputのvalue
-     const [inputValues, setInputValues]=React.useState(getDefaultValueForEditReport({assignWithRecords,date}));
-
-
-     //  inputのRef
-    const inputRefs=React.useRef([]);
-
-    // 何かしらの変化が生じた部位(Tailwindで枠線を色を変え太くする)
-    const [changedData,setChangedData]=React.useState({});
-
-      // ページの横幅
-    const [pageMinWidth,pageMaxWidth]=["min_width_when_write_report","max_width_when_write_report"];
-
-    // モバイルが大きい時と小さい時で表示を変える
-    const [isBigMedia,setIsBigMedia]=React.useState(window.matchMedia("(min-width:500px)").matches);
-
-      return {data, setData, post, processing, errors,clearErrors, reset,isConfirm,setIsConfirm,issuedCount,setIssuedCount,returnedCount,setReturnedCount,inputValues,setInputValues,inputRefs,changedData,setChangedData,pageMinWidth,pageMaxWidth,isBigMedia,setIsBigMedia,date};
+        return {...commonDefinitions,date,changedData,setChangedData};
 }

@@ -125,6 +125,7 @@ class GetProjectOnlyDataInStaffAndDate{
                     "each_data"=>$main_plan_sets_in_the_project->groupBy("map_number")->mapWithKeys(function($each_data_sets_by_map_number,$map_number)use($address_sets_in_the_project,$is_edit,$duplicate_town_names,$record_data,$sub_plan_sets_in_the_project){
                         return[$map_number=>
                             $each_data_sets_by_map_number->map(function($each_plan_data)use($address_sets_in_the_project,$is_edit,$duplicate_town_names,$record_data,$sub_plan_sets_in_the_project){
+
                                 $address_id=$each_plan_data->address_id; //住所Id(複数回取得するので先に取得)
                                 //その町目のデータ
                                 $town_data=$address_sets_in_the_project[$address_id];
@@ -136,12 +137,11 @@ class GetProjectOnlyDataInStaffAndDate{
                                 "household"=>$town_data["household"],
                                 // 編集用の合計(record_dataは引き渡しの段階でdateとstaffでfilter済)
                                 "counts"=>$is_edit ? $record_data->where("plan_id",$plan_id)->value("distribution_count") :"",
-
                                 "sub_sets"=>$sub_plan_sets_in_the_project->isNotEmpty() ? ($is_edit ?
                                 // 編集の時(その町目のplanのデータがあるかどうかで取得)
-                                ($sub_plan_sets_in_the_project->pluck("project_id","id"))->mapWithKeys(fn($sub_project_id,$id)=>[
+                                (($sub_plan_sets_in_the_project->where("main_id",$each_plan_data->id)->pluck("project_id","id"))->mapWithKeys(fn($sub_project_id,$id)=>[
                                     $sub_project_id=>$record_data->where("plan_id",$id)->value("distribution_count") //その併配案件の結果(日付とスタッフでは絞りこみ済み)
-                                ]):
+                                ])):
                                 // 併配案件のプロジェクトidを返す
                                 $sub_plan_sets_in_the_project->where("main_id",$each_plan_data->id)->pluck("project_id")
                                 ):[] //単配の場合;

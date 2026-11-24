@@ -1,98 +1,22 @@
-import React from "react";
-import applyOtherProjectToSameValueClick from "../../Share/applyOtherProjectToSameValueClick";
-import useTargetChangeHandler from "./Part/useTargetChangeHandler";
-import confirmMainOrSubOnlyInput from "../../FieldStaff/Part/confirmMainOrSubOnlyInput";
 import { router } from "@inertiajs/react";
+import { route } from "ziggy-js";
+import confirmMainOrSubOnlyInput from "../../FieldStaff/Part/confirmMainOrSubOnlyInput";
+import useReportCommonActions from "../../Share/useReportCommonActions";
 
 // 報告書編集の動き
-export default function useEditReportActions({prefix,date,assignWithRecords,inputValues,setInputValues,inputRefs,changedData,setChangedData,setIsConfirm,data,setData,post,setIsBigMedia,clearErrors}){
+export default function useEditReportActions({prefix,date,errors,assignWithRecords,inputValues,setInputValues,setIssuedCount,setReturnedCount,setChoicedMap,setChoiceFinishedMapProjectLists,inputRefs,changedData,setChangedData,setIsConfirm,data,setData,post,setIsBigMedia,clearErrors}){
 
 
-    // 大きなデバイスかどうか
-    React.useEffect(()=>{
-        // windowは分割点に差し掛かっているかのみ取得
-        const bigJudge=window.matchMedia("(min-width:500px)")
-        const mediaChange=()=>{
-            setIsBigMedia(bigJudge?.matches || false)
-        }
-        // そのmediaが変化した場合に変化
-        bigJudge.addEventListener("change",mediaChange)
-        return ()=>{bigJudge.removeEventListener("change",mediaChange)};
-    },[]);
-
-
-    // 持ち出し&返却のまとめ //mapNumberは必要ない
-    const onIssuedOrReturnedCountsChange=(e,mainProjectName,eachProjectName,setState)=>{
-
-        const targetValue=e.target.value;
-
-       if (targetValue && !/^\d+$/.test(targetValue)) {
-            alert("数値以外は入力できません")
-            return;
-        }
-        setState(prev=>({
-            ...prev,
-            [mainProjectName]:{
-                ...prev?.[mainProjectName],
-                [eachProjectName]:targetValue
-            }
-        }))
-    }
-
-
-    // 入力された部数が変化したとき
-    const onAssignedInputChange=({e,assignId,subProjectId=null,mainProjectName,trIndex,indexInMaps,index})=>{
-        const target=e.currentTarget.value;
-        if (target && !/^\d+$/.test(target)){
-            alert("数値以外は入力できません")
-            return;
-        }
-
-        // 変化したinput要素をfocus(indexは併配の数)
-        inputRefs.current[mainProjectName][trIndex][indexInMaps][index]?.focus();
-
-        // 変化した値にcssを記入するための操作
-        // すでに存在している場合には二重にstateが動くのを防ぐために除外
-        useTargetChangeHandler({changedData,setChangedData,mainProjectName,assignId,subProjectId});
-
-        // input要素のvalueの更新
-        // 変化したところのみしか変わらないようにする
-        setInputValues(prev=>({
-            ...prev,
-            [mainProjectName]:{
-                ...(prev?.[mainProjectName] || {}),
-                [assignId]:{
-                    ...(prev?.[mainProjectName]?.[assignId] || {}),
-                    [subProjectId ?? "main"]:target
-                }
-            }
-        }));
-    }
+    // writeと共通
+    const{onIssuedOrReturnedCountsChange,onAssignedInputChange,onInputKeyDown,onSetOtherProjectToSameValueClick,onMapNumberChange,onMapNumberChoiceDecide,onMapNumberChoiceReset,onConfirmOkClick,onConfirmCancelClick}=useReportCommonActions({assignDataToStaff:assignWithRecords,inputValues,setInputValues,inputRefs,selectedDate:date,setIssuedCount,setReturnedCount,setIsConfirm,setData,post,setChoicedMap,setChoiceFinishedMapProjectLists,setIsBigMedia,errors,clearErrors,postRoute:prefix=="branch_manager" ? "branch_manager.complete_report_post" : "field_staff.edit_report_post",isEdit:true,changedData,setChangedData});
 
     // もう１度日付選択から戻るとき(prefixにより分ける)
     const onStartOverClick=()=>{
         router.visit(route(prefix === "branch_manager" ? "branch_manager.choice_report_target": "field_staff.overview_reports"));
     }
 
-
-    // 報告書の入力時にエンターボタンが押されたとき
-    // 後日、何かしら機能を入れる可能性あり
-    const onInputKeyDown=(e,trIndex,indexInMaps,index)=>{
-        // if(e.key=="Enter"){
-        //     // refを縦に移動
-
-        // }
-    }
-
-    // 他の案件も同じ値を挿入する時
-    const onSetOtherProjectToSameValueClick=(e,mainProjectName,projectId,index)=>{
-        e.preventDefault()
-        // 外注定義
-        applyOtherProjectToSameValueClick({mainProjectName,projectId,index,inputValues,setInputValues,assignDataToStaff:assignWithRecords,selectedDate:date,isEdit:true,changedData,setChangedData})
-    }
-
-
     // 決定ボタンを押した際は確認ページを表示する
+    //write側と相違点が多いため別保持する
     const onSubmitBtnClick=(e,tableSets)=>{
             e.preventDefault();
 
@@ -111,7 +35,7 @@ export default function useEditReportActions({prefix,date,assignWithRecords,inpu
             Object.entries(inputValues).forEach((eachInputValue,index)=>{
 
                 for (const eachSets of Object.entries(eachInputValue[1])){
-                    const eachMainId=eachSets[0]; //assignId
+                    const eachMainId=eachSets[0]; //assignId(通常)/planId(projectOnly)
                     const eachCount=eachSets[1]; //それぞれの町目の配布数のデータ
 
                     // そのメイン案件自体が変化していないものはデータにpushしない
@@ -144,23 +68,5 @@ export default function useEditReportActions({prefix,date,assignWithRecords,inpu
             clearErrors();
     }
 
-
-    // 確認OKの時
-    const onConfirmOkClick=()=>{
-        // バリデーション対策にinputデータを初期化はしないでおく
-        // ポスト(代替記入、編集とも同じ)
-        post(route(prefix=="branch_manager" ? "branch_manager.complete_report_post" : "field_staff.edit_report_post"));
-        // バリデーション失敗した時に備えてconfirmはチェンジ
-        setIsConfirm(false)
-    }
-
-    // 確認キャンセルの時
-    const onConfirmCancelClick=()=>{
-        // 投稿データの初期化(inputデータは持っておく)
-        setData();
-        // UIを戻す
-        setIsConfirm(false);
-    }
-
-    return {onIssuedOrReturnedCountsChange,onAssignedInputChange,onStartOverClick,onInputKeyDown,onSetOtherProjectToSameValueClick,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}
+    return {onIssuedOrReturnedCountsChange,onAssignedInputChange,onStartOverClick,onInputKeyDown,onSetOtherProjectToSameValueClick,onMapNumberChange,onMapNumberChoiceDecide,onMapNumberChoiceReset,onSubmitBtnClick,onConfirmOkClick,onConfirmCancelClick}
 }

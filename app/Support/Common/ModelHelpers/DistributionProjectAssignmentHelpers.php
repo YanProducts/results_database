@@ -17,6 +17,20 @@ class DistributionProjectAssignmentHelpers{
     // 該当スタッフ、該当期間における、未提出以外のデータ(status=1かどうかで行うと2日案件で2日に分けて行く予定の場合が含まれなくなるので、該当日該当スタッフのデータがあるかどうかで検証)
 
 
+    // その日、そのスタッフの案件版のデータが存在するか
+    public static function data_is_exists_by_the_date_and_staff($staff,$date){
+        return DistributionProjectAssignment::where("staff_id",$staff)->where(function($query)use($date){
+            $query->where("date",$date)->orWhere(function($inner_query)use($date){
+               $inner_query->where("date","<=",$date)->where("end_date",">=",$date);
+            });
+        })->exists();
+    }
+
+
+
+
+
+
     // 該当営業所(authから取得)における、期間内における割り当てデータが少しでもある日時を配列で返す
     public static function get_date_sets_having_assign_data($start_offset,$end_offset,$place_id){
 

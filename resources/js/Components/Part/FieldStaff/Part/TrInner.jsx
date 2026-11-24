@@ -10,7 +10,6 @@ export default function TrInner({mainProjectName,projectSets,eachData,mapNumber,
 
         const identifier=projectOnlyFlag ? eachData.plan_id : eachData.assign_id;
 
-        console.log(projectOnlyFlag)
 
         // 編集と作成とで併配案件のidセットの取得元を分ける
         const subProjectIdSets=isEdit ? Object.keys(eachData.sub_sets) : eachData.sub_sets;
@@ -20,9 +19,6 @@ export default function TrInner({mainProjectName,projectSets,eachData,mapNumber,
                     <td className={`border-black border-x-2 bg-yellow-300 ${widthSets[1]}`}>{eachData.household}</td>
                     {/* 案件ごとの配布数 案件数によって数を変化 */}
                     {Object.keys(projectSets).map(function(eachSet,index){
-
-                        console.log(identifier)
-
                         // メイン案件
                         if(index==0){
                             return(

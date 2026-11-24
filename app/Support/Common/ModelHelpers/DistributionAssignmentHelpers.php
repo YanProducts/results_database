@@ -11,9 +11,16 @@ use Illuminate\Support\Facades\Log;
 
 class DistributionAssignmentHelpers{
     // 該当スタッフ、該当日における割当済みの案件
-
-
     // 該当スタッフ、該当期間における、未提出以外のデータ(status=1かどうかで行うと2日案件で2日に分けて行く予定の場合が含まれなくなるので、該当日該当スタッフのデータがあるかどうかで検証)
+
+    // その日、そのスタッフのデータが存在するか
+    public static function data_is_exists_by_the_date_and_staff($staff,$date){
+        return DistributionAssignment::where("staff_id",$staff)->where(function($query)use($date){
+            $query->where("date",$date)->orWhere(function($inner_query)use($date){
+               $inner_query->where("date","<=",$date)->where("end_date",">=",$date);
+            });
+        })->exists();
+    }
 
 
     // 該当営業所(authから取得)における、期間内における割り当てデータが少しでもある日時を配列で返す
@@ -81,7 +88,6 @@ class DistributionAssignmentHelpers{
         public static function delete_assign_in_the_date_and_plan_ids($date,$plan_ids){
             // 既にトランザクションの内部にいる前提
             DistributionAssignment::where("date",$date)->whereIn("plan_id",$plan_ids)->delete();
-
         }
 
 }
