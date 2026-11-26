@@ -85,7 +85,7 @@ export default function useReportCommonActions({assignDataToStaff,inputValues,se
     const onSetOtherProjectToSameValueClick=(e,mainProjectName,projectId,index,projectOnlyFlag)=>{
         e.preventDefault()
         // 外注定義
-        applyOtherProjectToSameValueClick({mainProjectName,projectId,index,inputValues,setInputValues,assignDataToStaff,selectedDate,projectOnlyFlag,changedData,setChangedData})
+        applyOtherProjectToSameValueClick({mainProjectName,projectId,index,inputValues,setInputValues,assignDataToStaff,selectedDate,projectOnlyFlag,changedData,setChangedData,isEdit})
     }
 
         // (案件から選択の際に)地図番号選択の変化時
